@@ -13,6 +13,7 @@ from datetime import datetime
 from pathlib import Path
 import sys
 from anno_settings import settings_for, protect_output
+from anno_branding import add_game_logo
 CONFIG = settings_for('anno1800')
 
 from anno_profile_playtime import profile_name, profile_playtime, ranking_html, RANKING_CSS
@@ -684,7 +685,7 @@ filter();
     <section><h2>Gespeicherte Spielvorlagen</h2><p>Diese Dateien sind keine Spielstände und zählen nicht zur Seed-Aufstellung. Die Kennzeichnung vergleicht nur die Seed-Zahl.</p>{preset_details()}</section>
     <p class="source">Formatreferenzen: <a href="https://github.com/EMRECAN-1907/anno1800-save-tools">A7S / FileDB</a> · <a href="https://github.com/anno-mods/FileDBReader">FileDB V1</a> · <a href="https://github.com/pan324/anno1800_seedfinder">Inselgrafiken und Darstellung</a>.</p></main><script>{script}</script></html>"""
     (stage/'map-gallery.html').write_text(
-        html.replace(f'{len(rows):,} Spielstände',
+        add_game_logo(html, 'anno1800').replace(f'{len(rows):,} Spielstände',
                      f'{len(rows):,} Spielstände'.replace(',', '’')), encoding='utf-8')
     print(f'{nseeds} Seeds, {len(groups)} Varianten, {len(pictures)} Kartenbilder', flush=True)
     return excel_rows

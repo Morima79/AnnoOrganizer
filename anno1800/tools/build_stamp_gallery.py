@@ -2,6 +2,7 @@
 from pathlib import Path
 import sys
 from anno_settings import settings_for, protect_output
+from anno_branding import add_game_logo
 CONFIG = settings_for('anno1800')
 
 import json,struct as st,collections,math,re,hashlib,datetime,copy,html,os
@@ -351,6 +352,6 @@ def write_gallery(entries):
     payload=json.dumps([{'region':e['region'],'folder':e['folder']} for e in entries],ensure_ascii=False).replace('<','\u003c')
     page=(HERE/'stamp_gallery_template.html').read_text(encoding='utf-8')
     for marker,value in {'__CSS__':(HERE/'stamp_gallery.css').read_text(encoding='utf-8'),'__COUNT__':str(len(entries)),'__REGIONS__':regions,'__PACKS__':packoptions,'__CARDS__':''.join(cards),'__DATE__':datetime.datetime.now().strftime('%d.%m.%Y %H:%M'),'__INVENTORY__':payload}.items():page=page.replace(marker,value)
-    target=ROOT/'stamps'/'stamp-gallery.html';tmp=target.with_suffix('.tmp');tmp.write_text(page,encoding='utf-8');os.replace(tmp,target)
+    target=ROOT/'stamps'/'stamp-gallery.html';tmp=target.with_suffix('.tmp');tmp.write_text(add_game_logo(page, 'anno1800'),encoding='utf-8');os.replace(tmp,target)
 
 if __name__=='__main__':main()

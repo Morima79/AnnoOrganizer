@@ -2,6 +2,7 @@
 from pathlib import Path
 import sys
 from anno_settings import settings_for, protect_output
+from anno_branding import add_game_logo
 CONFIG = settings_for('anno117')
 
 import base64,zlib,struct as st,json,math,hashlib,collections,html,re,datetime
@@ -332,6 +333,6 @@ document.querySelectorAll('.preview').forEach(b=>b.addEventListener('click',()=>
 document.querySelector('#close').addEventListener('click',()=>viewer.close());full.addEventListener('click',()=>full.classList.toggle('zoomed'));viewer.addEventListener('click',e=>{if(e.target===viewer)viewer.close()});
 </script></html>'''
     content=content.replace('__AKTUALISIERT__',datetime.datetime.now().strftime('%d.%m.%Y %H:%M')).replace('__PACK_OPTIONEN__',pack_options)
-    (ROOT/'stamps'/'stamp-gallery.html').write_text(content,encoding='utf-8')
+    (ROOT/'stamps'/'stamp-gallery.html').write_text(add_game_logo(content, 'anno117'),encoding='utf-8')
 
 if __name__=='__main__':main()

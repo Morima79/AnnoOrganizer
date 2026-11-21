@@ -44,7 +44,7 @@ Neue Ausgaben liegen standardmässig in `local-data/` neben dem Starter; überno
 - [Formate und Grenzen](docs/formats-and-limitations.de.md)
 - [MIT-Lizenz](LICENSE)
 
-Inoffizielles Projekt ohne Verbindung zu Ubisoft. Spielgrafiken und Logos werden nicht mitgeliefert; Python-Abhängigkeiten stehen in `requirements.txt`.
+Inoffizielles Projekt ohne Verbindung zu Ubisoft. Spiel-Logos sind zur Kennzeichnung enthalten und nicht Teil der MIT-Lizenz des Werkzeugcodes; Spieldatenarchive werden nicht mitgeliefert; Python-Abhängigkeiten stehen in `requirements.txt`.
 
 ## Nutzung und Weiterveröffentlichung
 

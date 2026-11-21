@@ -119,7 +119,7 @@ Generated galleries use `stamps/stamp-gallery.html` and `reports/map-gallery.htm
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 ```
 
-The Windows GitHub Actions workflow runs synthetic tests without game data. Only the explicitly listed bundled demo saves and stamps belong in Git. Keep all other private settings, saves, stamps, generated galleries outside the approved `site/` snapshots, game resources, caches and backups excluded. `.gitignore` permits the designated demo paths and excludes private and generated data. Python packages are installed through pip; no bundled dependency archives, game logos or graphics are distributed.
+The Windows GitHub Actions workflow runs synthetic tests without game data. Only the explicitly listed bundled demo saves and stamps belong in Git. Keep all other private settings, saves, stamps, generated galleries outside the approved `site/` snapshots, game resources, caches and backups excluded. `.gitignore` permits the designated demo paths and excludes private and generated data. Python packages are installed through pip. Game logos are included for identification. Game resource archives and dependency archives are not bundled.
 
 This is an unofficial project with no affiliation to Ubisoft. Maps and blueprints are reconstructions, not guarantees of placement, supply, range or in-game operation. The tool code is provided under the [MIT license](LICENSE).
 

@@ -12,6 +12,7 @@ import os
 from pathlib import Path
 import sys
 from anno_settings import settings_for, protect_output
+from anno_branding import add_game_logo
 CONFIG = settings_for('anno117')
 
 from anno_profile_playtime import profile_name, profile_playtime, ranking_html, RANKING_CSS
@@ -384,7 +385,7 @@ def write_html(rows, total, stage, updated_at, total_playtime, profiles):
     template = template.replace('@@PROFILE_RANKING@@', ranking_html(profiles, clock))
     template=template.replace('@@CARDS@@',''.join(cards)).replace('@@SUMMARY@@',
         f'{len({row["identity"][0] for row in rows})} Seeds · {len(rows)} Kartenvarianten · {total} Spielstände')
-    (stage/'map-gallery.html').write_text(template,encoding='utf8')
+    (stage/'map-gallery.html').write_text(add_game_logo(template, 'anno117'),encoding='utf8')
 
 
 def publish(stage, output):
