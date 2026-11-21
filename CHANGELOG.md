@@ -5,6 +5,14 @@ Wichtige Änderungen an AnnoTools. Jede Version enthält englische und deutsche 
 
 ## [Unreleased]
 
+### English
+
+- Refreshed all five gallery screenshots in the German and English READMEs to show the shared layout, game logos and current colour themes.
+
+### Deutsch
+
+- Alle fünf Galerie-Screenshots in den deutschen und englischen Readmes auf das gemeinsame Layout mit Spiel-Logos und aktuellen Farbthemen aktualisiert.
+
 ## [v0.1.3] - 2026-11-21
 
 ### English

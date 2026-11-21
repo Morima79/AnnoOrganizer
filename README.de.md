@@ -31,7 +31,7 @@ Die Online-Demos benötigen keine Installation. Sie sind geprüfte Momentaufnahm
 
 ## Galerie-Vorschau
 
-Echte Screenshots der mitgelieferten Demos. Die Kartengalerien zeigen einheitliche Spieltitel und Kopfzeilen. Ein Klick auf ein Bild öffnet die Aufnahme in voller Auflösung.
+Aktuelle Screenshots aller fünf mitgelieferten Demos mit dem gemeinsamen Galerie-Layout, Spiel-Logos und an die Spiele angelehnten Farben. Anno 1404 verwendet eine helle Pergamentoptik. Ein Klick auf ein Bild öffnet die Aufnahme in voller Auflösung.
 
 ### Stempelgalerien
 

@@ -31,7 +31,7 @@ The online demos require no installation. They are validated snapshots of the bu
 
 ## Gallery previews
 
-Actual screenshots of the bundled demos. The map galleries use consistent game titles and summary headers. Click an image to view it at full resolution.
+Current screenshots of all five bundled demos, with the shared gallery layout, game logos and colours inspired by each game. Anno 1404 uses a light parchment theme. Click an image to view it at full resolution.
 
 ### Stamp galleries
 
