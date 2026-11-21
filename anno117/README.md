@@ -64,4 +64,4 @@ When redistributing the scripts, including modified versions, retain the copyrig
 
 [Map gallery / Kartengalerie](https://morima79.github.io/AnnoTools/anno117/maps/) · [Stamp gallery / Stempelgalerie](https://morima79.github.io/AnnoTools/anno117/stamps/) · [All demos / Alle Demos](https://morima79.github.io/AnnoTools/)
 
-The online galleries show the bundled examples without installation. Automated releases and GitHub Pages are documented in the [project guide](../README.md#automated-publishing).
+The online galleries show the bundled examples without installation. Automated releases and GitHub Pages are documented in the [publishing guide](../docs/publishing.md).

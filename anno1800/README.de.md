@@ -68,4 +68,4 @@ Bei einer Weiterveröffentlichung der Skripte, auch in geänderter Form, müssen
 
 [Map gallery / Kartengalerie](https://morima79.github.io/AnnoTools/anno1800/maps/) · [Stamp gallery / Stempelgalerie](https://morima79.github.io/AnnoTools/anno1800/stamps/) · [All demos / Alle Demos](https://morima79.github.io/AnnoTools/)
 
-Die Online-Galerien zeigen die mitgelieferten Beispiele ohne Installation. Automatische Releases und GitHub Pages sind in der [Projektanleitung](../README.de.md#automatische-veröffentlichung) beschrieben.
+Die Online-Galerien zeigen die mitgelieferten Beispiele ohne Installation. Automatische Releases und GitHub Pages sind in der [Veröffentlichungsanleitung](../docs/publishing.de.md) beschrieben.
