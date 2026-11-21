@@ -52,6 +52,18 @@ class Settings:
         ZoneInfo(self.zone)
         self.output = self.expand(self.values.get('output', './local-data'))
 
+    @property
+    def report_output(self):
+        return self.path('report_output') or self.output / 'reports'
+
+    @property
+    def stamp_output(self):
+        return self.path('stamp_output') or self.output / 'stamps'
+
+    @property
+    def log_output(self):
+        return self.path('log_output') or self.output / 'logs'
+
     def expand(self, value):
         if not isinstance(value, str) or not value.strip():
             raise ValueError('Ein Pfad muss eine nicht leere Zeichenfolge sein.')
@@ -93,7 +105,8 @@ class Settings:
             data = json.loads(marker.read_text(encoding='utf-8'))
             if data.get('game') != self.game:
                 raise ValueError('Dieser Ausgabeordner wird bereits von einer anderen Anno-Version verwendet.')
-        protect_output(self.output, self.all_sources())
+        for destination in (self.output, self.report_output, self.stamp_output, self.log_output):
+            protect_output(destination, self.all_sources())
         return self
 
     def all_sources(self):

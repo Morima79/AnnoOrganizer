@@ -36,6 +36,35 @@ class ConfigurationTests(unittest.TestCase):
         self.assertEqual(config.output, (self.root / 'outputs/anno117').resolve())
         self.assertFalse(config.output.exists())
 
+    def test_external_output_directories_are_relative_to_settings(self):
+        self.data.update(report_output='./Auswertung', stamp_output='./Stempel', log_output='./logs')
+        self.save()
+        config = Settings('anno117', self.config).validate('stamps')
+        self.assertEqual(config.report_output, self.root / 'Auswertung')
+        self.assertEqual(config.stamp_output, self.root / 'Stempel')
+        self.assertEqual(config.log_output, self.root / 'logs')
+        self.assertFalse(config.report_output.exists())
+
+    def test_custom_output_cannot_overlap_source(self):
+        for key in ('report_output', 'stamp_output', 'log_output'):
+            with self.subTest(key=key):
+                self.data[key] = './inputs/stamps'
+                self.save()
+                with self.assertRaises(ValueError):
+                    Settings('anno117', self.config).validate('stamps')
+                del self.data[key]
+
+    def test_demo_keeps_custom_outputs_separate(self):
+        from anno_demo import demo_settings
+        self.data.update(report_output='./Auswertung', stamp_output='./Stempel', log_output='./logs')
+        self.save()
+        config = Settings('anno117', self.config)
+        demo = demo_settings(config, PROJECT)
+        self.assertEqual(demo.report_output, config.output / 'demo/reports')
+        self.assertEqual(demo.stamp_output, config.output / 'demo/stamps')
+        self.assertEqual(demo.log_output, config.output / 'demo/logs')
+        self.assertEqual(config.report_output, self.root / 'Auswertung')
+
     def test_stamps_do_not_require_an_account(self):
         del self.data['account']
         self.save()

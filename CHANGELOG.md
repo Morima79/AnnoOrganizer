@@ -7,10 +7,12 @@ Wichtige Änderungen an AnnoTools. Jede Version enthält englische und deutsche 
 
 ### English
 
+- Added optional separate report, stamp and log output directories for external per-game settings; demo outputs remain isolated.
 - Refreshed all five gallery screenshots in the German and English READMEs to show the shared layout, game logos and current colour themes.
 
 ### Deutsch
 
+- Optionale getrennte Ausgabeordner für Auswertungen, Stempel und Protokolle bei externen Spieleinstellungen ergänzt; Demo-Ausgaben bleiben getrennt.
 - Alle fünf Galerie-Screenshots in den deutschen und englischen Readmes auf das gemeinsame Layout mit Spiel-Logos und aktuellen Farbthemen aktualisiert.
 
 ## [v0.1.3] - 2026-11-21

@@ -60,3 +60,18 @@ Ausgabeordner dürfen sich nicht mit Eingaben oder Codeordnern überschneiden. V
 ## Einzelne Anno-Version verwenden
 
 Den gewünschten Spielordner einzeln kopieren, eine Python-Umgebung erstellen und dessen `requirements.txt` installieren. Die eigene `settings.json` anpassen und `Launch.cmd` öffnen. Der unabhängige Starter verwendet `--action stamps` beziehungsweise `--action analyze`. Nur der Hauptstarter benötigt zusätzlich `--game`. Der Hauptordner und die anderen Annos sind für den Einzelbetrieb nicht erforderlich.
+
+## Externe Einstellungen und getrennte Ausgabeordner
+
+Mit `--config "D:/Projekte/Anno 117/settings.json"` kann die persönliche Einstellungsdatei ausserhalb von AnnoTools liegen. Relative Pfade beziehen sich auf diesen Ordner. Starter und Verknüpfungen müssen denselben `--config`-Pfad übergeben.
+
+Optional lassen sich die Ausgaben getrennt festlegen:
+
+```json
+"output": "./.annotools",
+"report_output": "./Auswertung",
+"stamp_output": "./Stempel",
+"log_output": "./logs"
+```
+
+`output` enthält dann nur die Spielkennung, Aktualisierungssperre und etwaige Demo-Ausgaben. Ohne die optionalen Schlüssel gelten weiterhin `reports`, `stamps` und `logs` unter `output`. Demoläufe ignorieren die getrennten Pfade und bleiben vollständig unter `<output>/demo/`. Eingabepfade und vorhandene Anpassungen bleiben erhalten.

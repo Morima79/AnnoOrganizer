@@ -12,6 +12,8 @@ def demo_settings(settings, project):
     configured = copy.copy(settings)
     data = dict(settings.data)
     data['output'] = str(settings.output / 'demo')
+    for key in ('report_output', 'stamp_output', 'log_output'):
+        data.pop(key, None)
     if settings.game == 'anno1404':
         data['save_folders'] = [str(demo / 'saves')]
     else:

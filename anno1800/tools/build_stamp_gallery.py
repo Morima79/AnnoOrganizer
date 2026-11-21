@@ -17,8 +17,8 @@ HERE=Path(__file__).resolve().parent
 ROOT=CONFIG.output
 LIB=CONFIG.path('stamps')
 GAME=CONFIG.path('game_data')
-CACHE=ROOT/'reports'/'stamp-gallery'
-OUT=ROOT/'stamps'/'library'
+CACHE=(CONFIG.report_output)/'stamp-gallery'
+OUT=(CONFIG.stamp_output)/'library'
 REGIONS={'The Old World':'Alte Welt','The New World':'Neue Welt','The Arctic':'Arktis','Enbesa':'Enbesa'}
 MAIN='data/config/export/main/asset/'
 
@@ -231,12 +231,12 @@ def build_shapes(entries,assets,index,changed):
 
 def archive_old(old,current):
     live={r[k] for r in current for k in ['png','thumb']}
-    archive=ROOT/'stamps'/'backups'/'gallery'/datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S-%f')
+    archive=(CONFIG.stamp_output)/'backups'/'gallery'/datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S-%f')
     for row in old:
         for key in ['png','thumb']:
             relative=row[key]
             if relative in live:continue
-            source=(ROOT/'stamps'/relative).resolve();destination=(archive/source.relative_to(OUT.resolve())).resolve()
+            source=((CONFIG.stamp_output)/relative).resolve();destination=(archive/source.relative_to(OUT.resolve())).resolve()
             assert source.is_relative_to(OUT.resolve()) and destination.is_relative_to(archive.resolve())
             if source.is_file():destination.parent.mkdir(parents=True,exist_ok=True);source.rename(destination)
 
@@ -294,7 +294,7 @@ def main():
         for folder in e['folder'].split('/'):
             if folder:output=output/safe(folder)
         output.mkdir(parents=True,exist_ok=True);path=output/(safe(e['name'])+'.png');assert path not in used;used.add(path)
-        rel=path.relative_to(ROOT/'stamps').as_posix();fingerprint=hashlib.sha256((e['stamp_hash']+renderhash+json.dumps(signature)).encode()).hexdigest();previous=by_path.get(rel)
+        rel=path.relative_to((CONFIG.stamp_output)).as_posix();fingerprint=hashlib.sha256((e['stamp_hash']+renderhash+json.dumps(signature)).encode()).hexdigest();previous=by_path.get(rel)
         if previous and previous.get('fingerprint')==fingerprint and path.exists() and previous.get('png_hash')==sha(path):meta={k:previous[k] for k in ['width','height','buildings','reserve']}
         else:
             meta=render(e,path,simple,texts);rendered+=1
@@ -306,7 +306,7 @@ def main():
         thumb=thumbs/(hashlib.sha256(rel.encode()).hexdigest()[:16]+'.jpg')
         if rendered and (not previous or previous.get('fingerprint')!=fingerprint) or not thumb.exists():
             with Image.open(path) as im:im.thumbnail((640,500));im.convert('RGB').save(thumb,quality=86)
-        row={k:e[k] for k in ['name','region','folder','source']};row.update(meta);row.update({'png':rel,'thumb':thumb.relative_to(ROOT/'stamps').as_posix(),'fingerprint':fingerprint,'png_hash':sha(path),'requirements':req,'streets':e['data']['street_tiles'],'rail_points':e['data']['rail_points']});manifest.append(row)
+        row={k:e[k] for k in ['name','region','folder','source']};row.update(meta);row.update({'png':rel,'thumb':thumb.relative_to((CONFIG.stamp_output)).as_posix(),'fingerprint':fingerprint,'png_hash':sha(path),'requirements':req,'streets':e['data']['street_tiles'],'rail_points':e['data']['rail_points']});manifest.append(row)
         if (i+1)%75==0:print(f'{i+1}/{len(entries)} Plaene fertig.',flush=True)
     assert {p:sha(p) for p in LIB.rglob('*') if p.is_file()}==snapshot,'Stempelbibliothek wurde waehrend des Lesens geaendert.'
     archive_old(old,manifest);write_gallery(manifest)
@@ -352,6 +352,6 @@ def write_gallery(entries):
     payload=json.dumps([{'region':e['region'],'folder':e['folder']} for e in entries],ensure_ascii=False).replace('<','\u003c')
     page=(HERE/'stamp_gallery_template.html').read_text(encoding='utf-8')
     for marker,value in {'__CSS__':(HERE/'stamp_gallery.css').read_text(encoding='utf-8'),'__COUNT__':str(len(entries)),'__REGIONS__':regions,'__PACKS__':packoptions,'__CARDS__':''.join(cards),'__DATE__':datetime.datetime.now().strftime('%d.%m.%Y %H:%M'),'__INVENTORY__':payload}.items():page=page.replace(marker,value)
-    target=ROOT/'stamps'/'stamp-gallery.html';tmp=target.with_suffix('.tmp');tmp.write_text(render_gallery(page, 'anno1800', 'stamp'),encoding='utf-8');os.replace(tmp,target)
+    target=(CONFIG.stamp_output)/'stamp-gallery.html';tmp=target.with_suffix('.tmp');tmp.write_text(render_gallery(page, 'anno1800', 'stamp'),encoding='utf-8');os.replace(tmp,target)
 
 if __name__=='__main__':main()

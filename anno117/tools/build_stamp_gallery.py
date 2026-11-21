@@ -17,8 +17,8 @@ ROOT=CONFIG.output
 REGIONS={3225:'Latium',6626:'Albion',149678:'Aegyptus'}
 GAME=CONFIG.path('game_data')
 LIB=CONFIG.path('stamps')
-OUT=ROOT/'stamps'/'library'
-CACHE=ROOT/'reports'/'stamp-gallery'
+OUT=(CONFIG.stamp_output)/'library'
+CACHE=(CONFIG.report_output)/'stamp-gallery'
 RENDER_VERSION=2
 
 def digest(path):
@@ -28,13 +28,13 @@ def archive_obsolete(previous,current):
     """Move only formerly generated files; never touch the game library."""
     live={e[key] for e in current for key in ('png','thumb')}
     old={e[key] for e in previous for key in ('png','thumb')}
-    archive=ROOT/'stamps'/'backups'/'gallery'/datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S-%f')
+    archive=(CONFIG.stamp_output)/'backups'/'gallery'/datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S-%f')
     count=0
     for relative in old-live:
-        source=(ROOT/'stamps'/relative).resolve()
+        source=((CONFIG.stamp_output)/relative).resolve()
         if not source.is_relative_to(OUT.resolve()) or not source.is_file():continue
         destination=(archive/source.relative_to(OUT.resolve())).resolve()
-        assert destination.is_relative_to((ROOT/'stamps'/'backups'/'gallery').resolve())
+        assert destination.is_relative_to(((CONFIG.stamp_output)/'backups'/'gallery').resolve())
         destination.parent.mkdir(parents=True,exist_ok=True)
         source.rename(destination);count+=1
     return count
@@ -166,7 +166,7 @@ def main():
             b['points']=[(b['pos'][0]+x*c-y*s,b['pos'][1]+x*s+y*c) for x,y in shapes[b['guid']]]
     reference=next((e for e in entries if e['name']=='Lavendel ohne CDLC'),None)
     if reference is None:
-        saved_reference=ROOT/'stamps'/'references'/'Lavendel ohne CDLC.json'
+        saved_reference=(CONFIG.stamp_output)/'references'/'Lavendel ohne CDLC.json'
         if saved_reference.exists():
             stamp=json.loads(saved_reference.read_text(encoding='utf-8-sig'))['Stamps'][0]
             reference={'data':decode(stamp),'stamp_hash':hashlib.sha256(json.dumps(stamp,sort_keys=True).encode()).hexdigest()}
@@ -191,7 +191,7 @@ def main():
         path=sub/(safe(entry['name'])+'.png')
         assert path not in paths,('Namenskonflikt',str(path))
         paths.add(path)
-        relative=path.relative_to(ROOT/'stamps').as_posix()
+        relative=path.relative_to((CONFIG.stamp_output)).as_posix()
         fingerprint=hashlib.sha256(json.dumps({'stamp':entry['stamp_hash'],'game':signature,'renderer':generator,'version':RENDER_VERSION,'reserve':sorted(entry['data']['reserve'])},sort_keys=True).encode()).hexdigest()
         oldentry=previous_by_path.get(relative)
         if oldentry and oldentry.get('fingerprint')==fingerprint and path.is_file() and oldentry.get('png_hash')==digest(path):
@@ -199,10 +199,10 @@ def main():
         else:
             metadata=render(entry,path,assets,texts);rendered+=1
         thumbnail=thumbdir/f'{i:03d}.jpg'
-        if not (oldentry and oldentry.get('fingerprint')==fingerprint and oldentry.get('thumb')==thumbnail.relative_to(ROOT/'stamps').as_posix() and thumbnail.is_file() and oldentry.get('thumb_hash')==digest(thumbnail)):
+        if not (oldentry and oldentry.get('fingerprint')==fingerprint and oldentry.get('thumb')==thumbnail.relative_to((CONFIG.stamp_output)).as_posix() and thumbnail.is_file() and oldentry.get('thumb_hash')==digest(thumbnail)):
             with Image.open(path) as im:
                 im.thumbnail((640,500));im.convert('RGB').save(thumbnail,quality=86)
-        manifest.append({k:entry[k] for k in ['name','region','folder','source','requirements']}|metadata|{'png':relative,'thumb':thumbnail.relative_to(ROOT/'stamps').as_posix(),'fingerprint':fingerprint,'png_hash':digest(path),'thumb_hash':digest(thumbnail)})
+        manifest.append({k:entry[k] for k in ['name','region','folder','source','requirements']}|metadata|{'png':relative,'thumb':thumbnail.relative_to((CONFIG.stamp_output)).as_posix(),'fingerprint':fingerprint,'png_hash':digest(path),'thumb_hash':digest(thumbnail)})
     assert all(p.read_bytes()==b for p,b in snapshot.items()),'Bibliothek wurde waehrend der Erstellung geaendert.'
     assert {p for p in LIB.rglob('*') if p.is_file()}==set(snapshot)
     archived=archive_obsolete(previous,manifest)
@@ -210,7 +210,7 @@ def main():
     inventoryfile.write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
     for p in paths:
         with Image.open(p) as im:im.verify()
-    print(json.dumps({'stamps':len(entries),'rendered':rendered,'reused':reused,'archived_files':archived,'regions':dict(collections.Counter(e['region'] for e in entries)),'reserve_tiles':reserve_count,'gallery':str(ROOT/'stamps'/'stamp-gallery.html'),'library_unchanged':True},ensure_ascii=True),flush=True)
+    print(json.dumps({'stamps':len(entries),'rendered':rendered,'reused':reused,'archived_files':archived,'regions':dict(collections.Counter(e['region'] for e in entries)),'reserve_tiles':reserve_count,'gallery':str((CONFIG.stamp_output)/'stamp-gallery.html'),'library_unchanged':True},ensure_ascii=True),flush=True)
     # The compact blocker cache and manifest are sufficient for inspection.
     assetsfile.unlink();textsfile.unlink();templatesfile.unlink()
 
@@ -333,6 +333,6 @@ document.querySelectorAll('.preview').forEach(b=>b.addEventListener('click',()=>
 document.querySelector('#close').addEventListener('click',()=>viewer.close());full.addEventListener('click',()=>full.classList.toggle('zoomed'));viewer.addEventListener('click',e=>{if(e.target===viewer)viewer.close()});
 </script></html>'''
     content=content.replace('__AKTUALISIERT__',datetime.datetime.now().strftime('%d.%m.%Y %H:%M')).replace('__PACK_OPTIONEN__',pack_options)
-    (ROOT/'stamps'/'stamp-gallery.html').write_text(render_gallery(content, 'anno117', 'stamp'),encoding='utf-8')
+    ((CONFIG.stamp_output)/'stamp-gallery.html').write_text(render_gallery(content, 'anno117', 'stamp'),encoding='utf-8')
 
 if __name__=='__main__':main()

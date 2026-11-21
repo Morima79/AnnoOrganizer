@@ -420,7 +420,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--account',type=Path,default=ACCOUNT,help='Ordner accounts oder einzelnes Spielkonto')
     parser.add_argument('--game-data',type=Path,default=GAME,help='maindata der Spielinstallation')
-    parser.add_argument('--output',type=Path,default=CONFIG.output/'reports')
+    parser.add_argument('--output',type=Path,default=CONFIG.report_output)
     parser.add_argument('--rescan',action='store_true')
     args=parser.parse_args()
     from zoneinfo import ZoneInfo

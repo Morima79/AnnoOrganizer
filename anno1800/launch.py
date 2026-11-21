@@ -101,8 +101,8 @@ def run_task(settings, action, rescan=False):
     with updating(settings.output):
         settings.validate(action)
         (settings.output / '.annotools-game.json').write_text(json.dumps({'game': GAME}), encoding='utf-8')
-        logs = settings.output / 'logs'
-        logs.mkdir(exist_ok=True)
+        logs = settings.log_output
+        logs.mkdir(parents=True, exist_ok=True)
         logfile = logs / (action + '.log')
         with logfile.open('w', encoding='utf-8') as log:
             with subprocess.Popen(command, cwd=ROOT, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
@@ -114,7 +114,7 @@ def run_task(settings, action, rescan=False):
                 status = process.wait()
     if status:
         raise ValueError(f'Aktualisierung fehlgeschlagen. Protokoll: {logfile}')
-    gallery = settings.output / ('stamps/stamp-gallery.html' if action == 'stamps' else 'reports/map-gallery.html')
+    gallery = (settings.stamp_output / 'stamp-gallery.html' if action == 'stamps' else settings.report_output / 'map-gallery.html')
     if not gallery.is_file():
         raise ValueError('Galerie nach Aktualisierung nicht gefunden: ' + str(gallery))
     print('Galerie: ' + str(gallery))

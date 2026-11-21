@@ -460,7 +460,7 @@ def main():
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--save-folder', type=Path, action='append', help='Zusätzlicher Ordner mit Anno-1404-Saves')
-    parser.add_argument('--output', type=Path, default=CONFIG.output/'reports')
+    parser.add_argument('--output', type=Path, default=CONFIG.report_output)
     parser.add_argument('--rescan', action='store_true')
     args = parser.parse_args()
     CONFIG.validate('analyze')

@@ -799,7 +799,7 @@ def main():
     parser.add_argument('--account', type=Path, default=ACCOUNT, help='Ordner des Spielkontos')
     parser.add_argument('--archive', type=Path, default=ARCHIVE, help='Ordner der Save-Kopien')
     parser.add_argument('--game-data', type=Path, default=GAME, help='maindata der Anno-Installation')
-    parser.add_argument('--output', type=Path, default=CONFIG.output/'reports', help='Ordner für Galerie, Bilder und Zwischendaten')
+    parser.add_argument('--output', type=Path, default=CONFIG.report_output, help='Ordner für Galerie, Bilder und Zwischendaten')
     parser.add_argument('--excel', type=Path, help='Excel-Ziel innerhalb des Ausgabeordners')
     parser.add_argument('--rescan', action='store_true', help='Zwischendaten ignorieren')
     parser.add_argument('--render-only', action='store_true', help='Beide Berichte aus vorhandenen Zwischendaten schreiben')
