@@ -7,7 +7,7 @@ on:
       version:
         description: 'Version for a ZIP test build (does not publish a release)'
         required: true
-        default: 'v0.1.1'
+        default: 'v0.1.2'
 permissions:
   contents: read
 concurrency:
@@ -32,6 +32,10 @@ jobs:
         env:
           RELEASE_VERSION: ${{ github.event_name == 'push' && github.ref_name || inputs.version }}
         run: python scripts/build_release.py --version "$RELEASE_VERSION" --output dist
+      - name: Prepare release description from the changelog
+        env:
+          RELEASE_VERSION: ${{ github.event_name == 'push' && github.ref_name || inputs.version }}
+        run: python scripts/release_notes.py --version "$RELEASE_VERSION" --output "$RUNNER_TEMP/release-notes.md"
       - uses: actions/upload-artifact@v4
         with:
           name: release-zip
@@ -44,5 +48,5 @@ jobs:
           RELEASE_VERSION: ${{ github.ref_name }}
         shell: bash
         run: |
-          gh release create "$RELEASE_VERSION" dist/* --verify-tag --draft --title "AnnoTools $RELEASE_VERSION" --generate-notes
+          gh release create "$RELEASE_VERSION" dist/* --verify-tag --draft --title "AnnoTools $RELEASE_VERSION" --notes-file "$RUNNER_TEMP/release-notes.md"
           gh release edit "$RELEASE_VERSION" --draft=false

@@ -4,7 +4,7 @@
 [![Latest release](https://img.shields.io/github/v/release/Morima79/AnnoTools?sort=semver&label=Release)](https://github.com/Morima79/AnnoTools/releases/latest)
 [![Demo galleries](https://img.shields.io/badge/Demo-Galleries-2ea44f)](https://morima79.github.io/AnnoTools/)
 
-[English](README.md) · [Deutsch](README.de.md)
+[English](README.md) · [Deutsch](README.de.md) · [Changelog](CHANGELOG.md)
 
 Local Windows tools for **Anno 117: Pax Romana**, **Anno 1800** and **Anno 1404**, including Venice and the History Edition. Build HTML galleries, stamp blueprint PNGs, reconstructed maps and Excel reports from your own local files. Neither a running game nor Codex is required.
 
