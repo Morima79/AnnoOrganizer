@@ -17,7 +17,7 @@ class ConfigurationTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
-        self.root = Path(self.temp.name)
+        self.root = Path(self.temp.name).resolve()
         self.inputs = self.root / 'inputs'
         for name in ['game', 'stamps', 'accounts']:
             (self.inputs / name).mkdir(parents=True, exist_ok=True)
