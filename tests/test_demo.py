@@ -37,7 +37,7 @@ class DemoTests(unittest.TestCase):
             self.assertEqual(filename.read_bytes(), before)
             self.assertEqual(demo.path('account'), ROOT / 'anno117/demo/saves')
             self.assertEqual(demo.path('stamps'), ROOT / 'anno117/demo/stamps')
-            self.assertEqual(demo.output, root / 'my-output/demo')
+            self.assertEqual(demo.output, (root / 'my-output/demo').resolve())
             self.assertEqual(demo.data['custom_option'], data['custom_option'])
             self.assertFalse(demo.output.exists())
 
@@ -46,8 +46,8 @@ class DemoTests(unittest.TestCase):
             root = Path(directory)
             (root / 'maindata').mkdir()
             (root / 'maindata/config.rda').touch()
-            self.assertEqual(resolve_game_data(root, 'anno117'), root / 'maindata')
-            self.assertEqual(resolve_game_data(root / 'maindata', 'anno117'), root / 'maindata')
+            self.assertEqual(resolve_game_data(root, 'anno117'), (root / 'maindata').resolve())
+            self.assertEqual(resolve_game_data(root / 'maindata', 'anno117'), (root / 'maindata').resolve())
 
     def test_additional_steam_library_is_detected(self):
         with tempfile.TemporaryDirectory() as directory:

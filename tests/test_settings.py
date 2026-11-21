@@ -32,8 +32,8 @@ class ConfigurationTests(unittest.TestCase):
 
     def test_relative_paths_use_configuration_directory(self):
         config = Settings('anno117', self.config).validate('stamps')
-        self.assertEqual(config.path('stamps'), self.inputs / 'stamps')
-        self.assertEqual(config.output, self.root / 'outputs/anno117')
+        self.assertEqual(config.path('stamps'), (self.inputs / 'stamps').resolve())
+        self.assertEqual(config.output, (self.root / 'outputs/anno117').resolve())
         self.assertFalse(config.output.exists())
 
     def test_stamps_do_not_require_an_account(self):
