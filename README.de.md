@@ -1,5 +1,9 @@
 # AnnoTools
 
+[![Tests](https://github.com/Morima79/AnnoTools/actions/workflows/tests.yml/badge.svg?branch=main&event=push)](https://github.com/Morima79/AnnoTools/actions/workflows/tests.yml)
+[![Aktuelle Version](https://img.shields.io/github/v/release/Morima79/AnnoTools?sort=semver&label=Release)](https://github.com/Morima79/AnnoTools/releases/latest)
+[![Demo-Galerien](https://img.shields.io/badge/Demo-Galleries-2ea44f)](https://morima79.github.io/AnnoTools/)
+
 [English](README.md) · [Deutsch](README.de.md)
 
 Lokale Windows-Werkzeuge für **Anno 117: Pax Romana**, **Anno 1800** und **Anno 1404** einschliesslich Venedig und History Edition. Sie erstellen HTML-Galerien, Bauplan-PNGs, rekonstruierte Karten und Excel-Auswertungen aus deinen lokalen Dateien. Ein laufendes Spiel oder Codex wird nicht benötigt.
