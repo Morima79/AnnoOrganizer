@@ -5,13 +5,17 @@ Wichtige Änderungen an AnnoTools. Jede Version enthält englische und deutsche 
 
 ## [Unreleased]
 
+## [v0.1.4] - 2026-11-21
+
 ### English
 
+- Fixed Windows temporary-path comparisons in configuration tests for GitHub runners using short user directory names.
 - Added optional separate report, stamp and log output directories for external per-game settings; demo outputs remain isolated.
 - Refreshed all five gallery screenshots in the German and English READMEs to show the shared layout, game logos and current colour themes.
 
 ### Deutsch
 
+- Windows-Pfadvergleiche in Konfigurationstests für GitHub-Runner mit kurzen Benutzerordnernamen korrigiert.
 - Optionale getrennte Ausgabeordner für Auswertungen, Stempel und Protokolle bei externen Spieleinstellungen ergänzt; Demo-Ausgaben bleiben getrennt.
 - Alle fünf Galerie-Screenshots in den deutschen und englischen Readmes auf das gemeinsame Layout mit Spiel-Logos und aktuellen Farbthemen aktualisiert.
 
