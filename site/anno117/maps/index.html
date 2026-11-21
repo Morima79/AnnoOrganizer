@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anno 117 · Kartenseeds und Karten</title>
+<style>
+* { box-sizing: border-box }
+body { margin: 0; background: #111f25; color: #edf2ed; font: 16px/1.5 system-ui, sans-serif }
+main { max-width: 1240px; margin: auto; padding: 28px 20px }
+header { border-bottom: 1px solid #557078; padding-bottom: 14px; margin-bottom: 22px }
+h1 { color: #f8e5ba; font-size: clamp(2rem, 5vw, 3.4rem); margin: 0 }
+h2, p { margin: 0 0 10px }
+article { margin: 18px 0; padding: 20px; background: #1b3036; border: 1px solid #49626b; border-radius: 12px }
+dl, .maps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 228px), 1fr)); gap: 10px; margin: 16px 0 }
+dl div { background: #253f46; padding: 8px 12px; border-radius: 6px; overflow-wrap: anywhere }
+dt, figcaption, .profiles { color: #c7d8d9 }
+dt { font-size: .82rem }
+dd, figure { margin: 0 }
+figure { max-width: 400px }
+img { width: 100%; display: block; border-radius: 6px; border: 1px solid #53747d }
+figcaption { margin-top: 4px }
+label { display: inline-flex; flex-direction: column; margin: 0 12px 12px 0 }
+input, select { font: inherit; color: inherit; background: #253f46; border: 1px solid #6b858d; padding: 8px; border-radius: 5px }
+.marker { display: inline-block; padding: 3px 8px; background: #62471e; color: #ffe6ad; border-radius: 5px }
+summary { cursor: pointer; color: #a8dde0 }
+.game-logo { display: block; width: min(100%, 270px); height: auto; margin: 0 0 14px; }
+.game-logo--117 { background: #f1e5cc; border-radius: 8px; }
+.gallery-updated { display: block; color: #b6cbd5; margin: 0 0 4px; }
+
+.profile-ranking { margin: 0 0 20px; }
+.profile-back { font: inherit; color: #d7f1f3; background: #253f46; border: 1px solid #6b858d;
+                border-radius: 5px; padding: 8px 12px; margin: 0 0 10px; cursor: pointer; }
+.profile-back:hover { background: #32535c; }
+.profile-back:focus-visible { outline: 2px solid #a8dde0; outline-offset: 3px; }
+.profile-ranking summary { font-weight: 650; }
+.profile-ranking a { color: #a8dde0; text-underline-offset: 3px; }
+.profile-ranking table { border-collapse: collapse; margin: 10px 0; }
+.profile-ranking th, .profile-ranking td { padding: 4px 12px; border-bottom: 1px solid #49626b; }
+.profile-ranking thead th, .profile-ranking td:nth-child(2) { text-align: left; }
+.profile-ranking td:nth-child(n+3) { text-align: right; font-variant-numeric: tabular-nums; }
+
+
+header h1{font-family:system-ui,sans-serif;font-size:clamp(2rem,5vw,3.4rem);font-weight:700;line-height:1.15;margin:0 0 10px}
+header .gallery-scope{font-weight:600;margin:8px 0}
+header .gallery-updated{display:block;font-size:14px;color:#b6cbd5;margin:8px 0}
+header .gallery-summary{margin:12px 0}
+header .gallery-description{margin:8px 0}
+header .gallery-notes{font-size:14px;margin:12px 0 0}
+header .gallery-notes p{margin:8px 0}
+</style>
+</head>
+<body><nav aria-label="Demo navigation" style="padding:12px 4%;background:#142d35;color:#fff"><a href="../../" style="color:#fff">AnnoTools · All demos / Alle Demos</a> · Public demo snapshot / Öffentliche Demo</nav>
+<main>
+<header>
+<h1>Anno 117 · Kartenseeds und Karten</h1>
+<p class="gallery-scope">Pax Romana</p>
+<p class="gallery-updated">Zuletzt aktualisiert am: <time datetime="2026-11-21T20:23+01:00">21.11.2026 20:23</time> · Gesamtspielzeit: 0:00:00</p>
+<p class="gallery-summary"><strong>3 Seeds · 3 Kartenvarianten · 3 Spielstände</strong></p>
+<p class="gallery-description">Die Galerie gruppiert lokale Spielstände nach Seed und gespeicherter Kartenkonfiguration. Ein Klick auf eine Karte öffnet die PNG-Datei in voller Grösse.</p>
+<details class="gallery-notes"><summary>Hinweise zu Karten und Spielzeit</summary>
+<p>Für die Gesamtspielzeit zählt pro gespeicherter Partie der höchste gespeicherte Spielzeitwert.</p>
+<p>Die Karten kombinieren gespeicherte Inselpositionen und Drehungen mit Grafiken der lokalen Spielinstallation. Sie zeigen Inseln und Gelände, keine Städte, Gebäude oder Besitzverhältnisse. Bei Aegyptus können Nahtstellen zwischen den vier Geländeteilen der Provinz sichtbar sein.</p>
+<p>Die Zeitpunkte stammen aus den Spielständen und werden in der eingestellten Zeitzone angezeigt. Die Spielzeit verwendet den gespeicherten Aktivzeitzähler, sofern er vorhanden ist; ältere Saves können nur den Spielzeitzähler enthalten. Klar zugeordnete Einstellungen zeigen ihren Namen. Für unbekannte Werte bleibt der gespeicherte Wert sichtbar. Welt- und Inselgrösse stammen, soweit vorhanden, aus den tatsächlich erzeugten Regionen.</p>
+</details>
+</header>
+<details id="profile-ranking" class="profile-ranking" open><summary>Spielzeit pro Profil</summary><p>Jede Partie zählt beim Profil ihres längsten gespeicherten Stands. Bei gleicher Spielzeit hat das Spielkonto Vorrang vor Archivkopien.</p><table><thead><tr><th scope="col">Rang</th><th scope="col">Profil</th><th scope="col">Partien</th><th scope="col">Spielzeit (h:mm:ss)</th></tr></thead><tbody><tr><th scope="row">1</th><td><a href="#variant-filters" data-profile-filter="Demo-03">Demo-03</a></td><td>1</td><td>0:00:00</td></tr><tr><th scope="row">2</th><td><a href="#variant-filters" data-profile-filter="Demo-02">Demo-02</a></td><td>1</td><td>0:00:00</td></tr><tr><th scope="row">3</th><td><a href="#variant-filters" data-profile-filter="Demo-01">Demo-01</a></td><td>1</td><td>0:00:00</td></tr></tbody></table></details>
+<label id="variant-filters">Seed oder Profil <input id="query" type="search" placeholder="Seed oder Profilname"></label>
+<label>Spielmodus
+<select id="mode"><option value="">Alle</option><option>Sandkasten</option><option>Kampagne</option><option>Szenario</option><option>Kreativmodus</option></select>
+</label>
+<label>Sortieren nach
+<select id="sort">
+<option value="variant">Seed und Variante</option>
+<option value="latest">Neuester Save zuerst</option>
+<option value="first">Ältester Save zuerst</option>
+<option value="recordDate">Datum des Saves mit längster Spielzeit</option>
+<option value="recordTime">Längste gespeicherte Spielzeit zuerst</option>
+<option value="latestTime">Spielzeit im neuesten Save zuerst</option>
+</select>
+</label>
+<button type="button" class="profile-back" data-back-to-profiles hidden>Zurück zur Profilrangliste</button><p id="count" aria-live="polite"></p>
+<div id="variants"><article data-seed="2676" data-variant="1" data-mode="Kampagne" data-first="1762993549" data-latest="1762993549" data-record-date="1762993549" data-latest-time="0" data-record-time="0" data-profiles="[&quot;Demo-03&quot;]"><h2>Seed 2676 · Variante 001</h2><p>Kampagne · 1 Saves</p><p class="profiles">Demo-03 (1)</p><dl><div><dt>Kartentyp</dt><dd>Archipel</dd></div><div><dt>Weltgrösse</dt><dd>Gross</dd></div><div><dt>Inselgrösse</dt><dd>Gross</dd></div><div><dt>Inselschwierigkeit</dt><dd>Normal</dd></div><div><dt>Fruchtbarkeit</dt><dd>Im Überfluss</dd></div><div><dt>Vorkommen</dt><dd>Im Überfluss</dd></div><div><dt>Wald</dt><dd>Im Überfluss</dd></div><div><dt>Startprovinz</dt><dd>Latium</dd></div><div><dt>Aktive DLCs</dt><dd>—</dd></div><div><dt>Ältester Save des Seeds</dt><dd>13.11.2025 01:25:49</dd></div><div><dt>Neuester Save des Seeds</dt><dd>13.11.2025 01:25:49</dd></div><div><dt>Ältester Save der Variante</dt><dd>13.11.2025 01:25:49</dd></div><div><dt>Neuester Save der Variante</dt><dd>13.11.2025 01:25:49</dd></div><div><dt>Spielzeit im neuesten Save</dt><dd>0:00:00</dd></div><div><dt>Längste gespeicherte Spielzeit</dt><dd>0:00:00</dd></div><div><dt>Datum des Saves mit längster Spielzeit</dt><dd>13.11.2025 01:25:49</dd></div><div><dt>Save mit längster Spielzeit</dt><dd>Demo-03\demo-03.a8s</dd></div><div><dt>Latium · Kartengrösse</dt><dd>2048 × 2048</dd></div></dl><div class="maps"><figure><a href="map-images/3245-59a63c1a9d4b6f.png"><img src="map-images/3245-59a63c1a9d4b6f.png" loading="lazy" alt="Latium"></a><figcaption>Latium</figcaption></figure></div><p>Kartenstand: Demo-03\demo-03.a8s</p><details><summary>Gespeicherte Einstellungen</summary><dl><div><dt>Startprovinz</dt><dd>Latium</dd></div><div><dt>Kampagne</dt><dd>Ja</dd></div><div><dt>Seed</dt><dd>2676</dd></div><div><dt>SetupConstructionCostRefund</dt><dd>0</dd></div><div><dt>SetupContractCooldown</dt><dd>0</dd></div><div><dt>SetupDistributionWorkforce</dt><dd>0</dd></div><div><dt>Fruchtbarkeit</dt><dd>Im Überfluss</dd></div><div><dt>SetupInactiveCosts</dt><dd>0</dd></div><div><dt>SetupIncidentPrevention</dt><dd>2</dd></div><div><dt>SetupIncidents</dt><dd>1</dd></div><div><dt>SetupIncludeShipsForAnnihilation</dt><dd>1</dd></div><div><dt>SetupLossCondition</dt><dd>0</dd></div><div><dt>SetupMaintenance</dt><dd>0</dd></div><div><dt>Kartentyp</dt><dd>Archipel</dd></div><div><dt>SetupMetaInventoryAccess</dt><dd>0</dd></div><div><dt>SetupMoneyBailout</dt><dd>1</dd></div><div><dt>SetupNeedConsumption</dt><dd>0</dd></div><div><dt>SetupNegativeCityStatusAttributes</dt><dd>0</dd></div><div><dt>Vorkommen</dt><dd>Im Überfluss</dd></div><div><dt>SetupRelocateBuildings</dt><dd>0</dd></div><div><dt>SetupResearchSpeed</dt><dd>7</dd></div><div><dt>SetupRevealedMap</dt><dd>1</dd></div><div><dt>SetupSettlementCost</dt><dd>0</dd></div><div><dt>SetupStartCredits</dt><dd>0</dd></div><div><dt>Kaiser</dt><dd>Kaiser Lucius Augustus</dd></div><div><dt>Wald</dt><dd>Im Überfluss</dd></div><div><dt>SetupStartGoods</dt><dd>1</dd></div><div><dt>Inselschwierigkeit</dt><dd>Normal</dd></div><div><dt>Inselgrösse (gespeicherter Setup-Wert)</dt><dd>0</dd></div><div><dt>SetupStartShips</dt><dd>0</dd></div><div><dt>SetupStartWithKontor</dt><dd>1</dd></div><div><dt>SetupTaxes</dt><dd>2</dd></div><div><dt>SetupTraderRefillRate</dt><dd>0</dd></div><div><dt>SetupVictoryConditionAllOrOne</dt><dd>2</dd></div><div><dt>SetupVictoryConditionDiplomacy</dt><dd>1</dd></div><div><dt>SetupVictoryConditionIncome</dt><dd>0</dd></div><div><dt>SetupVictoryConditionInvestors</dt><dd>0</dd></div><div><dt>SetupVictoryConditionMonuments</dt><dd>0</dd></div><div><dt>SetupVictoryConditionPopulation</dt><dd>0</dd></div><div><dt>SetupVictoryConditionWealth</dt><dd>0</dd></div></dl></details></article><article data-seed="8163" data-variant="2" data-mode="Sandkasten" data-first="1793903813" data-latest="1793903813" data-record-date="1793903813" data-latest-time="0" data-record-time="0" data-profiles="[&quot;Demo-01&quot;]"><h2>Seed 8163 · Variante 002</h2><p>Sandkasten · 1 Saves</p><p class="profiles">Demo-01 (1)</p><dl><div><dt>Kartentyp</dt><dd>Archipel</dd></div><div><dt>Weltgrösse</dt><dd>Gross</dd></div><div><dt>Inselgrösse</dt><dd>Gross</dd></div><div><dt>Inselschwierigkeit</dt><dd>Normal</dd></div><div><dt>Fruchtbarkeit</dt><dd>Im Überfluss</dd></div><div><dt>Vorkommen</dt><dd>Im Überfluss</dd></div><div><dt>Wald</dt><dd>Im Überfluss</dd></div><div><dt>Startprovinz</dt><dd>Latium</dd></div><div><dt>Aktive DLCs</dt><dd>Verheißung des Vulkans, Das Hippodrom, Erwachen des Deltas</dd></div><div><dt>Ältester Save des Seeds</dt><dd>05.11.2026 19:36:53</dd></div><div><dt>Neuester Save des Seeds</dt><dd>05.11.2026 19:36:53</dd></div><div><dt>Ältester Save der Variante</dt><dd>05.11.2026 19:36:53</dd></div><div><dt>Neuester Save der Variante</dt><dd>05.11.2026 19:36:53</dd></div><div><dt>Spielzeit im neuesten Save</dt><dd>0:00:00</dd></div><div><dt>Längste gespeicherte Spielzeit</dt><dd>0:00:00</dd></div><div><dt>Datum des Saves mit längster Spielzeit</dt><dd>05.11.2026 19:36:53</dd></div><div><dt>Save mit längster Spielzeit</dt><dd>Demo-01\demo-01.a8s</dd></div><div><dt>Aegyptus · Kartengrösse</dt><dd>2560 × 2560</dd></div></dl><div class="maps"><figure><a href="map-images/149679-45eb948c317595.png"><img src="map-images/149679-45eb948c317595.png" loading="lazy" alt="Aegyptus"></a><figcaption>Aegyptus</figcaption></figure></div><p>Kartenstand: Demo-01\demo-01.a8s</p><details><summary>Gespeicherte Einstellungen</summary><dl><div><dt>Aktive DLCs</dt><dd>Verheißung des Vulkans, Das Hippodrom, Erwachen des Deltas</dd></div><div><dt>Rivalen (Standard)</dt><dd>Dorian, Tarragon, Licia Ma</dd></div><div><dt>Startprovinz</dt><dd>Latium</dd></div><div><dt>Seed</dt><dd>8163</dd></div><div><dt>SetupConstructionCostRefund</dt><dd>0</dd></div><div><dt>SetupContinentalIslandAllowRivalSettling</dt><dd>0</dd></div><div><dt>SetupContinentalIslandStart</dt><dd>0</dd></div><div><dt>SetupContinetnalIslandSettlementCosts</dt><dd>1</dd></div><div><dt>SetupContractCooldown</dt><dd>0</dd></div><div><dt>SetupDistributionWorkforce</dt><dd>0</dd></div><div><dt>Fruchtbarkeit</dt><dd>Im Überfluss</dd></div><div><dt>SetupInactiveCosts</dt><dd>0</dd></div><div><dt>SetupIncidentPrevention</dt><dd>1</dd></div><div><dt>SetupIncidents</dt><dd>1</dd></div><div><dt>SetupIncludeShipsForAnnihilation</dt><dd>1</dd></div><div><dt>SetupLossCondition</dt><dd>0</dd></div><div><dt>SetupMaintenance</dt><dd>0</dd></div><div><dt>Kartentyp</dt><dd>Archipel</dd></div><div><dt>SetupMetaInventoryAccess</dt><dd>0</dd></div><div><dt>SetupMoneyBailout</dt><dd>1</dd></div><div><dt>SetupNeedConsumption</dt><dd>1</dd></div><div><dt>SetupNegativeCityStatusAttributes</dt><dd>0</dd></div><div><dt>Vorkommen</dt><dd>Im Überfluss</dd></div><div><dt>SetupRelocateBuildings</dt><dd>0</dd></div><div><dt>SetupResearchSpeed</dt><dd>7</dd></div><div><dt>SetupRevealedMap</dt><dd>0</dd></div><div><dt>SetupSettlementCost</dt><dd>0</dd></div><div><dt>SetupStartCredits</dt><dd>0</dd></div><div><dt>Kaiser</dt><dd>Gnaeus Firmius Calidus</dd></div><div><dt>Wald</dt><dd>Im Überfluss</dd></div><div><dt>SetupStartGoods</dt><dd>0</dd></div><div><dt>Inselschwierigkeit</dt><dd>Normal</dd></div><div><dt>Inselgrösse (gespeicherter Setup-Wert)</dt><dd>0</dd></div><div><dt>SetupStartShips</dt><dd>1</dd></div><div><dt>SetupStartWithKontor</dt><dd>0</dd></div><div><dt>SetupTaxes</dt><dd>2</dd></div><div><dt>SetupTraderPassiveTradeBudget</dt><dd>1</dd></div><div><dt>SetupTraderPassiveTradeStock</dt><dd>1</dd></div><div><dt>SetupTraderRefillRate</dt><dd>0</dd></div><div><dt>SetupTraderTraderPrices</dt><dd>1</dd></div><div><dt>SetupVictoryConditionAllOrOne</dt><dd>2</dd></div><div><dt>SetupVictoryConditionDiplomacy</dt><dd>1</dd></div><div><dt>SetupVictoryConditionIncome</dt><dd>0</dd></div><div><dt>SetupVictoryConditionInvestors</dt><dd>0</dd></div><div><dt>SetupVictoryConditionMonuments</dt><dd>0</dd></div><div><dt>SetupVictoryConditionPopulation</dt><dd>0</dd></div><div><dt>SetupVictoryConditionWealth</dt><dd>0</dd></div><div><dt>SetupVolcanoEruptionActive</dt><dd>0</dd></div><div><dt>SetupVolcanoIncidents</dt><dd>0</dd></div><div><dt>SetupVolcanoObsidianDeposits</dt><dd>0</dd></div><div><dt>SetupVolcanoObsidianDrops</dt><dd>0</dd></div><div><dt>SetupVolcanoSchedulerEruptionLength</dt><dd>0</dd></div><div><dt>SetupVolcanoSchedulerIntervalDuration</dt><dd>0</dd></div></dl></details></article><article data-seed="31031979" data-variant="3" data-mode="Sandkasten" data-first="1788198566" data-latest="1788198566" data-record-date="1788198566" data-latest-time="0" data-record-time="0" data-profiles="[&quot;Demo-02&quot;]"><h2>Seed 31031979 · Variante 003</h2><p>Sandkasten · 1 Saves</p><p class="profiles">Demo-02 (1)</p><dl><div><dt>Kartentyp</dt><dd>Archipel</dd></div><div><dt>Weltgrösse</dt><dd>Gross</dd></div><div><dt>Inselgrösse</dt><dd>Gross</dd></div><div><dt>Inselschwierigkeit</dt><dd>Normal</dd></div><div><dt>Fruchtbarkeit</dt><dd>Im Überfluss</dd></div><div><dt>Vorkommen</dt><dd>Im Überfluss</dd></div><div><dt>Wald</dt><dd>Im Überfluss</dd></div><div><dt>Startprovinz</dt><dd>Latium</dd></div><div><dt>Aktive DLCs</dt><dd>Verheißung des Vulkans, Das Hippodrom</dd></div><div><dt>Ältester Save des Seeds</dt><dd>31.08.2026 19:49:26</dd></div><div><dt>Neuester Save des Seeds</dt><dd>31.08.2026 19:49:26</dd></div><div><dt>Ältester Save der Variante</dt><dd>31.08.2026 19:49:26</dd></div><div><dt>Neuester Save der Variante</dt><dd>31.08.2026 19:49:26</dd></div><div><dt>Spielzeit im neuesten Save</dt><dd>0:00:00</dd></div><div><dt>Längste gespeicherte Spielzeit</dt><dd>0:00:00</dd></div><div><dt>Datum des Saves mit längster Spielzeit</dt><dd>31.08.2026 19:49:26</dd></div><div><dt>Save mit längster Spielzeit</dt><dd>Demo-02\demo-02.a8s</dd></div><div><dt>Latium · Kartengrösse</dt><dd>2688 × 2688</dd></div></dl><div class="maps"><figure><a href="map-images/3245-25baa637331c79.png"><img src="map-images/3245-25baa637331c79.png" loading="lazy" alt="Latium"></a><figcaption>Latium</figcaption></figure></div><p>Kartenstand: Demo-02\demo-02.a8s</p><details><summary>Gespeicherte Einstellungen</summary><dl><div><dt>Aktive DLCs</dt><dd>Verheißung des Vulkans, Das Hippodrom</dd></div><div><dt>Rivalen (Standard)</dt><dd>Dorian, Tarragon, Licia Ma</dd></div><div><dt>Startprovinz</dt><dd>Latium</dd></div><div><dt>Seed</dt><dd>31031979</dd></div><div><dt>SetupConstructionCostRefund</dt><dd>2</dd></div><div><dt>SetupContinentalIslandAllowRivalSettling</dt><dd>0</dd></div><div><dt>SetupContinentalIslandStart</dt><dd>1</dd></div><div><dt>SetupContinetnalIslandSettlementCosts</dt><dd>0</dd></div><div><dt>SetupContractCooldown</dt><dd>0</dd></div><div><dt>SetupDistributionWorkforce</dt><dd>0</dd></div><div><dt>Fruchtbarkeit</dt><dd>Im Überfluss</dd></div><div><dt>SetupInactiveCosts</dt><dd>0</dd></div><div><dt>SetupIncidentPrevention</dt><dd>0</dd></div><div><dt>SetupIncidents</dt><dd>1</dd></div><div><dt>SetupIncludeShipsForAnnihilation</dt><dd>1</dd></div><div><dt>SetupLossCondition</dt><dd>0</dd></div><div><dt>SetupMaintenance</dt><dd>0</dd></div><div><dt>Kartentyp</dt><dd>Archipel</dd></div><div><dt>SetupMetaInventoryAccess</dt><dd>0</dd></div><div><dt>SetupMoneyBailout</dt><dd>1</dd></div><div><dt>SetupNeedConsumption</dt><dd>0</dd></div><div><dt>SetupNegativeCityStatusAttributes</dt><dd>0</dd></div><div><dt>Vorkommen</dt><dd>Im Überfluss</dd></div><div><dt>SetupRelocateBuildings</dt><dd>0</dd></div><div><dt>SetupResearchSpeed</dt><dd>6</dd></div><div><dt>SetupRevealedMap</dt><dd>0</dd></div><div><dt>SetupSettlementCost</dt><dd>0</dd></div><div><dt>SetupStartCredits</dt><dd>0</dd></div><div><dt>Kaiser</dt><dd>Gnaeus Firmius Calidus</dd></div><div><dt>Wald</dt><dd>Im Überfluss</dd></div><div><dt>SetupStartGoods</dt><dd>0</dd></div><div><dt>Inselschwierigkeit</dt><dd>Normal</dd></div><div><dt>Inselgrösse (gespeicherter Setup-Wert)</dt><dd>0</dd></div><div><dt>SetupStartShips</dt><dd>2</dd></div><div><dt>SetupStartWithKontor</dt><dd>1</dd></div><div><dt>SetupTaxes</dt><dd>2</dd></div><div><dt>SetupTraderPassiveTradeBudget</dt><dd>0</dd></div><div><dt>SetupTraderPassiveTradeStock</dt><dd>0</dd></div><div><dt>SetupTraderRefillRate</dt><dd>0</dd></div><div><dt>SetupTraderTraderPrices</dt><dd>1</dd></div><div><dt>SetupVictoryConditionAllOrOne</dt><dd>2</dd></div><div><dt>SetupVictoryConditionDiplomacy</dt><dd>1</dd></div><div><dt>SetupVictoryConditionIncome</dt><dd>0</dd></div><div><dt>SetupVictoryConditionInvestors</dt><dd>0</dd></div><div><dt>SetupVictoryConditionMonuments</dt><dd>0</dd></div><div><dt>SetupVictoryConditionPopulation</dt><dd>0</dd></div><div><dt>SetupVictoryConditionWealth</dt><dd>0</dd></div><div><dt>SetupVolcanoEruptionActive</dt><dd>0</dd></div><div><dt>SetupVolcanoIncidents</dt><dd>0</dd></div><div><dt>SetupVolcanoObsidianDeposits</dt><dd>0</dd></div><div><dt>SetupVolcanoObsidianDrops</dt><dd>0</dd></div><div><dt>SetupVolcanoSchedulerEruptionLength</dt><dd>0</dd></div><div><dt>SetupVolcanoSchedulerIntervalDuration</dt><dd>0</dd></div></dl></details></article></div>
+<button type="button" class="profile-back" data-back-to-profiles hidden>Zurück zur Profilrangliste</button>
+</main>
+<script>
+const query = document.querySelector('#query');
+const mode = document.querySelector('#mode');
+const sort = document.querySelector('#sort');
+const count = document.querySelector('#count');
+const variants = document.querySelector('#variants');
+const cards = [...variants.querySelectorAll('article')];
+const profileNames = new Map(cards.map(card => [card, JSON.parse(card.dataset.profiles)]));
+let selectedProfile = null;
+let profileLink = null;
+const backToProfiles = document.querySelectorAll('[data-back-to-profiles]');
+const profileRanking = document.querySelector('#profile-ranking');
+
+function returnToProfileRanking() {
+  const returnLink = profileLink;
+  selectedProfile = null;
+  profileLink = null;
+  query.value = '';
+  mode.value = '';
+  refresh();
+  profileRanking.open = true;
+  (returnLink || profileRanking.querySelector('summary')).focus({preventScroll: true});
+  profileRanking.scrollIntoView();
+}
+
+for (const button of backToProfiles) {
+  button.addEventListener('click', returnToProfileRanking);
+}
+
+function refresh() {
+  const search = query.value.trim().toLowerCase();
+  const by = sort.value;
+  const direction = by === 'variant' || by === 'first' ? 1 : -1;
+  let visible = 0;
+  for (const card of cards) {
+    const hit = selectedProfile !== null ? profileNames.get(card).includes(selectedProfile) :
+      /^\d+$/.test(search) ? card.dataset.seed === search :
+      card.querySelector('.profiles').textContent.toLowerCase().includes(search);
+    card.hidden = !hit || Boolean(mode.value && card.dataset.mode !== mode.value);
+    if (!card.hidden) visible++;
+  }
+  variants.append(...cards.toSorted((a, b) =>
+    direction * (Number(a.dataset[by]) - Number(b.dataset[by])) ||
+    Number(a.dataset.variant) - Number(b.dataset.variant)));
+  for (const button of backToProfiles) button.hidden = selectedProfile === null;
+  count.textContent = visible + ' Varianten sichtbar';
+}
+query.addEventListener('input', () => {
+  selectedProfile = null;
+  refresh();
+});
+for (const link of document.querySelectorAll('[data-profile-filter]')) {
+  link.addEventListener('click', event => {
+    event.preventDefault();
+    selectedProfile = link.dataset.profileFilter;
+    profileLink = link;
+    query.value = selectedProfile;
+    mode.value = '';
+    refresh();
+    query.focus({preventScroll: true});
+    document.querySelector('#variant-filters').scrollIntoView();
+  });
+}
+mode.addEventListener('change', refresh);
+sort.addEventListener('change', refresh);
+refresh();
+</script>
+</body>
+</html>

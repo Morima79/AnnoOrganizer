@@ -55,3 +55,9 @@ Detailed documentation is currently in German: [Settings](docs/settings.de.md), 
 Use these scripts at your own risk. They are supplied without warranty. The warranty disclaimer and liability terms in [LICENSE](LICENSE) apply.
 
 When redistributing the scripts, including modified versions, retain the copyright notice naming **Morima79**, its reference to the original [AnnoTools repository](https://github.com/Morima79/AnnoTools), and the MIT license notices.
+
+## Online demos
+
+[Map gallery / Kartengalerie](https://morima79.github.io/AnnoTools/anno117/maps/) · [Stamp gallery / Stempelgalerie](https://morima79.github.io/AnnoTools/anno117/stamps/) · [All demos / Alle Demos](https://morima79.github.io/AnnoTools/)
+
+The online galleries show the bundled examples without installation. Automated releases and GitHub Pages are documented in the [project guide](../README.md#automated-publishing).

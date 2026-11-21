@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anno 1404 · Kartenseeds und Karten</title>
+<style>
+:root { color-scheme: dark; font-family: "Source Sans 3", "Segoe UI", sans-serif; background: #0e2029; color: #f0eee2; }
+body { margin: 0 auto; max-width: 1500px; padding: clamp(16px, 4vw, 55px); }
+header { border-bottom: 1px solid #547482; padding-bottom: 20px; }
+h1, h2 { font-family: Castoro, Georgia, serif; }
+h1 { color: #f5dfaf; font-size: clamp(2rem, 5vw, 3.8rem); margin: .3rem 0; font-weight: 500; }
+p { margin: .4rem 0; }
+a, button { color: #a4e0e8; }
+.controls, .back { margin: 18px 0; }
+.controls { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; }
+label { display: grid; gap: 4px; }
+input, select, button { font: inherit; padding: 6px 9px; background: #1e3947; border: 1px solid #63808b; border-radius: 4px; }
+button, summary { cursor: pointer; }
+details { margin-top: 14px; }
+table { border-collapse: collapse; margin-top: 8px; }
+td, th { padding: 5px 12px; text-align: left; border-bottom: 1px solid #36535f; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 310px), 1fr)); gap: 18px; }
+article { min-width: 0; background: #172f3a; border: 1px solid #36535f; border-radius: 8px; overflow: hidden; }
+article img { display: block; width: 100%; aspect-ratio: 1; object-fit: contain; background: #1a3e52; }
+.body { padding: 14px 16px 18px; }
+h2 { margin: 0; color: #f5dfaf; font-weight: 500; }
+dl { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: .55em .85em; margin: .8rem 0; }
+dt { color: #b8ced3; overflow-wrap: anywhere; }
+dd { margin: 0; overflow-wrap: anywhere; }
+.delta { font-weight: 600; color: #ffd895; }
+[hidden] { display: none !important; }
+:focus-visible { outline: 2px solid #f5dfaf; outline-offset: 2px; }
+
+header h1{font-family:system-ui,sans-serif;font-size:clamp(2rem,5vw,3.4rem);font-weight:700;line-height:1.15;margin:0 0 10px}
+header .gallery-scope{font-weight:600;margin:8px 0}
+header .gallery-updated{display:block;font-size:14px;color:#b6cbd5;margin:8px 0}
+header .gallery-summary{margin:12px 0}
+header .gallery-description{margin:8px 0}
+header .gallery-notes{font-size:14px;margin:12px 0 0}
+header .gallery-notes p{margin:8px 0}
+</style>
+</head>
+<body><nav aria-label="Demo navigation" style="padding:12px 4%;background:#142d35;color:#fff"><a href="../../" style="color:#fff">AnnoTools · All demos / Alle Demos</a> · Public demo snapshot / Öffentliche Demo</nav>
+<header>
+<h1>Anno 1404 · Kartenseeds und Karten</h1>
+<p class="gallery-scope">Grundspiel, Venedig und History Edition</p>
+<p class="gallery-updated">Zuletzt aktualisiert am: 21.11.2026 20:23 · Gesamtspielzeit: 1:09:05</p>
+<p class="gallery-summary"><strong>1 Seeds · 3 Kartenvarianten · 3 Spielstände</strong></p>
+<p class="gallery-description">Die Galerie gruppiert lokale Spielstände nach Seed und gespeicherter Kartenkonfiguration. Ein Klick auf eine Karte öffnet die PNG-Datei in voller Grösse.</p>
+<details class="gallery-notes"><summary>Hinweise zu Karten und Spielzeit</summary>
+<p>Für die Gesamtspielzeit zählt pro gespeicherter Partie der höchste gespeicherte Spielzeitwert.</p>
+<p>Die Karten werden direkt aus dem gespeicherten Gelände rekonstruiert. Sie zeigen Inseln und Gelände, keine Städte, Gebäude oder Besitzverhältnisse. Eine lokale Spielinstallation wird dafür nicht benötigt.</p>
+<p>Die Datumsangaben stammen aus den Änderungszeitpunkten der Dateien und verwenden die lokale Rechnerzeit. Die Spielzeit stammt aus den gespeicherten Spielstatistiken. Identische Save-Kopien werden zusammengefasst; die Zusammenfassung weist zusätzliche Kopien gesondert aus.</p>
+</details>
+</header>
+<details id="rangliste" open>
+<summary>Spielzeit pro Profil</summary>
+<p>Pro erkannter Partie zählt der längste gespeicherte Stand.</p>
+<table><thead><tr><th>Rang</th><th>Profil</th><th>Partien</th><th>Spielzeit</th></tr></thead>
+<tbody><tr><td>1</td><td><button type="button" data-profile="Lord Morima">Lord Morima</button></td><td>3</td><td>1:09:05</td></tr></tbody></table>
+</details>
+<div id="filter" class="controls">
+<label>Seed, Variante oder Save<input type="search" id="query"></label>
+<label>Edition<select id="edition"><option value="">Alle Editionen</option><option>Anno 1404</option><option>History Edition</option><option>Venedig</option></select></label>
+<label>Sortierung<select id="sort"><option value="timestamp">Neuester Save zuerst</option>
+<option value="oldest">Ältester Save zuerst</option><option value="time">Längste Spielzeit zuerst</option>
+<option value="seed">Seed aufsteigend</option></select></label>
+<output id="count" aria-live="polite"></output>
+</div>
+<button type="button" class="back" hidden>Zurück zur Profilrangliste</button>
+<div id="cards" class="grid"><article data-editions="[&quot;History Edition&quot;]"
+          data-profiles="[&quot;Lord Morima&quot;]" data-seed="19412"
+          data-timestamp="1593260027.0" data-oldest="1593260027.0" data-time="3932300">
+          <a href="map-images/866ace2fd1e0043c27741f79.png"><img loading="lazy" src="map-images/866ace2fd1e0043c27741f79.png" alt="Inselkarte – Seed 19412"></a>
+          <div class="body"><h2>Seed 19412</h2><p>V-511237A4 · Szenario · History Edition</p>
+          <p>704 × 704 Felder · 8 Inseln · 1 Spielstände</p>
+          <p>Lord Morima · KI: Hekata, Hildegard von Lewenstein, Marie d&#x27;Artois, Profil 1645000, Profil 1645001</p>
+          <dl><dt>Ältester Save</dt><dd title="anno1404/demo/saves/Demo-03/demo-03.sww">demo-03.sww<br>27.06.2020 14:13:47</dd><dt>Neuester Save</dt><dd title="anno1404/demo/saves/Demo-03/demo-03.sww">demo-03.sww<br>27.06.2020 14:13:47 · 1:05:32</dd><dt>Längste Spielzeit</dt><dd title="anno1404/demo/saves/Demo-03/demo-03.sww">demo-03.sww<br>27.06.2020 14:13:47 · 1:05:32</dd></dl><details><summary>Karteneinstellungen</summary><dl><dt>Zufallskarte beim Start</dt><dd>0</dd><dt>Weltgrösse</dt><dd>1</dd><dt>Inselgrösse</dt><dd>1</dd><dt>Inselschwierigkeit</dt><dd>0</dd><dt>Fruchtbarkeiten</dt><dd>2</dd><dt>Rohstoffe</dt><dd>2</dd><dt>Neutrale Gebäude</dt><dd>0</dd><dt>Korsaren</dt><dd>0</dd><dt>Schwierigkeit</dt><dd>1</dd><dt>Missionsschwierigkeit</dt><dd>0</dd><dt>Kontor zu Beginn</dt><dd>0</dd><dt>Startschiffe</dt><dd>1</dd><dt>Startkapital</dt><dd>1</dd><dt>Startruhm</dt><dd>0</dd><dt>Startitems</dt><dd>0</dd><dt>Aufgedeckte Karte</dt><dd>0</dd><dt>Auftragshäufigkeit</dt><dd>1</dd><dt>Rückerstattung beim Abriss</dt><dd>2</dd><dt>Spionage</dt><dd>0</dd><dt>Ratsitze</dt><dd>0</dd><dt>Händleraufträge</dt><dd>1</dd><dt>Friedensvertrag zu Beginn</dt><dd>0</dd></dl></details></div>
+          </article><article data-editions="[&quot;Venedig&quot;]"
+          data-profiles="[&quot;Lord Morima&quot;]" data-seed="19412"
+          data-timestamp="1464450509.0" data-oldest="1464450509.0" data-time="48800">
+          <a href="map-images/4536bb363bf52e6380d6fe44.png"><img loading="lazy" src="map-images/4536bb363bf52e6380d6fe44.png" alt="Inselkarte – Seed 19412"></a>
+          <div class="body"><h2>Seed 19412</h2><p>V-D6B20A8F · Szenario · Venedig</p>
+          <p>640 × 640 Felder · 13 Inseln · 1 Spielstände</p>
+          <p>Lord Morima</p>
+          <dl><dt>Ältester Save</dt><dd title="anno1404/demo/saves/Demo-02/demo-02.sww">demo-02.sww<br>28.05.2016 17:48:29</dd><dt>Neuester Save</dt><dd title="anno1404/demo/saves/Demo-02/demo-02.sww">demo-02.sww<br>28.05.2016 17:48:29 · 0:00:49</dd><dt>Längste Spielzeit</dt><dd title="anno1404/demo/saves/Demo-02/demo-02.sww">demo-02.sww<br>28.05.2016 17:48:29 · 0:00:49</dd></dl><details><summary>Karteneinstellungen</summary><dl><dt>Zufallskarte beim Start</dt><dd>0</dd><dt>Weltgrösse</dt><dd>0</dd><dt>Inselgrösse</dt><dd>0</dd><dt>Inselschwierigkeit</dt><dd>0</dd><dt>Fruchtbarkeiten</dt><dd>0</dd><dt>Rohstoffe</dt><dd>0</dd><dt>Neutrale Gebäude</dt><dd>0</dd><dt>Korsaren</dt><dd>0</dd><dt>Schwierigkeit</dt><dd>0</dd><dt>Missionsschwierigkeit</dt><dd>0</dd><dt>Kontor zu Beginn</dt><dd>0</dd><dt>Startschiffe</dt><dd>1</dd><dt>Startkapital</dt><dd>0</dd><dt>Startruhm</dt><dd>0</dd><dt>Startitems</dt><dd>0</dd><dt>Aufgedeckte Karte</dt><dd>0</dd><dt>Auftragshäufigkeit</dt><dd>1</dd><dt>Rückerstattung beim Abriss</dt><dd>1</dd><dt>Spionage</dt><dd>0</dd><dt>Ratsitze</dt><dd>0</dd><dt>Händleraufträge</dt><dd>1</dd><dt>Friedensvertrag zu Beginn</dt><dd>0</dd></dl></details></div>
+          </article><article data-editions="[&quot;Anno 1404&quot;]"
+          data-profiles="[&quot;Lord Morima&quot;]" data-seed="99999999"
+          data-timestamp="1441546050.0" data-oldest="1441546050.0" data-time="164200">
+          <a href="map-images/cb7da79d0d7ae711323ea616.png"><img loading="lazy" src="map-images/cb7da79d0d7ae711323ea616.png" alt="Inselkarte – Kampagne · Kapitel 7"></a>
+          <div class="body"><h2>Kampagne · Kapitel 7</h2><p>V-5DC61D65 · Kampagne · Kapitel 7 · Anno 1404</p>
+          <p>640 × 640 Felder · 8 Inseln · 1 Spielstände</p>
+          <p>Lord Morima · KI: Profil 1645006, Profil 1645023, Profil 1645029, Profil 1645030, Profil 1645080, Profil 202281, Profil 206102</p>
+          <dl><dt>Ältester Save</dt><dd title="anno1404/demo/saves/Demo-01/demo-01.sww">demo-01.sww<br>06.09.2015 15:27:30</dd><dt>Neuester Save</dt><dd title="anno1404/demo/saves/Demo-01/demo-01.sww">demo-01.sww<br>06.09.2015 15:27:30 · 0:02:44</dd><dt>Längste Spielzeit</dt><dd title="anno1404/demo/saves/Demo-01/demo-01.sww">demo-01.sww<br>06.09.2015 15:27:30 · 0:02:44</dd></dl><details><summary>Karteneinstellungen</summary><dl><dt>Zufallskarte beim Start</dt><dd>0</dd><dt>Weltgrösse</dt><dd>1</dd><dt>Inselgrösse</dt><dd>1</dd><dt>Inselschwierigkeit</dt><dd>1</dd><dt>Fruchtbarkeiten</dt><dd>1</dd><dt>Rohstoffe</dt><dd>1</dd><dt>Neutrale Gebäude</dt><dd>1</dd><dt>Korsaren</dt><dd>0</dd><dt>Schwierigkeit</dt><dd>0</dd><dt>Missionsschwierigkeit</dt><dd>0</dd><dt>Kontor zu Beginn</dt><dd>0</dd><dt>Startschiffe</dt><dd>1</dd><dt>Startkapital</dt><dd>1</dd><dt>Startruhm</dt><dd>0</dd><dt>Startitems</dt><dd>0</dd><dt>Aufgedeckte Karte</dt><dd>0</dd><dt>Auftragshäufigkeit</dt><dd>1</dd><dt>Rückerstattung beim Abriss</dt><dd>2</dd><dt>Händleraufträge</dt><dd>1</dd><dt>Friedensvertrag zu Beginn</dt><dd>0</dd></dl></details></div>
+          </article></div>
+<button type="button" class="back" hidden>Zurück zur Profilrangliste</button>
+<details><summary>Datenquellen</summary>
+<p>Die Inselkarten entstehen aus dem Höhenraster der Saves. Die Zeitpunkte stammen aus den Dateizeitstempeln.</p>
+<ul><li>anno1404/demo/saves</li></ul>
+</details>
+<script>
+const cards = document.querySelector('#cards');
+const rows = [...cards.querySelectorAll('article')];
+const backs = document.querySelectorAll('.back');
+const query = document.querySelector('#query');
+const edition = document.querySelector('#edition');
+const sort = document.querySelector('#sort');
+const count = document.querySelector('#count');
+const filter = document.querySelector('#filter');
+const ranking = document.querySelector('#rangliste');
+let profile = '';
+
+function update() {
+  const text = query.value.trim().toLocaleLowerCase('de-CH');
+  const key = sort.value;
+  rows.sort((a, b) => key === 'oldest'
+    ? Number(a.dataset.oldest) - Number(b.dataset.oldest)
+    : (key === 'seed' ? 1 : -1) * (Number(a.dataset[key]) - Number(b.dataset[key])));
+  let shown = 0;
+  for (const row of rows) {
+    row.hidden = (profile && !JSON.parse(row.dataset.profiles).includes(profile))
+      || (edition.value && !JSON.parse(row.dataset.editions).includes(edition.value))
+      || !row.textContent.toLocaleLowerCase('de-CH').includes(text);
+    if (!row.hidden) shown++;
+    cards.append(row);
+  }
+  count.textContent = shown + ' von ' + rows.length + ' Varianten' + (profile ? ' · ' + profile : '');
+  for (const button of backs) button.hidden = !profile;
+}
+for (const element of [query, edition, sort]) element.addEventListener('input', update);
+for (const button of document.querySelectorAll('[data-profile]')) {
+  button.addEventListener('click', () => {
+    profile = button.dataset.profile;
+    query.value = '';
+    edition.value = '';
+    update();
+    filter.scrollIntoView();
+  });
+}
+for (const button of backs) {
+  button.addEventListener('click', () => {
+    profile = '';
+    query.value = '';
+    edition.value = '';
+    update();
+    ranking.open = true;
+    ranking.scrollIntoView();
+  });
+}
+update();
+</script>
+</body>
+</html>

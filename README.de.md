@@ -13,6 +13,18 @@ Lokale Windows-Werkzeuge für **Anno 117: Pax Romana**, **Anno 1800** und **Anno
 
 **Quelldateien werden ausschliesslich gelesen.** Neue Ausgaben liegen standardmässig in `<spiel>/local-data/`. Der Ausgabeordner ist konfigurierbar. Jeder Anno-Ordner ist unabhängig nutzbar und enthält seinen eigenen Starter, Einstellungen, Abhängigkeiten, Anleitungen und Lizenz. Der Hauptstarter bietet zusätzlich ein gemeinsames Auswahlmenü.
 
+## Online-Demos und Releases
+
+[Alle fünf Galerien im Browser ausprobieren](https://morima79.github.io/AnnoTools/) · [Aktuelle Release-ZIP herunterladen](https://github.com/Morima79/AnnoTools/releases/latest)
+
+| Spiel | Kartengalerie | Stempelgalerie |
+|---|---|---|
+| Anno 117 | [Demo](https://morima79.github.io/AnnoTools/anno117/maps/) | [Demo](https://morima79.github.io/AnnoTools/anno117/stamps/) |
+| Anno 1800 | [Demo](https://morima79.github.io/AnnoTools/anno1800/maps/) | [Demo](https://morima79.github.io/AnnoTools/anno1800/stamps/) |
+| Anno 1404 | [Demo](https://morima79.github.io/AnnoTools/anno1404/maps/) | — |
+
+Die Online-Demos benötigen keine Installation. Sie sind geprüfte Momentaufnahmen der mitgelieferten Beispiele mit interaktiven Filtern und Bildvorschauen. Die Veröffentlichung erfolgt über GitHub Pages; persönliche Einstellungen und lokale Ausgaben werden nicht hochgeladen.
+
 ## Galerie-Vorschau
 
 Echte Screenshots der mitgelieferten Demos. Die Kartengalerien zeigen einheitliche Spieltitel und Kopfzeilen. Ein Klick auf ein Bild öffnet die Aufnahme in voller Auflösung.
@@ -103,7 +115,7 @@ Die Galerien liegen unter `stamps/stamp-gallery.html` und `reports/map-gallery.h
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 ```
 
-Der vorbereitete GitHub-Actions-Workflow testet unter Windows mit synthetischen Daten. Nur die ausdrücklich ausgewählten Demo-Saves und Demo-Stempel gehören ins Repository. Andere persönliche Einstellungen, Stempel, Spielstände, Galerien, Spieldaten, Caches und Sicherungen bleiben ausgeschlossen. `.gitignore` berücksichtigt neue und bisherige lokale Dateinamen. Python-Abhängigkeiten werden über pip installiert; Bibliotheksarchive, Spielgrafiken und Logos werden nicht mitgeliefert.
+Der vorbereitete GitHub-Actions-Workflow testet unter Windows mit synthetischen Daten. Nur die ausdrücklich ausgewählten Demo-Saves und Demo-Stempel gehören ins Repository. Andere persönliche Einstellungen, Stempel, Spielstände, Galerien ausserhalb der freigegebenen `site/`-Momentaufnahmen, Spieldaten, Caches und Sicherungen bleiben ausgeschlossen. `.gitignore` berücksichtigt neue und bisherige lokale Dateinamen. Python-Abhängigkeiten werden über pip installiert; Bibliotheksarchive, Spielgrafiken und Logos werden nicht mitgeliefert.
 
 Inoffizielles Projekt ohne Verbindung zu Ubisoft. Die Ausgaben sind Rekonstruktionen und keine Zusage über Bauplatz, Versorgung, Reichweite oder Spielbetrieb. Der Werkzeugcode steht unter der [MIT-Lizenz](LICENSE).
 
@@ -112,3 +124,11 @@ Inoffizielles Projekt ohne Verbindung zu Ubisoft. Die Ausgaben sind Rekonstrukti
 Die Verwendung dieser Skripte erfolgt auf eigene Gefahr. Sie werden ohne Gewähr bereitgestellt. Es gilt der Gewährleistungs- und Haftungsausschluss in der [Lizenz](LICENSE).
 
 Bei einer Weiterveröffentlichung der Skripte, auch in geänderter Form, müssen der Urheberhinweis auf **Morima79** samt Verweis auf das [Original-Repository AnnoTools](https://github.com/Morima79/AnnoTools) und die MIT-Lizenzhinweise erhalten bleiben.
+
+## Automatische Veröffentlichung
+
+- **Release-ZIP:** Ein gepushter Versions-Tag wie `v0.1.1` startet `.github/workflows/release.yml`. Erst nach erfolgreichen Windows-Tests mit Python 3.11 und 3.14 werden `AnnoTools-<Version>.zip` und die SHA-256-Datei aus genau diesem Git-Stand erstellt und als GitHub-Release veröffentlicht. Bestehende Releases werden nicht überschrieben. `Actions → Release ZIP → Run workflow` baut nur ein herunterladbares Test-Artefakt und veröffentlicht kein Release.
+- **Webseite:** Änderungen an `site/` auf `main` werden nach einer Link- und Pfadprüfung automatisch über GitHub Pages veröffentlicht. Einmalig muss unter `Settings → Pages → Source` die Option **GitHub Actions** aktiviert sein.
+- **Demo aktualisieren:** Neue Ausgaben lokal ausschliesslich aus den mitgelieferten Demo-Dateien erzeugen. Die fünf `index.html`-Dateien unter `site/<Spiel>/maps/` bzw. `stamps/` und nur ihre referenzierten Bilder ersetzen. Relative Bildpfade beibehalten, absolute lokale Pfade entfernen und die Rücklinks zur Demo-Startseite erhalten. Danach `python scripts/validate_site.py` ausführen. Die Originalgalerien und persönlichen Einstellungen bleiben unverändert. GitHub erzeugt diese Momentaufnahmen nicht neu, da die Werkzeuge dafür teilweise installierte Spieldaten benötigen.
+
+`site/` enthält ausschliesslich HTML und benötigte Vorschau-/Bauplanbilder, keine Spieldatenarchive, Caches oder privaten Konfigurationen. `scripts/build_release.py` paketiert ausschliesslich versionierte Dateien; lokale Einstellungen und Ausgabeordner bleiben ausgeschlossen.

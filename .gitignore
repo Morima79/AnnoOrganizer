@@ -54,3 +54,8 @@ local-data/
 !anno1404/demo/saves/
 !anno1404/demo/saves/**/
 !anno1404/demo/saves/**/*.sww
+
+# Release build output; public static demo snapshots are explicitly tracked
+dist/
+!site/**/stamps/
+!site/**/stamps/**

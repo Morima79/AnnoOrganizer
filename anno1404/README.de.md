@@ -47,3 +47,9 @@ Inoffizielles Projekt ohne Verbindung zu Ubisoft. Spielgrafiken und Logos werden
 Die Verwendung dieser Skripte erfolgt auf eigene Gefahr. Sie werden ohne Gewähr bereitgestellt. Es gilt der Gewährleistungs- und Haftungsausschluss in der [Lizenz](LICENSE).
 
 Bei einer Weiterveröffentlichung der Skripte, auch in geänderter Form, müssen der Urheberhinweis auf **Morima79** samt Verweis auf das [Original-Repository AnnoTools](https://github.com/Morima79/AnnoTools) und die MIT-Lizenzhinweise erhalten bleiben.
+
+## Online-Demos
+
+[Map gallery / Kartengalerie](https://morima79.github.io/AnnoTools/anno1404/maps/) · [All demos / Alle Demos](https://morima79.github.io/AnnoTools/)
+
+Die Online-Galerien zeigen die mitgelieferten Beispiele ohne Installation. Automatische Releases und GitHub Pages sind in der [Projektanleitung](../README.de.md#automatische-veröffentlichung) beschrieben.

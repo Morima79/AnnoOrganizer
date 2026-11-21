@@ -13,6 +13,18 @@ Local Windows tools for **Anno 117: Pax Romana**, **Anno 1800** and **Anno 1404*
 
 **Source files are read only.** New output defaults to `<game>/local-data/`. The output directory is configurable. Each game folder is independently usable and includes its own launcher, configuration, dependencies, documentation and license. The root launcher provides an optional shared menu.
 
+## Online demos and releases
+
+[Try all five galleries in your browser](https://morima79.github.io/AnnoTools/) · [Download the latest release ZIP](https://github.com/Morima79/AnnoTools/releases/latest)
+
+| Game | Map gallery | Stamp gallery |
+|---|---|---|
+| Anno 117 | [Demo](https://morima79.github.io/AnnoTools/anno117/maps/) | [Demo](https://morima79.github.io/AnnoTools/anno117/stamps/) |
+| Anno 1800 | [Demo](https://morima79.github.io/AnnoTools/anno1800/maps/) | [Demo](https://morima79.github.io/AnnoTools/anno1800/stamps/) |
+| Anno 1404 | [Demo](https://morima79.github.io/AnnoTools/anno1404/maps/) | — |
+
+The online demos require no installation. They are validated snapshots of the bundled examples, with interactive filters and image previews, published through GitHub Pages. Personal settings and local output are not uploaded.
+
 ## Gallery previews
 
 Actual screenshots of the bundled demos. The map galleries use consistent game titles and summary headers. Click an image to view it at full resolution.
@@ -103,7 +115,7 @@ Generated galleries use `stamps/stamp-gallery.html` and `reports/map-gallery.htm
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 ```
 
-The Windows GitHub Actions workflow runs synthetic tests without game data. Only the explicitly listed bundled demo saves and stamps belong in Git. Keep all other private settings, saves, stamps, generated galleries, game resources, caches and backups excluded. `.gitignore` permits the designated demo paths and excludes private and generated data. Python packages are installed through pip; no bundled dependency archives, game logos or graphics are distributed.
+The Windows GitHub Actions workflow runs synthetic tests without game data. Only the explicitly listed bundled demo saves and stamps belong in Git. Keep all other private settings, saves, stamps, generated galleries outside the approved `site/` snapshots, game resources, caches and backups excluded. `.gitignore` permits the designated demo paths and excludes private and generated data. Python packages are installed through pip; no bundled dependency archives, game logos or graphics are distributed.
 
 This is an unofficial project with no affiliation to Ubisoft. Maps and blueprints are reconstructions, not guarantees of placement, supply, range or in-game operation. The tool code is provided under the [MIT license](LICENSE).
 
@@ -112,3 +124,11 @@ This is an unofficial project with no affiliation to Ubisoft. Maps and blueprint
 Use these scripts at your own risk. They are supplied without warranty. The warranty disclaimer and liability terms in [LICENSE](LICENSE) apply.
 
 When redistributing the scripts, including modified versions, retain the copyright notice naming **Morima79**, its reference to the original [AnnoTools repository](https://github.com/Morima79/AnnoTools), and the MIT license notices.
+
+## Automated publishing
+
+- **Release ZIP:** Pushing a version tag such as `v0.1.1` starts `.github/workflows/release.yml`. After the Windows tests pass on Python 3.11 and 3.14, it builds `AnnoTools-<version>.zip` and its SHA-256 file from that exact Git snapshot and publishes a GitHub release. Existing releases are not overwritten. `Actions → Release ZIP → Run workflow` creates a downloadable test artifact only, without publishing a release.
+- **Website:** Changes to `site/` on `main` are automatically deployed through GitHub Pages after link and local-path validation. The repository needs **GitHub Actions** selected once under `Settings → Pages → Source`.
+- **Refreshing demos:** Generate fresh output locally using only the bundled demo inputs. Replace the five `index.html` pages under `site/<game>/maps/` or `stamps/` and only their referenced images. Keep relative image paths, remove absolute local paths, and preserve the links back to the demo landing page. Run `python scripts/validate_site.py` before publishing. Original galleries and personal settings remain unchanged. GitHub does not regenerate these snapshots because some exporters require installed game data.
+
+`site/` contains only HTML and required preview/blueprint images, without game resource archives, caches or private configurations. `scripts/build_release.py` packages tracked files only; local settings and output directories remain excluded.
