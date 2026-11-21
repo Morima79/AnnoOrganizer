@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "game": "anno1800",
+  "timezone": "Europe/Zurich",
+  "output": "./local-data",
+  "game_data": "",
+  "account": "./demo/saves",
+  "stamps": "./demo/stamps",
+  "archive": ""
+}

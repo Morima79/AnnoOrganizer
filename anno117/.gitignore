@@ -1,0 +1,48 @@
+# Local settings and generated/private data
+Einstellungen.json
+Einstellungen.*.lokal.json
+LokaleDaten/
+# Preserve exclusions for existing local project structures
+**/Auswertung/
+**/Stadtstempel/
+**/Archiv*/
+**/Protokolle/
+**/stamps/
+**/accounts/
+*.a7s
+*.a8s
+*.sww
+*.lnk
+*.rda
+*.db
+*.ifo
+*.dds
+*.xlsx
+*.log
+*.lock
+*.zip
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# English settings and generated output (legacy rules above remain valid)
+settings.json
+settings.*.local.json
+local-data/
+**/reports/
+**/backups/
+**/logs/
+
+# Explicitly approved public demo files
+!demo/saves/
+!demo/saves/**/
+!demo/saves/**/*.a8s
+!demo/stamps/
+!demo/stamps/**

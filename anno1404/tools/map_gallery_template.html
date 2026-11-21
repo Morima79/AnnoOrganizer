@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anno 1404 · Kartenseeds und Karten</title>
+<style>
+:root { color-scheme: dark; font-family: "Source Sans 3", "Segoe UI", sans-serif; background: #0e2029; color: #f0eee2; }
+body { margin: 0 auto; max-width: 1500px; padding: clamp(16px, 4vw, 55px); }
+header { border-bottom: 1px solid #547482; padding-bottom: 20px; }
+h1, h2 { font-family: Castoro, Georgia, serif; }
+h1 { color: #f5dfaf; font-size: clamp(2rem, 5vw, 3.8rem); margin: .3rem 0; font-weight: 500; }
+p { margin: .4rem 0; }
+a, button { color: #a4e0e8; }
+.controls, .back { margin: 18px 0; }
+.controls { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; }
+label { display: grid; gap: 4px; }
+input, select, button { font: inherit; padding: 6px 9px; background: #1e3947; border: 1px solid #63808b; border-radius: 4px; }
+button, summary { cursor: pointer; }
+details { margin-top: 14px; }
+table { border-collapse: collapse; margin-top: 8px; }
+td, th { padding: 5px 12px; text-align: left; border-bottom: 1px solid #36535f; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 310px), 1fr)); gap: 18px; }
+article { min-width: 0; background: #172f3a; border: 1px solid #36535f; border-radius: 8px; overflow: hidden; }
+article img { display: block; width: 100%; aspect-ratio: 1; object-fit: contain; background: #1a3e52; }
+.body { padding: 14px 16px 18px; }
+h2 { margin: 0; color: #f5dfaf; font-weight: 500; }
+dl { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: .55em .85em; margin: .8rem 0; }
+dt { color: #b8ced3; overflow-wrap: anywhere; }
+dd { margin: 0; overflow-wrap: anywhere; }
+.delta { font-weight: 600; color: #ffd895; }
+[hidden] { display: none !important; }
+:focus-visible { outline: 2px solid #f5dfaf; outline-offset: 2px; }
+
+header h1{font-family:system-ui,sans-serif;font-size:clamp(2rem,5vw,3.4rem);font-weight:700;line-height:1.15;margin:0 0 10px}
+header .gallery-scope{font-weight:600;margin:8px 0}
+header .gallery-updated{display:block;font-size:14px;color:#b6cbd5;margin:8px 0}
+header .gallery-summary{margin:12px 0}
+header .gallery-description{margin:8px 0}
+header .gallery-notes{font-size:14px;margin:12px 0 0}
+header .gallery-notes p{margin:8px 0}
+</style>
+</head>
+<body>
+<header>
+<h1>Anno 1404 · Kartenseeds und Karten</h1>
+<p class="gallery-scope">Grundspiel, Venedig und History Edition</p>
+<p class="gallery-updated">Zuletzt aktualisiert am: @@UPDATED@@ · Gesamtspielzeit: @@TOTAL@@</p>
+<p class="gallery-summary"><strong>@@NOTE@@</strong></p>
+<p class="gallery-description">Die Galerie gruppiert lokale Spielstände nach Seed und gespeicherter Kartenkonfiguration. Ein Klick auf eine Karte öffnet die PNG-Datei in voller Grösse.</p>
+<details class="gallery-notes"><summary>Hinweise zu Karten und Spielzeit</summary>
+<p>Für die Gesamtspielzeit zählt pro gespeicherter Partie der höchste gespeicherte Spielzeitwert.</p>
+<p>Die Karten werden direkt aus dem gespeicherten Gelände rekonstruiert. Sie zeigen Inseln und Gelände, keine Städte, Gebäude oder Besitzverhältnisse. Eine lokale Spielinstallation wird dafür nicht benötigt.</p>
+<p>Die Datumsangaben stammen aus den Änderungszeitpunkten der Dateien und verwenden die lokale Rechnerzeit. Die Spielzeit stammt aus den gespeicherten Spielstatistiken. Identische Save-Kopien werden zusammengefasst; die Zusammenfassung weist zusätzliche Kopien gesondert aus.</p>
+</details>
+</header>
+<details id="rangliste" open>
+<summary>Spielzeit pro Profil</summary>
+<p>Pro erkannter Partie zählt der längste gespeicherte Stand.</p>
+<table><thead><tr><th>Rang</th><th>Profil</th><th>Partien</th><th>Spielzeit</th></tr></thead>
+<tbody>@@RANKING@@</tbody></table>
+</details>
+<div id="filter" class="controls">
+<label>Seed, Variante oder Save<input type="search" id="query"></label>
+<label>Edition<select id="edition"><option value="">Alle Editionen</option>@@EDITIONS@@</select></label>
+<label>Sortierung<select id="sort"><option value="timestamp">Neuester Save zuerst</option>
+<option value="oldest">Ältester Save zuerst</option><option value="time">Längste Spielzeit zuerst</option>
+<option value="seed">Seed aufsteigend</option></select></label>
+<output id="count" aria-live="polite"></output>
+</div>
+<button type="button" class="back" hidden>Zurück zur Profilrangliste</button>
+<div id="cards" class="grid">@@CARDS@@</div>
+<button type="button" class="back" hidden>Zurück zur Profilrangliste</button>
+<details><summary>Datenquellen</summary>
+<p>Die Inselkarten entstehen aus dem Höhenraster der Saves. Die Zeitpunkte stammen aus den Dateizeitstempeln.</p>
+<ul>@@SOURCES@@</ul>
+</details>
+<script>
+const cards = document.querySelector('#cards');
+const rows = [...cards.querySelectorAll('article')];
+const backs = document.querySelectorAll('.back');
+const query = document.querySelector('#query');
+const edition = document.querySelector('#edition');
+const sort = document.querySelector('#sort');
+const count = document.querySelector('#count');
+const filter = document.querySelector('#filter');
+const ranking = document.querySelector('#rangliste');
+let profile = '';
+
+function update() {
+  const text = query.value.trim().toLocaleLowerCase('de-CH');
+  const key = sort.value;
+  rows.sort((a, b) => key === 'oldest'
+    ? Number(a.dataset.oldest) - Number(b.dataset.oldest)
+    : (key === 'seed' ? 1 : -1) * (Number(a.dataset[key]) - Number(b.dataset[key])));
+  let shown = 0;
+  for (const row of rows) {
+    row.hidden = (profile && !JSON.parse(row.dataset.profiles).includes(profile))
+      || (edition.value && !JSON.parse(row.dataset.editions).includes(edition.value))
+      || !row.textContent.toLocaleLowerCase('de-CH').includes(text);
+    if (!row.hidden) shown++;
+    cards.append(row);
+  }
+  count.textContent = shown + ' von ' + rows.length + ' Varianten' + (profile ? ' · ' + profile : '');
+  for (const button of backs) button.hidden = !profile;
+}
+for (const element of [query, edition, sort]) element.addEventListener('input', update);
+for (const button of document.querySelectorAll('[data-profile]')) {
+  button.addEventListener('click', () => {
+    profile = button.dataset.profile;
+    query.value = '';
+    edition.value = '';
+    update();
+    filter.scrollIntoView();
+  });
+}
+for (const button of backs) {
+  button.addEventListener('click', () => {
+    profile = '';
+    query.value = '';
+    edition.value = '';
+    update();
+    ranking.open = true;
+    ranking.scrollIntoView();
+  });
+}
+update();
+</script>
+</body>
+</html>

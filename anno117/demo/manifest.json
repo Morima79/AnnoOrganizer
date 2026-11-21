@@ -1,0 +1,55 @@
+{
+  "game": "anno117",
+  "saves": [
+    {
+      "file": "saves/Demo-01/demo-01.a8s",
+      "bytes": 360084,
+      "sha256": "ff23a112cd503748fd3d9545e3fb66bc81eb83b27626c1648921728e66c93138",
+      "seed": 8163
+    },
+    {
+      "file": "saves/Demo-02/demo-02.a8s",
+      "bytes": 436487,
+      "sha256": "4a63558071afb826e49eb41fd3bba30a8c0771b58b9d12c33eeb12c39b2ac2ab",
+      "seed": 31031979
+    },
+    {
+      "file": "saves/Demo-03/demo-03.a8s",
+      "bytes": 1092713,
+      "sha256": "22d885a4eb6959efb71f4cbc34ce7d451254c1e373ba82c4c160f83678707ad9",
+      "seed": 2676
+    }
+  ],
+  "stamps": [
+    {
+      "file": "stamps/demo-01.json",
+      "name": "Startstadt – Liberti und Plebejer",
+      "bytes": 1707,
+      "sha256": "2d247612aaa901d660c6b286f01de0a204f3029f8a5538de46b4dd232180883f"
+    },
+    {
+      "file": "stamps/demo-02.json",
+      "name": "Baelo Claudia",
+      "bytes": 2635,
+      "sha256": "1c75f890041f7d6bc580a245a04b5711374237e1196a41790436a73040cae60e"
+    },
+    {
+      "file": "stamps/demo-03.json",
+      "name": "Pompeji – Cinis",
+      "bytes": 3527,
+      "sha256": "22c06925a2c8f30b6fbe84df686e34ea7a54cd071716f6011fbbd73bf4169bf1"
+    },
+    {
+      "file": "stamps/demo-04.json",
+      "name": "Lavendel ohne CDLC",
+      "bytes": 4821,
+      "sha256": "e3f00b9846bc6040e433f4f7bdf45e5e80aa7a935c5e4e54f2c672a1ddb04a90"
+    },
+    {
+      "file": "stamps/demo-05.json",
+      "name": "Lavendel ohne Ceres",
+      "bytes": 4854,
+      "sha256": "e90c1e5a7720653e226c7a8d5524b0863abf3c153257c02ee98d0cdd8e90d7c6"
+    }
+  ]
+}

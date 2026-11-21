@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "game": "anno1404",
+  "timezone": "Europe/Zurich",
+  "output": "./local-data",
+  "save_folders": [
+    "./demo/saves"
+  ]
+}

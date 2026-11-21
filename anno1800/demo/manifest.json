@@ -1,0 +1,60 @@
+{
+  "game": "anno1800",
+  "saves": [
+    {
+      "file": "saves/Demo-01/demo-01.a7s",
+      "bytes": 530349,
+      "sha256": "197bb779369a5cb7c7d1b3b8544279862efc42283270d435f0561d5d8196715e",
+      "seed": 8615
+    },
+    {
+      "file": "saves/Demo-02/demo-02.a7s",
+      "bytes": 530526,
+      "sha256": "af7e793ef343d288f896067b8d89f4369b4de0827d14ee2d01b3e9de8dcd0914",
+      "seed": 8643
+    },
+    {
+      "file": "saves/Demo-03/demo-03.a7s",
+      "bytes": 530809,
+      "sha256": "5b724b08a86add7ee1bce7b17989a334cb837fe9c98af47af28c26e6a8d80c68",
+      "seed": 1800
+    }
+  ],
+  "stamps": [
+    {
+      "file": "stamps/The Old World/06 Rathäuser/Rathaus mit Platz 1",
+      "name": "Rathaus mit Platz 1",
+      "region": "Alte Welt",
+      "bytes": 292,
+      "sha256": "f1ba366cde53fe2d9cac78096c62bbb1030a1b3ab4eafea88ae101d0917bd234"
+    },
+    {
+      "file": "stamps/The Old World/00 Spielstart/Prod - Holz 3 mit Lager und Handelskammer",
+      "name": "Prod - Holz 3 mit Lager und Handelskammer",
+      "region": "Alte Welt",
+      "bytes": 537,
+      "sha256": "b3fea97665e8f74bed4dad47b276932b40bd226e529416eccaed97831d1dbe49"
+    },
+    {
+      "file": "stamps/The New World/02 Landwirtschaft/Bananenplantage 1x TuS",
+      "name": "Bananenplantage 1x TuS",
+      "region": "Neue Welt",
+      "bytes": 1443,
+      "sha256": "bccdb998af8e2d87efaf2dab18bd35de44544d111c5f5e000b3926004c79ed41"
+    },
+    {
+      "file": "stamps/Enbesa/01 Stadtgrid 10x10/00 Marktplatz",
+      "name": "00 Marktplatz",
+      "region": "Enbesa",
+      "bytes": 509,
+      "sha256": "296d91f7b5f96191a72665c96ba7bfc5cc8e908c317a34b6af7b93bcaeb92d59"
+    },
+    {
+      "file": "stamps/The Arctic/Neue Stempel/Test",
+      "name": "Test",
+      "region": "Arktis",
+      "bytes": 678,
+      "sha256": "b278d4fec8443cc524b14d5d5f397eb186d1edfcaab9af6232d0c611dd550508"
+    }
+  ]
+}
