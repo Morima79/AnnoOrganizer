@@ -129,6 +129,10 @@ Die Verwendung dieser Skripte erfolgt auf eigene Gefahr. Sie werden ohne Gewähr
 
 Bei einer Weiterveröffentlichung der Skripte, auch in geänderter Form, müssen der Urheberhinweis auf **Morima79** samt Verweis auf das [Original-Repository AnnoTools](https://github.com/Morima79/AnnoTools) und die MIT-Lizenzhinweise erhalten bleiben.
 
+## Galerie-Vorlagen
+
+Karten- und Stempelgalerien verwenden jeweils eine gemeinsame Seitenvorlage mit an die Spieloberfläche angelehnten Farben. Die Anno-Ordner bleiben eigenständig nutzbar. Pflege und Synchronisation sind in der [Vorlagen-Anleitung](docs/gallery-templates.de.md) beschrieben.
+
 ## Automatische Veröffentlichung
 
 Release-ZIPs und die Demo-Seite werden über GitHub Actions veröffentlicht. Details zur Release-Erstellung, GitHub-Pages-Einrichtung und Demo-Aktualisierung stehen in der [Veröffentlichungsanleitung](docs/publishing.de.md).

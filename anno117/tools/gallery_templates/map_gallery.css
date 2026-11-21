@@ -1,0 +1,26 @@
+:root { color-scheme: var(--gallery-scheme); background: var(--gallery-background); }
+body.gallery-map { margin: 0; padding: 0; max-width: none; min-height: 100vh; background: var(--gallery-background); color: var(--gallery-ink); font: 16px/1.55 system-ui, sans-serif; }
+.gallery-map .gallery-shell { box-sizing: border-box; max-width: 1320px; margin: 0 auto; padding: 32px 24px 60px; }
+.gallery-map .gallery-header { padding: 0 0 22px; margin: 0 0 24px; border-bottom: 1px solid var(--gallery-border); background: transparent; color: var(--gallery-ink); }
+.gallery-map .game-logo { display: block; width: min(100%, 270px); height: auto; max-height: 150px; object-fit: contain; object-position: left center; margin: 0 0 18px; padding: 0; border: 0; border-radius: 0; background: transparent; }
+.gallery-map h1 { font: 700 clamp(2rem, 5vw, 3.4rem)/1.15 system-ui, sans-serif; margin: 0 0 10px; color: var(--gallery-heading); }
+.gallery-map h2, .gallery-map .delta { color: var(--gallery-heading); }
+.gallery-map .gallery-scope { margin: 8px 0; font-weight: 600; }
+.gallery-map .gallery-updated { display: block; margin: 8px 0; font-size: 14px; color: var(--gallery-muted); }
+.gallery-map .gallery-summary { margin: 12px 0; }
+.gallery-map .gallery-description { margin: 8px 0; line-height: 1.65; }
+.gallery-map .gallery-notes { margin: 12px 0 0; font-size: 14px; }
+.gallery-map article { background: var(--gallery-surface); border-color: var(--gallery-border); color: var(--gallery-ink); }
+.gallery-map dl div, .gallery-map .settings > div { background: var(--gallery-inset); }
+.gallery-map dt, .gallery-map small, .gallery-map figcaption, .gallery-map .profiles, .gallery-map .source { color: var(--gallery-muted); }
+.gallery-map a, .gallery-map summary { color: var(--gallery-link); }
+.gallery-map input, .gallery-map select, .gallery-map button { background: var(--gallery-inset); color: var(--gallery-ink); border-color: var(--gallery-border); }
+.gallery-map td, .gallery-map th { color: var(--gallery-ink); border-color: var(--gallery-border); }
+.gallery-map .profile-ranking { background: var(--gallery-surface); border-color: var(--gallery-border); color: var(--gallery-ink); }
+.gallery-map .profile-ranking p, .gallery-map .profile-ranking th { color: var(--gallery-muted); }
+.gallery-map article img { background: var(--gallery-inset); }
+.gallery-map .gallery-footer { margin-top: 36px; font-size: 12px; color: var(--gallery-muted); }
+.gallery-map > nav { padding: 12px max(24px, calc((100vw - 1272px) / 2)) !important; background: var(--gallery-background) !important; color: var(--gallery-ink) !important; border-bottom: 1px solid var(--gallery-border); }
+.gallery-map > nav a { color: var(--gallery-link) !important; }
+.gallery-map :focus-visible { outline: 2px solid var(--gallery-heading); outline-offset: 3px; }
+@media (max-width: 700px) { .gallery-map .gallery-shell { padding: 24px 18px 40px; } .gallery-map .game-logo { width: min(100%, 230px); } }

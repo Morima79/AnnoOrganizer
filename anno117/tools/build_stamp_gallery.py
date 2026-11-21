@@ -2,7 +2,7 @@
 from pathlib import Path
 import sys
 from anno_settings import settings_for, protect_output
-from anno_branding import add_game_logo
+from anno_gallery import render_gallery
 CONFIG = settings_for('anno117')
 
 import base64,zlib,struct as st,json,math,hashlib,collections,html,re,datetime
@@ -322,7 +322,7 @@ def write_gallery(entries):
 </style><header><div class="eyebrow">Anno 117 · Persönliche Bibliothek</div><h1>Deine Baupläne, an einem Ort.</h1><p>Alle Stempel aus deiner aktuellen Spielbibliothek. Nach Regionen und Spielordnern gegliedert, mit massstäblichen Grundrissen und PNGs zum Herunterladen.</p></header><main>
 <div class="controls"><label>Stempel suchen<input id="search" type="search" placeholder="Name, Produktion oder Stadt …"></label><label>Region<select id="region"><option value="">Alle Regionen</option><option>Latium</option><option>Albion</option><option>Aegyptus</option></select></label><label>Stempelordner<select id="folder"><option value="">Alle Ordner</option></select></label><label>Ceres<select id="ceres"><option value="">Alle Feldgrössen</option><option value="no">Normale Feldgrössen</option><option value="yes">Ceres-Feldgrössen</option><option value="unknown">Unklar / prüfen</option></select></label><label>Kosmetische DLCs<select id="cdlc"><option value="">Alle Voraussetzungen</option><option value="no">Ohne CDLC</option><option value="yes">Mit CDLC</option><option value="unknown">Unklar / prüfen</option>__PACK_OPTIONEN__</select></label></div>
 <p id="count" role="status"></p><p class="note">Bei <strong>Lavendel ohne Ceres</strong> markieren gelb schraffierte Flächen die gegenüber der Ceres-Fassung freien Ausbaukacheln. Ein Klick auf einen Plan öffnet die Grossansicht; dort lässt sich durch Klick auf das Bild die Originalgrösse anzeigen. Ceres wird anhand der gespeicherten Feldflächen und ihres Grundbedarfs erkannt; die Kennzeichnung gilt für die vollständigen Feldflächen, nicht für Gebäude-Freischaltungen. CDLC-Angaben beziehen sich auf enthaltene Dekorationen. Unklare Zuordnungen sind gesondert markiert. Die Darstellung ist schematisch, keine Spielansicht.</p>
-<p id="empty" hidden>Keine passenden Stempel. Passe die Filter oder den Suchbegriff an.</p><section class="grid" id="grid">'''+''.join(cards)+'</section><footer>Stand: __AKTUALISIERT__ · Die Spieldateien werden ausschliesslich gelesen. Zum Aktualisieren: python tools/build_stamp_gallery.py</footer></main>\n<dialog id="viewer"><div class="modalbar"><strong id="modalname"></strong><a id="download">PNG herunterladen ↗</a><button id="close" aria-label="Grossansicht schliessen">Schliessen ✕</button></div><div class="canvas"><img id="full" alt=""></div></dialog>\n<script>\nconst inventory='+payload+''';
+<p id="empty" hidden>Keine passenden Stempel. Passe die Filter oder den Suchbegriff an.</p><section class="grid" id="grid">'''+''.join(cards)+'</section><footer>Stand: __AKTUALISIERT__</footer></main>\n<dialog id="viewer"><div class="modalbar"><strong id="modalname"></strong><a id="download">PNG herunterladen ↗</a><button id="close" aria-label="Grossansicht schliessen">Schliessen ✕</button></div><div class="canvas"><img id="full" alt=""></div></dialog>\n<script>\nconst inventory='+payload+''';
 const search=document.querySelector('#search'),region=document.querySelector('#region'),folder=document.querySelector('#folder'),ceres=document.querySelector('#ceres'),cdlc=document.querySelector('#cdlc'),cards=[...document.querySelectorAll('.card')],viewer=document.querySelector('#viewer'),full=document.querySelector('#full');
 function folders(){const keep=folder.value,values=[...new Set(inventory.filter(e=>!region.value||e.region===region.value).map(e=>e.folder))].sort((a,b)=>a.localeCompare(b,'de',{numeric:true}));folder.replaceChildren(new Option('Alle Ordner',''));for(const v of values)folder.add(new Option(v||'Direkt in der Region',v||'__root__'));if([...folder.options].some(o=>o.value===keep))folder.value=keep;}
 function matchesRequirements(c,ceresValue,cdlcValue){return (!ceresValue||c.dataset.ceres===ceresValue)&&(!cdlcValue||c.dataset.cdlc===cdlcValue||c.dataset.packs.split(' ').includes(cdlcValue));}
@@ -333,6 +333,6 @@ document.querySelectorAll('.preview').forEach(b=>b.addEventListener('click',()=>
 document.querySelector('#close').addEventListener('click',()=>viewer.close());full.addEventListener('click',()=>full.classList.toggle('zoomed'));viewer.addEventListener('click',e=>{if(e.target===viewer)viewer.close()});
 </script></html>'''
     content=content.replace('__AKTUALISIERT__',datetime.datetime.now().strftime('%d.%m.%Y %H:%M')).replace('__PACK_OPTIONEN__',pack_options)
-    (ROOT/'stamps'/'stamp-gallery.html').write_text(add_game_logo(content, 'anno117'),encoding='utf-8')
+    (ROOT/'stamps'/'stamp-gallery.html').write_text(render_gallery(content, 'anno117', 'stamp'),encoding='utf-8')
 
 if __name__=='__main__':main()

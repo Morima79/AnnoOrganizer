@@ -5,6 +5,22 @@ Wichtige Änderungen an AnnoTools. Jede Version enthält englische und deutsche 
 
 ## [Unreleased]
 
+## [v0.1.3] - 2026-11-21
+
+### English
+
+- Simplified both stamp gallery footers to show only the last update date and time.
+- Added shared map and stamp page templates with backgrounds inspired by each game's interface. Each game remains independently usable through synchronised template copies.
+- Changed Anno 1404 to a light parchment theme and removed operational file-status messages from gallery pages.
+- Removed separate logo panels so logos blend into map backgrounds and stamp gallery headers. Added template maintenance guides and a command to synchronise standalone copies and refresh existing demo frames.
+
+### Deutsch
+
+- Beide Stempelgalerie-Fusszeilen zeigen nur noch den Stand mit Datum und Uhrzeit.
+- Gemeinsame Karten- und Stempelvorlagen mit an die Spieloberflächen angelehnten Hintergründen ergänzt. Synchronisierte Vorlagenkopien erhalten die eigenständige Nutzbarkeit jedes Anno-Ordners.
+- Anno 1404 auf eine helle Pergamentoptik umgestellt und technische Dateistatusmeldungen aus den Galerien entfernt.
+- Separate Logo-Flächen entfernt: Logos fügen sich in Kartenhintergründe und Stempel-Banner ein. Vorlagenpflege dokumentiert und einen Befehl zum Synchronisieren der eigenständigen Kopien sowie Aktualisieren der Demo-Seiten ergänzt.
+
 ## [v0.1.2] - 2026-11-21
 
 ### English

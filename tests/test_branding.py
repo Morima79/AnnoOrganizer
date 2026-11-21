@@ -35,10 +35,10 @@ class BrandingTests(unittest.TestCase):
         for game in ('anno117', 'anno1800', 'anno1404'):
             with self.subTest(game=game):
                 spec = importlib.util.spec_from_file_location('branding_' + game,
-                                                              ROOT / game / 'tools/anno_branding.py')
+                                                              ROOT / game / 'tools/anno_gallery.py')
                 module = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(module)
-                self.assert_logo(module.add_game_logo('<header><h1>Demo</h1></header>', game), game)
+                self.assert_logo(module.render_gallery('<header><h1>Demo</h1></header>', game, 'map'), game)
 
     def test_all_five_public_galleries_include_the_correct_logo(self):
         for game in ('anno117', 'anno1800', 'anno1404'):

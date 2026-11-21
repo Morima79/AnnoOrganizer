@@ -1,6 +1,7 @@
 """Verify version selection and failure handling for release descriptions."""
 from pathlib import Path
 import sys
+import re
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,11 +26,12 @@ class ReleaseNotesTests(unittest.TestCase):
             extract_release_notes('## [main]\nNotes', 'main')
 
     def test_current_changelog_has_bilingual_release_notes(self):
-        notes = extract_release_notes((ROOT / 'CHANGELOG.md').read_text(encoding='utf-8'), 'v0.1.2')
+        changelog = (ROOT / 'CHANGELOG.md').read_text(encoding='utf-8')
+        version = re.search(r'^## \[(v[^\]]+)\]', changelog, flags=re.MULTILINE)[1]
+        notes = extract_release_notes(changelog, version)
         self.assertIn('### English', notes)
         self.assertIn('### Deutsch', notes)
-        self.assertIn('Logos', notes)
-        self.assertNotIn('## [v0.1.1]', notes)
+        self.assertNotRegex(notes, re.compile(r'^## \[', flags=re.MULTILINE))
 
 
 if __name__ == '__main__':

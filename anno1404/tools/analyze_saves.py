@@ -11,7 +11,7 @@ import os
 from pathlib import Path
 import sys
 from anno_settings import settings_for, protect_output
-from anno_branding import add_game_logo
+from anno_gallery import render_gallery
 CONFIG = settings_for('anno1404')
 
 import re
@@ -422,7 +422,7 @@ def write_html(stage, payload):
             'RANKING': ranking, 'CARDS': ''.join(cards), 'EDITIONS': editions,
             'SOURCES': ''.join(f'<li>{esc(path)}</li>' for path in payload['sources'])}
     page = re.sub(r'@@([A-Z]+)@@', lambda match: data[match[1]], template)
-    (stage/HTML).write_text(add_game_logo(page, 'anno1404'), encoding='utf-8')
+    (stage/HTML).write_text(render_gallery(page, 'anno1404', 'map'), encoding='utf-8')
 
 
 def write_excel(stage, payload):

@@ -129,6 +129,10 @@ Use these scripts at your own risk. They are supplied without warranty. The warr
 
 When redistributing the scripts, including modified versions, retain the copyright notice naming **Morima79**, its reference to the original [AnnoTools repository](https://github.com/Morima79/AnnoTools), and the MIT license notices.
 
+## Gallery templates
+
+Map and stamp galleries each use a shared page template with colours inspired by each game's interface. Each Anno folder remains independently usable. See the [template guide](docs/gallery-templates.md) for maintenance and synchronisation.
+
 ## Automated publishing
 
 Release ZIPs and the demo site are published through GitHub Actions. See the [publishing guide](docs/publishing.md) for release creation, GitHub Pages setup and refreshing the demos.

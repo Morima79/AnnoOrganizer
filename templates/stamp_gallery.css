@@ -1,0 +1,14 @@
+:root { color-scheme: light; }
+body.gallery-stamp { margin: 0; padding: 0; max-width: none; min-height: 100vh; background: #f5f1e7; color: #203b30; font: 16px system-ui, sans-serif; }
+.gallery-stamp > .gallery-header { padding: 0; margin: 0; border: 0; background: var(--gallery-background); color: var(--gallery-ink); }
+.gallery-stamp .gallery-header-inner { box-sizing: border-box; width: calc(100% - 48px); max-width: 1272px; margin: 0 auto; padding: 40px 0 30px; }
+.gallery-stamp .game-logo { display: block; width: min(100%, 270px); height: auto; max-height: 150px; object-fit: contain; object-position: left center; margin: 0 0 18px; padding: 0; border: 0; border-radius: 0; background: transparent; }
+.gallery-stamp .gallery-header h1 { margin: 12px 0; font: clamp(30px, 4vw, 54px)/1.15 Georgia, serif; color: var(--gallery-heading); }
+.gallery-stamp .gallery-header p { max-width: 850px; color: var(--gallery-muted); line-height: 1.7; }
+.gallery-stamp .gallery-header .eyebrow { color: var(--gallery-link); }
+.gallery-stamp .gallery-header .summary span { border-color: var(--gallery-border); color: var(--gallery-ink); }
+.gallery-stamp .gallery-shell { box-sizing: border-box; width: calc(100% - 48px); max-width: 1272px; padding: 26px 0 60px; margin: 0 auto; }
+.gallery-stamp .gallery-footer { margin-top: 40px; font-size: 12px; color: #647467; }
+.gallery-stamp > nav { padding: 12px max(24px, calc((100vw - 1272px) / 2)) !important; background: var(--gallery-background) !important; color: var(--gallery-ink) !important; border-bottom: 1px solid var(--gallery-border); }
+.gallery-stamp > nav a { color: var(--gallery-link) !important; }
+@media (max-width: 700px) { .gallery-stamp .gallery-header-inner, .gallery-stamp .gallery-shell { width: calc(100% - 36px); } .gallery-stamp .gallery-header-inner { padding-top: 26px; } .gallery-stamp .game-logo { width: min(100%, 230px); } }
