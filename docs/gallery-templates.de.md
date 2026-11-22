@@ -11,6 +11,8 @@ Die fünf Galerien verwenden zwei zentral gepflegte Seitenvorlagen:
 
 Der gemeinsame Renderer [anno_gallery.py](../templates/anno_gallery.py) setzt den Seitenrahmen, das Logo und das Farbthema zusammen. Spielbezogene Karten, Gebäudeangaben, Filter und JavaScript bleiben bei den jeweiligen Exportern. Bilder, CSS und Logo werden wie bisher lokal eingebunden; für die erzeugte Galerie ist kein Webserver erforderlich.
 
+Karten- und Stempelgalerien verwenden einheitlich `system-ui, sans-serif`, einschliesslich Haupt- und Kartentiteln. Haupttitel teilen sich Schriftgrösse, Gewicht und Zeilenhöhe. Die README-Vorschauen stehen in einer gemeinsamen Tabelle mit einheitlich 360 Pixel breiten Bildern; neue Screenshots werden mit 1264 Pixel Bildbreite aufgenommen (1280 Pixel Browserbreite einschliesslich Scrollleiste).
+
 ## Farben
 
 Die Farben orientieren sich an der jeweiligen Spieloberfläche. Die transparenten Logos fügen sich in diese Flächen ein. `THEMES` im gemeinsamen Renderer legt Hintergrund sowie lesbare Text-, Rahmen- und Linkfarben fest:

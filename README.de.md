@@ -33,17 +33,10 @@ Die Online-Demos benötigen keine Installation. Sie sind geprüfte Momentaufnahm
 
 Aktuelle Screenshots aller fünf mitgelieferten Demos mit dem gemeinsamen Galerie-Layout, Spiel-Logos und an die Spiele angelehnten Farben. Anno 1404 verwendet eine helle Pergamentoptik. Ein Klick auf ein Bild öffnet die Aufnahme in voller Auflösung.
 
-### Stempelgalerien
-
-| Anno 117 | Anno 1800 |
-|---|---|
-| [![Anno-117-Demo mit Stadtbauplänen, Ceres-Filtern und Lavendel-Ausbaureserve](anno117/docs/images/stamp-gallery.jpg)](anno117/docs/images/stamp-gallery.jpg) | [![Anno-1800-Demo mit Filtern für Traktoren, Silos, Strom, Rathaus und Handelskammer](anno1800/docs/images/stamp-gallery.jpg)](anno1800/docs/images/stamp-gallery.jpg) |
-
-### Kartengalerien
-
-| Anno 117 | Anno 1800 | Anno 1404 |
-|---|---|---|
-| [![Anno-117-Kartengalerie mit Latium-Inselübersicht, Seed und gespeicherten Karteneinstellungen](anno117/docs/images/map-gallery.jpg)](anno117/docs/images/map-gallery.jpg) | [![Anno-1800-Kartengalerie mit Alte-Welt-Inselübersicht, Seed und gespeicherten Karteneinstellungen](anno1800/docs/images/map-gallery.jpg)](anno1800/docs/images/map-gallery.jpg) | [![Anno-1404-Kartengalerie mit Grundspiel, Venedig und History Edition](anno1404/docs/images/map-gallery.jpg)](anno1404/docs/images/map-gallery.jpg) |
+| Galerie | Anno 117 | Anno 1800 | Anno 1404 |
+|---|---|---|---|
+| Stempel | [<img src="anno117/docs/images/stamp-gallery.jpg" alt="Anno-117-Demo mit Stadtbauplänen, Ceres-Filtern und Lavendel-Ausbaureserve" width="360">](anno117/docs/images/stamp-gallery.jpg) | [<img src="anno1800/docs/images/stamp-gallery.jpg" alt="Anno-1800-Demo mit Filtern für Traktoren, Silos, Strom, Rathaus und Handelskammer" width="360">](anno1800/docs/images/stamp-gallery.jpg) | Nicht implementiert |
+| Karten | [<img src="anno117/docs/images/map-gallery.jpg" alt="Anno-117-Kartengalerie mit Latium-Inselübersicht, Seed und gespeicherten Karteneinstellungen" width="360">](anno117/docs/images/map-gallery.jpg) | [<img src="anno1800/docs/images/map-gallery.jpg" alt="Anno-1800-Kartengalerie mit Alte-Welt-Inselübersicht, Seed und gespeicherten Karteneinstellungen" width="360">](anno1800/docs/images/map-gallery.jpg) | [<img src="anno1404/docs/images/map-gallery.jpg" alt="Anno-1404-Kartengalerie mit Grundspiel, Venedig und History Edition" width="360">](anno1404/docs/images/map-gallery.jpg) |
 
 ## Schnellstart
 

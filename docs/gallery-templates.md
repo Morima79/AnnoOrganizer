@@ -11,6 +11,8 @@ The five galleries use two centrally maintained page templates:
 
 The shared [anno_gallery.py](../templates/anno_gallery.py) renderer assembles the page frame, logo and colour theme. Game-specific maps, building details, filters and JavaScript stay with their exporters. Images, CSS and logos remain local or embedded; generated galleries do not require a web server.
 
+Map and stamp galleries consistently use `system-ui, sans-serif`, including page and card headings. Page headings share their font size, weight and line height. README previews use one shared table with images set to 360 pixels wide; capture new screenshots at an image width of 1264 pixels (1280-pixel browser width including the scrollbar).
+
 ## Colours
 
 Colours are inspired by each game's interface. Transparent logos blend into those surfaces. `THEMES` in the shared renderer defines the background and readable text, border and link colours:

@@ -5,6 +5,18 @@ Wichtige Änderungen an AnnoTools. Jede Version enthält englische und deutsche 
 
 ## [Unreleased]
 
+## [v0.1.5] - 2026-11-22
+
+### English
+
+- Unified map and stamp gallery typography, including page and card headings, through the shared templates.
+- Refreshed all five screenshots and aligned their preview widths in both READMEs.
+
+### Deutsch
+
+- Schriftbild der Karten- und Stempelgalerien einschliesslich Haupt- und Kartentiteln über die gemeinsamen Vorlagen vereinheitlicht.
+- Alle fünf Screenshots erneuert und ihre Vorschaubreiten in beiden Readmes angeglichen.
+
 ## [v0.1.4] - 2026-11-21
 
 ### English

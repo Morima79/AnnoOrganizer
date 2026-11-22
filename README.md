@@ -33,17 +33,10 @@ The online demos require no installation. They are validated snapshots of the bu
 
 Current screenshots of all five bundled demos, with the shared gallery layout, game logos and colours inspired by each game. Anno 1404 uses a light parchment theme. Click an image to view it at full resolution.
 
-### Stamp galleries
-
-| Anno 117 | Anno 1800 |
-|---|---|
-| [![Anno 117 demo stamp gallery with city layouts, Ceres filters and lavender expansion reserve](anno117/docs/images/stamp-gallery.jpg)](anno117/docs/images/stamp-gallery.jpg) | [![Anno 1800 demo stamp gallery with tractor, silo, electricity, town hall and trade union filters](anno1800/docs/images/stamp-gallery.jpg)](anno1800/docs/images/stamp-gallery.jpg) |
-
-### Map galleries
-
-| Anno 117 | Anno 1800 | Anno 1404 |
-|---|---|---|
-| [![Anno 117 map gallery with a Latium island overview, seed and saved map settings](anno117/docs/images/map-gallery.jpg)](anno117/docs/images/map-gallery.jpg) | [![Anno 1800 map gallery with an Old World island overview, seed and saved map settings](anno1800/docs/images/map-gallery.jpg)](anno1800/docs/images/map-gallery.jpg) | [![Anno 1404 demo map gallery comparing the original, Venice and History Edition](anno1404/docs/images/map-gallery.jpg)](anno1404/docs/images/map-gallery.jpg) |
+| Gallery | Anno 117 | Anno 1800 | Anno 1404 |
+|---|---|---|---|
+| Stamps | [<img src="anno117/docs/images/stamp-gallery.jpg" alt="Anno 117 demo stamp gallery with city layouts, Ceres filters and lavender expansion reserve" width="360">](anno117/docs/images/stamp-gallery.jpg) | [<img src="anno1800/docs/images/stamp-gallery.jpg" alt="Anno 1800 demo stamp gallery with tractor, silo, electricity, town hall and trade union filters" width="360">](anno1800/docs/images/stamp-gallery.jpg) | Not implemented |
+| Maps | [<img src="anno117/docs/images/map-gallery.jpg" alt="Anno 117 map gallery with a Latium island overview, seed and saved map settings" width="360">](anno117/docs/images/map-gallery.jpg) | [<img src="anno1800/docs/images/map-gallery.jpg" alt="Anno 1800 map gallery with an Old World island overview, seed and saved map settings" width="360">](anno1800/docs/images/map-gallery.jpg) | [<img src="anno1404/docs/images/map-gallery.jpg" alt="Anno 1404 demo map gallery comparing the original, Venice and History Edition" width="360">](anno1404/docs/images/map-gallery.jpg) |
 
 ## Quick start
 
