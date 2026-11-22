@@ -4,6 +4,8 @@
 
 Die Stempelgalerie liest die JSON-Stempelpakete mit ihren binären PipetteData-Blöcken. Grundflächen und Texte werden aus der lokal installierten Spielversion gelesen. Feldflächen, Strassen und Gebäude erscheinen als schematische PNGs. Ceres-Feldgrössen und kosmetische DLCs werden aus den tatsächlich enthaltenen Objekten und ihren Eigenschaften abgeleitet; unsichere Fälle sind gekennzeichnet.
 
+Die CDLC-Erkennung berücksichtigt zusätzlich die Herkunft aus den kosmetischen Assetgruppen des exportierten `assets.xml` (CDLC01: `-1574124720`, CDLC02: `-417418295`, CDLC03: `385980937`). Namen und Grafikpfade allein reichen nicht aus: Ambrosianischer Wald (`158417`) und Keltischer Wald (`158418`) verwenden Grundspielpfade und stehen im Spiel unter «Klassisch», gehören aber zur Assetgruppe von Blütezeit (CDLC02). Enthaltene Waldflächen werden deshalb als Blütezeit erkannt. Die Zuordnung wird beim Einlesen der vollständigen Assetstruktur erhalten und gilt auch für tatsächlich gewählte Skin-Assets; ungenutzte optionale Skins zählen weiterhin nicht als Voraussetzung. Bei neuen kosmetischen Assetgruppen muss diese Herkunftszuordnung überprüft und ergänzt werden. Ein `data/base/`-Pfad oder die Baukategorie «Klassisch» ist kein Nachweis für CDLC-Freiheit.
+
 Die bestehende Sonderbehandlung der Ausbaureserve für `Lavendel ohne Ceres` bleibt im Werkzeugcode erhalten. Sie verwendet `Lavendel ohne CDLC` aus der eingelesenen Bibliothek oder eine optionale lokale Referenz unter `<Spielausgabe>/stamps/references/Lavendel ohne CDLC.json`. Persönliche Stempel oder Referenzdateien werden nicht mitgeliefert.
 
 Kartenbilder werden aus Save-Regionen und lokalen Inselgrafiken rekonstruiert. Bei zusammengesetzten Geländeabschnitten sind sichtbare Nähte möglich.

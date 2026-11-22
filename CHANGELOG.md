@@ -5,6 +5,14 @@ Wichtige Änderungen an AnnoTools. Jede Version enthält englische und deutsche 
 
 ## [Unreleased]
 
+### English
+
+- Anno 117 stamp CDLC detection now preserves cosmetic asset-group provenance. Ambrosian and Celtic forest floors are correctly identified as CDLC02, even with base-game graphics paths; regression tests cover both floors, selected skins and base-game replacements.
+
+### Deutsch
+
+- CDLC-Erkennung der Anno-117-Stempel um die Herkunft aus kosmetischen Assetgruppen ergänzt. Ambrosianischer und Keltischer Wald werden trotz Grundspiel-Grafikpfaden korrekt als Blütezeit (CDLC02) erkannt; Regressionstests decken beide Waldflächen, gewählte Skins und Grundspiel-Ersatzflächen ab.
+
 ## [v0.1.8] - 2026-11-22
 
 ### English

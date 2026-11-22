@@ -1,14 +1,37 @@
 'Infer requirements from object GUIDs and saved field areas.'
 import collections,math,re
 
-def requirements(data,assets,texts,templates):
+# Top-level content groups in the exported Anno 117 assets.xml. Some members
+# (notably both forest floors) retain base-game names and graphics paths.
+CDLC_ASSET_GROUPS = {
+    '-1574124720': 'cdlc01',
+    '-417418295': 'cdlc02',
+    '385980937': 'cdlc03',
+}
+
+
+def asset_cdlc_sources(root):
+    """Preserve cosmetic-pack provenance before flattening the asset tree."""
+    sources = {}
+    for group in root.findall('./Groups/Group'):
+        pack = CDLC_ASSET_GROUPS.get(group.findtext('GUID'))
+        if pack is None:
+            continue
+        for asset in group.iter('Asset'):
+            guid = asset.findtext('Values/Standard/GUID')
+            if guid:
+                sources.setdefault(int(guid), set()).add(pack)
+    return sources
+
+
+def requirements(data,assets,texts,templates,cdlc_sources=None):
     def name(g):
         a=assets[g]
         return texts.get(a.findtext('Values/Text/OasisId')) or a.findtext('Values/Standard/Name') or str(g)
     def packs_for(g):
         a=assets.get(g)
         if a is None:return None
-        found=set()
+        found=set((cdlc_sources or {}).get(g, ()))
         # Optional skin configurations belong to the base object as well, but
         # do not make its default appearance DLC-dependent.
         values=[a.findtext('Values/Standard/Name',''),a.findtext('Values/Standard/IconFilename',''),a.findtext('Values/Polygon/Path','')]

@@ -10,7 +10,7 @@ from urllib.parse import quote
 import xml.etree.ElementTree as ET
 from PIL import Image,ImageDraw,ImageFont
 from anno_file_formats import rda_index,read_asset
-from anno_stamp_requirements import requirements
+from anno_stamp_requirements import requirements,asset_cdlc_sources
 
 HERE=Path(__file__).resolve().parent
 ROOT=CONFIG.output
@@ -122,10 +122,12 @@ def main():
     if not assetsfile.exists() or not textsfile.exists() or not templatesfile.exists():
         for name,rec in rda_index(GAME/'config.rda'):
             if name.endswith('/assets.xml') or name.endswith('/texts_german.xml') or name.endswith('/templates.xml'):(CACHE/Path(name).name).write_bytes(read_asset(rec))
-    assets={int(a.findtext('Values/Standard/GUID')):a for a in ET.parse(assetsfile).findall('.//Asset') if a.findtext('Values/Standard/GUID')}
+    asset_tree=ET.parse(assetsfile)
+    cdlc_sources=asset_cdlc_sources(asset_tree.getroot())
+    assets={int(a.findtext('Values/Standard/GUID')):a for a in asset_tree.findall('.//Asset') if a.findtext('Values/Standard/GUID')}
     texts={t.findtext('LineId'):t.findtext('Text') for t in ET.parse(textsfile).findall('./Texts/Text')}
     templates={t.findtext('Name'):t for t in ET.parse(templatesfile).findall('.//Template') if t.findtext('Name')}
-    for entry in entries:entry['requirements']=requirements(entry['data'],assets,texts,templates)
+    for entry in entries:entry['requirements']=requirements(entry['data'],assets,texts,templates,cdlc_sources)
     needed={b['guid'] for e in entries for b in e['data']['buildings']}
     shapes={};wanted={};unknown=[]
     for g in needed:
