@@ -5,6 +5,14 @@ Wichtige Änderungen an AnnoTools. Jede Version enthält englische und deutsche 
 
 ## [Unreleased]
 
+### English
+
+- Updated Pages, release and test actions to versions using Node.js 24, including the nested Pages artifact upload, to remove Node.js 20 deprecation warnings.
+
+### Deutsch
+
+- Pages-, Release- und Test-Actions auf Versionen mit Node.js 24 aktualisiert, einschliesslich des indirekten Pages-Artefakt-Uploads, um die Node.js-20-Abkündigungswarnungen zu beheben.
+
 ## [v0.1.5] - 2026-11-22
 
 ### English
