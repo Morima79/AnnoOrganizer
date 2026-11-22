@@ -5,6 +5,16 @@ Wichtige Änderungen an AnnoTools. Jede Version enthält englische und deutsche 
 
 ## [Unreleased]
 
+## [v0.1.8] - 2026-11-22
+
+### English
+
+- Removed the separate rectangular background from the collapsible profile playtime section in map galleries and refreshed the Anno 117 and Anno 1800 preview screenshots at a consistent width.
+
+### Deutsch
+
+- Separate rechteckige Hintergrundfläche des einklappbaren Bereichs «Spielzeit pro Profil» in den Kartengalerien entfernt und die Vorschau-Screenshots für Anno 117 und Anno 1800 mit einheitlicher Breite aktualisiert.
+
 ## [v0.1.7] - 2026-11-22
 
 ### English
