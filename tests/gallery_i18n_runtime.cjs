@@ -25,6 +25,7 @@ function environment({stored = null, blocked = false, missingEnglish = false} = 
   const input = element({'data-i18n-placeholder': 'filters.stampPlaceholder117'});
   input.value = 'Lavendel';
   const preview = element({'data-i18n-alt': 'stamp.alt', 'data-i18n-alt-params': JSON.stringify({name: userName.textContent})});
+  const description = element({'data-i18n-content': 'demo.meta'});
   const de = element(), en = element();
   de.dataset.galleryLanguage = 'de'; en.dataset.galleryLanguage = 'en';
   const events = [];
@@ -32,7 +33,7 @@ function environment({stored = null, blocked = false, missingEnglish = false} = 
     getElementById(id) { assert.equal(id, 'gallery-language-resources'); return {textContent: JSON.stringify(messages)}; },
     querySelectorAll(selector) {
       return ({'[data-i18n]': [heading, option], '[data-i18n-placeholder]': [input],
-        '[data-i18n-alt]': [preview], '[data-gallery-language]': [de, en]})[selector] || [];
+        '[data-i18n-alt]': [preview], '[data-i18n-content]': [description], '[data-gallery-language]': [de, en]})[selector] || [];
     },
     dispatchEvent(event) { events.push(event); }};
   const storage = new Map(stored ? [['annotools.gallery.language', stored]] : []);
@@ -40,7 +41,7 @@ function environment({stored = null, blocked = false, missingEnglish = false} = 
     setItem(key, value) { if (blocked) throw Error('Storage unavailable'); storage.set(key, value); }};
   const window = {};
   vm.runInNewContext(runtime, {document, window, localStorage, CustomEvent: class {constructor(type, init) { this.type = type; this.detail = init.detail; }}});
-  return {document, i18n: window.galleryI18n, heading, option, userName, input, preview, de, en, storage, events};
+  return {document, i18n: window.galleryI18n, heading, option, userName, input, preview, description, de, en, storage, events};
 }
 
 test('DE/EN switching preserves inputs, option values and identity text', () => {
@@ -56,6 +57,7 @@ test('DE/EN switching preserves inputs, option values and identity text', () => 
   assert.equal(e.input.value, 'Lavendel');
   assert.equal(e.input.attributes.placeholder, 'Name, production or town …');
   assert.equal(e.preview.attributes.alt, 'Blueprint ' + e.userName.textContent);
+  assert.equal(e.description.attributes.content, resources.en['demo.meta']);
   assert.equal(e.i18n.t('stamp.count', {shown: 2, total: 5}), '2 of 5 stamps');
   assert.equal(e.i18n.t('map.visible', {count: 1}), '1 variant visible');
   assert.equal(e.i18n.t('map.summary', {seeds: 1, variants: 2, saves: 1}), '1 seed · 2 map variants · 1 save');
@@ -64,6 +66,7 @@ test('DE/EN switching preserves inputs, option values and identity text', () => 
   e.de.listeners.click();
   assert.equal(e.option.textContent, 'Sandkasten');
   assert.equal(e.input.value, 'Lavendel');
+  assert.equal(e.description.attributes.content, resources.de['demo.meta']);
 });
 
 test('saved English choice restores without a network request', () => {

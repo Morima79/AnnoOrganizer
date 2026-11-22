@@ -29,6 +29,8 @@ Lokale Windows-Werkzeuge für **Anno 117: Pax Romana**, **Anno 1800** und **Anno
 
 Die Online-Demos benötigen keine Installation. Sie sind geprüfte Momentaufnahmen der mitgelieferten Beispiele mit interaktiven Filtern und Bildvorschauen. Die Veröffentlichung erfolgt über GitHub Pages; persönliche Einstellungen und lokale Ausgaben werden nicht hochgeladen.
 
+Demo-Startseite und Galerien verwenden denselben **DE/EN-Schalter**. Die gespeicherte Sprachwahl wird beim Wechsel zwischen diesen Seiten übernommen, sofern Browserspeicher verfügbar ist.
+
 ## Galerie-Vorschau
 
 Aktuelle Screenshots aller fünf mitgelieferten Demos mit dem gemeinsamen Galerie-Layout, Spiel-Logos und an die Spiele angelehnten Farben. Anno 1404 verwendet eine helle Pergamentoptik. Ein Klick auf ein Bild öffnet die Aufnahme in voller Auflösung.

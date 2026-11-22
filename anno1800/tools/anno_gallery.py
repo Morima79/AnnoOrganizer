@@ -30,6 +30,25 @@ def marker(page, name):
     return match[1]
 
 
+def logo_markup(image, label):
+    """Hide transparent margins in layout while retaining the original PNG bytes."""
+    from PIL import Image
+
+    with Image.open(image) as bitmap:
+        width, height = bitmap.size
+        left, top, right, bottom = bitmap.convert('RGBA').getchannel('A').getbbox() or (0, 0, width, height)
+    visible_width, visible_height = right - left, bottom - top
+    scale = min(270 / width, 150 / height)
+    geometry = (f'--logo-width:{visible_width * scale:.6f}px;'
+                f'--logo-aspect:{visible_width}/{visible_height};'
+                f'--logo-image-width:{100 * width / visible_width:.6f}%;'
+                f'--logo-left:{-100 * left / visible_width:.6f}%;'
+                f'--logo-top:{-100 * top / visible_height:.6f}%')
+    data = base64.b64encode(image.read_bytes()).decode('ascii')
+    return (f'<div class="gallery-logo" style="{geometry}">'
+            f'<img class="game-logo" src="data:image/png;base64,{data}" alt="{escape(label)}"></div>')
+
+
 def render_gallery(page, game, kind):
     if kind not in ('map', 'stamp'):
         raise ValueError('Unknown gallery kind: ' + str(kind))
@@ -76,8 +95,7 @@ def render_gallery(page, game, kind):
     # Shared snapshots store footer text rather than a second nested footer element.
     footer = re.sub(r'^<footer[^>]*>(.*?)</footer>$', r'\1', footer.strip(), flags=re.DOTALL)
     image = HERE.parent / 'docs/images/game-logo.png'
-    logo_data = base64.b64encode(image.read_bytes()).decode('ascii')
-    logo = f'<img class="game-logo" src="data:image/png;base64,{logo_data}" alt="{escape(theme["label"])}">'
+    logo = logo_markup(image, theme['label'])
     theme_css = ':root{' + ';'.join('--gallery-' + name + ':' + value for name, value in theme.items() if name != 'label') + '}'
     folder = HERE / 'gallery_templates'
     resources = _i18n.load_resources(folder / 'locales')

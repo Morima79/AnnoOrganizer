@@ -29,6 +29,8 @@ Local Windows tools for **Anno 117: Pax Romana**, **Anno 1800** and **Anno 1404*
 
 The online demos require no installation. They are validated snapshots of the bundled examples, with interactive filters and image previews, published through GitHub Pages. Personal settings and local output are not uploaded.
 
+The demo landing page and galleries share the same **DE/EN switch**. Your saved language choice carries across navigation between these pages when browser storage is available.
+
 ## Gallery previews
 
 Current screenshots of all five bundled demos, with the shared gallery layout, game logos and colours inspired by each game. Anno 1404 uses a light parchment theme. Click an image to view it at full resolution.

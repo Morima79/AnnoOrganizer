@@ -5,12 +5,18 @@ Wichtige Änderungen an AnnoTools. Jede Version enthält englische und deutsche 
 
 ## [Unreleased]
 
+## [v0.1.7] - 2026-11-22
+
 ### English
 
+- Aligned visible logo tops with DE/EN buttons in a compact shared header row across all five galleries, including narrow screens; original logo assets are preserved.
+- Localised the demo landing page using the shared DE/EN resources and stored language choice, including navigation links, footer and metadata.
 - Added a step-local Pages runtime adapter that replaces the deprecated built-in `punycode` import with the unchanged MIT-licensed userland implementation; checksums and regression tests keep other warnings visible.
 
 ### Deutsch
 
+- Sichtbare Logo-Oberkanten und DE/EN-Buttons in allen fünf Galerien in einer kompakten gemeinsamen Kopfzeile bündig ausgerichtet, auch auf schmalen Bildschirmen; Original-Logos bleiben erhalten.
+- Demo-Startseite einschliesslich Navigationslinks, Fusszeile und Metadaten an die gemeinsamen DE/EN-Ressourcen und gespeicherte Sprachwahl angebunden.
 - Auf den Pages-Deploy-Schritt begrenzten Laufzeitadapter ergänzt: Die veralteten `punycode`-Imports verwenden die unveränderte Userland-Implementierung mit MIT-Lizenz; Prüfsummen und Regressionstests sichern die Korrektur ab, andere Warnungen bleiben sichtbar.
 
 ## [v0.1.6] - 2026-11-22

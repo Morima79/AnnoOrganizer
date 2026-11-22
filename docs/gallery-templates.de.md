@@ -8,10 +8,13 @@ Die fünf Galerien verwenden zwei zentral gepflegte Seitenvorlagen:
 |---|---|---|
 | Karten | [map_gallery.html](../templates/map_gallery.html) | [map_gallery.css](../templates/map_gallery.css) |
 | Stempel | [stamp_gallery.html](../templates/stamp_gallery.html) | [stamp_gallery.css](../templates/stamp_gallery.css) |
+| Demo-Startseite | [demo_index.html](../templates/demo_index.html) | Seitenstil in der Vorlage, gemeinsames Schalter-CSS |
 
 Der gemeinsame Renderer [anno_gallery.py](../templates/anno_gallery.py) setzt den Seitenrahmen, das Logo und das Farbthema zusammen. Spielbezogene Karten, Gebäudeangaben, Filter und JavaScript bleiben bei den jeweiligen Exportern. Bilder, CSS und Logo werden wie bisher lokal eingebunden; für die erzeugte Galerie ist kein Webserver erforderlich.
 
 Karten- und Stempelgalerien verwenden einheitlich `system-ui, sans-serif`, einschliesslich Haupt- und Kartentiteln. Haupttitel teilen sich Schriftgrösse, Gewicht und Zeilenhöhe. Die README-Vorschauen stehen in einer gemeinsamen Tabelle mit einheitlich 360 Pixel breiten Bildern; neue Screenshots werden mit 1264 Pixel Bildbreite aufgenommen (1280 Pixel Browserbreite einschliesslich Scrollleiste).
+
+Logo und DE/EN-Schalter stehen in einer gemeinsamen, oben bündigen Zeile. Der Renderer berechnet den sichtbaren Alphabereich des Logos und blendet transparente Ränder nur im Layout aus; die eingebetteten Original-PNGs bleiben unverändert. Auf schmalen Bildschirmen verkleinert sich das Logo, während die Sprachbuttons erreichbar bleiben. [Vorschau des kompakten Kopfbereichs](images/gallery-header.jpg).
 
 ## Farben
 
@@ -26,6 +29,8 @@ Bei Kartengalerien gilt dieses Thema für die gesamte Seite. Bei Stempelgalerien
 ## Sprachen DE / EN
 
 Alle fünf Galerien besitzen einen gemeinsamen Sprachschalter im Kopfbereich. In Stempelgalerien gibt es denselben Schalter zusätzlich in der modalen Grossansicht. Beim Umschalten bleiben Suche, Filterwerte, Sortierung, Profilwahl, aufgeklappte Details und die Bildansicht samt Zoom erhalten. `html.lang`, Seitentitel, Platzhalter und zugängliche Bild-/Schaltflächenbeschreibungen wechseln ebenfalls.
+
+Die Demo-Startseite verwendet denselben DE/EN-Schalter und dieselbe gespeicherte Sprachwahl. Ein Wechsel zur Galerie und über den Demo-Rücklink zurück erhält die gewählte Sprache, sofern Browserspeicher verfügbar ist. Titel, Meta-Beschreibung, Einführung, Galerie-Links und Fusszeile stammen aus den zentralen `demo.*`-Ressourcen. Die Vorlage `templates/demo_index.html` wird mit `--refresh-site` nach `site/index.html` geschrieben; `--check` erkennt eine veraltete Startseite. [Englische Startseiten-Vorschau](images/demo-home-en.jpg).
 
 Die zentralen Sprachressourcen liegen in [locales/de.json](../templates/locales/de.json) und [locales/en.json](../templates/locales/en.json). Beide Dateien verwenden dieselben stabilen Schlüssel und Platzhalter, beispielsweise `stamp.count` mit `{shown}` und `{total}`. `.one`-Varianten behandeln Einzahlformen. Fehlende Schlüssel oder abweichende Platzhalter führen beim Export zu einer verständlichen Fehlermeldung.
 
@@ -42,7 +47,7 @@ Neue oder geänderte Übersetzungen in beiden zentralen JSON-Dateien pflegen, da
 ## Vorlagen ändern
 
 1. HTML, CSS oder `THEMES` ausschliesslich im zentralen Ordner `templates/` bearbeiten.
-2. `python scripts/sync_gallery_templates.py --refresh-site` ausführen. Das synchronisiert die mitgelieferten Kopien und aktualisiert den Seitenrahmen der fünf bestehenden Demo-Snapshots. Die Demo-Daten und Bildverweise bleiben erhalten; dafür sind keine Spieldaten nötig.
+2. `python scripts/sync_gallery_templates.py --refresh-site` ausführen. Das synchronisiert die mitgelieferten Kopien und aktualisiert die Demo-Startseite sowie den Seitenrahmen der fünf bestehenden Demo-Snapshots. Die Demo-Daten und Bildverweise bleiben erhalten; dafür sind keine Spieldaten nötig.
 3. `python scripts/sync_gallery_templates.py --check`, `python scripts/validate_site.py` und `python -m unittest discover -s tests -v` ausführen.
 4. Persönliche Galerien mit dem jeweiligen AnnoTools-Starter aktualisieren. Bei geänderten Demo-Inhalten die Demos zusätzlich regulär neu erzeugen.
 

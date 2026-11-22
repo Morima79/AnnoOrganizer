@@ -45,7 +45,7 @@
     for (const element of document.querySelectorAll('[data-i18n]')) {
       element.textContent = t(element.getAttribute('data-i18n'), parameters(element, ''));
     }
-    for (const attribute of ['placeholder', 'aria-label', 'title', 'alt']) {
+    for (const attribute of ['placeholder', 'aria-label', 'title', 'alt', 'content']) {
       for (const element of document.querySelectorAll('[data-i18n-' + attribute + ']')) {
         element.setAttribute(attribute, t(element.getAttribute('data-i18n-' + attribute), parameters(element, '-' + attribute)));
       }

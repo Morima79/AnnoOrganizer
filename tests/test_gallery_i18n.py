@@ -26,7 +26,7 @@ class Bindings(HTMLParser):
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
         for name, key in attrs.items():
-            if name == 'data-i18n' or name in ('data-i18n-placeholder', 'data-i18n-alt', 'data-i18n-title', 'data-i18n-aria-label'):
+            if name == 'data-i18n' or name in ('data-i18n-placeholder', 'data-i18n-alt', 'data-i18n-title', 'data-i18n-aria-label', 'data-i18n-content'):
                 self.messages.append((key, json.loads(attrs.get(name + '-params', '{}'))))
         if tag == 'option':
             self.options.append(attrs)
@@ -92,9 +92,9 @@ class GalleryLanguageTests(unittest.TestCase):
         self.assertNotIn('/ data-i18n', page)
         self.assertEqual(page, i18n.bind_messages(page, self.resources, 'stamp'))
 
-    def test_all_five_pages_embed_complete_resources_and_valid_bindings(self):
-        pages = list((ROOT / 'site').glob('anno*/*/index.html'))
-        self.assertEqual(len(pages), 5)
+    def test_all_six_demo_pages_embed_complete_resources_and_valid_bindings(self):
+        pages = list((ROOT / 'site').rglob('index.html'))
+        self.assertEqual(len(pages), 6)
         for page in pages:
             with self.subTest(page=page):
                 text = page.read_text(encoding='utf-8')
@@ -109,13 +109,28 @@ class GalleryLanguageTests(unittest.TestCase):
                 self.assertIn('gallerylanguagechange', text)
                 parser = Bindings()
                 parser.feed(text)
-                self.assertGreater(len(parser.messages), 30)
+                self.assertGreater(len(parser.messages), 15 if page.parent == ROOT / 'site' else 30)
                 for key, params in parser.messages:
                     self.assertIn(key, self.resources['de'])
                     # Missing substitutions must be detected, rather than shown as braces.
                     self.resources['en'][key].format(**params)
                 for key in re.findall(r"galleryI18n\.t\('([^']+)'", text):
                     self.assertIn(key, self.resources['de'])
+
+    def test_landing_page_is_generated_from_shared_resources_and_keeps_five_links(self):
+        spec = importlib.util.spec_from_file_location('landing_sync', ROOT / 'scripts/sync_gallery_templates.py')
+        sync = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(sync)
+        text = (ROOT / 'site/index.html').read_text(encoding='utf-8')
+        self.assertEqual(text, sync.render_landing_page())
+        self.assertIn('<html lang="de-CH">', text)
+        self.assertIn('data-i18n-content="demo.meta"', text)
+        self.assertIn('annotools.gallery.language', text)
+        self.assertNotIn('Gallery text is currently German', text)
+        self.assertNotIn('Die Galerien sind auf Deutsch', text)
+        links = re.findall(r'href="(anno\d+/(?:maps|stamps)/)"', text)
+        self.assertEqual(sorted(links), ['anno117/maps/', 'anno117/stamps/', 'anno1404/maps/',
+                                         'anno1800/maps/', 'anno1800/stamps/'])
 
     def test_renderer_preserves_domain_scripts_and_data_on_refresh(self):
         for game in ('anno117', 'anno1800', 'anno1404'):

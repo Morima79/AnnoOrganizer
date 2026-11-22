@@ -270,5 +270,21 @@
   "stamp.skinUnknown": "Skin von {name} nicht eindeutig zuordenbar",
   "stamp.skin": "Skin von {name}",
   "stamp.baseUnknown": "Grundbedarf von {name} nicht auslesbar",
-  "stamp.fieldUnknown": "{name}: {actual} statt {normal} Feldkacheln; Ursache nicht eindeutig"
+  "stamp.fieldUnknown": "{name}: {actual} statt {normal} Feldkacheln; Ursache nicht eindeutig",
+  "demo.title": "AnnoTools · Interaktive Demos",
+  "demo.meta": "Entdecke die AnnoTools-Demo-Galerien für Karten und Stempel aus Anno 117, Anno 1800 und Anno 1404.",
+  "demo.eyebrow": "AnnoTools · Live-Demos",
+  "demo.heading": "Entdecke deine Anno-Welten.",
+  "demo.description": "Fünf interaktive Galerien mit den mitgelieferten Demo-Spielständen und Stempeln direkt ausprobieren – ohne Installation. Mit DE/EN kannst du jederzeit zwischen Deutsch und Englisch wechseln.",
+  "demo.repository": "Repository und Anleitungen",
+  "demo.release": "Aktuelle Version herunterladen",
+  "demo.galleries": "Demo-Galerien",
+  "demo.anno117": "Drei Demo-Spielstände und fünf Stadt- und Landwirtschaftspläne, mit Filtern für Ceres und kosmetische DLCs.",
+  "demo.anno1800": "Drei Demo-Spielstände und fünf Pläne aus vier Regionen, mit Filtern für Produktionstechnik, Rathäuser und Handelskammern.",
+  "demo.anno1404": "Drei Demo-Spielstände aus Grundspiel, Venedig und History Edition.",
+  "demo.maps": "Kartengalerie",
+  "demo.stamps": "Stempelgalerie",
+  "demo.footer": "Die mitgelieferten Beispiele mit interaktiven Filtern und Bildvorschauen entdecken. Für Galerien aus eigenen Spielständen und Stempeln AnnoTools herunterladen.",
+  "demo.author": "Inoffizielles Fan-Projekt von",
+  "demo.legal": "Ohne Verbindung zu Ubisoft. Nutzung auf eigene Gefahr; MIT-Lizenz und erforderliche Urheberhinweise stehen im Repository."
 }

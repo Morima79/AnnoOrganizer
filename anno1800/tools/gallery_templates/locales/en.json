@@ -270,5 +270,21 @@
   "stamp.skinUnknown": "Skin of {name} cannot be assigned unambiguously",
   "stamp.skin": "Skin of {name}",
   "stamp.baseUnknown": "Cannot read base requirements of {name}",
-  "stamp.fieldUnknown": "{name}: {actual} instead of {normal} field tiles; cause uncertain"
+  "stamp.fieldUnknown": "{name}: {actual} instead of {normal} field tiles; cause uncertain",
+  "demo.title": "AnnoTools · Interactive demos",
+  "demo.meta": "Explore AnnoTools demo map and stamp galleries for Anno 117, Anno 1800 and Anno 1404.",
+  "demo.eyebrow": "AnnoTools · Live demos",
+  "demo.heading": "Explore your Anno worlds.",
+  "demo.description": "Try five interactive galleries with bundled demo saves and stamps. No installation required. Use DE/EN to switch between German and English at any time.",
+  "demo.repository": "Repository and documentation",
+  "demo.release": "Download latest release",
+  "demo.galleries": "Demo galleries",
+  "demo.anno117": "Three demo saves and five city and farming layouts, including Ceres and cosmetic DLC filters.",
+  "demo.anno1800": "Three demo saves and five layouts across four regions, with production technology, town hall and trade union filters.",
+  "demo.anno1404": "Three demo saves covering the original game, Venice and the History Edition.",
+  "demo.maps": "Map gallery",
+  "demo.stamps": "Stamp gallery",
+  "demo.footer": "Explore the bundled examples with interactive filters and image previews. Download AnnoTools to create galleries from your own saves and stamps.",
+  "demo.author": "Unofficial fan project by",
+  "demo.legal": "Not affiliated with Ubisoft. Use at your own risk; see the repository for the MIT license and attribution requirements."
 }

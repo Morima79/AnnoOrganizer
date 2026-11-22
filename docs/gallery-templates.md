@@ -8,10 +8,13 @@ The five galleries use two centrally maintained page templates:
 |---|---|---|
 | Maps | [map_gallery.html](../templates/map_gallery.html) | [map_gallery.css](../templates/map_gallery.css) |
 | Stamps | [stamp_gallery.html](../templates/stamp_gallery.html) | [stamp_gallery.css](../templates/stamp_gallery.css) |
+| Demo landing page | [demo_index.html](../templates/demo_index.html) | Page styles in the template, shared switch CSS |
 
 The shared [anno_gallery.py](../templates/anno_gallery.py) renderer assembles the page frame, logo and colour theme. Game-specific maps, building details, filters and JavaScript stay with their exporters. Images, CSS and logos remain local or embedded; generated galleries do not require a web server.
 
 Map and stamp galleries consistently use `system-ui, sans-serif`, including page and card headings. Page headings share their font size, weight and line height. README previews use one shared table with images set to 360 pixels wide; capture new screenshots at an image width of 1264 pixels (1280-pixel browser width including the scrollbar).
+
+The logo and DE/EN switch share a top-aligned row. The renderer measures the logo's visible alpha bounds and hides transparent margins in layout while preserving the embedded original PNG bytes. On narrow screens the logo shrinks and the language buttons remain accessible. [Compact header preview](images/gallery-header.jpg).
 
 ## Colours
 
@@ -26,6 +29,8 @@ Map galleries use this theme throughout the page. Stamp galleries use it for the
 ## DE / EN languages
 
 All five galleries share a language switch in their header. Stamp galleries also provide it inside the modal image viewer. Switching preserves search, filter values, sorting, selected profiles, expanded details and the open image with its zoom state. The HTML language, page title, placeholders and accessible image/button descriptions also change.
+
+The demo landing page uses the same DE/EN switch and stored language choice. Navigation to a gallery and back through its demo link retains the selected language when browser storage is available. Its title, meta description, introduction, gallery links and footer use the central `demo.*` resources. `--refresh-site` renders `templates/demo_index.html` into `site/index.html`; `--check` detects a stale landing page. [English landing-page preview](images/demo-home-en.jpg).
 
 The canonical resources are [locales/de.json](../templates/locales/de.json) and [locales/en.json](../templates/locales/en.json). Both use matching stable keys and placeholders, for example `stamp.count` with `{shown}` and `{total}`. `.one` variants handle singular forms. Missing keys or mismatched placeholders stop the export with an explanatory error.
 
@@ -42,7 +47,7 @@ Maintain both canonical JSON files, then synchronise the templates and refresh t
 ## Changing templates
 
 1. Edit HTML, CSS or `THEMES` in the canonical `templates/` folder only.
-2. Run `python scripts/sync_gallery_templates.py --refresh-site`. This synchronises the bundled copies and refreshes the frames of the five existing demo snapshots. Demo data and image references are preserved; game data is not needed for this operation.
+2. Run `python scripts/sync_gallery_templates.py --refresh-site`. This synchronises the bundled copies, updates the demo landing page and refreshes the frames of the five existing demo snapshots. Demo data and image references are preserved; game data is not needed for this operation.
 3. Run `python scripts/sync_gallery_templates.py --check`, `python scripts/validate_site.py` and `python -m unittest discover -s tests -v`.
 4. Refresh personal galleries using the relevant AnnoTools launcher. If demo contents changed, regenerate the demos through the regular exporters as well.
 

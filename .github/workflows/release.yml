@@ -7,7 +7,7 @@ on:
       version:
         description: 'Version for a ZIP test build (does not publish a release)'
         required: true
-        default: 'v0.1.6'
+        default: 'v0.1.7'
 permissions:
   contents: read
 concurrency:
