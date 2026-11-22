@@ -1,0 +1,16 @@
+{
+  "package": "punycode",
+  "version": "2.3.1",
+  "repository": "https://github.com/mathiasbynens/punycode.js",
+  "commit": "9e1b2cda98d215d3a73fcbfe93c62e021f4ba768",
+  "files": {
+    "punycode.cjs": {
+      "upstream": "punycode.js",
+      "sha256": "6052a80eac47e46bd4de17ae0095e0192c336d3d7c387d292ad2176ebfc53d04"
+    },
+    "LICENSE-MIT.txt": {
+      "upstream": "LICENSE-MIT.txt",
+      "sha256": "483acb265f182907d1caf6cff9c16c96f31325ed23792832cc5d8b12d5f88c8a"
+    }
+  }
+}

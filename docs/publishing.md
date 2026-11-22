@@ -10,3 +10,9 @@ Repository maintenance guide: create releases, publish GitHub Pages and refresh 
 - **Refreshing demos:** Generate fresh output locally using only the bundled demo inputs. Replace the five `index.html` pages under `site/<game>/maps/` or `stamps/` and only their referenced images. Keep relative image paths, remove absolute local paths, and preserve the links back to the demo landing page. Run `python scripts/validate_site.py` before publishing. Original galleries and personal settings remain unchanged. GitHub does not regenerate these snapshots because some exporters require installed game data.
 
 `site/` contains only HTML and required preview/blueprint images, without game resource archives, caches or private configurations. `scripts/build_release.py` packages tracked files only; local settings and output directories remain excluded.
+
+## Pages action Node.js warning
+
+The current official `actions/deploy-pages@v5` still bundles a dependency that loads Node's deprecated built-in `punycode`. The workflow therefore uses a [local compatibility adapter](../.github/actions/pages-runtime/README.md) only for that deployment step. It loads the unchanged userland implementation, recorded with its MIT licence and checksums, instead of suppressing warnings. Other warnings, permissions and the OIDC deployment flow are unaffected.
+
+Before deployment, `node --test tests/pages_runtime.cjs` verifies the correction on Node 24. Remove the adapter as described in its guide once an official release fixes the dependency. The correction takes effect on GitHub after committing and pushing the workflow.

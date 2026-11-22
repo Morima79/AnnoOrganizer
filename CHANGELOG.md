@@ -5,6 +5,14 @@ Wichtige Änderungen an AnnoTools. Jede Version enthält englische und deutsche 
 
 ## [Unreleased]
 
+### English
+
+- Added a step-local Pages runtime adapter that replaces the deprecated built-in `punycode` import with the unchanged MIT-licensed userland implementation; checksums and regression tests keep other warnings visible.
+
+### Deutsch
+
+- Auf den Pages-Deploy-Schritt begrenzten Laufzeitadapter ergänzt: Die veralteten `punycode`-Imports verwenden die unveränderte Userland-Implementierung mit MIT-Lizenz; Prüfsummen und Regressionstests sichern die Korrektur ab, andere Warnungen bleiben sichtbar.
+
 ## [v0.1.6] - 2026-11-22
 
 ### English

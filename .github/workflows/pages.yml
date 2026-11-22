@@ -2,7 +2,7 @@ name: Demo galleries
 on:
   push:
     branches: [main]
-    paths: ['site/**', 'scripts/validate_site.py', '.github/workflows/pages.yml']
+    paths: ['site/**', 'scripts/validate_site.py', '.github/workflows/pages.yml', '.github/actions/pages-runtime/**', 'tests/pages_runtime.cjs']
   workflow_dispatch:
 permissions:
   contents: read
@@ -25,6 +25,11 @@ jobs:
           python-version: '3.11'
       - name: Validate all five galleries and image links
         run: python scripts/validate_site.py
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+      - name: Verify Pages runtime compatibility
+        run: node --test tests/pages_runtime.cjs
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:
@@ -32,3 +37,5 @@ jobs:
       - name: Deploy GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+        env:
+          NODE_OPTIONS: --import=${{ github.workspace }}/.github/actions/pages-runtime/punycode.mjs
