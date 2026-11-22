@@ -21,7 +21,23 @@ Die Farben orientieren sich an der jeweiligen Spieloberfläche. Die transparente
 - Anno 1800: Dunkelblau (`#173345`).
 - Anno 1404: Helle Pergamentoptik (`#f3ead8`) mit Braun- und Goldtönen.
 
-Bei Kartengalerien gilt dieses Thema für die gesamte Seite. Bei Stempelgalerien gilt es für den Header-Banner; der Bereich mit Suche und Bauplänen bleibt hell. Das Logo selbst bekommt keine separate Hintergrundfläche. Beide Stempel-Fusszeilen enthalten ausschliesslich `Stand: <Datum Uhrzeit>`.
+Bei Kartengalerien gilt dieses Thema für die gesamte Seite. Bei Stempelgalerien gilt es für den Header-Banner; der Bereich mit Suche und Bauplänen bleibt hell. Das Logo selbst bekommt keine separate Hintergrundfläche. Beide Stempel-Fusszeilen enthalten ausschliesslich den Aktualisierungszeitpunkt (`Stand:` / `Updated:`).
+
+## Sprachen DE / EN
+
+Alle fünf Galerien besitzen einen gemeinsamen Sprachschalter im Kopfbereich. In Stempelgalerien gibt es denselben Schalter zusätzlich in der modalen Grossansicht. Beim Umschalten bleiben Suche, Filterwerte, Sortierung, Profilwahl, aufgeklappte Details und die Bildansicht samt Zoom erhalten. `html.lang`, Seitentitel, Platzhalter und zugängliche Bild-/Schaltflächenbeschreibungen wechseln ebenfalls.
+
+Die zentralen Sprachressourcen liegen in [locales/de.json](../templates/locales/de.json) und [locales/en.json](../templates/locales/en.json). Beide Dateien verwenden dieselben stabilen Schlüssel und Platzhalter, beispielsweise `stamp.count` mit `{shown}` und `{total}`. `.one`-Varianten behandeln Einzahlformen. Fehlende Schlüssel oder abweichende Platzhalter führen beim Export zu einer verständlichen Fehlermeldung.
+
+[anno_i18n.py](../templates/anno_i18n.py) bindet bekannte Oberflächentexte und erzeugte Anzeigen an Ressourcenschlüssel. Explizite Markierungen wie `<span data-i18n="filters.allRegions">Alle Regionen</span>` können direkt in Vorlagen stehen. Für dynamische Texte verwenden die Exporter `galleryI18n.t('stamp.count', {shown, total})` und reagieren auf `gallerylanguagechange`. Nur Text und Beschriftungen ändern sich; interne Optionswerte bleiben stabil. Eigene Namen und Pfade werden von der Bindung ausgeschlossen. Zusätzliche unveränderte Inhalte können mit `data-i18n-ignore` markiert werden.
+
+Der Renderer bettet beide JSON-Ressourcen sowie [gallery_i18n.js](../templates/gallery_i18n.js) und das Schalter-CSS in jede erzeugte HTML-Datei ein. Es gibt keine Sprachdatei-Abrufe und keine neue Laufzeitabhängigkeit. Die Umschaltung funktioniert dadurch auch beim direkten Öffnen einer lokalen HTML-Datei. Deutsch ist die Vorgabe; die Auswahl wird unter `annotools.gallery.language` im Browser gespeichert, sofern dessen Speicher verfügbar ist. Gesperrter Speicher verhindert die Umschaltung nicht. Ohne JavaScript bleibt die deutsche Oberfläche lesbar.
+
+Eigene Profil-, Ordner- und Stempelnamen, Dateipfade, technische Rohwerte und aus dem Spiel übernommene Objekt-/DLC-Namen bleiben erhalten. Beschriftungen innerhalb der PNGs, Excel-Auswertungen, Startermenüs und Protokolle sind nicht Teil der HTML-Sprachumschaltung.
+
+Neue oder geänderte Übersetzungen in beiden zentralen JSON-Dateien pflegen, danach die Vorlagen synchronisieren und die Demo-Seiten aktualisieren. Die Tests prüfen Ressourcen-/Platzhaltergleichheit, gültige Bindungen aller fünf Seiten, unveränderte Identitäten, sichere Einbettung, eigenständige Anno-Kopien sowie das JavaScript-Verhalten bei gesperrtem oder ungültigem Browserspeicher. `node --test tests/gallery_i18n_runtime.cjs` führt die JavaScript-Tests separat aus; die Python-Tests rufen sie bei verfügbarem Node.js ebenfalls auf.
+
+[Englische Galerie-Vorschau mit DE/EN-Schalter](../anno117/docs/images/stamp-gallery-en.jpg). Die bestehenden fünf README-Vorschauen zeigen die deutsche Oberfläche mit Sprachschalter; alle Aufnahmen haben dieselbe Bildbreite.
 
 ## Vorlagen ändern
 

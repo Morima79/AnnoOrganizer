@@ -5,12 +5,16 @@ Wichtige Änderungen an AnnoTools. Jede Version enthält englische und deutsche 
 
 ## [Unreleased]
 
+## [v0.1.6] - 2026-11-22
+
 ### English
 
+- Added DE/EN switching to all five galleries, with embedded central language resources, preserved filters and image views, bilingual demo snapshots, documentation and localisation tests.
 - Updated Pages, release and test actions to versions using Node.js 24, including the nested Pages artifact upload, to remove Node.js 20 deprecation warnings.
 
 ### Deutsch
 
+- DE/EN-Umschaltung für alle fünf Galerien mit eingebetteten zentralen Sprachressourcen, erhaltenen Filtern und Bildansichten, zweisprachigen Demo-Seiten, Dokumentation und Übersetzungstests ergänzt.
 - Pages-, Release- und Test-Actions auf Versionen mit Node.js 24 aktualisiert, einschliesslich des indirekten Pages-Artefakt-Uploads, um die Node.js-20-Abkündigungswarnungen zu beheben.
 
 ## [v0.1.5] - 2026-11-22

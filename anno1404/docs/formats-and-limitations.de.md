@@ -30,3 +30,7 @@ Diese Projekte dienen als Dokumentations- und Formatreferenzen. Es werden weder 
 - [RDA-Formatdokumentation](https://github.com/lysanntranvouez/RDAExplorer/wiki/RDA-File-Format)
 
 Unterstützung hängt von den Formaten der jeweiligen Spielversion ab. Unbekannte Objekte oder Grundflächen können eine Aktualisierung der Werkzeuge erfordern. Keine der Ausgaben ersetzt einen Test im Spiel.
+
+## Galeriesprache
+
+Die Oberfläche der Galerien kann mit DE/EN umgeschaltet werden. Eigene Namen, Dateipfade, technische Rohwerte, aus den Spieldaten übernommene Objekt-/DLC-Namen, PNG-Beschriftungen und Excel-Auswertungen werden nicht automatisch übersetzt. Die Sprache der Galerien ist unabhängig von der Sprache der Spielinstallation.

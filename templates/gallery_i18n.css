@@ -1,0 +1,5 @@
+.gallery-language { display: flex; align-items: center; justify-content: flex-end; gap: 6px; margin: 0 0 18px; }
+.gallery-language button { font: 600 14px/1.5 system-ui, sans-serif; cursor: pointer; padding: 5px 12px; border: 1px solid var(--gallery-border); border-radius: 6px; background: var(--gallery-background); color: var(--gallery-ink); }
+.gallery-language button[aria-pressed="true"] { background: var(--gallery-heading); color: var(--gallery-background); }
+.gallery-language button:focus-visible { outline: 2px solid var(--gallery-link); outline-offset: 3px; }
+.modalbar .gallery-language { margin: 0; }

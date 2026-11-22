@@ -414,7 +414,7 @@ def write_html(stage, payload):
           <a href="{row['image']}"><img loading="lazy" src="{row['image']}" alt="Inselkarte – {esc(anchor)}"></a>
           <div class="body"><h2>{esc(anchor)}</h2><p>{esc(v[1])} · {esc(v[2])} · {esc(v[3])}</p>
           <p>{esc(v[17])} Felder · {f'{v[18]} Inseln · ' if v[18] is not None else ''}{v[5]} Spielstände</p>
-          <p>{esc(v[6])}{' · KI: '+esc(v[7]) if v[7] else ''}</p>
+          <p class="profiles">{esc(v[6])}{' · <span data-i18n="map.ai">KI:</span> '+esc(v[7]) if v[7] else ''}</p>
           <dl>{''.join(saves)}</dl>{diff}<details><summary>Karteneinstellungen</summary><dl>{details}</dl></details></div>
           </article>''')
     template = (HERE/'map_gallery_template.html').read_text(encoding='utf-8')

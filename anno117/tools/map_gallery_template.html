@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Anno 117 · Kartenseeds und Karten</title>
+<title data-i18n="map.title" data-i18n-params="{&quot;game&quot;:&quot;117&quot;}">Anno 117 · Kartenseeds und Karten</title>
 <style>
 * { box-sizing: border-box }
 body { margin: 0; background: #111f25; color: #edf2ed; font: 16px/1.5 system-ui, sans-serif }
@@ -41,35 +41,35 @@ header .gallery-notes p{margin:8px 0}
 <body>
 <main>
 <header>
-<h1>Anno 117 · Kartenseeds und Karten</h1>
+<h1><span data-i18n="map.title" data-i18n-params="{&quot;game&quot;:&quot;117&quot;}">Anno 117 · Kartenseeds und Karten</span></h1>
 <p class="gallery-scope">Pax Romana</p>
-<p class="gallery-updated">Zuletzt aktualisiert am: <time datetime="@@UPDATED_ISO@@">@@UPDATED_AT@@</time> · Gesamtspielzeit: @@TOTAL_PLAYTIME@@</p>
+<p class="gallery-updated"><span data-i18n="map.updated">Zuletzt aktualisiert am:</span> <time datetime="@@UPDATED_ISO@@">@@UPDATED_AT@@</time> · <span data-i18n="map.total" data-i18n-params="{&quot;time&quot;:&quot;@@TOTAL_PLAYTIME@@&quot;}">Gesamtspielzeit: @@TOTAL_PLAYTIME@@</span></p>
 <p class="gallery-summary"><strong>@@SUMMARY@@</strong></p>
-<p class="gallery-description">Die Galerie gruppiert lokale Spielstände nach Seed und gespeicherter Kartenkonfiguration. Ein Klick auf eine Karte öffnet die PNG-Datei in voller Grösse.</p>
-<details class="gallery-notes"><summary>Hinweise zu Karten und Spielzeit</summary>
-<p>Für die Gesamtspielzeit zählt pro gespeicherter Partie der höchste gespeicherte Spielzeitwert.</p>
-<p>Die Karten kombinieren gespeicherte Inselpositionen und Drehungen mit Grafiken der lokalen Spielinstallation. Sie zeigen Inseln und Gelände, keine Städte, Gebäude oder Besitzverhältnisse. Bei Aegyptus können Nahtstellen zwischen den vier Geländeteilen der Provinz sichtbar sein.</p>
-<p>Die Zeitpunkte stammen aus den Spielständen und werden in der eingestellten Zeitzone angezeigt. Die Spielzeit verwendet den gespeicherten Aktivzeitzähler, sofern er vorhanden ist; ältere Saves können nur den Spielzeitzähler enthalten. Klar zugeordnete Einstellungen zeigen ihren Namen. Für unbekannte Werte bleibt der gespeicherte Wert sichtbar. Welt- und Inselgrösse stammen, soweit vorhanden, aus den tatsächlich erzeugten Regionen.</p>
+<p class="gallery-description"><span data-i18n="map.description">Die Galerie gruppiert lokale Spielstände nach Seed und gespeicherter Kartenkonfiguration. Ein Klick auf eine Karte öffnet die PNG-Datei in voller Grösse.</span></p>
+<details class="gallery-notes"><summary><span data-i18n="map.notes">Hinweise zu Karten und Spielzeit</span></summary>
+<p><span data-i18n="map.totalNote">Für die Gesamtspielzeit zählt pro gespeicherter Partie der höchste gespeicherte Spielzeitwert.</span></p>
+<p><span data-i18n="map.geometry117">Die Karten kombinieren gespeicherte Inselpositionen und Drehungen mit Grafiken der lokalen Spielinstallation. Sie zeigen Inseln und Gelände, keine Städte, Gebäude oder Besitzverhältnisse. Bei Aegyptus können Nahtstellen zwischen den vier Geländeteilen der Provinz sichtbar sein.</span></p>
+<p><span data-i18n="map.time117">Die Zeitpunkte stammen aus den Spielständen und werden in der eingestellten Zeitzone angezeigt. Die Spielzeit verwendet den gespeicherten Aktivzeitzähler, sofern er vorhanden ist; ältere Saves können nur den Spielzeitzähler enthalten. Klar zugeordnete Einstellungen zeigen ihren Namen. Für unbekannte Werte bleibt der gespeicherte Wert sichtbar. Welt- und Inselgrösse stammen, soweit vorhanden, aus den tatsächlich erzeugten Regionen.</span></p>
 </details>
 </header>
 @@PROFILE_RANKING@@
-<label id="variant-filters">Seed oder Profil <input id="query" type="search" placeholder="Seed oder Profilname"></label>
-<label>Spielmodus
-<select id="mode"><option value="">Alle</option><option>Sandkasten</option><option>Kampagne</option><option>Szenario</option><option>Kreativmodus</option></select>
+<label id="variant-filters"><span data-i18n="filters.seedProfile">Seed oder Profil</span> <input id="query" type="search" placeholder="Seed oder Profilname" data-i18n-placeholder="filters.seedPlaceholder"></label>
+<label><span data-i18n="filters.mode">Spielmodus</span>
+<select id="mode"><option value="" data-i18n="filters.all">Alle</option><option data-i18n="mode.sandbox" value="Sandkasten">Sandkasten</option><option data-i18n="mode.campaign" value="Kampagne">Kampagne</option><option data-i18n="mode.scenario" value="Szenario">Szenario</option><option data-i18n="mode.creative" value="Kreativmodus">Kreativmodus</option></select>
 </label>
-<label>Sortieren nach
+<label><span data-i18n="filters.sort">Sortieren nach</span>
 <select id="sort">
-<option value="variant">Seed und Variante</option>
-<option value="latest">Neuester Save zuerst</option>
-<option value="first">Ältester Save zuerst</option>
-<option value="recordDate">Datum des Saves mit längster Spielzeit</option>
-<option value="recordTime">Längste gespeicherte Spielzeit zuerst</option>
-<option value="latestTime">Spielzeit im neuesten Save zuerst</option>
+<option value="variant" data-i18n="filters.seedVariant">Seed und Variante</option>
+<option value="latest" data-i18n="filters.newest">Neuester Save zuerst</option>
+<option value="first" data-i18n="filters.oldest">Ältester Save zuerst</option>
+<option value="recordDate" data-i18n="time.recordDate">Datum des Saves mit längster Spielzeit</option>
+<option value="recordTime" data-i18n="filters.recordTime">Längste gespeicherte Spielzeit zuerst</option>
+<option value="latestTime" data-i18n="filters.latestTime">Spielzeit im neuesten Save zuerst</option>
 </select>
 </label>
-<button type="button" class="profile-back" data-back-to-profiles hidden>Zurück zur Profilrangliste</button><p id="count" aria-live="polite"></p>
+<button type="button" class="profile-back" data-back-to-profiles hidden><span data-i18n="ranking.back">Zurück zur Profilrangliste</span></button><p id="count" aria-live="polite"></p>
 <div id="variants">@@CARDS@@</div>
-<button type="button" class="profile-back" data-back-to-profiles hidden>Zurück zur Profilrangliste</button>
+<button type="button" class="profile-back" data-back-to-profiles hidden><span data-i18n="ranking.back">Zurück zur Profilrangliste</span></button>
 </main>
 <script>
 const query = document.querySelector('#query');
@@ -116,7 +116,7 @@ function refresh() {
     direction * (Number(a.dataset[by]) - Number(b.dataset[by])) ||
     Number(a.dataset.variant) - Number(b.dataset.variant)));
   for (const button of backToProfiles) button.hidden = selectedProfile === null;
-  count.textContent = visible + ' Varianten sichtbar';
+  count.textContent = galleryI18n.t('map.visible',{count:visible});
 }
 query.addEventListener('input', () => {
   selectedProfile = null;
@@ -137,6 +137,7 @@ for (const link of document.querySelectorAll('[data-profile-filter]')) {
 mode.addEventListener('change', refresh);
 sort.addEventListener('change', refresh);
 refresh();
+document.addEventListener('gallerylanguagechange',refresh);
 </script>
 </body>
 </html>

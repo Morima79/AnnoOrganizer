@@ -581,6 +581,7 @@ def render_catalog(rows, groups, maps, stage, updated_at, total_playtime, profil
     css="""*{box-sizing:border-box}body{margin:0;background:#0c1b24;color:#e8f2f6;font:16px/1.5 system-ui,sans-serif}main{max-width:1260px;margin:auto;padding:40px 24px}header{border-bottom:1px solid #385361;padding-bottom:22px;margin-bottom:24px}h1{font-size:clamp(2rem,5vw,3.6rem);line-height:1.06;margin:8px 0 18px}h2{font-size:1.65rem;margin:0}p{margin:10px 0}small,.source,.profiles,figcaption,.top span{color:#b6cbd5}label{display:inline-flex;flex-direction:column;margin:0 14px 10px 0}input,select{background:#172f3d;color:inherit;border:1px solid #587685;border-radius:7px;padding:10px;font:inherit}article{padding:22px;margin:16px 0;background:#142936;border:1px solid #365260;border-radius:14px}.top{display:flex;align-items:baseline;gap:8px 20px;flex-wrap:wrap}.settings{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:10px;margin:16px 0}.settings div{padding:9px 11px;background:#1c3847;border-radius:6px}.settings small{display:block;font-size:.8rem}.maps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px}.maps figure{margin:0;max-width:350px}.maps img{display:block;width:100%;border-radius:7px;border:1px solid #436575}figcaption,.source{font-size:.83rem}details{margin-top:8px}summary{cursor:pointer;color:#a4dce8}dl{display:grid;grid-template-columns:minmax(160px,1fr) 2fr;gap:5px 16px}dt,dd{overflow-wrap:anywhere;margin:0}dd{color:#cedee3}a{color:#a4dce8}.seeds{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 24px}.seeds button{background:#172f3d;color:#a4dce8;border:1px solid #426579;border-radius:6px;padding:5px 9px;cursor:pointer}"""
     css += '.settings div{overflow-wrap:anywhere}.has-playtime-extra{border-left:4px solid #e3a84e}.top .playtime-extra{display:inline-block;color:#ffe6b4;background:#583b1b;border-radius:5px;padding:3px 8px;font-weight:600}'
     script = r"""
+document.addEventListener('gallerylanguagechange',filter);
 const q = document.querySelector('#q');
 const mode = document.querySelector('#mode');
 const sort = document.querySelector('#sort');
@@ -620,7 +621,7 @@ function filter() {
     if (!card.hidden) visible++;
   }
   for (const button of backToProfiles) button.hidden = selectedProfile === null;
-  count.textContent = visible + ' Varianten sichtbar';
+  count.textContent = galleryI18n.t('map.visible',{count:visible});
 }
 
 function sortCards() {
@@ -683,7 +684,7 @@ filter();
     <div id="variants">{''.join(parts)}</div>
 <button type="button" class="profile-back" data-back-to-profiles hidden>Zurück zur Profilrangliste</button>
     <section><h2>Gespeicherte Spielvorlagen</h2><p>Diese Dateien sind keine Spielstände und zählen nicht zur Seed-Aufstellung. Die Kennzeichnung vergleicht nur die Seed-Zahl.</p>{preset_details()}</section>
-    <p class="source">Formatreferenzen: <a href="https://github.com/EMRECAN-1907/anno1800-save-tools">A7S / FileDB</a> · <a href="https://github.com/anno-mods/FileDBReader">FileDB V1</a> · <a href="https://github.com/pan324/anno1800_seedfinder">Inselgrafiken und Darstellung</a>.</p></main><script>{script}</script></html>"""
+    <p class="source"><span data-i18n="map.references">Formatreferenzen:</span> <a href="https://github.com/EMRECAN-1907/anno1800-save-tools">A7S / FileDB</a> · <a href="https://github.com/anno-mods/FileDBReader">FileDB V1</a> · <a href="https://github.com/pan324/anno1800_seedfinder" data-i18n="map.graphicsReference">Inselgrafiken und Darstellung</a>.</p></main><script>{script}</script></html>"""
     (stage/'map-gallery.html').write_text(
         render_gallery(html, 'anno1800', 'map').replace(f'{len(rows):,} Spielstände',
                      f'{len(rows):,} Spielstände'.replace(',', '’')), encoding='utf-8')

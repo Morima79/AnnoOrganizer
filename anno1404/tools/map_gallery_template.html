@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Anno 1404 · Kartenseeds und Karten</title>
+<title data-i18n="map.title" data-i18n-params="{&quot;game&quot;:&quot;1404&quot;}">Anno 1404 · Kartenseeds und Karten</title>
 <style>
 :root { color-scheme: dark; font-family: "Source Sans 3", "Segoe UI", sans-serif; background: #0e2029; color: #f0eee2; }
 body { margin: 0 auto; max-width: 1500px; padding: clamp(16px, 4vw, 55px); }
@@ -43,36 +43,36 @@ header .gallery-notes p{margin:8px 0}
 </head>
 <body>
 <header>
-<h1>Anno 1404 · Kartenseeds und Karten</h1>
-<p class="gallery-scope">Grundspiel, Venedig und History Edition</p>
-<p class="gallery-updated">Zuletzt aktualisiert am: @@UPDATED@@ · Gesamtspielzeit: @@TOTAL@@</p>
+<h1><span data-i18n="map.title" data-i18n-params="{&quot;game&quot;:&quot;1404&quot;}">Anno 1404 · Kartenseeds und Karten</span></h1>
+<p class="gallery-scope"><span data-i18n="map.scope1404">Grundspiel, Venedig und History Edition</span></p>
+<p class="gallery-updated"><span data-i18n="map.updatedTotal" data-i18n-params="{&quot;date&quot;:&quot;@@UPDATED@@&quot;,&quot;time&quot;:&quot;@@TOTAL@@&quot;}">Zuletzt aktualisiert am: @@UPDATED@@ · Gesamtspielzeit: @@TOTAL@@</span></p>
 <p class="gallery-summary"><strong>@@NOTE@@</strong></p>
-<p class="gallery-description">Die Galerie gruppiert lokale Spielstände nach Seed und gespeicherter Kartenkonfiguration. Ein Klick auf eine Karte öffnet die PNG-Datei in voller Grösse.</p>
-<details class="gallery-notes"><summary>Hinweise zu Karten und Spielzeit</summary>
-<p>Für die Gesamtspielzeit zählt pro gespeicherter Partie der höchste gespeicherte Spielzeitwert.</p>
-<p>Die Karten werden direkt aus dem gespeicherten Gelände rekonstruiert. Sie zeigen Inseln und Gelände, keine Städte, Gebäude oder Besitzverhältnisse.</p>
-<p>Die Datumsangaben stammen aus den Änderungszeitpunkten der Dateien und verwenden die lokale Rechnerzeit. Die Spielzeit stammt aus den gespeicherten Spielstatistiken. Identische Save-Kopien werden zusammengefasst; die Zusammenfassung weist zusätzliche Kopien gesondert aus.</p>
+<p class="gallery-description"><span data-i18n="map.description">Die Galerie gruppiert lokale Spielstände nach Seed und gespeicherter Kartenkonfiguration. Ein Klick auf eine Karte öffnet die PNG-Datei in voller Grösse.</span></p>
+<details class="gallery-notes"><summary><span data-i18n="map.notes">Hinweise zu Karten und Spielzeit</span></summary>
+<p><span data-i18n="map.totalNote">Für die Gesamtspielzeit zählt pro gespeicherter Partie der höchste gespeicherte Spielzeitwert.</span></p>
+<p><span data-i18n="map.geometry1404">Die Karten werden direkt aus dem gespeicherten Gelände rekonstruiert. Sie zeigen Inseln und Gelände, keine Städte, Gebäude oder Besitzverhältnisse.</span></p>
+<p><span data-i18n="map.time1404">Die Datumsangaben stammen aus den Änderungszeitpunkten der Dateien und verwenden die lokale Rechnerzeit. Die Spielzeit stammt aus den gespeicherten Spielstatistiken. Identische Save-Kopien werden zusammengefasst; die Zusammenfassung weist zusätzliche Kopien gesondert aus.</span></p>
 </details>
 </header>
 <details id="rangliste" open>
-<summary>Spielzeit pro Profil</summary>
-<p>Pro erkannter Partie zählt der längste gespeicherte Stand.</p>
-<table><thead><tr><th>Rang</th><th>Profil</th><th>Partien</th><th>Spielzeit</th></tr></thead>
+<summary><span data-i18n="ranking.title">Spielzeit pro Profil</span></summary>
+<p><span data-i18n="ranking.note1404">Pro erkannter Partie zählt der längste gespeicherte Stand.</span></p>
+<table><thead><tr><th><span data-i18n="ranking.rank">Rang</span></th><th><span data-i18n="ranking.profile">Profil</span></th><th><span data-i18n="ranking.games">Partien</span></th><th><span data-i18n="ranking.time">Spielzeit</span></th></tr></thead>
 <tbody>@@RANKING@@</tbody></table>
 </details>
 <div id="filter" class="controls">
-<label>Seed, Variante oder Save<input type="search" id="query"></label>
-<label>Edition<select id="edition"><option value="">Alle Editionen</option>@@EDITIONS@@</select></label>
-<label>Sortierung<select id="sort"><option value="timestamp">Neuester Save zuerst</option>
-<option value="oldest">Ältester Save zuerst</option><option value="time">Längste Spielzeit zuerst</option>
-<option value="seed">Seed aufsteigend</option></select></label>
+<label><span data-i18n="filters.seedSave">Seed, Variante oder Save</span><input type="search" id="query"></label>
+<label><span data-i18n="filters.edition">Edition</span><select id="edition"><option value="" data-i18n="filters.allEditions">Alle Editionen</option>@@EDITIONS@@</select></label>
+<label><span data-i18n="filters.sortShort">Sortierung</span><select id="sort"><option value="timestamp" data-i18n="filters.newest">Neuester Save zuerst</option>
+<option value="oldest" data-i18n="filters.oldest">Ältester Save zuerst</option><option value="time" data-i18n="filters.longest">Längste Spielzeit zuerst</option>
+<option value="seed" data-i18n="filters.seedAscending">Seed aufsteigend</option></select></label>
 <output id="count" aria-live="polite"></output>
 </div>
-<button type="button" class="back" hidden>Zurück zur Profilrangliste</button>
+<button type="button" class="back" hidden><span data-i18n="ranking.back">Zurück zur Profilrangliste</span></button>
 <div id="cards" class="grid">@@CARDS@@</div>
-<button type="button" class="back" hidden>Zurück zur Profilrangliste</button>
-<details><summary>Datenquellen</summary>
-<p>Die Inselkarten entstehen aus dem Höhenraster der Saves. Die Zeitpunkte stammen aus den Dateizeitstempeln.</p>
+<button type="button" class="back" hidden><span data-i18n="ranking.back">Zurück zur Profilrangliste</span></button>
+<details><summary><span data-i18n="map.sources">Datenquellen</span></summary>
+<p><span data-i18n="map.sourceNote">Die Inselkarten entstehen aus dem Höhenraster der Saves. Die Zeitpunkte stammen aus den Dateizeitstempeln.</span></p>
 <ul>@@SOURCES@@</ul>
 </details>
 <script>
@@ -97,11 +97,11 @@ function update() {
   for (const row of rows) {
     row.hidden = (profile && !JSON.parse(row.dataset.profiles).includes(profile))
       || (edition.value && !JSON.parse(row.dataset.editions).includes(edition.value))
-      || !row.textContent.toLocaleLowerCase('de-CH').includes(text);
+      || !galleryI18n.searchText(row).toLocaleLowerCase('de-CH').includes(text);
     if (!row.hidden) shown++;
     cards.append(row);
   }
-  count.textContent = shown + ' von ' + rows.length + ' Varianten' + (profile ? ' · ' + profile : '');
+  count.textContent = galleryI18n.t('map.count',{shown,total:rows.length}) + (profile ? ' · ' + profile : '');
   for (const button of backs) button.hidden = !profile;
 }
 for (const element of [query, edition, sort]) element.addEventListener('input', update);
@@ -125,6 +125,7 @@ for (const button of backs) {
   });
 }
 update();
+document.addEventListener('gallerylanguagechange',update);
 </script>
 </body>
 </html>

@@ -84,7 +84,7 @@ py -3 -m venv .venv
 
 Beim regulären Start werden fehlende Einstellungen automatisch angelegt. Jeder Spielordner besitzt eine eigene `settings.json` mit englischen Schlüsseln und Schemaversion 1. `settings.example.json` dient als Vorlage. `${DOCUMENTS}` berücksichtigt den tatsächlichen Windows-Dokumentenordner samt OneDrive-Umleitung; `${HOME}` verweist auf den Benutzerordner. Relative Pfade beziehen sich auf den Ordner der Konfigurationsdatei.
 
-Die technische Benennung und der Code sind Englisch. **Menüs, Meldungen und Galerieoberflächen bleiben vorerst Deutsch.** Ausführliche Anleitungen: [Einstellungen](docs/settings.de.md), [Formate und Grenzen](docs/formats-and-limitations.de.md). Einzelne Werkzeuge: [Anno 117](anno117/README.de.md), [Anno 1800](anno1800/README.de.md), [Anno 1404](anno1404/README.de.md).
+Die technische Benennung und der Code sind Englisch. **Alle fünf Galerien bieten einen DE/EN-Schalter**, auch beim direkten Offline-Öffnen. Die Auswahl wird nach Möglichkeit im Browser gespeichert. Startermenüs und Protokollmeldungen bleiben Deutsch. Ausführliche Anleitungen: [Einstellungen](docs/settings.de.md), [Formate und Grenzen](docs/formats-and-limitations.de.md). Einzelne Werkzeuge: [Anno 117](anno117/README.de.md), [Anno 1800](anno1800/README.de.md), [Anno 1404](anno1404/README.de.md).
 
 ## Struktur und Ausgaben
 
