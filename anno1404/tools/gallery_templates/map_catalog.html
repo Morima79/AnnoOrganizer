@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="de-CH">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>@@TITLE@@</title></head>
+<body><main>
+<header>
+<h1>@@TITLE@@</h1>
+<p class="gallery-scope">@@SCOPE@@</p>
+<p class="gallery-updated"><span data-i18n="map.updated">Zuletzt aktualisiert am:</span> <time datetime="@@UPDATED_ISO@@">@@UPDATED@@</time> · @@TOTAL@@</p>
+<p class="gallery-summary"><strong>@@SUMMARY@@</strong></p>
+<p class="gallery-description" data-i18n="map.description">Die Galerie gruppiert lokale Spielstände nach Seed und gespeicherter Kartenkonfiguration. Ein Klick auf eine Karte öffnet die PNG-Datei in voller Grösse.</p>
+<details class="gallery-notes"><summary data-i18n="map.notes">Hinweise zu Karten und Spielzeit</summary>
+<p data-i18n="map.totalNote">Für die Gesamtspielzeit zählt pro gespeicherter Partie der höchste gespeicherte Spielzeitwert.</p>
+<p>@@GEOMETRY@@</p><p>@@TIME_NOTE@@</p>
+<p data-i18n="map.variantNote">Eine Variante fasst Saves mit gleichem Seed und gleicher gespeicherter Kartenkonfiguration zusammen. Unterschiedliche Bevölkerungs- oder Geldstände allein erzeugen keine neue Variante.</p>
+</details>
+</header>
+@@RANKING@@
+<details class="seed-list"><summary>@@SEED_SUMMARY@@</summary><div class="seeds">@@SEEDS@@</div></details>
+<div id="variant-filters" class="catalog-controls" tabindex="-1">
+<label><span data-i18n="filters.seedProfile">Seed oder Profil</span><input id="query" type="search" placeholder="Seed oder Profilname" data-i18n-placeholder="filters.seedPlaceholder"></label>
+<label><span data-i18n="filters.mode">Spielmodus</span><select id="mode">
+<option value="" data-i18n="filters.all">Alle</option><option value="Sandkasten" data-i18n="mode.sandbox">Sandkasten</option>
+<option value="Kampagne" data-i18n="mode.campaign">Kampagne</option><option value="Szenario" data-i18n="mode.scenario">Szenario</option>
+<option value="Kreativmodus" data-i18n="mode.creative">Kreativmodus</option></select></label>
+<label><span data-i18n="filters.sort">Sortieren nach</span><select id="sort">
+<option value="variant" data-i18n="filters.seedVariant">Seed und Variante</option>
+<option value="latest" data-i18n="filters.newest">Neuester Save zuerst</option><option value="first" data-i18n="filters.oldest">Ältester Save zuerst</option>
+<option value="recordDate" data-i18n="time.recordDate">Datum des Saves mit längster Spielzeit</option>
+<option value="recordTime" data-i18n="filters.recordTime">Längste gespeicherte Spielzeit zuerst</option>
+<option value="latestTime" data-i18n="filters.latestTime">Spielzeit im neuesten Save zuerst</option></select></label>
+<button type="button" class="profile-back" data-back-to-profiles hidden><span data-i18n="ranking.back">Zurück zur Profilrangliste</span></button>
+</div>
+<p id="count" role="status" aria-live="polite"></p>
+<div id="variants" class="map-catalog">@@CARDS@@</div>
+<button type="button" class="profile-back" data-back-to-profiles hidden><span data-i18n="ranking.back">Zurück zur Profilrangliste</span></button>
+@@EXTRA@@
+</main><script id="map-catalog-runtime">@@SCRIPT@@</script></body></html>

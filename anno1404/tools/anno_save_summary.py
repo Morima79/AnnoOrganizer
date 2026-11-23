@@ -62,7 +62,6 @@ def render_statistics(entries):
         if stats.get('population_levels') is not None and stats.get('population') is not None and sum(r['count'] for r in stats['population_levels']) != stats['population']:
             population += '<p class="stat-note">' + label('stats.rounding') + '</p>'
         population += '<p>' + label('stats.islands') + ': ' + number(stats.get('islands')) + '</p>'
-        result.append(group('stats.population', number(stats.get('population')), population))
         money = label('stats.wealth') + ' ' + number(stats.get('money')) + ' · ' + label('stats.balance') + ' ' + number(stats.get('balance'), True)
         if stats.get('balance') is not None:
             money += ' ' + label('stats.perMinute')
@@ -71,6 +70,7 @@ def render_statistics(entries):
             finance += '<div><dt>' + label('stats.' + key) + '</dt><dd>' + number(stats.get(key)) + ' ' + label('stats.perMinute') + '</dd></div>'
         finance += '</dl>'
         result.append(group('stats.money', money, finance))
+        result.append(group('stats.population', number(stats.get('population')), population))
         houses = named_rows(stats.get('house_levels'))
         houses += '<p>' + label('stats.blueprints') + ': ' + number(stats.get('blueprints')) + '</p>'
         result.append(group('stats.houses', number(stats.get('houses')), houses))

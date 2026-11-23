@@ -33,3 +33,15 @@ Anno 117 speichert Einwohnerwerte teilweise als Float32. Ein reines Summieren de
 Schiffsmodule sind keine zusätzlichen Schiffe. Schiffe ohne eingebaute Module werden über ihre Assets erkannt; Regionswechsel dürfen keine Doppelzählung erzeugen. Bei 1800 können Luftschiffe als Teil der erkannten Flotte separat ausgewiesen werden. Nicht auflösbare eigene Expeditionsschiff-Verweise führen zu «nicht verfügbar» statt zu einer unvollständigen Flottenzahl. Schiffstypnamen stammen aus den lokalen Spieldaten und werden nicht automatisch übersetzt. Bei 1404 ist die Typaufteilung derzeit nicht verfügbar. Sonderzustände wie unbekannte Ruinenmarkierungen, Mods und noch ungeprüfte Formatversionen können die Verfügbarkeit einschränken. Die Datenprüfung ersetzt keinen Abgleich mit der Anzeige im Spiel.
 
 Die neuen Funktionen verwenden keine Online-Dienste. Persönliche Kennzahlen, Caches und Protokolle gehören nicht in Git, Releases oder Pages. Die öffentlichen Seiten werden ausschliesslich aus den mitgelieferten Demo-Eingaben erzeugt; fehlende Angaben in einem Demo-Save bleiben sichtbar als nicht verfügbar gekennzeichnet.
+
+## Was ist eine Kartenvariante?
+
+Eine Variante gruppiert Kartenkonfigurationen, keine Fortschritte oder Save-Daten. Mehrere Partien können dieselbe Variante verwenden; derselbe Seed kann mehrere Varianten haben. Bevölkerung, Vermögen, Wohnhäuser und Schiffe gehen nicht in die Gruppierung ein. Die aufklappbaren Karteneinstellungen zeigen die gespeicherten Vergleichswerte.
+
+| Spiel | Unterscheidende gespeicherte Angaben |
+|---|---|
+| 117 | Kartentyp, Welt-/Inselgrösse und Schwierigkeit, Fruchtbarkeit/Vorkommen, Wald, Startprovinz, Modus, Kontinentalstart-/Besiedlungsregeln, Standardrivalen, aktive DLCs und Mods |
+| 1800 | Kartentyp, Welt-/Inselgrösse und Schwierigkeit, Fruchtbarkeit/Vorkommen, Modus, gespeicherte Kartendefinitionen, Händler/Piraten und Rivalen, aktive DLCs/Mods und Kontorstart |
+| 1404 | Modus, Seed, Spieltypvariation (einschliesslich Kampagnenkapitel), Szenario ausserhalb des Endlosspiels, tatsächliches Insellayout oder Geländeersatz, Karteneinstellungen ohne `RandomMap` und KI-Namen |
+
+Bei 117/1800 ist die angezeigte Variantennummer ein Exportindex und kann sich durch zusätzliche Gruppen ändern. Die Varianten-ID bei 1404 wird aus dem Gruppierungs-Hash abgeleitet. Eine Variante ist von der Partiekennung zu unterscheiden, über die der neueste Kennzahlenstand gewählt wird. Konfigurationsunterschiede können getrennte Varianten erzeugen, selbst wenn die Kartenvorschauen gleich aussehen; daraus folgt kein Unterschied im Gelände.

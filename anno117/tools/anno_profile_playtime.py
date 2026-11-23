@@ -42,18 +42,3 @@ def ranking_html(profiles, format_duration):
         '<th scope="col">Partien</th><th scope="col">Spielzeit (h:mm:ss)</th></tr></thead>'
         f'<tbody>{rows}</tbody></table></details>'
     )
-
-
-RANKING_CSS = """
-.profile-ranking { margin: 0 0 20px; }
-.profile-back { font: inherit; color: #d7f1f3; background: #253f46; border: 1px solid #6b858d;
-                border-radius: 5px; padding: 8px 12px; margin: 0 0 10px; cursor: pointer; }
-.profile-back:hover { background: #32535c; }
-.profile-back:focus-visible { outline: 2px solid #a8dde0; outline-offset: 3px; }
-.profile-ranking summary { font-weight: 650; }
-.profile-ranking a { color: #a8dde0; text-underline-offset: 3px; }
-.profile-ranking table { border-collapse: collapse; margin: 10px 0; }
-.profile-ranking th, .profile-ranking td { padding: 4px 12px; border-bottom: 1px solid #49626b; }
-.profile-ranking thead th, .profile-ranking td:nth-child(2) { text-align: left; }
-.profile-ranking td:nth-child(n+3) { text-align: right; font-variant-numeric: tabular-nums; }
-"""

@@ -10,7 +10,7 @@ The five galleries use two centrally maintained page templates:
 | Stamps | [stamp_gallery.html](../templates/stamp_gallery.html) | [stamp_gallery.css](../templates/stamp_gallery.css) |
 | Demo landing page | [demo_index.html](../templates/demo_index.html) | Page styles in the template, shared switch CSS |
 
-The shared [anno_gallery.py](../templates/anno_gallery.py) renderer assembles the page frame, logo and colour theme. Game-specific maps, building details, filters and JavaScript stay with their exporters. Images, CSS and logos remain local or embedded; generated galleries do not require a web server.
+The shared [anno_gallery.py](../templates/anno_gallery.py) renderer assembles the page frame, logo and colour theme. Anno 117 and 1800 additionally share the complete catalogue in `templates/map_catalog.html`, its `map_catalog.js` runtime and the card/page renderer `anno_map_catalog.py`. Their exporters supply game-specific maps and detail values. Anno 1404 retains its terrain-card grid and edition filter, using the same frame, theme resources and statistic groups. Images, CSS and logos remain local or embedded; generated galleries do not require a web server.
 
 Map and stamp galleries consistently use `system-ui, sans-serif`, including page and card headings. Page headings share their font size, weight and line height. README previews use one shared table with images set to 360 pixels wide; capture new screenshots at an image width of 1264 pixels (1280-pixel browser width including the scrollbar).
 
@@ -40,7 +40,7 @@ The renderer embeds both JSON resources, [gallery_i18n.js](../templates/gallery_
 
 Custom profile, folder and stamp names, paths, raw technical values and object/DLC names read from game data remain unchanged. Labels inside PNGs, Excel reports, launcher menus and logs are outside the HTML language switch.
 
-Maintain both canonical JSON files, then synchronise the templates and refresh the demos. Tests cover matching keys/placeholders, valid bindings on all five pages, identity preservation, safe embedding, independent game bundles and JavaScript behaviour with blocked or invalid browser storage. Run `node --test tests/gallery_i18n_runtime.cjs` for the JavaScript tests alone; Python tests also run them when Node.js is available.
+Maintain both canonical JSON files, then synchronise the templates and refresh the demos. Tests cover matching keys/placeholders, valid bindings on all five pages, identity preservation, safe embedding, independent game bundles and JavaScript behaviour with blocked or invalid browser storage. Run `node --test tests/gallery_i18n_runtime.cjs tests/map_catalog_runtime.cjs` for the JavaScript tests alone; Python tests also run them when Node.js is available.
 
 [English gallery preview with the DE/EN switch](../anno117/docs/images/stamp-gallery-en.jpg). Stamp previews show the German interface with its language switch; map READMEs link directly to the compact HTML demos. Existing captures use the same image width.
 
@@ -58,3 +58,7 @@ Operational and file-status messages belong in logs rather than galleries. Maps,
 ## Save statistic groups
 
 Shared presentation lives in `templates/anno_save_summary.py`; conservative readers live in `templates/anno_save_statistics.py`. Both are synchronised into the independently usable game bundles together with the templates. Exporters supply separate campaign summaries; native `details`/`summary` elements keep details collapsed initially. Labels and population tiers are maintained in both central language resources. [Statistics and limitations](save-statistics.md).
+
+## Map catalogue controls
+
+117 and 1800 use the same profile ranking, collapsed seed list, search, mode filter, sorting, result count and two return buttons. The seed list counts distinct seeds in the export. Profile links select an exact profile and scroll to the filters; returning clears the profile/search/mode filters and restores focus to the selected ranking link. Search uses `data-profiles`, independent of visible statistic groups, and numeric queries match an exact seed. The controls align along their bottom edge and wrap on narrow screens. Sorting and DE/EN changes move existing cards and preserve their open groups. Finances precede population, residences and ships in all three games, keeping population and residences adjacent. Regression tests execute the shared runtime, including cards without the optional `.profiles` paragraph.

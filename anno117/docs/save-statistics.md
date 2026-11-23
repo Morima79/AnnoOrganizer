@@ -33,3 +33,15 @@ Anno 117 stores some population values as Float32. Simply summing residence inha
 Ship modules are not additional ships. Ships without installed modules are recognised from their assets; region transfers must not duplicate them. For 1800, airships can be listed separately as part of the recognised fleet. Unresolved owned expedition-ship references make the fleet count unavailable rather than silently incomplete. Ship type names come from local game data and are not automatically translated. The 1404 ship-type breakdown is currently unavailable. Special states such as unknown ruin markers, mods and untested format versions may restrict availability. File-level checks do not replace an in-game comparison.
 
 The new features use no online services. Personal statistics, caches and logs must stay out of Git, releases and Pages. Public pages are generated only from the bundled demo inputs; missing demo statistics remain explicitly marked unavailable.
+
+## What is a map variant?
+
+A variant groups map configurations, not progress or save dates. Several campaigns may share a variant, and the same seed may have several variants. Population, wealth, residences and ships do not enter the grouping. The collapsed map-settings section shows the saved values used for comparison.
+
+| Game | Distinguishing saved data |
+|---|---|
+| 117 | Map type, world/island size and difficulty, fertility/resources, forest, starting province, mode, continental start/settling rules, default rivals, active DLCs and mods |
+| 1800 | Map type, world/island size and difficulty, fertility/resources, mode, saved map definitions, traders/pirates and rivals, active DLCs/mods, and warehouse start |
+| 1404 | Mode, seed, game-type variation (including campaign chapter), scenario outside sandbox, actual island layout or terrain fallback, map settings except `RandomMap`, and AI names |
+
+For 117/1800 the displayed variant number is an export index and may change when groups are added. The 1404 variant ID derives from the grouping hash. A variant is distinct from a campaign identity, which selects the latest statistics. Configuration differences can create separate variants even when their map previews look alike; this is not a claim that their terrain differs.

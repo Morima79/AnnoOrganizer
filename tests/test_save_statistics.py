@@ -245,6 +245,8 @@ class SelectionAndPresentationTests(unittest.TestCase):
         self.assertIn('&lt;script&gt;private&lt;/script&gt;', page)
         self.assertNotIn('<private>', page)
         self.assertIn('stats.lastPlayed', page)
+        order = ['stats.money', 'stats.population', 'stats.houses', 'stats.ships']
+        self.assertEqual(sorted(order, key=page.index), order)
         self.assertEqual(summary.number(-0.4, signed=True), '-0.4')
 
 

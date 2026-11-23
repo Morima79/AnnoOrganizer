@@ -12,12 +12,12 @@ import os
 from pathlib import Path
 import sys
 from anno_settings import settings_for, protect_output
-from anno_gallery import render_gallery
-from anno_save_summary import collect_statistics, render_statistics, statistics_sources, label as summary_label
+from anno_map_catalog import render_card, render_catalog_page
+from anno_save_summary import collect_statistics
 from anno_save_statistics import FileDBStatistics
 CONFIG = settings_for('anno117')
 
-from anno_profile_playtime import profile_name, profile_playtime, ranking_html, RANKING_CSS
+from anno_profile_playtime import profile_name, profile_playtime, ranking_html
 import struct
 import sys
 from tempfile import TemporaryDirectory
@@ -350,52 +350,35 @@ def prepare(saves, accounts, map_writer, zone, cached_maps, statistics=None):
 def write_html(rows, total, stage, updated_at, total_playtime, profiles):
     cards = []
     for row in rows:
-        seed,index,mode = row['identity']
-        data = {'seed':seed,'variant':index,'mode':mode,'first':row['sort']['first'],
-                'latest':row['sort']['latest'],'record-date':row['sort']['recordDate'],
-                'latest-time':row['sort']['latestTime'],'record-time':row['sort']['recordTime'],
-                'profiles':json.dumps(row['profile_names'], ensure_ascii=False)}
-        attrs = ' '.join(f'data-{key}="{escape(str(value),quote=True)}"' for key,value in data.items())
-        cards.append(f'<article {attrs}><h2>Seed {seed} · Variante {index:03d}</h2>'
-                     f'<p>{mode}</p>')
-        if not row.get('statistics'):
-            cards.append(f'<p class="profiles">{escape(row["profiles"]).replace(chr(10),"<br>")}</p>')
-        cards.append(render_statistics(row.get('statistics', [])))
-        cards.append('<details class="save-details"><summary>' + summary_label('stats.saveDetails') + '</summary>')
-        cards.append(statistics_sources(row.get('statistics', [])))
-        cards.append(f'<p>{row["settings"][0]} Saves</p>')
+        seed, index, mode = row['identity']
+        save_details = ''
         if row['delta']:
-            cards.append(f'<p class="marker">Älterer Save: +{clock(row["delta"])} mehr Spielzeit</p>')
-        cards.append('<dl>')
-        for field_label,value in zip(TIME_COLUMNS,row['fields'][len(SETTINGS):],strict=True):
-            cards.append(f'<div><dt>{escape(field_label)}</dt><dd>{escape(value)}</dd></div>')
-        cards.append(f'</dl><p>Kartenstand: {escape(row["source"])}</p></details><div class="maps">')
+            save_details += f'<p class="marker">Älterer Save: +{clock(row["delta"])} mehr Spielzeit</p>'
+        save_details += '<dl>' + ''.join(
+            f'<div><dt>{escape(name)}</dt><dd>{escape(value)}</dd></div>'
+            for name, value in zip(TIME_COLUMNS, row['fields'][len(SETTINGS):], strict=True))
+        save_details += f'</dl><p>Kartenstand: {escape(row["source"])}</p>'
+        maps = []
         for link in row['links']:
-            path,label = escape(link['path']),escape(link['label'])
-            cards.append(f'<figure><a href="{path}"><img src="{path}" loading="lazy" alt="{label}"></a>'
-                         f'<figcaption>{label}</figcaption></figure>')
-        cards.append('</div><details><summary>' + summary_label('stats.settings') + '</summary><dl>')
-        for field_label,value in zip(SETTINGS,row['fields'][:len(SETTINGS)],strict=True):
-            cards.append(f'<div><dt>{escape(field_label)}</dt><dd>{escape(value)}</dd></div>')
-        for field_label,x,y in row['sizes']:
-            cards.append(f'<div><dt>{escape(field_label)} · Kartengrösse</dt><dd>{x} × {y}</dd></div>')
-        for key,values in sorted(row['raw'].items()):
-            field_label = DETAIL_LABELS.get(key, GEO_SETTINGS.get(key, key))
-            value = setting_value(key, values)
+            path, name = escape(link['path'], quote=True), escape(link['label'])
+            maps.append(f'<figure><a href="{path}"><img src="{path}" loading="lazy" alt="{name}"></a>'
+                        f'<figcaption>{name}</figcaption></figure>')
+        settings = '<dl>'
+        for name, value in zip(SETTINGS, row['fields'][:len(SETTINGS)], strict=True):
+            settings += f'<div><dt>{escape(name)}</dt><dd>{escape(value)}</dd></div>'
+        for name, x, y in row['sizes']:
+            settings += f'<div><dt>{escape(name)} · Kartengrösse</dt><dd>{x} × {y}</dd></div>'
+        for key, values in sorted(row['raw'].items()):
+            name = DETAIL_LABELS.get(key, GEO_SETTINGS.get(key, key))
             if key in ('SetupStartSession', 'SetupStartSessionIslandSize'):
-                # Setup values can be defaults. The visible sizes above come from the generated region.
-                field_label += ' (gespeicherter Setup-Wert)'
-            cards.append(f'<div><dt>{escape(field_label)}</dt><dd>{escape(value)}</dd></div>')
-        cards.append('</dl></details></article>')
-    template=(HERE/'map_gallery_template.html').read_text(encoding='utf8')
-    template = template.replace('@@UPDATED_ISO@@', updated_at.isoformat(timespec='minutes'))
-    template = template.replace('@@UPDATED_AT@@', updated_at.strftime('%d.%m.%Y %H:%M'))
-    template = template.replace('@@TOTAL_PLAYTIME@@', total_playtime)
-    template = template.replace('@@PROFILE_CSS@@', RANKING_CSS)
-    template = template.replace('@@PROFILE_RANKING@@', ranking_html(profiles, clock))
-    template=template.replace('@@CARDS@@',''.join(cards)).replace('@@SUMMARY@@',
-        f'{len({row["identity"][0] for row in rows})} Seeds · {len(rows)} Kartenvarianten · {total} Spielstände')
-    (stage/'map-gallery.html').write_text(render_gallery(template, 'anno117', 'map'),encoding='utf8')
+                name += ' (gespeicherter Setup-Wert)'
+            settings += f'<div><dt>{escape(name)}</dt><dd>{escape(setting_value(key, values))}</dd></div>'
+        cards.append(render_card(seed, index, mode, row['profile_names'], row['profiles'], row['sort'],
+                                 row.get('statistics', []), row['settings'][0], save_details,
+                                 ''.join(maps), settings + '</dl>'))
+    page = render_catalog_page('anno117', cards, [row['identity'][0] for row in rows], total,
+                               updated_at, total_playtime, ranking_html(profiles, clock))
+    (stage/'map-gallery.html').write_text(page, encoding='utf-8')
 
 
 def publish(stage, output):

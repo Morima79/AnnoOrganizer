@@ -10,7 +10,7 @@ Die fünf Galerien verwenden zwei zentral gepflegte Seitenvorlagen:
 | Stempel | [stamp_gallery.html](../templates/stamp_gallery.html) | [stamp_gallery.css](../templates/stamp_gallery.css) |
 | Demo-Startseite | [demo_index.html](../templates/demo_index.html) | Seitenstil in der Vorlage, gemeinsames Schalter-CSS |
 
-Der gemeinsame Renderer [anno_gallery.py](../templates/anno_gallery.py) setzt den Seitenrahmen, das Logo und das Farbthema zusammen. Spielbezogene Karten, Gebäudeangaben, Filter und JavaScript bleiben bei den jeweiligen Exportern. Bilder, CSS und Logo werden wie bisher lokal eingebunden; für die erzeugte Galerie ist kein Webserver erforderlich.
+Der gemeinsame Renderer [anno_gallery.py](../templates/anno_gallery.py) setzt den Seitenrahmen, das Logo und das Farbthema zusammen. Anno 117 und 1800 teilen zusätzlich den vollständigen Katalog in `templates/map_catalog.html`, die Laufzeit `map_catalog.js` und den Karten-/Seitenrenderer `anno_map_catalog.py`. Die Exporte liefern spielbezogene Karten und Detailwerte. Anno 1404 behält sein Gelände-Kartenraster und den Editionsfilter und verwendet denselben Rahmen, dieselben Farbressourcen und Kennzahlengruppen. Bilder, CSS und Logo werden wie bisher lokal eingebunden; für die erzeugte Galerie ist kein Webserver erforderlich.
 
 Karten- und Stempelgalerien verwenden einheitlich `system-ui, sans-serif`, einschliesslich Haupt- und Kartentiteln. Haupttitel teilen sich Schriftgrösse, Gewicht und Zeilenhöhe. Die README-Vorschauen stehen in einer gemeinsamen Tabelle mit einheitlich 360 Pixel breiten Bildern; neue Screenshots werden mit 1264 Pixel Bildbreite aufgenommen (1280 Pixel Browserbreite einschliesslich Scrollleiste).
 
@@ -40,7 +40,7 @@ Der Renderer bettet beide JSON-Ressourcen sowie [gallery_i18n.js](../templates/g
 
 Eigene Profil-, Ordner- und Stempelnamen, Dateipfade, technische Rohwerte und aus dem Spiel übernommene Objekt-/DLC-Namen bleiben erhalten. Beschriftungen innerhalb der PNGs, Excel-Auswertungen, Startermenüs und Protokolle sind nicht Teil der HTML-Sprachumschaltung.
 
-Neue oder geänderte Übersetzungen in beiden zentralen JSON-Dateien pflegen, danach die Vorlagen synchronisieren und die Demo-Seiten aktualisieren. Die Tests prüfen Ressourcen-/Platzhaltergleichheit, gültige Bindungen aller fünf Seiten, unveränderte Identitäten, sichere Einbettung, eigenständige Anno-Kopien sowie das JavaScript-Verhalten bei gesperrtem oder ungültigem Browserspeicher. `node --test tests/gallery_i18n_runtime.cjs` führt die JavaScript-Tests separat aus; die Python-Tests rufen sie bei verfügbarem Node.js ebenfalls auf.
+Neue oder geänderte Übersetzungen in beiden zentralen JSON-Dateien pflegen, danach die Vorlagen synchronisieren und die Demo-Seiten aktualisieren. Die Tests prüfen Ressourcen-/Platzhaltergleichheit, gültige Bindungen aller fünf Seiten, unveränderte Identitäten, sichere Einbettung, eigenständige Anno-Kopien sowie das JavaScript-Verhalten bei gesperrtem oder ungültigem Browserspeicher. `node --test tests/gallery_i18n_runtime.cjs tests/map_catalog_runtime.cjs` führt die JavaScript-Tests separat aus; die Python-Tests rufen sie bei verfügbarem Node.js ebenfalls auf.
 
 [Englische Galerie-Vorschau mit DE/EN-Schalter](../anno117/docs/images/stamp-gallery-en.jpg). Die Stempelvorschauen zeigen die deutsche Oberfläche mit Sprachschalter; die Karten-READMEs verlinken direkt auf die kompakten HTML-Demos. Vorhandene Aufnahmen haben dieselbe Bildbreite.
 
@@ -58,3 +58,7 @@ Reine Betriebs- und Dateistatusmeldungen gehören in die Protokolle, nicht in di
 ## Spielstand-Gruppen
 
 Die gemeinsame Darstellung liegt in `templates/anno_save_summary.py`, die konservative Auslesung in `templates/anno_save_statistics.py`. Beide Dateien werden zusammen mit den Vorlagen in die eigenständig nutzbaren Spielordner synchronisiert. Die Exporter liefern getrennte Zusammenfassungen pro Partie; Details werden mit nativen, zunächst geschlossenen `details`/`summary`-Elementen dargestellt. Labels und Bevölkerungsstufen liegen in beiden zentralen Sprachressourcen. [Kennzahlen und Grenzen](save-statistics.de.md).
+
+## Bedienung des Kartenkatalogs
+
+117 und 1800 verwenden dieselbe Profilrangliste, aufklappbare Seed-Liste, Suche, Modusfilter, Sortierung, Trefferzahl und zwei Rücksprung-Schaltflächen. Die Seed-Liste zählt die unterschiedlichen Seeds des Exports. Profillinks wählen ein exaktes Profil und springen zu den Filtern; der Rücksprung setzt Profil-, Such- und Modusfilter zurück und stellt den Fokus auf den gewählten Ranglistenlink. Die Suche verwendet `data-profiles` unabhängig von sichtbaren Kennzahlengruppen; rein numerische Eingaben treffen einen exakten Seed. Die Bedienelemente stehen unten bündig und umbrechen bei wenig Platz. Sortieren und DE/EN-Wechsel verschieben bestehende Karten und erhalten geöffnete Gruppen. In allen drei Spielen steht Geld vor Bevölkerung, Wohnhäusern und Schiffen; dadurch bleiben Bevölkerung und Wohnhäuser benachbart. Regressionstests führen die gemeinsame Laufzeit auch mit Karten ohne optionalen `.profiles`-Absatz aus.

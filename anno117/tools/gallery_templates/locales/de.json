@@ -342,5 +342,6 @@
   "stats.level.anno1404.Citizen": "Bürger",
   "stats.level.anno1404.Patrician": "Patrizier",
   "stats.level.anno1404.Nobleman": "Adlige",
-  "stats.rounding": "Bevölkerungsstufen werden einzeln abgerundet; ihre Summe kann vom Gesamtwert abweichen."
+  "stats.rounding": "Bevölkerungsstufen werden einzeln abgerundet; ihre Summe kann vom Gesamtwert abweichen.",
+  "map.variantNote": "Eine Variante fasst Saves mit gleichem Seed und gleicher gespeicherter Kartenkonfiguration zusammen. Unterschiedliche Bevölkerungs- oder Geldstände allein erzeugen keine neue Variante."
 }

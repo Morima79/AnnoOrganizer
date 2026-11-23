@@ -13,13 +13,13 @@ from datetime import datetime
 from pathlib import Path
 import sys
 from anno_settings import settings_for, protect_output
-from anno_gallery import render_gallery
-from anno_save_summary import collect_statistics, render_statistics, statistics_sources, label as summary_label
+from anno_map_catalog import render_card, render_catalog_page
+from anno_save_summary import collect_statistics
 from anno_save_statistics import FileDBStatistics
 from functools import lru_cache
 CONFIG = settings_for('anno1800')
 
-from anno_profile_playtime import profile_name, profile_playtime, ranking_html, RANKING_CSS
+from anno_profile_playtime import profile_name, profile_playtime, ranking_html
 from zoneinfo import ZoneInfo
 import struct as st
 import zlib
@@ -508,7 +508,7 @@ def render_catalog(rows, groups, maps, stage, updated_at, total_playtime, profil
         d=defaultdict(list)
         for k,v in setup:
             d['/'.join(k)].append(v)
-        return '<dl>'+''.join(f'<dt>{esc(k)}</dt><dd>{esc(show_values(v))}</dd>' for k,v in d.items())+'</dl>'
+        return '<dl>'+''.join(f'<div><dt>{esc(k)}</dt><dd>{esc(show_values(v))}</dd></div>' for k,v in d.items())+'</dl>'
     def preset_details():
         chunks=[]
         played={one(k,'GameSeed') for k,_ in groups}
@@ -547,7 +547,6 @@ def render_catalog(rows, groups, maps, stage, updated_at, total_playtime, profil
             links.append({'path':f'map-images/{fn}', 'label':region})
         source=f"{card.get('source','')}: {card.get('path','')}" if pics else card.get('error','Noch keine Karte exportiert')
         profiles = [f'{p} ({n})'+(' [Archiv]' if s=='Archiv' else '') for (s,p),n in sorted(prof.items())]
-        profile = esc(' · '.join(profiles))
         variants=Counter(groupset(r) for r in rs)
         third=get(k,'ThirdParties')
         traders=[f'{PARTIES.get(p, f"ID {p}")} ({("0","1","2")[d] if d in (0,1,2) else d})' for p,d in zip(third[::2],third[1::2])]
@@ -567,140 +566,30 @@ def render_catalog(rows, groups, maps, stage, updated_at, total_playtime, profil
         campaign_statistics = [statistics[key] for key in sorted({f"{seed}:{r['campaign_id']}" for r in rs})
                                if statistics and key in statistics]
         raw=''.join(f'<details><summary>Einstellungen · {n} Datei(en)</summary>{details(v)}</details>' for v,n in variants.most_common())
-        attrs = {'seed':seed, 'mode':mode(k), 'variant':i, **times['sort']}
-        attrs['profiles'] = json.dumps(sorted({profile_name(r['source'], r['path']) for r in rs}), ensure_ascii=False)
-        attrs = ' '.join(f'data-{name}="{esc(str(value), quote=True)}"' for name,value in attrs.items())
+        profile_names = sorted({profile_name(r['source'], r['path']) for r in rs})
         marker = ''
         if times['delta'] > 0:
-            attrs += ' class="has-playtime-extra"'
             marker = f'<span class="playtime-extra">Älterer Save: +{duration(times["delta"])} mehr Spielzeit</span>'
-        count = f'{len(rs):,}'.replace(',', '’')
-        parts.append(f'<article {attrs}><div class="top"><h2>Seed {seed}</h2>'
-                     f'<span>Variante {i:03d} · {mode(k)}</span></div>'
-                     + ('' if campaign_statistics else f'<p class="profiles">{profile}</p>')
-                     + render_statistics(campaign_statistics)
-                     + '<details class="save-details"><summary>' + summary_label('stats.saveDetails') + '</summary>'
-                     + statistics_sources(campaign_statistics)
-                     + f'<p>{count} Dateien</p>{marker}<dl>{save_table}</dl><p class="source">{esc(source)}</p></details>'
-                     f'<div class="maps">{"".join(pics)}</div><details><summary>' + summary_label('stats.settings')
-                     + f'</summary><div class="settings">{table}</div>{raw}</details></article>')
+        parts.append(render_card(seed, i, mode(k), profile_names, '\n'.join(profiles),
+                                 times['sort'], campaign_statistics, len(rs),
+                                 f'{marker}<dl>{save_table}</dl><p class="source">{esc(source)}</p>',
+                                 ''.join(pics), f'<div class="settings">{table}</div>{raw}'))
         excel_rows.append({'identity':[seed, i, mode(k)], 'links':links,
                            'settings':[len(rs), '\n'.join(profiles), *values, source, *times['excel']],
                            'delta':times['delta'], 'statistics':campaign_statistics})
-    seed_counts=Counter(one(k,'GameSeed') for k,_ in groups)
-    nseeds=len(seed_counts)
-    chips=''.join(f'<button type="button" data-filter="{seed}" title="{count} Varianten">{seed}</button>' for seed,count in sorted(seed_counts.items()))
-    css="""*{box-sizing:border-box}body{margin:0;background:#0c1b24;color:#e8f2f6;font:16px/1.5 system-ui,sans-serif}main{max-width:1260px;margin:auto;padding:40px 24px}header{border-bottom:1px solid #385361;padding-bottom:22px;margin-bottom:24px}h1{font-size:clamp(2rem,5vw,3.6rem);line-height:1.06;margin:8px 0 18px}h2{font-size:1.65rem;margin:0}p{margin:10px 0}small,.source,.profiles,figcaption,.top span{color:#b6cbd5}label{display:inline-flex;flex-direction:column;margin:0 14px 10px 0}input,select{background:#172f3d;color:inherit;border:1px solid #587685;border-radius:7px;padding:10px;font:inherit}article{padding:22px;margin:16px 0;background:#142936;border:1px solid #365260;border-radius:14px}.top{display:flex;align-items:baseline;gap:8px 20px;flex-wrap:wrap}.settings{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:10px;margin:16px 0}.settings div{padding:9px 11px;background:#1c3847;border-radius:6px}.settings small{display:block;font-size:.8rem}.maps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px}.maps figure{margin:0;max-width:350px}.maps img{display:block;width:100%;border-radius:7px;border:1px solid #436575}figcaption,.source{font-size:.83rem}details{margin-top:8px}summary{cursor:pointer;color:#a4dce8}dl{display:grid;grid-template-columns:minmax(160px,1fr) 2fr;gap:5px 16px}dt,dd{overflow-wrap:anywhere;margin:0}dd{color:#cedee3}a{color:#a4dce8}.seeds{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 24px}.seeds button{background:#172f3d;color:#a4dce8;border:1px solid #426579;border-radius:6px;padding:5px 9px;cursor:pointer}"""
-    css += '.settings div{overflow-wrap:anywhere}.has-playtime-extra{border-left:4px solid #e3a84e}.top .playtime-extra{display:inline-block;color:#ffe6b4;background:#583b1b;border-radius:5px;padding:3px 8px;font-weight:600}'
-    script = r"""
-document.addEventListener('gallerylanguagechange',filter);
-const q = document.querySelector('#q');
-const mode = document.querySelector('#mode');
-const sort = document.querySelector('#sort');
-const variants = document.querySelector('#variants');
-const count = document.querySelector('#count');
-const cards = [...variants.querySelectorAll('article')];
-const profileNames = new Map(cards.map(card => [card, JSON.parse(card.dataset.profiles)]));
-let selectedProfile = null;
-let profileLink = null;
-const backToProfiles = document.querySelectorAll('[data-back-to-profiles]');
-const profileRanking = document.querySelector('#profile-ranking');
-
-function returnToProfileRanking() {
-  const returnLink = profileLink;
-  selectedProfile = null;
-  profileLink = null;
-  q.value = '';
-  mode.value = '';
-  filter();
-  profileRanking.open = true;
-  (returnLink || profileRanking.querySelector('summary')).focus({preventScroll: true});
-  profileRanking.scrollIntoView();
-}
-
-for (const button of backToProfiles) {
-  button.addEventListener('click', returnToProfileRanking);
-}
-
-function filter() {
-  const search = q.value.trim().toLowerCase();
-  let visible = 0;
-  for (const card of cards) {
-    const profile = card.querySelector('.profiles').textContent.toLowerCase();
-    const hit = selectedProfile !== null ? profileNames.get(card).includes(selectedProfile) :
-      /^\d+$/.test(search) ? card.dataset.seed === search : profile.includes(search);
-    card.hidden = !(hit && (!mode.value || card.dataset.mode === mode.value));
-    if (!card.hidden) visible++;
-  }
-  for (const button of backToProfiles) button.hidden = selectedProfile === null;
-  count.textContent = galleryI18n.t('map.visible',{count:visible});
-}
-
-function sortCards() {
-  const key = sort.value;
-  const direction = key === 'variant' || key === 'first' ? 1 : -1;
-  const ordered = [...cards].sort((a, b) =>
-    direction * (Number(a.dataset[key]) - Number(b.dataset[key])) ||
-    Number(a.dataset.variant) - Number(b.dataset.variant)
-  );
-  variants.append(...ordered);
-}
-
-q.addEventListener('input', () => {
-  selectedProfile = null;
-  filter();
-});
-for (const link of document.querySelectorAll('[data-profile-filter]')) {
-  link.addEventListener('click', event => {
-    event.preventDefault();
-    selectedProfile = link.dataset.profileFilter;
-    profileLink = link;
-    q.value = selectedProfile;
-    mode.value = '';
-    filter();
-    q.focus({preventScroll: true});
-    document.querySelector('#variant-filters').scrollIntoView();
-  });
-}
-mode.addEventListener('change', filter);
-sort.addEventListener('change', sortCards);
-for (const button of document.querySelectorAll('[data-filter]')) {
-  button.addEventListener('click', () => {
-    selectedProfile = null;
-    q.value = button.dataset.filter;
-    mode.value = '';
-    filter();
-  });
-}
-filter();
-"""
-    css += '\n.game-logo { display: block; width: min(100%, 270px); height: auto; margin: 0 0 14px; }\n.game-logo--117 { background: #f1e5cc; border-radius: 8px; }'
-    css += '\n.gallery-updated { display: block; color: #b6cbd5; margin: 0 0 4px; }'
-    css += '\nheader h1{font-family:system-ui,sans-serif;font-size:clamp(2rem,5vw,3.4rem);font-weight:700;line-height:1.15;margin:0 0 10px}\nheader .gallery-scope{font-weight:600;margin:8px 0}\nheader .gallery-updated{display:block;font-size:14px;color:#b6cbd5;margin:8px 0}\nheader .gallery-summary{margin:12px 0}\nheader .gallery-description{margin:8px 0}\nheader .gallery-notes{font-size:14px;margin:12px 0 0}\nheader .gallery-notes p{margin:8px 0}\n'
-    html=f"""<!doctype html><html lang="de-CH"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Anno 1800 · Kartenseeds und Karten</title><style>{css}{RANKING_CSS}</style><main>
-    <header>
-    <h1>Anno 1800 · Kartenseeds und Karten</h1>
-    <p class="gallery-scope">Grundspiel und Erweiterungen</p>
-    <p class="gallery-updated">Zuletzt aktualisiert am: <time datetime="{updated_at.isoformat(timespec='minutes')}">{updated_at.strftime('%d.%m.%Y %H:%M')}</time> · Gesamtspielzeit: {total_playtime}</p>
-    <p class="gallery-summary"><strong>{nseeds} Seeds · {len(groups)} Kartenvarianten · {len(rows):,} Spielstände</strong></p>
-    <p class="gallery-description">Die Galerie gruppiert lokale Spielstände nach Seed und gespeicherter Kartenkonfiguration. Ein Klick auf eine Karte öffnet die PNG-Datei in voller Grösse.</p>
-    <details class="gallery-notes"><summary>Hinweise zu Karten und Spielzeit</summary>
-    <p>Für die Gesamtspielzeit zählt pro gespeicherter Partie der höchste gespeicherte Spielzeitwert.</p>
-    <p>Die Karten kombinieren gespeicherte Inselpositionen und Drehungen mit Grafiken der lokalen Spielinstallation. Sie zeigen Inseln und Gelände, keine Städte, Gebäude oder Besitzverhältnisse. Ein Ring markiert Inseln ohne passende Grafik. Regionen, die im gewählten Stand noch fehlen, werden nicht angezeigt.</p>
-    <p>Die Zeitpunkte stammen aus den Spielständen und werden in der eingestellten Zeitzone angezeigt. Bei gleicher höchster Spielzeit erscheint der jüngste Save. Die Anzahl zählt Dateien einschliesslich Autosaves und Archivkopien. Szenarien und Kampagnen können einen Seed speichern, obwohl Teile ihrer Karten vorgegeben sind. IDs sind die gespeicherten Werte. Anzahl und Grösse der Inseln sowie aktive DLCs beziehen sich auf den jeweiligen Stand.</p>
-    </details>
-    </header>
-    {ranking_html(profile_totals, duration)}
-    <details><summary>Alle {nseeds} Seed-Werte anzeigen</summary><div class="seeds">{chips}</div></details><p></p>
-    <label id="variant-filters">Seed oder Profil <input id="q" type="search" placeholder="z. B. 7398 oder Spieler"></label><label>Modus <select id="mode"><option value="">Alle</option><option>Sandkasten</option><option>Kampagne</option><option>Kreativmodus</option><option>Szenario</option></select></label><label>Sortieren nach <select id="sort"><option value="variant">Seed und Variante</option><option value="latest">Neuester Save zuerst</option><option value="first">Ältester Save zuerst</option><option value="recordDate">Datum des Saves mit längster Spielzeit</option><option value="recordTime">Längste gespeicherte Spielzeit zuerst</option><option value="latestTime">Spielzeit im neuesten Save zuerst</option></select></label><button type="button" class="profile-back" data-back-to-profiles hidden>Zurück zur Profilrangliste</button><p id="count" aria-live="polite"></p>
-    <div id="variants">{''.join(parts)}</div>
-<button type="button" class="profile-back" data-back-to-profiles hidden>Zurück zur Profilrangliste</button>
-    <section><h2>Gespeicherte Spielvorlagen</h2><p>Diese Dateien sind keine Spielstände und zählen nicht zur Seed-Aufstellung. Die Kennzeichnung vergleicht nur die Seed-Zahl.</p>{preset_details()}</section>
-    <p class="source"><span data-i18n="map.references">Formatreferenzen:</span> <a href="https://github.com/EMRECAN-1907/anno1800-save-tools">A7S / FileDB</a> · <a href="https://github.com/anno-mods/FileDBReader">FileDB V1</a> · <a href="https://github.com/pan324/anno1800_seedfinder" data-i18n="map.graphicsReference">Inselgrafiken und Darstellung</a>.</p></main><script>{script}</script></html>"""
-    (stage/'map-gallery.html').write_text(
-        render_gallery(html, 'anno1800', 'map').replace(f'{len(rows):,} Spielstände',
-                     f'{len(rows):,} Spielstände'.replace(',', '’')), encoding='utf-8')
-    print(f'{nseeds} Seeds, {len(groups)} Varianten, {len(pictures)} Kartenbilder', flush=True)
+    extra = ('<section><h2>Gespeicherte Spielvorlagen</h2>'
+             '<p>Diese Dateien sind keine Spielstände und zählen nicht zur Seed-Aufstellung. '
+             'Die Kennzeichnung vergleicht nur die Seed-Zahl.</p>' + preset_details() + '</section>'
+             '<p class="source"><span data-i18n="map.references">Formatreferenzen:</span> '
+             '<a href="https://github.com/EMRECAN-1907/anno1800-save-tools">A7S / FileDB</a> · '
+             '<a href="https://github.com/anno-mods/FileDBReader">FileDB V1</a> · '
+             '<a href="https://github.com/pan324/anno1800_seedfinder" data-i18n="map.graphicsReference">'
+             'Inselgrafiken und Darstellung</a>.</p>')
+    seeds = [one(key, 'GameSeed') for key, _ in groups]
+    page = render_catalog_page('anno1800', parts, seeds, len(rows), updated_at, total_playtime,
+                               ranking_html(profile_totals, duration), extra)
+    (stage/'map-gallery.html').write_text(page, encoding='utf-8')
+    print(f'{len(set(seeds))} Seeds, {len(groups)} Varianten, {len(pictures)} Kartenbilder', flush=True)
     return excel_rows
 
 def excel_target(output, explicit):
