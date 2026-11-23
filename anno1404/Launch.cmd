@@ -22,13 +22,13 @@ echo Installing the required Python packages...
 if errorlevel 1 goto failed
 :run_tools
 ".venv\Scripts\python.exe" launch.py %*
-set "annotools_exit=%errorlevel%"
+set "annoorganizer_exit=%errorlevel%"
 if "%~1"=="" pause
-exit /b %annotools_exit%
+exit /b %annoorganizer_exit%
 :missing_python
 echo Please install Python 3.11 or newer, then open Launch.cmd again.
 goto failed
 :failed
-echo AnnoTools could not start. Please check the message above.
+echo AnnoOrganizer could not start. Please check the message above.
 pause
 exit /b 1

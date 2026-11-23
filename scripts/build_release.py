@@ -13,8 +13,8 @@ def build_release(version, output):
     root = Path(__file__).resolve().parents[1]
     output = Path(output).resolve()
     output.mkdir(parents=True, exist_ok=True)
-    prefix = f'AnnoTools-{version}/'
-    archive = output / f'AnnoTools-{version}.zip'
+    prefix = f'AnnoOrganizer-{version}/'
+    archive = output / f'AnnoOrganizer-{version}.zip'
     subprocess.run(['git', 'archive', '--format=zip', '--prefix=' + prefix,
                     '-o', str(archive), 'HEAD'], cwd=root, check=True)
     names = subprocess.check_output(['git', 'ls-tree', '-rz', '--name-only', 'HEAD'], cwd=root)

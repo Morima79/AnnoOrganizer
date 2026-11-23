@@ -49,7 +49,7 @@ Neue oder geänderte Übersetzungen in beiden zentralen JSON-Dateien pflegen, da
 1. HTML, CSS oder `THEMES` ausschliesslich im zentralen Ordner `templates/` bearbeiten.
 2. `python scripts/sync_gallery_templates.py --refresh-site` ausführen. Das synchronisiert die mitgelieferten Kopien und aktualisiert die Demo-Startseite sowie den Seitenrahmen der fünf bestehenden Demo-Snapshots. Die Demo-Daten und Bildverweise bleiben erhalten; dafür sind keine Spieldaten nötig.
 3. `python scripts/sync_gallery_templates.py --check`, `python scripts/validate_site.py` und `python -m unittest discover -s tests -v` ausführen.
-4. Persönliche Galerien mit dem jeweiligen AnnoTools-Starter aktualisieren. Bei geänderten Demo-Inhalten die Demos zusätzlich regulär neu erzeugen.
+4. Persönliche Galerien mit dem jeweiligen AnnoOrganizer-Starter aktualisieren. Bei geänderten Demo-Inhalten die Demos zusätzlich regulär neu erzeugen.
 
 Jeder Anno-Ordner enthält den Renderer und seine Vorlagen unter `tools/`. Diese Kopien werden automatisch aus den zentralen Quellen übernommen und von den Tests geprüft. Dadurch bleibt ein einzelner Anno-Ordner ohne den Rest des Repositories nutzbar. Keine Symlinks und keine zusätzlichen Laufzeit-Abhängigkeiten sind erforderlich. Die mitgelieferten Kopien nicht separat bearbeiten.
 

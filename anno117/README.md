@@ -1,8 +1,8 @@
 # Anno 117: Pax Romana
 
-[![Tests](https://github.com/Morima79/AnnoTools/actions/workflows/tests.yml/badge.svg?branch=main&event=push)](https://github.com/Morima79/AnnoTools/actions/workflows/tests.yml)
-[![Latest release](https://img.shields.io/github/v/release/Morima79/AnnoTools?sort=semver&label=Release)](https://github.com/Morima79/AnnoTools/releases/latest)
-[![Demo galleries](https://img.shields.io/badge/Demo-Galleries-2ea44f)](https://morima79.github.io/AnnoTools/)
+[![Tests](https://github.com/Morima79/AnnoOrganizer/actions/workflows/tests.yml/badge.svg?branch=main&event=push)](https://github.com/Morima79/AnnoOrganizer/actions/workflows/tests.yml)
+[![Latest release](https://img.shields.io/github/v/release/Morima79/AnnoOrganizer?sort=semver&label=Release)](https://github.com/Morima79/AnnoOrganizer/releases/latest)
+[![Demo galleries](https://img.shields.io/badge/Demo-Galleries-2ea44f)](https://morima79.github.io/AnnoOrganizer/)
 
 [English](README.md) · [Deutsch](README.de.md)
 
@@ -60,10 +60,10 @@ Use **DE / EN** at the top right to switch gallery language; stamp galleries als
 
 Use these scripts at your own risk. They are supplied without warranty. The warranty disclaimer and liability terms in [LICENSE](LICENSE) apply.
 
-When redistributing the scripts, including modified versions, retain the copyright notice naming **Morima79**, its reference to the original [AnnoTools repository](https://github.com/Morima79/AnnoTools), and the MIT license notices.
+When redistributing the scripts, including modified versions, retain the copyright notice naming **Morima79**, its reference to the original [AnnoOrganizer repository](https://github.com/Morima79/AnnoOrganizer), and the MIT license notices.
 
 ## Online demos
 
-[Map gallery / Kartengalerie](https://morima79.github.io/AnnoTools/anno117/maps/) · [Stamp gallery / Stempelgalerie](https://morima79.github.io/AnnoTools/anno117/stamps/) · [All demos / Alle Demos](https://morima79.github.io/AnnoTools/)
+[Map gallery / Kartengalerie](https://morima79.github.io/AnnoOrganizer/anno117/maps/) · [Stamp gallery / Stempelgalerie](https://morima79.github.io/AnnoOrganizer/anno117/stamps/) · [All demos / Alle Demos](https://morima79.github.io/AnnoOrganizer/)
 
 The online galleries show the bundled examples without installation. Automated releases and GitHub Pages are documented in the [publishing guide](../docs/publishing.md).

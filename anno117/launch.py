@@ -1,4 +1,4 @@
-"""Launch a local AnnoTools task or the bundled demo."""
+"""Launch a local AnnoOrganizer task or the bundled demo."""
 import argparse
 from contextlib import contextmanager
 import importlib.util
@@ -52,7 +52,7 @@ def updating(output):
 
 def choose():
     options = ['demo', *SCRIPTS]
-    print('AnnoTools – ' + GAME.replace('anno', 'Anno '))
+    print('AnnoOrganizer – ' + GAME.replace('anno', 'Anno '))
     for number, action in enumerate(options, 1):
         print(f'{number}: {LABELS[action]}')
     try:
@@ -136,7 +136,7 @@ def main():
         print(('Einstellungen angelegt: ' if created else 'Vorhandene Einstellungen bleiben erhalten: ') + str(args.config))
         return 0
     if os.name != 'nt':
-        raise ValueError('AnnoTools unterstützt derzeit Windows.')
+        raise ValueError('AnnoOrganizer unterstützt derzeit Windows.')
     action = args.action or choose()
     if action != 'demo' and action not in SCRIPTS:
         parser.error('Anno 1404 bietet bisher nur die Karten-/Spielstandauswertung.')
@@ -181,4 +181,4 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         sys.exit('Abgebrochen.')
     except (ValueError, OSError, ImportError, EOFError) as exc:
-        sys.exit('AnnoTools: ' + str(exc))
+        sys.exit('AnnoOrganizer: ' + str(exc))

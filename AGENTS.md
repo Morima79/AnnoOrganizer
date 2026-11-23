@@ -1,4 +1,4 @@
-# Arbeitsregeln für AnnoTools
+# Arbeitsregeln für AnnoOrganizer
 
 Gilt für das gesamte Repository. Diese Datei hält die dauerhaft wichtigen
 Entscheidungen aus den lokalen Aufgaben vom 21. und 22. November 2026 fest.
@@ -60,7 +60,7 @@ bestimmten Commit oder Release sind keine pauschale Freigabe für spätere Aufga
 
 ## Private Daten und lokale Ordner
 
-- Die Werkzeuge liegen zentral in AnnoTools. Die private Arbeitsstruktur des
+- Die Werkzeuge liegen zentral in AnnoOrganizer. Die private Arbeitsstruktur des
   Projektinhabers liegt daneben in `../Anno 117 Pax Romana/`, `../Anno 1800/`
   und `../Anno 1404/`: `settings.json`, `Auswertung/`, `Stempel/` (117/1800),
   `logs/` und `.annotools/`. Für private Aktualisierungen die jeweilige externe

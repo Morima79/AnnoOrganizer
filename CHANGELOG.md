@@ -1,9 +1,17 @@
 # Changelog
 
-Notable changes to AnnoTools. Each version includes English and German release notes.
-Wichtige Änderungen an AnnoTools. Jede Version enthält englische und deutsche Release-Hinweise.
+Notable changes to AnnoOrganizer. Each version includes English and German release notes.
+Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deutsche Release-Hinweise.
 
 ## [Unreleased]
+
+### English
+
+- Renamed the project to AnnoOrganizer and updated repository, release and GitHub Pages links, launcher labels and all five demo galleries. Future release archives use `AnnoOrganizer-<version>.zip`; existing settings, output markers and stored language preferences remain compatible.
+
+### Deutsch
+
+- Projekt in AnnoOrganizer umbenannt und Repository-, Release- und GitHub-Pages-Links, Startertexte sowie alle fünf Demo-Galerien angepasst. Künftige Release-Archive heissen `AnnoOrganizer-<Version>.zip`; bestehende Einstellungen, Ausgabekennungen und gespeicherte Sprachwahl bleiben kompatibel.
 
 ## [v0.1.9] - 2026-11-22
 

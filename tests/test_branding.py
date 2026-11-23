@@ -2,6 +2,7 @@
 import base64
 from html.parser import HTMLParser
 import importlib.util
+import json
 from pathlib import Path
 import unittest
 
@@ -20,6 +21,20 @@ class Images(HTMLParser):
 
 
 class BrandingTests(unittest.TestCase):
+    def test_demo_branding_and_repository_links_use_current_project(self):
+        for language in ('de', 'en'):
+            resources = json.loads((ROOT / 'templates/locales' / (language + '.json')).read_text(encoding='utf-8'))
+            for key in ('nav.demos', 'demo.title', 'demo.meta', 'demo.eyebrow', 'demo.footer'):
+                with self.subTest(language=language, key=key):
+                    self.assertIn('AnnoOrganizer', resources[key])
+        for page in (ROOT / 'site').rglob('index.html'):
+            with self.subTest(page=page):
+                text = page.read_text(encoding='utf-8')
+                self.assertFalse('AnnoTools' in text, f'Obsolete project name in {page}')
+                self.assertIn('annotools.gallery.language', text)
+        landing = (ROOT / 'site/index.html').read_text(encoding='utf-8')
+        self.assertIn('https://github.com/Morima79/AnnoOrganizer/releases/latest', landing)
+
     def assert_logo(self, page, game):
         parser = Images()
         parser.feed(page)

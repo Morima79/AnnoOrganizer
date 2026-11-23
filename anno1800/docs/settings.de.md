@@ -63,7 +63,7 @@ Den gewünschten Spielordner einzeln kopieren, eine Python-Umgebung erstellen un
 
 ## Externe Einstellungen und getrennte Ausgabeordner
 
-Mit `--config "D:/Projekte/Anno 117/settings.json"` kann die persönliche Einstellungsdatei ausserhalb von AnnoTools liegen. Relative Pfade beziehen sich auf diesen Ordner. Starter und Verknüpfungen müssen denselben `--config`-Pfad übergeben.
+Mit `--config "D:/Projekte/Anno 117/settings.json"` kann die persönliche Einstellungsdatei ausserhalb von AnnoOrganizer liegen. Relative Pfade beziehen sich auf diesen Ordner. Starter und Verknüpfungen müssen denselben `--config`-Pfad übergeben.
 
 Optional lassen sich die Ausgaben getrennt festlegen:
 

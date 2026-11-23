@@ -49,7 +49,7 @@ Maintain both canonical JSON files, then synchronise the templates and refresh t
 1. Edit HTML, CSS or `THEMES` in the canonical `templates/` folder only.
 2. Run `python scripts/sync_gallery_templates.py --refresh-site`. This synchronises the bundled copies, updates the demo landing page and refreshes the frames of the five existing demo snapshots. Demo data and image references are preserved; game data is not needed for this operation.
 3. Run `python scripts/sync_gallery_templates.py --check`, `python scripts/validate_site.py` and `python -m unittest discover -s tests -v`.
-4. Refresh personal galleries using the relevant AnnoTools launcher. If demo contents changed, regenerate the demos through the regular exporters as well.
+4. Refresh personal galleries using the relevant AnnoOrganizer launcher. If demo contents changed, regenerate the demos through the regular exporters as well.
 
 Each Anno folder includes the renderer and template copies under `tools/`. These are synchronised from the canonical sources and checked by tests, so each game folder remains independently usable. No symlinks or additional runtime dependencies are required. Do not edit bundled copies separately.
 
