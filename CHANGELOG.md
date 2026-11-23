@@ -5,6 +5,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ## [Unreleased]
 
+## [v0.1.10] - 2026-11-23
+
 ### English
 
 - Renamed the project to AnnoOrganizer and updated repository, release and GitHub Pages links, launcher labels and all five demo galleries. Future release archives use `AnnoOrganizer-<version>.zip`; existing settings, output markers and stored language preferences remain compatible.
