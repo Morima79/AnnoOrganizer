@@ -33,12 +33,12 @@ Demo-Startseite und Galerien verwenden denselben **DE/EN-Schalter**. Die gespeic
 
 ## Galerie-Vorschau
 
-Aktuelle Screenshots aller fünf mitgelieferten Demos mit dem gemeinsamen Galerie-Layout, Spiel-Logos und an die Spiele angelehnten Farben. Anno 1404 verwendet eine helle Pergamentoptik. Ein Klick auf ein Bild öffnet die Aufnahme in voller Auflösung.
+Die Stempelvorschauen zeigen die mitgelieferten Demos; ein Klick öffnet das Bild in voller Auflösung. Die Kartenlinks öffnen die HTML-Snapshots mit den neuen kompakten Kennzahlen und aufklappbaren Gruppen. Alle Galerien verwenden Spiel-Logos und passende Farben; Anno 1404 eine helle Pergamentoptik.
 
 | Galerie | Anno 117 | Anno 1800 | Anno 1404 |
 |---|---|---|---|
 | Stempel | [<img src="anno117/docs/images/stamp-gallery.jpg" alt="Anno-117-Demo mit Stadtbauplänen, Ceres-Filtern und Lavendel-Ausbaureserve" width="360">](anno117/docs/images/stamp-gallery.jpg) | [<img src="anno1800/docs/images/stamp-gallery.jpg" alt="Anno-1800-Demo mit Filtern für Traktoren, Silos, Strom, Rathaus und Handelskammer" width="360">](anno1800/docs/images/stamp-gallery.jpg) | Nicht implementiert |
-| Karten | [<img src="anno117/docs/images/map-gallery.jpg" alt="Anno-117-Kartengalerie mit Latium-Inselübersicht, Seed und gespeicherten Karteneinstellungen" width="360">](anno117/docs/images/map-gallery.jpg) | [<img src="anno1800/docs/images/map-gallery.jpg" alt="Anno-1800-Kartengalerie mit Alte-Welt-Inselübersicht, Seed und gespeicherten Karteneinstellungen" width="360">](anno1800/docs/images/map-gallery.jpg) | [<img src="anno1404/docs/images/map-gallery.jpg" alt="Anno-1404-Kartengalerie mit Grundspiel, Venedig und History Edition" width="360">](anno1404/docs/images/map-gallery.jpg) |
+| Karten | [Kompakte HTML-Demo](site/anno117/maps/index.html) | [Kompakte HTML-Demo](site/anno1800/maps/index.html) | [Kompakte HTML-Demo](site/anno1404/maps/index.html) |
 
 ## Schnellstart
 
@@ -117,6 +117,10 @@ Die Galerien liegen unter `stamps/stamp-gallery.html` und `reports/map-gallery.h
 Der vorbereitete GitHub-Actions-Workflow testet unter Windows mit synthetischen Daten. Nur die ausdrücklich ausgewählten Demo-Saves und Demo-Stempel gehören ins Repository. Andere persönliche Einstellungen, Stempel, Spielstände, Galerien ausserhalb der freigegebenen `site/`-Momentaufnahmen, Spieldaten, Caches und Sicherungen bleiben ausgeschlossen. `.gitignore` berücksichtigt neue und bisherige lokale Dateinamen. Python-Abhängigkeiten werden über pip installiert. Die Spiel-Logos sind zur Kennzeichnung enthalten. Bibliotheks- und Spieldatenarchive werden nicht mitgeliefert.
 
 Inoffizielles Projekt ohne Verbindung zu Ubisoft. Die Ausgaben sind Rekonstruktionen und keine Zusage über Bauplatz, Versorgung, Reichweite oder Spielbetrieb. Der Werkzeugcode steht unter der [MIT-Lizenz](LICENSE).
+
+## Aktuelle Spielstand-Kennzahlen
+
+Die Kartengalerie zeigt pro Partie den neuesten Save mit Bevölkerung, Vermögen, Bilanz, Wohnhäusern und Schiffen. Jede Kennzahlengruppe bleibt zunächst geschlossen; Stufen, Baupläne und weitere Details erscheinen erst beim Anklicken. Frühere Save- und Spielzeitangaben stehen unter **Save-Details**. Nicht zuverlässig auslesbare Werte werden als **nicht verfügbar** angezeigt. Excel erhält das zusätzliche Blatt **Aktuelle Spielstände**. [Datenquellen und Grenzen](docs/save-statistics.de.md).
 
 ## Nutzung und Weiterveröffentlichung
 

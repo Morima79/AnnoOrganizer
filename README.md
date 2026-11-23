@@ -33,12 +33,12 @@ The demo landing page and galleries share the same **DE/EN switch**. Your saved 
 
 ## Gallery previews
 
-Current screenshots of all five bundled demos, with the shared gallery layout, game logos and colours inspired by each game. Anno 1404 uses a light parchment theme. Click an image to view it at full resolution.
+The stamp previews show the bundled demos; click an image for full resolution. Map links open the HTML snapshots with the new compact statistics and disclosure groups. All galleries use game logos and matching colours; Anno 1404 uses a light parchment theme.
 
 | Gallery | Anno 117 | Anno 1800 | Anno 1404 |
 |---|---|---|---|
 | Stamps | [<img src="anno117/docs/images/stamp-gallery.jpg" alt="Anno 117 demo stamp gallery with city layouts, Ceres filters and lavender expansion reserve" width="360">](anno117/docs/images/stamp-gallery.jpg) | [<img src="anno1800/docs/images/stamp-gallery.jpg" alt="Anno 1800 demo stamp gallery with tractor, silo, electricity, town hall and trade union filters" width="360">](anno1800/docs/images/stamp-gallery.jpg) | Not implemented |
-| Maps | [<img src="anno117/docs/images/map-gallery.jpg" alt="Anno 117 map gallery with a Latium island overview, seed and saved map settings" width="360">](anno117/docs/images/map-gallery.jpg) | [<img src="anno1800/docs/images/map-gallery.jpg" alt="Anno 1800 map gallery with an Old World island overview, seed and saved map settings" width="360">](anno1800/docs/images/map-gallery.jpg) | [<img src="anno1404/docs/images/map-gallery.jpg" alt="Anno 1404 demo map gallery comparing the original, Venice and History Edition" width="360">](anno1404/docs/images/map-gallery.jpg) |
+| Maps | [Compact HTML demo](site/anno117/maps/index.html) | [Compact HTML demo](site/anno1800/maps/index.html) | [Compact HTML demo](site/anno1404/maps/index.html) |
 
 ## Quick start
 
@@ -117,6 +117,10 @@ Generated galleries use `stamps/stamp-gallery.html` and `reports/map-gallery.htm
 The Windows GitHub Actions workflow runs synthetic tests without game data. Only the explicitly listed bundled demo saves and stamps belong in Git. Keep all other private settings, saves, stamps, generated galleries outside the approved `site/` snapshots, game resources, caches and backups excluded. `.gitignore` permits the designated demo paths and excludes private and generated data. Python packages are installed through pip. Game logos are included for identification. Game resource archives and dependency archives are not bundled.
 
 This is an unofficial project with no affiliation to Ubisoft. Maps and blueprints are reconstructions, not guarantees of placement, supply, range or in-game operation. The tool code is provided under the [MIT license](LICENSE).
+
+## Current save statistics
+
+The map gallery shows each campaign’s latest save with population, wealth, balance, residences and ships. Statistic groups start collapsed; tiers, blueprints and other details appear only when opened. Previous save and playtime information is grouped under **Save details**. Values that cannot be read reliably show **not available**. Excel adds an **Aktuelle Spielstände** worksheet. [Data sources and limitations](docs/save-statistics.md).
 
 ## Use and redistribution
 

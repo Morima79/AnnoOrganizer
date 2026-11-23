@@ -13,6 +13,8 @@ from pathlib import Path
 import sys
 from anno_settings import settings_for, protect_output
 from anno_gallery import render_gallery
+from anno_save_summary import collect_statistics, render_statistics, statistics_sources, label as summary_label
+from anno_save_statistics import FileDBStatistics
 CONFIG = settings_for('anno117')
 
 from anno_profile_playtime import profile_name, profile_playtime, ranking_html, RANKING_CSS
@@ -288,7 +290,7 @@ def generated_size(geometry, key):
                      if (size := region.get('generation', {}).get(key)) is not None) or '—'
 
 
-def prepare(saves, accounts, map_writer, zone, cached_maps):
+def prepare(saves, accounts, map_writer, zone, cached_maps, statistics=None):
     groups = defaultdict(list)
     seed_bounds = defaultdict(list)
     for path, row in saves.items():
@@ -339,7 +341,9 @@ def prepare(saves, accounts, map_writer, zone, cached_maps):
                             sort={'first':stamps[2],'latest':stamps[3],'recordDate':stamps[4],
                                   'latestTime':newest_seconds,'recordTime':record_seconds},
                             profiles=profiles,source=source,
-                            profile_names=sorted({profile_name('Spielkonto', name) for name,_ in rows})))
+                            profile_names=sorted({profile_name('Spielkonto', name) for name,_ in rows}),
+                            statistics=[statistics[key] for key in sorted({f"{r['seed']}:{r['campaign_id']}" for _, r in rows})
+                                        if statistics and key in statistics]))
     return results,new_maps
 
 
@@ -353,29 +357,35 @@ def write_html(rows, total, stage, updated_at, total_playtime, profiles):
                 'profiles':json.dumps(row['profile_names'], ensure_ascii=False)}
         attrs = ' '.join(f'data-{key}="{escape(str(value),quote=True)}"' for key,value in data.items())
         cards.append(f'<article {attrs}><h2>Seed {seed} · Variante {index:03d}</h2>'
-                     f'<p>{mode} · {row["settings"][0]} Saves</p>'
-                     f'<p class="profiles">{escape(row["profiles"]).replace(chr(10),"<br>")}</p>')
+                     f'<p>{mode}</p>')
+        if not row.get('statistics'):
+            cards.append(f'<p class="profiles">{escape(row["profiles"]).replace(chr(10),"<br>")}</p>')
+        cards.append(render_statistics(row.get('statistics', [])))
+        cards.append('<details class="save-details"><summary>' + summary_label('stats.saveDetails') + '</summary>')
+        cards.append(statistics_sources(row.get('statistics', [])))
+        cards.append(f'<p>{row["settings"][0]} Saves</p>')
         if row['delta']:
             cards.append(f'<p class="marker">Älterer Save: +{clock(row["delta"])} mehr Spielzeit</p>')
         cards.append('<dl>')
-        for label,value in zip(SETTINGS+TIME_COLUMNS,row['fields'],strict=True):
-            cards.append(f'<div><dt>{escape(label)}</dt><dd>{escape(value)}</dd></div>')
-        for label,x,y in row['sizes']:
-            cards.append(f'<div><dt>{escape(label)} · Kartengrösse</dt><dd>{x} × {y}</dd></div>')
-        cards.append('</dl><div class="maps">')
+        for field_label,value in zip(TIME_COLUMNS,row['fields'][len(SETTINGS):],strict=True):
+            cards.append(f'<div><dt>{escape(field_label)}</dt><dd>{escape(value)}</dd></div>')
+        cards.append(f'</dl><p>Kartenstand: {escape(row["source"])}</p></details><div class="maps">')
         for link in row['links']:
             path,label = escape(link['path']),escape(link['label'])
             cards.append(f'<figure><a href="{path}"><img src="{path}" loading="lazy" alt="{label}"></a>'
                          f'<figcaption>{label}</figcaption></figure>')
-        cards.append(f'</div><p>Kartenstand: {escape(row["source"])}</p>'
-                     '<details><summary>Gespeicherte Einstellungen</summary><dl>')
+        cards.append('</div><details><summary>' + summary_label('stats.settings') + '</summary><dl>')
+        for field_label,value in zip(SETTINGS,row['fields'][:len(SETTINGS)],strict=True):
+            cards.append(f'<div><dt>{escape(field_label)}</dt><dd>{escape(value)}</dd></div>')
+        for field_label,x,y in row['sizes']:
+            cards.append(f'<div><dt>{escape(field_label)} · Kartengrösse</dt><dd>{x} × {y}</dd></div>')
         for key,values in sorted(row['raw'].items()):
-            label = DETAIL_LABELS.get(key, GEO_SETTINGS.get(key, key))
+            field_label = DETAIL_LABELS.get(key, GEO_SETTINGS.get(key, key))
             value = setting_value(key, values)
             if key in ('SetupStartSession', 'SetupStartSessionIslandSize'):
                 # Setup values can be defaults. The visible sizes above come from the generated region.
-                label += ' (gespeicherter Setup-Wert)'
-            cards.append(f'<div><dt>{escape(label)}</dt><dd>{escape(value)}</dd></div>')
+                field_label += ' (gespeicherter Setup-Wert)'
+            cards.append(f'<div><dt>{escape(field_label)}</dt><dd>{escape(value)}</dd></div>')
         cards.append('</dl></details></article>')
     template=(HERE/'map_gallery_template.html').read_text(encoding='utf8')
     template = template.replace('@@UPDATED_ISO@@', updated_at.isoformat(timespec='minutes'))
@@ -390,7 +400,7 @@ def write_html(rows, total, stage, updated_at, total_playtime, profiles):
 
 def publish(stage, output):
     pairs=[(stage/name,output/name) for name in
-           ('anno117-map-seeds.xlsx','map-gallery.html','anno117-scan.json','anno117-maps.json')]
+           ('anno117-map-seeds.xlsx','map-gallery.html','anno117-scan.json','anno117-maps.json','anno117-statistics.json')]
     old = {}
     for i,(_, target) in enumerate(pairs):
         if target.is_file():
@@ -441,7 +451,13 @@ def main():
             cards=stage/'map-images'
             cards.mkdir()
             zone = ZoneInfo(CONFIG.zone)
-            rows,new_maps=prepare(saves,account,Maps(args.game_data,cards),zone,maps)
+            statistics, statistics_cache = collect_statistics(
+                [dict(campaign=f"{row['seed']}:{row['campaign_id']}", path=account/name,
+                      source=name, profile=profile_name('Spielkonto', name), seed=row['seed'], stamp=row['stamp'])
+                 for name, row in saves.items()], FileDBStatistics('anno117', args.game_data),
+                output/'anno117-statistics.json', zone, args.rescan)
+            rows,new_maps=prepare(saves,account,Maps(args.game_data,cards),zone,maps,statistics)
+            (stage/'anno117-statistics.json').write_text(json.dumps(statistics_cache,ensure_ascii=False),encoding='utf-8')
             updated_at = datetime.now(zone)
             profiles = profile_playtime(
                 (row['seed'], row, 'Spielkonto', path, row['play'], row['active'])

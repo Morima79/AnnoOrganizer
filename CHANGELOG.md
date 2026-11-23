@@ -5,6 +5,14 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ## [Unreleased]
 
+### English
+
+- Added latest-save population, wealth, supported balance, residence, ship and settled-island statistics for all three games. Compact, initially collapsed bilingual groups keep details and save history out of the summary; uncertain values show “not available”. Excel includes a current-campaign worksheet. Added source/limitation documentation and regression coverage.
+
+### Deutsch
+
+- Spielstandauswertung aller drei Spiele um Bevölkerung, Vermögen, unterstützte Bilanzwerte sowie Wohnhaus-, Schiffs- und Inselzahlen des neuesten Saves erweitert. Kompakte, zunächst geschlossene zweisprachige Gruppen bündeln Details und Save-Historie; unsichere Werte erscheinen als «nicht verfügbar». Excel enthält ein Blatt mit aktuellen Partieständen. Datenquellen, Grenzen und Regressionstests ergänzt.
+
 ## [v0.1.10] - 2026-11-23
 
 ### English

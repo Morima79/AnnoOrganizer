@@ -20,7 +20,7 @@ Fünf Beispielbaupläne, darunter die beiden Lavendelvarianten mit ihrer Ausbaur
 
 Einheitlicher Galerie-Kopfbereich und Latium-Inselübersicht mit Seed, gespeicherten Karteneinstellungen und Angaben zum Spielstand.
 
-[![Anno-117-Kartengalerie mit Latium-Inselübersicht, Seed und gespeicherten Karteneinstellungen](docs/images/map-gallery.jpg)](docs/images/map-gallery.jpg)
+[Kompakte Kartengalerie als HTML-Demo öffnen](https://morima79.github.io/AnnoOrganizer/anno117/maps/)
 
 ## Schnellstart
 
@@ -59,6 +59,10 @@ Neue Ausgaben liegen standardmässig in `local-data/` neben dem Starter; überno
 Inoffizielles Projekt ohne Verbindung zu Ubisoft. Spiel-Logos sind zur Kennzeichnung enthalten und nicht Teil der MIT-Lizenz des Werkzeugcodes; Spieldatenarchive werden nicht mitgeliefert; Python-Abhängigkeiten stehen in `requirements.txt`.
 
 Galerien lassen sich oben rechts mit **DE / EN** umschalten, in Stempelgalerien auch in der Grossansicht. Suche, Filter und offene Ansichten bleiben erhalten. Die Sprachwahl wird nach Möglichkeit im Browser gespeichert. Beide Sprachen sind in der HTML-Datei enthalten und funktionieren offline. Eigene Namen, Dateipfade, Beschriftungen in PNGs und Excel-Auswertungen behalten ihre bisherige Sprache.
+
+## Aktuelle Spielstand-Kennzahlen
+
+Die Kartengalerie zeigt pro Partie den neuesten Save mit Bevölkerung, Vermögen, Bilanz, Wohnhäusern und Schiffen. Jede Kennzahlengruppe bleibt zunächst geschlossen; Stufen, Baupläne und weitere Details erscheinen erst beim Anklicken. Frühere Save- und Spielzeitangaben stehen unter **Save-Details**. Nicht zuverlässig auslesbare Werte werden als **nicht verfügbar** angezeigt. Excel erhält das zusätzliche Blatt **Aktuelle Spielstände**. [Datenquellen und Grenzen](docs/save-statistics.de.md).
 
 ## Nutzung und Weiterveröffentlichung
 

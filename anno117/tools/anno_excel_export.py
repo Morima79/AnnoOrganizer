@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 
 import xlsxwriter
+from anno_save_summary import write_statistics_sheet
 
 REGIONS = ('Latium', 'Albion', 'Aegyptus', 'Weitere Provinz 1', 'Weitere Provinz 2')
 WIDTHS = (108, 78, 103, 101, 101, 113, 81, 81, 140, 91, 235, 99, 99, 99, 150,
@@ -24,6 +25,8 @@ def write_workbook(rows, settings, times, zone, stage, target, output, updated_a
     with xlsxwriter.Workbook(stage/'report.xlsx', {
         'strings_to_formulas': False, 'strings_to_urls': False,
     }) as book:
+        current = {entry['campaign']: entry for row in rows for entry in row.get('statistics', [])}
+        write_statistics_sheet(book, list(current.values()))
         sheet = book.add_worksheet('Kartenseeds')
         sheet.hide_gridlines(2)
         sheet.set_tab_color('#19374B')

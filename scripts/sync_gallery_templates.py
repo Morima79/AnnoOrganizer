@@ -25,7 +25,7 @@ def render_landing_page():
 def sync(check=False):
     mismatches = []
     for game in ('anno117', 'anno1800', 'anno1404'):
-        for name in ('anno_gallery.py', 'anno_i18n.py', 'map_gallery.html', 'map_gallery.css', 'stamp_gallery.html', 'stamp_gallery.css', 'gallery_i18n.js', 'gallery_i18n.css', 'locales/de.json', 'locales/en.json'):
+        for name in ('anno_gallery.py', 'anno_i18n.py', 'anno_save_summary.py', 'anno_save_statistics.py', 'map_gallery.html', 'map_gallery.css', 'stamp_gallery.html', 'stamp_gallery.css', 'gallery_i18n.js', 'gallery_i18n.css', 'locales/de.json', 'locales/en.json'):
             source = ROOT / 'templates' / name
             target = ROOT / game / 'tools' / (name if name.endswith('.py') else 'gallery_templates/' + name)
             if not target.is_file() or source.read_bytes() != target.read_bytes():

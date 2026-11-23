@@ -20,7 +20,7 @@ Five sample layouts across four regions, with technology and administration filt
 
 Standardised gallery header and Old World island overview with seed, saved map settings and save metadata.
 
-[![Anno 1800 map gallery with an Old World island overview, seed and saved map settings](docs/images/map-gallery.jpg)](docs/images/map-gallery.jpg)
+[Open the compact map gallery HTML demo](https://morima79.github.io/AnnoOrganizer/anno1800/maps/)
 
 ## Quick start
 
@@ -55,6 +55,10 @@ New output defaults to `local-data/` next to this launcher. Gallery files are `r
 Detailed documentation is currently in German: [Settings](docs/settings.de.md), [Formats and limitations](docs/formats-and-limitations.de.md). This is an unofficial project with no affiliation to Ubisoft. Game logos are included for identification and are not covered by the tool code's MIT license; game resource archives are not bundled. Tool code: [MIT license](LICENSE).
 
 Use **DE / EN** at the top right to switch gallery language; stamp galleries also offer the switch in the image viewer. Search, filters and open views are preserved. The browser remembers your choice when storage is available. Both languages are embedded in the HTML and work offline. Custom names, paths, labels inside PNGs and Excel reports retain their original language.
+
+## Current save statistics
+
+The map gallery shows each campaign’s latest save with population, wealth, balance, residences and ships. Statistic groups start collapsed; tiers, blueprints and other details appear only when opened. Previous save and playtime information is grouped under **Save details**. Values that cannot be read reliably show **not available**. Excel adds an **Aktuelle Spielstände** worksheet. [Data sources and limitations](docs/save-statistics.md).
 
 ## Use and redistribution
 

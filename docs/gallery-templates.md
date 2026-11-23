@@ -42,7 +42,7 @@ Custom profile, folder and stamp names, paths, raw technical values and object/D
 
 Maintain both canonical JSON files, then synchronise the templates and refresh the demos. Tests cover matching keys/placeholders, valid bindings on all five pages, identity preservation, safe embedding, independent game bundles and JavaScript behaviour with blocked or invalid browser storage. Run `node --test tests/gallery_i18n_runtime.cjs` for the JavaScript tests alone; Python tests also run them when Node.js is available.
 
-[English gallery preview with the DE/EN switch](../anno117/docs/images/stamp-gallery-en.jpg). The five existing README previews show the German interface with its language switch; all captures use the same image width.
+[English gallery preview with the DE/EN switch](../anno117/docs/images/stamp-gallery-en.jpg). Stamp previews show the German interface with its language switch; map READMEs link directly to the compact HTML demos. Existing captures use the same image width.
 
 ## Changing templates
 
@@ -54,3 +54,7 @@ Maintain both canonical JSON files, then synchronise the templates and refresh t
 Each Anno folder includes the renderer and template copies under `tools/`. These are synchronised from the canonical sources and checked by tests, so each game folder remains independently usable. No symlinks or additional runtime dependencies are required. Do not edit bundled copies separately.
 
 Operational and file-status messages belong in logs rather than galleries. Maps, blueprint properties and information needed to use them remain visible.
+
+## Save statistic groups
+
+Shared presentation lives in `templates/anno_save_summary.py`; conservative readers live in `templates/anno_save_statistics.py`. Both are synchronised into the independently usable game bundles together with the templates. Exporters supply separate campaign summaries; native `details`/`summary` elements keep details collapsed initially. Labels and population tiers are maintained in both central language resources. [Statistics and limitations](save-statistics.md).

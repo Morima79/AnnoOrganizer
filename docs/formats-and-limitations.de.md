@@ -14,7 +14,7 @@ Kartenbilder werden aus Save-Regionen und lokalen Inselgrafiken rekonstruiert. B
 
 Die Stempeldateien werden als zlib-komprimierte FileDB-Daten gelesen. Grundflächen stammen aus RDA-Archiven und bei resident gespeicherten Dateien zusätzlich aus `file.db`. Die Galeriefilter berücksichtigen enthaltene Traktormodule, Silos, strompflichtige Gebäude, mögliche Stromboni, Kraftwerke, Rathäuser und Handelskammern. Ein Traktor als Dekoration zählt nicht als Modul. Regionale Rathaus-/Handelskammer-Varianten werden über ihre Gebäude-Assetvererbung erkannt.
 
-DLC-Hinweise beschreiben die erkannten Standardobjekte und zuordenbaren Skins. Nicht verwendete optionale Skins zählen nicht als Voraussetzung. Items, Reichweiten, Strassenanschlüsse, Brennstoff- oder Futterversorgung und Produktionsverhältnisse werden nicht simuliert. Die Karten-/Spielstandauswertung zeigt gespeicherte Karten und Metadaten, keine Gebäudestände oder Besitzverhältnisse.
+DLC-Hinweise beschreiben die erkannten Standardobjekte und zuordenbaren Skins. Nicht verwendete optionale Skins zählen nicht als Voraussetzung. Items, Reichweiten, Strassenanschlüsse, Brennstoff- oder Futterversorgung und Produktionsverhältnisse werden nicht simuliert. Die Kartenbilder zeigen gespeichertes Gelände ohne Gebäude- oder Besitzüberlagerung. Die aktuelle Spielstand-Zusammenfassung ergänzt belegbare Bevölkerung, Geld, Wohnhaus-, Schiffs- und Besitzkennzahlen; [Datenquellen und Grenzen](save-statistics.de.md).
 
 ## Anno 1404
 
@@ -36,3 +36,7 @@ Unterstützung hängt von den Formaten der jeweiligen Spielversion ab. Unbekannt
 ## Galeriesprache
 
 Alle fünf Galerien besitzen einen DE/EN-Schalter. Die Umschaltung betrifft die HTML-Oberfläche; eigene Namen, Dateipfade, technische Rohwerte, aus den Spieldaten übernommene Objekt-/DLC-Namen, Beschriftungen innerhalb der PNGs und Excel-Auswertungen behalten ihre bisherige Sprache.
+
+## Aktuelle Kennzahlen
+
+Alle drei Kartengalerien bieten kompakte, zunächst geschlossene Gruppen für Bevölkerung, Geld, Wohnhäuser und Schiffe sowie Save-Details. Neue Werte stammen aus dem neuesten Save jeder erkannten Partie; fehlende oder ungesicherte Angaben erscheinen als «nicht verfügbar». Einzelheiten und Rundungsregeln stehen unter [Spielstand-Kennzahlen](save-statistics.de.md).

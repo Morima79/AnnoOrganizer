@@ -42,7 +42,7 @@ Eigene Profil-, Ordner- und Stempelnamen, Dateipfade, technische Rohwerte und au
 
 Neue oder geänderte Übersetzungen in beiden zentralen JSON-Dateien pflegen, danach die Vorlagen synchronisieren und die Demo-Seiten aktualisieren. Die Tests prüfen Ressourcen-/Platzhaltergleichheit, gültige Bindungen aller fünf Seiten, unveränderte Identitäten, sichere Einbettung, eigenständige Anno-Kopien sowie das JavaScript-Verhalten bei gesperrtem oder ungültigem Browserspeicher. `node --test tests/gallery_i18n_runtime.cjs` führt die JavaScript-Tests separat aus; die Python-Tests rufen sie bei verfügbarem Node.js ebenfalls auf.
 
-[Englische Galerie-Vorschau mit DE/EN-Schalter](../anno117/docs/images/stamp-gallery-en.jpg). Die bestehenden fünf README-Vorschauen zeigen die deutsche Oberfläche mit Sprachschalter; alle Aufnahmen haben dieselbe Bildbreite.
+[Englische Galerie-Vorschau mit DE/EN-Schalter](../anno117/docs/images/stamp-gallery-en.jpg). Die Stempelvorschauen zeigen die deutsche Oberfläche mit Sprachschalter; die Karten-READMEs verlinken direkt auf die kompakten HTML-Demos. Vorhandene Aufnahmen haben dieselbe Bildbreite.
 
 ## Vorlagen ändern
 
@@ -54,3 +54,7 @@ Neue oder geänderte Übersetzungen in beiden zentralen JSON-Dateien pflegen, da
 Jeder Anno-Ordner enthält den Renderer und seine Vorlagen unter `tools/`. Diese Kopien werden automatisch aus den zentralen Quellen übernommen und von den Tests geprüft. Dadurch bleibt ein einzelner Anno-Ordner ohne den Rest des Repositories nutzbar. Keine Symlinks und keine zusätzlichen Laufzeit-Abhängigkeiten sind erforderlich. Die mitgelieferten Kopien nicht separat bearbeiten.
 
 Reine Betriebs- und Dateistatusmeldungen gehören in die Protokolle, nicht in die Galerien. Karten, Bauplan-Eigenschaften und die für ihre Verwendung nötigen Hinweise bleiben sichtbar.
+
+## Spielstand-Gruppen
+
+Die gemeinsame Darstellung liegt in `templates/anno_save_summary.py`, die konservative Auslesung in `templates/anno_save_statistics.py`. Beide Dateien werden zusammen mit den Vorlagen in die eigenständig nutzbaren Spielordner synchronisiert. Die Exporter liefern getrennte Zusammenfassungen pro Partie; Details werden mit nativen, zunächst geschlossenen `details`/`summary`-Elementen dargestellt. Labels und Bevölkerungsstufen liegen in beiden zentralen Sprachressourcen. [Kennzahlen und Grenzen](save-statistics.de.md).

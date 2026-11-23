@@ -19,6 +19,12 @@ function environment({stored = null, blocked = false, missingEnglish = false} = 
   const messages = structuredClone(resources);
   if (missingEnglish) delete messages.en['stamp.download'];
   const heading = element({'data-i18n': 'stamp.heading'});
+  const population = element({'data-i18n': 'stats.population'});
+  const unavailable = element({'data-i18n': 'stats.unavailable'});
+  const populationGroup = {open: false};
+  const moneyGroup = {open: true};
+  population.parentElement = populationGroup;
+  unavailable.parentElement = moneyGroup;
   const option = element({'data-i18n': 'mode.sandbox'});
   option.value = 'Sandkasten';
   const userName = element({}, 'Klein <script>alert(1)</script>');
@@ -32,7 +38,7 @@ function environment({stored = null, blocked = false, missingEnglish = false} = 
   const document = {documentElement: {lang: ''},
     getElementById(id) { assert.equal(id, 'gallery-language-resources'); return {textContent: JSON.stringify(messages)}; },
     querySelectorAll(selector) {
-      return ({'[data-i18n]': [heading, option], '[data-i18n-placeholder]': [input],
+      return ({'[data-i18n]': [heading, option, population, unavailable], '[data-i18n-placeholder]': [input],
         '[data-i18n-alt]': [preview], '[data-i18n-content]': [description], '[data-gallery-language]': [de, en]})[selector] || [];
     },
     dispatchEvent(event) { events.push(event); }};
@@ -41,7 +47,7 @@ function environment({stored = null, blocked = false, missingEnglish = false} = 
     setItem(key, value) { if (blocked) throw Error('Storage unavailable'); storage.set(key, value); }};
   const window = {};
   vm.runInNewContext(runtime, {document, window, localStorage, CustomEvent: class {constructor(type, init) { this.type = type; this.detail = init.detail; }}});
-  return {document, i18n: window.galleryI18n, heading, option, userName, input, preview, description, de, en, storage, events};
+  return {document, i18n: window.galleryI18n, heading, option, userName, input, preview, description, de, en, storage, events, population, unavailable, populationGroup, moneyGroup};
 }
 
 test('DE/EN switching preserves inputs, option values and identity text', () => {
@@ -101,4 +107,18 @@ test('search index includes both languages and survives switching', () => {
   assert.ok(before.includes('Mein Bauplan'));
   e.en.listeners.click();
   assert.equal(e.i18n.searchText(card), before);
+});
+
+test('statistics language switching preserves open and closed disclosure groups', () => {
+  const e = environment({blocked: true});
+  e.en.listeners.click();
+  assert.equal(e.population.textContent, 'Population');
+  assert.equal(e.unavailable.textContent, 'not available');
+  assert.equal(e.populationGroup.open, false);
+  assert.equal(e.moneyGroup.open, true);
+  e.de.listeners.click();
+  assert.equal(e.population.textContent, 'Bevölkerung');
+  assert.equal(e.unavailable.textContent, 'nicht verfügbar');
+  assert.equal(e.populationGroup.open, false);
+  assert.equal(e.moneyGroup.open, true);
 });

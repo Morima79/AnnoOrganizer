@@ -24,4 +24,18 @@ body.gallery-map { margin: 0; padding: 0; max-width: none; min-height: 100vh; ba
 .gallery-map > nav { padding: 12px max(24px, calc((100vw - 1272px) / 2)) !important; background: var(--gallery-background) !important; color: var(--gallery-ink) !important; border-bottom: 1px solid var(--gallery-border); }
 .gallery-map > nav a { color: var(--gallery-link) !important; }
 .gallery-map :focus-visible { outline: 2px solid var(--gallery-heading); outline-offset: 3px; }
+.gallery-map .campaign-statistics { margin: 14px 0; min-width: 0; }
+.gallery-map .stat-profile { font-weight: 600; margin: 8px 0 3px; overflow-wrap: anywhere; }
+.gallery-map .last-played { margin: 3px 0 10px; }
+.gallery-map .stat-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 8px; align-items: start; }
+.gallery-map .stat-group { margin: 0; border: 1px solid var(--gallery-border); border-radius: 8px; background: var(--gallery-inset); min-width: 0; }
+.gallery-map .stat-group > summary { padding: 10px 12px; cursor: pointer; overflow-wrap: anywhere; font-size: .95rem; }
+.gallery-map .stat-group > summary strong { color: var(--gallery-ink); font-weight: 600; }
+.gallery-map .stat-detail { padding: 0 12px 10px; }
+.gallery-map .stat-detail p { margin: 6px 0; }
+.gallery-map .stat-breakdown { display: block; margin: 8px 0; }
+.gallery-map .stat-breakdown > div { display: flex; justify-content: space-between; gap: 16px; padding: 3px 0; }
+.gallery-map .stat-breakdown dt, .gallery-map .stat-breakdown dd { margin: 0; min-width: 0; }
+.gallery-map .stat-source { font-size: .83rem; }
+.gallery-map .stat-source p { overflow-wrap: anywhere; }
 @media (max-width: 700px) { .gallery-map .gallery-shell { padding: 24px 18px 40px; } .gallery-map .game-logo { width: min(100%, 230px); } }

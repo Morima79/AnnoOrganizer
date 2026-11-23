@@ -14,6 +14,9 @@ from pathlib import Path
 import sys
 from anno_settings import settings_for, protect_output
 from anno_gallery import render_gallery
+from anno_save_summary import collect_statistics, render_statistics, statistics_sources, label as summary_label
+from anno_save_statistics import FileDBStatistics
+from functools import lru_cache
 CONFIG = settings_for('anno1800')
 
 from anno_profile_playtime import profile_name, profile_playtime, ranking_html, RANKING_CSS
@@ -252,11 +255,12 @@ def rda_index(path):
                 yield name,(str(path),flags,base,packed_data,pos,length,raw)
             off=nxt
 
+@lru_cache(maxsize=1)
 def index_game():
     entries={}
     for path in sorted(GAME.glob('data*.rda'),key=lambda p:int(p.stem[4:])):
         for n,record in rda_index(path):
-            if any(x in n for x in ('moderate_l_12','assets.xml','mapgenerator')) or n.endswith(('.a7minfo','.a7tinfo')) or ('/islands/' in n and n.endswith('.png')):
+            if any(x in n for x in ('moderate_l_12','assets.xml','mapgenerator')) or n.endswith(('.a7minfo','.a7tinfo','/texts_german.xml')) or ('/islands/' in n and n.endswith('.png')):
                 entries[n]=record
     return entries
 
@@ -414,7 +418,7 @@ def time_values(saves, seed_times, zone):
     }
 
 
-def render_catalog(rows, groups, maps, stage, updated_at, total_playtime, profile_totals):
+def render_catalog(rows, groups, maps, stage, updated_at, total_playtime, profile_totals, statistics=None):
     from functools import lru_cache
     from PIL import Image, ImageDraw, ImageFont
     from html import escape as esc
@@ -557,7 +561,11 @@ def render_catalog(rows, groups, maps, stage, updated_at, total_playtime, profil
         ]
         times = time_values(rs, seed_bounds[seed], updated_at.tzinfo)
         table = ''.join(f'<div><small>{esc(h)}</small>{esc(v)}</div>'
-                        for h,v in zip(GAME_SETTINGS + TIME_COLUMNS, values + times['display'], strict=True))
+                        for h,v in zip(GAME_SETTINGS, values, strict=True))
+        save_table = ''.join(f'<div><dt>{esc(h)}</dt><dd>{esc(v)}</dd></div>'
+                             for h,v in zip(TIME_COLUMNS, times['display'], strict=True))
+        campaign_statistics = [statistics[key] for key in sorted({f"{seed}:{r['campaign_id']}" for r in rs})
+                               if statistics and key in statistics]
         raw=''.join(f'<details><summary>Einstellungen · {n} Datei(en)</summary>{details(v)}</details>' for v,n in variants.most_common())
         attrs = {'seed':seed, 'mode':mode(k), 'variant':i, **times['sort']}
         attrs['profiles'] = json.dumps(sorted({profile_name(r['source'], r['path']) for r in rs}), ensure_ascii=False)
@@ -568,13 +576,17 @@ def render_catalog(rows, groups, maps, stage, updated_at, total_playtime, profil
             marker = f'<span class="playtime-extra">Älterer Save: +{duration(times["delta"])} mehr Spielzeit</span>'
         count = f'{len(rs):,}'.replace(',', '’')
         parts.append(f'<article {attrs}><div class="top"><h2>Seed {seed}</h2>'
-                     f'<span>Variante {i:03d} · {mode(k)} · {count} Dateien</span>{marker}</div>'
-                     f'<p class="profiles">{profile}</p><div class="settings">{table}</div>'
-                     f'<div class="maps">{"".join(pics)}</div><p class="source">{esc(source)}</p>'
-                     f'<details><summary>Gespeicherte Einstellungswerte anzeigen</summary>{raw}</details></article>')
+                     f'<span>Variante {i:03d} · {mode(k)}</span></div>'
+                     + ('' if campaign_statistics else f'<p class="profiles">{profile}</p>')
+                     + render_statistics(campaign_statistics)
+                     + '<details class="save-details"><summary>' + summary_label('stats.saveDetails') + '</summary>'
+                     + statistics_sources(campaign_statistics)
+                     + f'<p>{count} Dateien</p>{marker}<dl>{save_table}</dl><p class="source">{esc(source)}</p></details>'
+                     f'<div class="maps">{"".join(pics)}</div><details><summary>' + summary_label('stats.settings')
+                     + f'</summary><div class="settings">{table}</div>{raw}</details></article>')
         excel_rows.append({'identity':[seed, i, mode(k)], 'links':links,
                            'settings':[len(rs), '\n'.join(profiles), *values, source, *times['excel']],
-                           'delta':times['delta']})
+                           'delta':times['delta'], 'statistics':campaign_statistics})
     seed_counts=Counter(one(k,'GameSeed') for k,_ in groups)
     nseeds=len(seed_counts)
     chips=''.join(f'<button type="button" data-filter="{seed}" title="{count} Varianten">{seed}</button>' for seed,count in sorted(seed_counts.items()))
@@ -768,7 +780,7 @@ def publish(stage, output, workbook):
             raise ValueError(f'Ausgabeziel ist keine Datei: {output/name}')
     reports = [(stage/'report.xlsx', workbook)]
     reports.extend((stage/name, output/name)
-                   for name in ('map-gallery.html', 'anno-scan.json', 'anno-maps.jsonl'))
+                   for name in ('map-gallery.html', 'anno-scan.json', 'anno-maps.jsonl', 'anno1800-statistics.json'))
     backups = stage/'previous'
     backups.mkdir()
     for index, (_, target) in enumerate(reports):
@@ -855,7 +867,15 @@ def main():
                 for settings, saves in groups for row in saves
             )
             total_playtime = duration(sum(ms for _, _, ms in profiles) // 1000)
-            excel_rows = render_catalog(rows, groups, maps, stage, updated_at, total_playtime, profiles)
+            statistics, statistics_cache = collect_statistics(
+                [dict(campaign=f"{dict(settings)[('GameSeed',)]}:{row['campaign_id']}", path=save_path(row),
+                      source=f"{row['source']}: {row['path']}", profile=profile_name(row['source'], row['path']),
+                      seed=dict(settings)[('GameSeed',)], stamp=row['stamp'], live=row['source']=='Spielkonto')
+                 for settings, saves in groups for row in saves],
+                FileDBStatistics('anno1800', GAME, index_game), output/'anno1800-statistics.json', zone, opts.rescan,
+                cache_only=opts.render_only)
+            (stage/'anno1800-statistics.json').write_text(json.dumps(statistics_cache,ensure_ascii=False),encoding='utf-8')
+            excel_rows = render_catalog(rows, groups, maps, stage, updated_at, total_playtime, profiles, statistics)
             write_excel(excel_rows, stage, target, output, updated_at, total_playtime, profiles)
             (stage/'anno-scan.json').write_text(json.dumps(rows, ensure_ascii=False), encoding='utf-8')
             (stage/'anno-maps.jsonl').write_text(

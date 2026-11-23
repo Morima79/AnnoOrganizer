@@ -12,7 +12,7 @@ This folder is independently usable. It includes its own launcher, settings, dep
 
 Standardised gallery header and three map variants from Anno 1404, Venice and the History Edition.
 
-[![Anno 1404 demo map gallery comparing the original, Venice and History Edition](docs/images/map-gallery.jpg)](docs/images/map-gallery.jpg)
+[Open the compact map gallery HTML demo](https://morima79.github.io/AnnoOrganizer/anno1404/maps/)
 
 ## Quick start
 
@@ -43,6 +43,10 @@ New output defaults to `local-data/` next to this launcher. Gallery files are `r
 Detailed documentation is currently in German: [Settings](docs/settings.de.md), [Formats and limitations](docs/formats-and-limitations.de.md). This is an unofficial project with no affiliation to Ubisoft. Game logos are included for identification and are not covered by the tool code's MIT license; game resource archives are not bundled. Tool code: [MIT license](LICENSE).
 
 Use **DE / EN** at the top right to switch gallery language; stamp galleries also offer the switch in the image viewer. Search, filters and open views are preserved. The browser remembers your choice when storage is available. Both languages are embedded in the HTML and work offline. Custom names, paths, labels inside PNGs and Excel reports retain their original language.
+
+## Current save statistics
+
+The map gallery shows each campaign’s latest save with population, wealth, balance, residences and ships. Statistic groups start collapsed; tiers, blueprints and other details appear only when opened. Previous save and playtime information is grouped under **Save details**. Values that cannot be read reliably show **not available**. Excel adds an **Aktuelle Spielstände** worksheet. [Data sources and limitations](docs/save-statistics.md).
 
 ## Use and redistribution
 

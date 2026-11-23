@@ -1,9 +1,12 @@
 'Export Excel workbooks with XlsxWriter.'
 import xlsxwriter
+from anno_save_summary import write_statistics_sheet
 
 
 def write_workbook(target, data):
     with xlsxwriter.Workbook(target, {'strings_to_formulas': False, 'strings_to_urls': False}) as book:
+        current = {entry['campaign']: entry for row in data['rows'] for entry in row.get('statistics', [])}
+        write_statistics_sheet(book, list(current.values()))
         sheet = book.add_worksheet('Kartenseeds')
         sheet.hide_gridlines(2)
         sheet.freeze_panes(5, 0)
