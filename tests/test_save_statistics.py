@@ -186,6 +186,39 @@ class StatisticsTests(unittest.TestCase):
 
 
 class SelectionAndPresentationTests(unittest.TestCase):
+    def test_histories_never_compare_playtime_between_campaigns(self):
+        with tempfile.TemporaryDirectory() as directory:
+            candidates = []
+            for name, campaign, stamp, play in [('long', 'a', 10, 291897526), ('recent', 'a', 20, 292000000),
+                                                ('search', 'b', 30, 279979)]:
+                path = Path(directory)/name
+                path.write_bytes(b'save')
+                candidates.append(dict(path=path, campaign=campaign, stamp=stamp, play_ms=play,
+                                       profile=campaign, source=name))
+            class Reader:
+                signature = []
+                def __call__(self, path):
+                    return stats.empty_statistics()
+            entries, _ = summary.collect_statistics(candidates, Reader(), Path(directory)/'cache', ZoneInfo('UTC'))
+            self.assertEqual(entries['a']['history']['count'], 2)
+            self.assertEqual(entries['b']['history']['count'], 1)
+            self.assertEqual(entries['a']['history']['delta_ms'], 0)
+            self.assertEqual(entries['b']['history']['delta_ms'], 0)
+            self.assertNotIn('history.extra', summary.render_statistics(list(entries.values())))
+            totals = summary.variant_totals(list(entries.values()), 3)
+            self.assertEqual(totals, dict(campaigns=2, saves=3, play_ms=292279979))
+            self.assertEqual(entries['b']['history']['record']['source'], 'search')
+
+    def test_older_longer_save_is_reported_only_within_its_campaign(self):
+        candidates = [dict(path=Path('old'), source='<old>', stamp=10, play_ms=7200000),
+                      dict(path=Path('new'), source='new', stamp=20, play_ms=3600000)]
+        history = summary.campaign_history(candidates, candidates[-1], ZoneInfo('UTC'))
+        self.assertEqual(history['delta_ms'], 3600000)
+        html = summary.history_html(dict(history=history))
+        self.assertIn('+1:00:00', html)
+        self.assertIn('&lt;old&gt;', html)
+        self.assertIn('history.saveCount', html)
+
     def test_statistics_cache_reuses_only_unchanged_saves_and_game_assets(self):
         with tempfile.TemporaryDirectory() as directory:
             path, cache_path = Path(directory)/'save', Path(directory)/'cache'
@@ -237,7 +270,7 @@ class SelectionAndPresentationTests(unittest.TestCase):
         values = stats.empty_statistics()
         values.update(population=7, money=500, houses=1, ships=1,
                       ship_types=[{'name': '<script>private</script>', 'count': 1}])
-        page = summary.render_statistics([dict(profile='A < B', date='23.11.2026',
+        page = summary.render_statistics([dict(campaign='1:2', profile='A < B', date='23.11.2026',
                                                 source='<private>', values=values)])
         self.assertEqual(page.count('class="stat-group"'), 4)
         self.assertNotIn(' open', page)

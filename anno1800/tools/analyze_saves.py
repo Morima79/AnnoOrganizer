@@ -13,8 +13,9 @@ from datetime import datetime
 from pathlib import Path
 import sys
 from anno_settings import settings_for, protect_output
-from anno_map_catalog import render_card, render_catalog_page
-from anno_save_summary import collect_statistics
+from anno_map_catalog import render_card, render_catalog_page, describe_options
+from anno_map_variants import campaign_variants, latest_known_values
+from anno_save_summary import collect_statistics, variant_totals
 from anno_save_statistics import FileDBStatistics
 from functools import lru_cache
 CONFIG = settings_for('anno1800')
@@ -271,17 +272,21 @@ WORLD_KEYS = {'GameSeed','SetupMapType','SetupStartSession','SetupStartSessionIs
               'EnableCampaign','EnableScenario','CreativeMode','Maps','ThirdParties',
               'SecondParties','ActiveDLCs','ActiveMods','ActiveLocalMods','SetupStartWithKontor'}
 
-def norm(setup):
-    return tuple((tuple(k),v) for k,v in setup if k[-1]!='count' and k[0] in WORLD_KEYS
-                 and (k[0] not in ('EnableCampaign','EnableScenario','CreativeMode') or v!=0))
-
 def bucket(rows):
-    groups=defaultdict(list)
-    for r in rows:
-        if 'setup' in r:
-            # Keep ordering of participants, normalise order of different settings.
-            groups[tuple(sorted(norm(r['setup']),key=lambda e:e[0][0]))].append(r)
-    return sorted(groups.items(),key=lambda g:(dict(g[0]).get(('GameSeed',),-1),repr(g[0])))
+    entries = []
+    for row in rows:
+        if 'setup' not in row:
+            continue
+        seed = next(value for path, value in row['setup'] if path == ['GameSeed'] or path == ('GameSeed',))
+        entries.append(dict(seed=seed, campaign=row['campaign_id'], order=save_order(row),
+                            setup=row['setup'], item=row))
+    groups = []
+    for _, saves in campaign_variants('anno1800', entries):
+        known = latest_known_values(row['setup'] for row in sorted(saves, key=save_order, reverse=True))
+        setup = tuple(((key,), value) for key, values in known.items() if key in WORLD_KEYS for value in values)
+        groups.append((setup, saves))
+    return groups
+
 
 def maps_for(path):
     _,data=next(members(path,{'data.a7s'}))
@@ -532,7 +537,9 @@ def render_catalog(rows, groups, maps, stage, updated_at, total_playtime, profil
         seed_bounds[seed] = min(first, previous[0]), max(last, previous[1])
     parts=[]
     excel_rows = []
-    for i,(k,rs) in enumerate(groups,1):
+    ordered_groups = sorted(enumerate(groups, 1),
+                            key=lambda entry: max(row['stamp'] for row in entry[1][1]), reverse=True)
+    for i, (k, rs) in ordered_groups:
         seed=one(k,'GameSeed')
         prof=Counter((r['source'],folder(r)) for r in rs)
         card=maps.get(i,{})
@@ -561,22 +568,22 @@ def render_catalog(rows, groups, maps, stage, updated_at, total_playtime, profil
         times = time_values(rs, seed_bounds[seed], updated_at.tzinfo)
         table = ''.join(f'<div><small>{esc(h)}</small>{esc(v)}</div>'
                         for h,v in zip(GAME_SETTINGS, values, strict=True))
-        save_table = ''.join(f'<div><dt>{esc(h)}</dt><dd>{esc(v)}</dd></div>'
-                             for h,v in zip(TIME_COLUMNS, times['display'], strict=True))
         campaign_statistics = [statistics[key] for key in sorted({f"{seed}:{r['campaign_id']}" for r in rs})
                                if statistics and key in statistics]
         raw=''.join(f'<details><summary>Einstellungen · {n} Datei(en)</summary>{details(v)}</details>' for v,n in variants.most_common())
         profile_names = sorted({profile_name(r['source'], r['path']) for r in rs})
-        marker = ''
-        if times['delta'] > 0:
-            marker = f'<span class="playtime-extra">Älterer Save: +{duration(times["delta"])} mehr Spielzeit</span>'
+        totals = variant_totals(campaign_statistics, len(rs))
+        sort_values = dict(first=times['sort']['first'], latest=times['sort']['latest'],
+                           totalTime=totals['play_ms']//1000 if totals['play_ms'] is not None else 0)
         parts.append(render_card(seed, i, mode(k), profile_names, '\n'.join(profiles),
-                                 times['sort'], campaign_statistics, len(rs),
-                                 f'{marker}<dl>{save_table}</dl><p class="source">{esc(source)}</p>',
-                                 ''.join(pics), f'<div class="settings">{table}</div>{raw}'))
+                                 sort_values, campaign_statistics, len(rs),
+                                 f'<p class="source">{esc(source)}</p>',
+                                 ''.join(pics), f'<div class="settings">{table}</div>{raw}',
+                                 describe_options(zip(GAME_SETTINGS[:6], values[:6], strict=True))))
         excel_rows.append({'identity':[seed, i, mode(k)], 'links':links,
-                           'settings':[len(rs), '\n'.join(profiles), *values, source, *times['excel']],
-                           'delta':times['delta'], 'statistics':campaign_statistics})
+                           'settings':[len(rs), '\n'.join(profiles), *values, source, totals['campaigns'],
+                                       totals['play_ms']/86400000 if totals['play_ms'] is not None else None],
+                           'delta':0, 'statistics':campaign_statistics, 'totals':totals})
     extra = ('<section><h2>Gespeicherte Spielvorlagen</h2>'
              '<p>Diese Dateien sind keine Spielstände und zählen nicht zur Seed-Aufstellung. '
              'Die Kennzeichnung vergleicht nur die Seed-Zahl.</p>' + preset_details() + '</section>'
@@ -656,7 +663,7 @@ def add_excel_links(stage, workbook, output):
 
 def write_excel(rows, stage, workbook, output, updated_at, total_playtime, profiles):
     from anno_excel_export import write_workbook
-    write_workbook(rows, GAME_SETTINGS, TIME_COLUMNS, ZONE_NAME, stage, workbook, output,
+    write_workbook(rows, GAME_SETTINGS, ['Partien insgesamt', 'Gespeicherte Gesamtspielzeit'], ZONE_NAME, stage, workbook, output,
                    updated_at, None, total_playtime, profiles)
 
 
@@ -759,7 +766,7 @@ def main():
             statistics, statistics_cache = collect_statistics(
                 [dict(campaign=f"{dict(settings)[('GameSeed',)]}:{row['campaign_id']}", path=save_path(row),
                       source=f"{row['source']}: {row['path']}", profile=profile_name(row['source'], row['path']),
-                      seed=dict(settings)[('GameSeed',)], stamp=row['stamp'], live=row['source']=='Spielkonto')
+                      seed=dict(settings)[('GameSeed',)], stamp=row['stamp'], play_ms=row['play_ms'], live=row['source']=='Spielkonto')
                  for settings, saves in groups for row in saves],
                 FileDBStatistics('anno1800', GAME, index_game), output/'anno1800-statistics.json', zone, opts.rescan,
                 cache_only=opts.render_only)

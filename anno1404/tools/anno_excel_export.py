@@ -19,28 +19,29 @@ def write_workbook(target, data):
         date = book.add_format({**common, 'num_format': 'dd.mm.yyyy hh:mm:ss'})
         hours = book.add_format({**common, 'num_format': '[h]:mm:ss'})
         delta = book.add_format({**common, 'num_format': '"+"[h]:mm:ss'})
-        marker = book.add_format({'bg_color': '#ffedc4', 'font_color': '#633900', 'bold': True})
         sheet.write('A1', 'Anno 1404 · Venedig · History Edition', title)
         sheet.set_row(0, 26)
         sheet.write('A2', data['note'])
         sheet.write('A3', 'Zuletzt aktualisiert am ' + data['updated'] + ' · Gespeicherte Gesamtspielzeit ' + data['total'])
         sheet.write('A4', 'Datumsangaben stammen aus den Dateizeitstempeln. Karteneinstellungen zeigen die gespeicherten Werte.')
-        formats = {**dict.fromkeys(data['dates'], date), **dict.fromkeys(data['times'], hours), 16: delta}
+        selected = [*range(8), *range(17, len(data['headers']))]
+        headers = [data['headers'][i] for i in selected] + ['Partien insgesamt', 'Gespeicherte Gesamtspielzeit']
+        headers[5] = 'Save-Dateien insgesamt'
         sheet.set_row(4, 34)
-        for i, _ in enumerate(data['headers']):
+        for i, _ in enumerate(headers):
             sheet.set_column_pixels(i, i, data['widths'][i] if i < len(data['widths']) else 130)
-        sheet.add_table(4, 0, len(data['rows'])+4, len(data['headers'])-1, {
+        sheet.add_table(4, 0, len(data['rows'])+4, len(headers)-1, {
             'name': 'Kartenvarianten', 'style': 'Table Style Light 9',
-            'columns': [{'header': v, 'header_format': header} for v in data['headers']],
+            'columns': [{'header': v, 'header_format': header} for v in headers],
         })
         for i, row in enumerate(data['rows'], 5):
             sheet.set_row(i, 32)
-            for column, value in enumerate(row['values']):
-                sheet.write(i, column, value, formats.get(column, body))
+            totals = row['totals']
+            values = [row['values'][column] for column in selected] + [totals['campaigns'],
+                      totals['play_ms']/86400000 if totals['play_ms'] is not None else None]
+            for column, value in enumerate(values):
+                sheet.write(i, column, value, hours if column == len(headers)-1 else body)
             sheet.write_url(i, 4, 'external:' + row['image'].replace('/', '\\'), link, row['values'][4])
-        for area in (f"A6:B{len(data['rows'])+5}", f"Q6:Q{len(data['rows'])+5}"):
-            sheet.conditional_format(area, {'type': 'formula', 'criteria': '=ISNUMBER($Q6)', 'format': marker})
-
         ranking = book.add_worksheet('Spielzeit pro Profil')
         ranking.hide_gridlines(2)
         ranking.write('A1', 'Spielzeit pro Profil', title)

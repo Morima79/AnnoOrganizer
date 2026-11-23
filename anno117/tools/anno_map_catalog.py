@@ -6,7 +6,7 @@ from pathlib import Path
 import re
 
 from anno_gallery import render_gallery
-from anno_save_summary import label, message, render_statistics, statistics_sources
+from anno_save_summary import label, message, render_statistics, totals_html
 
 
 def text(key, **params):
@@ -15,8 +15,14 @@ def text(key, **params):
             + escape(message(key).format(**params)) + '</span>')
 
 
+def describe_options(options):
+    """Keep labels and known menu values separately localisable by the binder."""
+    return ' · '.join('<span>' + escape(name) + '</span>: <span>' + escape(value) + '</span>'
+                      for name, value in options)
+
+
 def render_card(seed, variant, mode, profiles, profile_text, sort, statistics,
-                save_count, save_details, maps, settings):
+                save_count, save_details, maps, settings, description=''):
     """Exporters supply domain-specific detail markup; card layout is shared."""
     data = dict(seed=seed, variant=variant, mode=mode, profiles=json.dumps(profiles, ensure_ascii=False))
     for key, value in sort.items():
@@ -24,11 +30,13 @@ def render_card(seed, variant, mode, profiles, profile_text, sort, statistics,
     attrs = ' '.join(f'data-{key}="{escape(str(value), quote=True)}"' for key, value in data.items())
     fallback = '' if statistics else '<p class="profiles" data-i18n-ignore>' + escape(profile_text).replace('\n', '<br>') + '</p>'
     return (f'<article {attrs}><h2>' + text('map.seedVariant', seed=seed, variant=f'{variant:03d}')
-            + '</h2><p>' + escape(mode) + '</p>' + fallback + render_statistics(statistics)
-            + '<details class="save-details"><summary>' + label('stats.saveDetails') + '</summary>'
-            + statistics_sources(statistics) + '<p>' + text('map.saveCount', count=save_count) + '</p>'
+            + '</h2><p>' + escape(mode) + '</p>'
+            + ('<p class="variant-description">' + description + '</p>' if description else '')
+            + totals_html(statistics, save_count) + fallback + render_statistics(statistics)
+            + '<details class="map-source"><summary>' + label('history.mapSource') + '</summary>'
             + save_details + '</details><div class="maps">' + maps + '</div><details><summary>'
-            + label('stats.settings') + '</summary>' + settings + '</details></article>')
+            + label('stats.settings') + '</summary>' + settings + '</details>'
+            + '<p class="card-navigation"><a href="#gallery-top">' + label('nav.top') + '</a></p></article>')
 
 
 def render_catalog_page(game, cards, seeds, save_count, updated_at, total_playtime, ranking, extra=''):

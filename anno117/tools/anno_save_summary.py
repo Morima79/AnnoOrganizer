@@ -48,13 +48,70 @@ def group(key, summary, content):
             + '</strong></summary><div class="stat-detail">' + content + '</div></details>')
 
 
+def duration(milliseconds):
+    if milliseconds is None:
+        return label('stats.unavailable')
+    seconds = milliseconds // 1000
+    hours, seconds = divmod(seconds, 3600)
+    minutes, seconds = divmod(seconds, 60)
+    return f'{hours}:{minutes:02d}:{seconds:02d}'
+
+
+def campaign_history(candidates, latest, zone):
+    """Compare save times only inside one already identified campaign."""
+    def order(item):
+        return item['stamp'], item.get('live', True), str(item['path'])
+    def saved(item):
+        return dict(date=datetime.fromtimestamp(item['stamp'], zone).strftime('%d.%m.%Y %H:%M:%S'),
+                    source=item['source'], play_ms=item.get('play_ms'))
+    oldest = min(candidates, key=order)
+    known = [item for item in candidates if item.get('play_ms') is not None]
+    record = max(known, key=lambda item: (item['play_ms'], order(item))) if known else None
+    delta = (record['play_ms'] - latest['play_ms']
+             if record and latest.get('play_ms') is not None and record['stamp'] < latest['stamp']
+             and record['play_ms'] > latest['play_ms'] else 0)
+    return dict(count=len(candidates), oldest=saved(oldest), latest=saved(latest),
+                record=saved(record) if record else None, delta_ms=delta)
+
+
+def history_html(entry):
+    history = entry.get('history')
+    if history is None:
+        return ''
+    content = '<p>' + label('history.saveCount') + ': ' + number(history['count']) + '</p><dl>'
+    for key in ('oldest', 'latest', 'record'):
+        item = history[key]
+        value = (escape(item['date']) + '<br><span data-i18n-ignore>' + escape(item['source']) + '</span>'
+                 if item else label('stats.unavailable'))
+        content += '<div><dt>' + label('history.' + key) + '</dt><dd>' + value + '</dd></div>'
+    for key, item in (('latestTime', history['latest']), ('recordTime', history['record'])):
+        content += '<div><dt>' + label('history.' + key) + '</dt><dd>' + duration(item['play_ms'] if item else None) + '</dd></div>'
+    content += '</dl>'
+    if history['delta_ms']:
+        content += '<p class="marker">' + label('history.extra') + ': +' + duration(history['delta_ms']) + '</p>'
+    return '<details class="campaign-history"><summary>' + label('history.details') + '</summary>' + content + '</details>'
+
+
+def variant_totals(entries, save_count):
+    records = [entry.get('history', {}).get('record') for entry in entries]
+    total = sum(record['play_ms'] for record in records) if records and all(records) else None
+    return dict(campaigns=len(entries), saves=save_count, play_ms=total)
+
+
+def totals_html(entries, save_count):
+    totals = variant_totals(entries, save_count)
+    return ('<p class="variant-totals">' + number(totals['campaigns']) + ' ' + label('history.campaigns.one' if totals['campaigns'] == 1 else 'history.campaigns')
+            + ' · ' + number(save_count) + ' ' + label('history.filesTotal.one' if save_count == 1 else 'history.filesTotal') + ' · '
+            + label('history.totalTime') + ': ' + duration(totals['play_ms']) + '</p>')
+
+
 def render_statistics(entries):
     """Each entry is one campaign's latest save, never a sum across campaigns."""
     result = []
     for entry in entries:
         stats = entry['values']
         date = escape(entry['date'])
-        result.append('<section class="campaign-statistics">')
+        result.append('<section class="campaign-statistics" data-campaign="' + escape(entry['campaign'], quote=True) + '">')
         result.append('<p class="stat-profile" data-i18n-ignore>' + escape(entry['profile']) + '</p>')
         result.append('<p class="last-played">' + label('stats.lastPlayed') + ': <time>' + date + '</time></p>')
         result.append('<div class="stat-groups">')
@@ -78,7 +135,7 @@ def render_statistics(entries):
         if stats.get('airships') is not None:
             ships += '<p>' + label('stats.airships') + ': ' + number(stats['airships']) + '</p>'
         result.append(group('stats.ships', number(stats.get('ships')), ships))
-        result.append('</div></section>')
+        result.append('</div>' + history_html(entry) + '</section>')
     return ''.join(result)
 
 
@@ -108,6 +165,9 @@ def collect_statistics(candidates, reader, cache_path, zone, refresh=False, cach
         old = {}
     signature = reader.signature
     previous = old.get('files', {}) if old.get('version') == STATISTICS_VERSION and old.get('assets') == signature else {}
+    histories = {}
+    for candidate in candidates:
+        histories.setdefault(candidate['campaign'], []).append(candidate)
     current, entries = {}, {}
     for campaign, item in latest_campaigns(candidates).items():
         path = Path(item['path'])
@@ -134,7 +194,7 @@ def collect_statistics(candidates, reader, cache_path, zone, refresh=False, cach
         entries[campaign] = {'profile': item['profile'], 'source': item['source'],
                              'seed': item.get('seed'), 'campaign': str(campaign),
                              'date': datetime.fromtimestamp(item['stamp'], zone).strftime('%d.%m.%Y %H:%M:%S'),
-                             'values': values}
+                             'values': values, 'history': campaign_history(histories[campaign], item, zone)}
     return entries, {'version': STATISTICS_VERSION, 'assets': signature, 'files': current}
 
 
@@ -151,6 +211,11 @@ def write_statistics_sheet(book, entries):
     date_format = book.add_format({'num_format': 'dd.mm.yyyy hh:mm:ss'})
     headers = ['Profil', 'Zuletzt gespielt am', 'Seed', 'Bevölkerung', 'Vermögen', 'Bilanz / min',
                'Wohnhäuser', 'Schiffe', 'Besiedelte Inseln', 'Wohnhaus-Baupläne', 'Save']
+    headers += ['Save-Dateien dieser Partie', 'Ältester Save am', 'Ältester Save', 'Spielzeit im neuesten Save',
+                'Längste gespeicherte Spielzeit', 'Save mit längster Spielzeit am', 'Save mit längster Spielzeit',
+                'Mehr Spielzeit im älteren Save']
+    hours = book.add_format({'num_format': '[h]:mm:ss'})
+    sheet.set_column(11, 18, 24)
     sheet.write_row(0, 0, headers, heading)
     for index, entry in enumerate(entries, 1):
         stats = entry['values']
@@ -162,5 +227,20 @@ def write_statistics_sheet(book, entries):
                 sheet.write_datetime(index, column, datetime.strptime(value, '%d.%m.%Y %H:%M:%S'), date_format)
                 continue
             sheet.write(index, column, 'nicht verfügbar' if value is None else value, numeric if isinstance(value, (int, float)) else None)
+        history = entry.get('history')
+        if history:
+            record = history['record']
+            extra = [history['count'], history['oldest']['date'], history['oldest']['source'],
+                     history['latest']['play_ms'], record['play_ms'] if record else None,
+                     record['date'] if record else None, record['source'] if record else None, history['delta_ms']]
+            for column, value in enumerate(extra, 11):
+                if value is None:
+                    sheet.write(index, column, 'nicht verfügbar')
+                elif column in (12, 16):
+                    sheet.write_datetime(index, column, datetime.strptime(value, '%d.%m.%Y %H:%M:%S'), date_format)
+                elif column in (14, 15, 18):
+                    sheet.write_number(index, column, value / 86400000, hours)
+                else:
+                    sheet.write(index, column, value)
     if entries:
         sheet.autofilter(0, 0, len(entries), len(headers) - 1)

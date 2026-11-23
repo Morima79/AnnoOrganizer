@@ -110,6 +110,8 @@ Generated galleries use `stamps/stamp-gallery.html` and `reports/map-gallery.htm
 
 ## Development
 
+Ideas for future extensions are recorded in the [wishlist](docs/wishlist.md).
+
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 ```
@@ -135,3 +137,5 @@ Map and stamp galleries each use a shared page template with colours inspired by
 ## Automated publishing
 
 Release ZIPs and the demo site are published through GitHub Actions. See the [publishing guide](docs/publishing.md) for release creation, GitHub Pages setup and refreshing the demos.
+
+Save counts and playtime are listed in each campaign’s save details. Map variants show only totals; playtime comparisons stay within one campaign.

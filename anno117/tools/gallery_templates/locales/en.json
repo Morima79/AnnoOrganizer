@@ -343,5 +343,20 @@
   "stats.level.anno1404.Patrician": "Patricians",
   "stats.level.anno1404.Nobleman": "Noblemen",
   "stats.rounding": "Population tiers are rounded down individually; their sum can differ from the total.",
-  "map.variantNote": "A variant groups saves with the same seed and saved map configuration. Different population or wealth values alone do not create a new variant."
+  "map.variantNote": "Variants distinguish map options such as map type, size and starting region. A campaign keeps its save history together; technical patch changes do not create additional variants.",
+  "nav.top": "Back to top",
+  "history.saveCount": "Save files in this campaign",
+  "history.oldest": "Oldest save in this campaign",
+  "history.latest": "Newest save in this campaign",
+  "history.record": "Save with longest playtime in this campaign",
+  "history.latestTime": "Playtime in newest save",
+  "history.recordTime": "Longest saved playtime",
+  "history.extra": "Older save in this campaign with more playtime",
+  "history.details": "Save details for this campaign",
+  "history.campaigns": "campaigns",
+  "history.filesTotal": "save files in total",
+  "history.totalTime": "Total campaign playtime",
+  "history.mapSource": "Map preview source",
+  "history.campaigns.one": "campaign",
+  "history.filesTotal.one": "save file in total"
 }

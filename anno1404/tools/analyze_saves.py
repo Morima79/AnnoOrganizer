@@ -12,7 +12,7 @@ from pathlib import Path
 import sys
 from anno_settings import settings_for, protect_output
 from anno_gallery import render_gallery
-from anno_save_summary import collect_statistics, render_statistics, statistics_sources, label as summary_label
+from anno_save_summary import collect_statistics, render_statistics, totals_html, variant_totals, label as summary_label
 from anno_save_statistics import Statistics1404
 from zoneinfo import ZoneInfo
 CONFIG = settings_for('anno1404')
@@ -367,12 +367,14 @@ def report(saves, file_count, sources, statistics=None):
             longest['name'], diff/86400000 if diff else None, last['world'], last['islands'],
             *(int(v) if v.lstrip('-').isdigit() else v or None for v in last['settings'].values()),
         ]
+        campaign_statistics = [statistics[campaign] for campaign in sorted({campaign_key(save) for save in members})
+                               if statistics and campaign in statistics]
+        totals_row = variant_totals(campaign_statistics, len(members))
         rows.append({'values': values, 'image': last['map'], 'editions': editions, 'profiles': profiles,
                      'timestamp': last['timestamp'], 'oldest': first['timestamp'], 'longest': longest['duration'],
                      'settings': dict(zip(SETTINGS.values(), values[19:])),
                      'paths': [first['path'], last['path'], longest['path']],
-                     'statistics': [statistics[campaign] for campaign in sorted({campaign_key(save) for save in members})
-                                    if statistics and campaign in statistics]})
+                     'statistics': campaign_statistics, 'totals': totals_row})
     rows.sort(key=lambda row: (-row['timestamp'], row['values'][1]))
     note = (f'{len({save["seed"] for save in saves if save["seed"] or save["mode"] == 0})} Seeds · '
             f'{len(rows)} Kartenvarianten · {len(saves)} Spielstände'
@@ -410,24 +412,17 @@ def write_html(stage, payload):
         anchor = f'Seed {v[0]}' if v[0] is not None else v[2]
         details = ''.join(f'<dt>{esc(k)}</dt><dd>{esc(value)}</dd>' for k, value in row['settings'].items()
                           if value is not None)
-        saves = []
-        for column, label, path in zip((8, 10, 14), ('Ältester Save', 'Neuester Save', 'Längste Spielzeit'), row['paths']):
-            local = datetime(1899, 12, 30) + timedelta(seconds=round(v[column]*86400))
-            extra = f' · {duration_label(v[12 if column == 10 else 13]*86400000)}' if column != 8 else ''
-            saves.append(f'<dt>{label}</dt><dd title="{esc(path)}">{esc(v[column+1])}<br>'
-                         f'{local:%d.%m.%Y %H:%M:%S}{extra}</dd>')
-        diff = (f'<p class="delta">Älterer Save mit +{duration_label(v[16]*86400000)} Spielzeit</p>' if v[16] else '')
         cards.append(f'''<article data-editions="{esc(json.dumps(row['editions']))}"
           data-profiles="{esc(json.dumps(row['profiles']))}" data-seed="{v[0] if v[0] is not None else 99999999}"
-          data-timestamp="{row['timestamp']}" data-oldest="{row['oldest']}" data-time="{row['longest']}">
+          data-timestamp="{row['timestamp']}" data-oldest="{row['oldest']}" data-time="{row['totals']['play_ms'] or 0}">
           <a href="{row['image']}"><img loading="lazy" src="{row['image']}" alt="Inselkarte – {esc(anchor)}"></a>
           <div class="body"><h2>{esc(anchor)}</h2><p>{esc(v[1])} · {esc(v[2])} · {esc(v[3])}</p>
+          {totals_html(row.get('statistics', []), v[5])}
           {'' if row.get('statistics') else '<p class="profiles">'+esc(v[6])+'</p>'}{render_statistics(row.get('statistics', []))}
-          <details class="save-details"><summary>{summary_label('stats.saveDetails')}</summary>
-          {statistics_sources(row.get('statistics', []))}<p>{v[5]} Spielstände</p><dl>{''.join(saves)}</dl>{diff}</details>
           <details><summary>{summary_label('stats.settings')}</summary>
           <p><span data-i18n="map.ai">KI:</span> {esc(v[7])}</p>
-          <p>{esc(v[17])} Felder · {f'{v[18]} Inseln' if v[18] is not None else ''}</p><dl>{details}</dl></details></div>
+          <p>{esc(v[17])} Felder · {f'{v[18]} Inseln' if v[18] is not None else ''}</p><dl>{details}</dl></details>
+          <p class="card-navigation"><a href="#gallery-top">{summary_label('nav.top')}</a></p></div>
           </article>''')
     template = (HERE/'map_gallery_template.html').read_text(encoding='utf-8')
     data = {'UPDATED': esc(payload['updated']), 'TOTAL': esc(payload['total']), 'NOTE': esc(payload['note']),
@@ -491,7 +486,7 @@ def main():
             saves, count = collect(sources, stage, output, args.rescan)
             statistics, statistics_cache = collect_statistics(
                 [dict(campaign=campaign_key(save), path=Path(save['path']), source=save['name'],
-                      profile=', '.join(save['profiles']), seed=save['seed'], stamp=save['timestamp'])
+                      profile=', '.join(save['profiles']), seed=save['seed'], stamp=save['timestamp'], play_ms=save['duration'])
                  for save in saves], Statistics1404(read_archive, unpack, binary_fields, metadata_tree),
                 output/'anno1404-statistics.json', ZoneInfo(CONFIG.zone), args.rescan)
             (stage/'anno1404-statistics.json').write_text(json.dumps(statistics_cache,ensure_ascii=False),encoding='utf-8')

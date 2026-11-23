@@ -343,5 +343,20 @@
   "stats.level.anno1404.Patrician": "Patrizier",
   "stats.level.anno1404.Nobleman": "Adlige",
   "stats.rounding": "Bevölkerungsstufen werden einzeln abgerundet; ihre Summe kann vom Gesamtwert abweichen.",
-  "map.variantNote": "Eine Variante fasst Saves mit gleichem Seed und gleicher gespeicherter Kartenkonfiguration zusammen. Unterschiedliche Bevölkerungs- oder Geldstände allein erzeugen keine neue Variante."
+  "map.variantNote": "Varianten unterscheiden Kartenoptionen wie Kartentyp, Grösse und Startregion. Die Save-Historie einer Partie bleibt zusammen; technische Änderungen durch Patches erzeugen keine zusätzlichen Varianten.",
+  "nav.top": "Nach oben",
+  "history.saveCount": "Save-Dateien dieser Partie",
+  "history.oldest": "Ältester Save dieser Partie",
+  "history.latest": "Neuester Save dieser Partie",
+  "history.record": "Save dieser Partie mit längster Spielzeit",
+  "history.latestTime": "Spielzeit im neuesten Save",
+  "history.recordTime": "Längste gespeicherte Spielzeit",
+  "history.extra": "Älterer Save dieser Partie mit mehr Spielzeit",
+  "history.details": "Save-Details dieser Partie",
+  "history.campaigns": "Partien",
+  "history.filesTotal": "Save-Dateien insgesamt",
+  "history.totalTime": "Gesamtspielzeit der Partien",
+  "history.mapSource": "Quelle der Kartenvorschau",
+  "history.campaigns.one": "Partie",
+  "history.filesTotal.one": "Save-Datei insgesamt"
 }

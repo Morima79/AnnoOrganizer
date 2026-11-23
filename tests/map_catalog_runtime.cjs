@@ -17,14 +17,14 @@ function element(dataset = {}) {
 function environment(source = runtime) {
   const nodes = Object.fromEntries(['query', 'mode', 'sort', 'count', 'variants', 'profile-ranking', 'variant-filters']
     .map(id => [id, element()]));
-  nodes.sort.value = 'variant';
+  nodes.sort.value = 'latest';
   const cards = [
     ['20', '1', ['Mori', 'Zweitprofil'], 'Sandkasten', 10, 100],
     ['7', '2', ['Mori 2'], 'Kampagne', 20, 50],
     ['20', '3', ['Mori'], 'Kampagne', 30, 200]
-  ].map(([seed, variant, profiles, mode, latest, recordTime]) => Object.assign(element({
+  ].map(([seed, variant, profiles, mode, latest, totalTime]) => Object.assign(element({
     seed, variant, profiles: JSON.stringify(profiles), mode, latest, first: latest - 5,
-    recordDate: latest + 1, recordTime, latestTime: recordTime - 1}), {
+    recordDate: latest + 1, totalTime, latestTime: totalTime - 1}), {
     // Reading an optional paragraph is the regression we are preventing.
     querySelector() { throw Error('Card text must not be used for profile filtering'); },
     groups: [{open: true}, {open: false}]
@@ -99,8 +99,10 @@ test('seed chips reset profile/mode and scroll to filtered results', () => {
 
 test('sorting reorders existing cards and language switching preserves filters and details', () => {
   const e = environment();
+  assert.deepEqual(e.nodes.variants.ordered.map(card => card.dataset.variant), ['3', '2', '1']);
+  e.nodes.sort.value = 'variant'; e.nodes.sort.listeners.change();
   assert.deepEqual(e.nodes.variants.ordered.map(card => card.dataset.variant), ['2', '1', '3']);
-  e.nodes.sort.value = 'recordTime'; e.nodes.sort.listeners.change();
+  e.nodes.sort.value = 'totalTime'; e.nodes.sort.listeners.change();
   assert.deepEqual(e.nodes.variants.ordered.map(card => card.dataset.variant), ['3', '1', '2']);
   e.links[0].click();
   e.nodes.mode.value = 'Kampagne'; e.nodes.mode.listeners.change();
@@ -108,7 +110,7 @@ test('sorting reorders existing cards and language switching preserves filters a
   assert.equal(e.nodes.count.textContent, '1 of 3 variants');
   assert.equal(e.nodes.query.value, 'Mori');
   assert.equal(e.nodes.mode.value, 'Kampagne');
-  assert.equal(e.nodes.sort.value, 'recordTime');
+  assert.equal(e.nodes.sort.value, 'totalTime');
   assert.deepEqual(e.cards.map(card => card.hidden), [true, true, false]);
   assert.deepEqual(e.cards[0].groups.map(group => group.open), [true, false]);
   assert.ok(e.backs.every(button => !button.hidden));

@@ -63,3 +63,5 @@ Bei einer Weiterveröffentlichung der Skripte, auch in geänderter Form, müssen
 [Map gallery / Kartengalerie](https://morima79.github.io/AnnoOrganizer/anno1404/maps/) · [All demos / Alle Demos](https://morima79.github.io/AnnoOrganizer/)
 
 Die Online-Galerien zeigen die mitgelieferten Beispiele ohne Installation. Automatische Releases und GitHub Pages sind in der [Veröffentlichungsanleitung](../docs/publishing.de.md) beschrieben.
+
+Save-Anzahl und Spielzeitangaben stehen pro Partie in deren Save-Details. Kartenvarianten zeigen nur die Gesamtsummen; Spielzeitvergleiche bleiben innerhalb derselben Partie.

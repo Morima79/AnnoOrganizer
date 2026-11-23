@@ -7,10 +7,18 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Scope save counts, dates, playtime records and older-save warnings to individual campaigns in all three games. Variant summaries and Excel map sheets show campaign/file totals and summed campaign playtime, avoiding cross-campaign comparisons.
+
+- Keep 117/1800 campaign histories in one map variant based on readable map options, eliminating repeated current dates/statistics across patch-driven variants. Default to newest save first and add an unconditional back-to-top link to every map card.
+
 - Unified the 117/1800 map catalogue, cards, seed lists and controls. Fixed statistics-card search, mode filters, counts and profile return navigation; aligned controls and placed finances before population/residences in all three games. Documented map-variant grouping and added catalogue runtime regressions.
 - Added latest-save population, wealth, supported balance, residence, ship and settled-island statistics for all three games. Compact, initially collapsed bilingual groups keep details and save history out of the summary; uncertain values show “not available”. Excel includes a current-campaign worksheet. Added source/limitation documentation and regression coverage.
 
 ### Deutsch
+
+- Save-Anzahl, Zeitpunkte, Spielzeitrekorde und Hinweise auf ältere längere Saves in allen drei Spielen pro Partie zugeordnet. Varianten und Excel-Kartenblätter zeigen Gesamtsummen statt irreführender Vergleiche unterschiedlicher Partien.
+
+- Partiehistorien in 117/1800 anhand verständlicher Kartenoptionen zusammengefasst; dadurch keine mehrfach kopierten aktuellen Daten/Kennzahlen in technischen Patch-Varianten. Neueste Saves standardmässig zuerst und sichtbaren Nach-oben-Link in jeder Kartenkachel ergänzt.
 
 - Kartenkatalog, Kartenaufbau, Seed-Listen und Bedienung von 117/1800 vereinheitlicht. Suche, Modusfilter, Trefferzahlen und Profilrücksprung bei Kennzahlenkarten repariert; Bedienelemente bündig ausgerichtet und Geld in allen drei Spielen vor Bevölkerung/Wohnhäusern angeordnet. Variantenbildung dokumentiert und Laufzeittests für den Katalog ergänzt.
 - Spielstandauswertung aller drei Spiele um Bevölkerung, Vermögen, unterstützte Bilanzwerte sowie Wohnhaus-, Schiffs- und Inselzahlen des neuesten Saves erweitert. Kompakte, zunächst geschlossene zweisprachige Gruppen bündeln Details und Save-Historie; unsichere Werte erscheinen als «nicht verfügbar». Excel enthält ein Blatt mit aktuellen Partieständen. Datenquellen, Grenzen und Regressionstests ergänzt.

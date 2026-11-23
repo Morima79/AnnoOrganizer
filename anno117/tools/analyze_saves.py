@@ -12,8 +12,9 @@ import os
 from pathlib import Path
 import sys
 from anno_settings import settings_for, protect_output
-from anno_map_catalog import render_card, render_catalog_page
-from anno_save_summary import collect_statistics
+from anno_map_catalog import render_card, render_catalog_page, describe_options
+from anno_map_variants import campaign_variants, latest_known_values
+from anno_save_summary import collect_statistics, variant_totals
 from anno_save_statistics import FileDBStatistics
 CONFIG = settings_for('anno117')
 
@@ -291,18 +292,17 @@ def generated_size(geometry, key):
 
 
 def prepare(saves, accounts, map_writer, zone, cached_maps, statistics=None):
-    groups = defaultdict(list)
+    entries = [dict(seed=row['seed'], campaign=row['campaign_id'], order=(row['stamp'], name),
+                    setup=row['setup'], item=(name, row)) for name, row in saves.items()]
+    groups = campaign_variants('anno117', entries)
     seed_bounds = defaultdict(list)
-    for path, row in saves.items():
-        setup = row['setup']
-        settings = tuple((key,tuple(setup[key])) for key in sorted(MAP_KEYS & setup.keys()))
-        groups[row['seed'],settings].append((path,row))
+    for row in saves.values():
         seed_bounds[row['seed']].append(row['stamp'])
     results = []
     new_maps = {}
     def chronological(save):
         return save[1]['stamp'], save[0]
-    for index, ((seed,_), rows) in enumerate(sorted(groups.items(),key=lambda entry:(entry[0][0],repr(entry[0][1]))),1):
+    for index, (seed, rows) in enumerate(groups, 1):
         rows.sort(key=chronological)
         latest_name,latest = rows[-1]
         record_name,record = max(rows,key=lambda save:(save[1]['play'],chronological(save)))
@@ -329,35 +329,32 @@ def prepare(saves, accounts, map_writer, zone, cached_maps, statistics=None):
         links = [map_writer.render(region) for region in geometry]
         profiles = Counter(str(Path(name).parent) for name,_ in rows)
         profiles = '\n'.join(f'{name} ({n})' for name,n in sorted(profiles.items()))
-        settings = [setting_value(key,latest['setup'].get(key,[])) for key in GEO_SETTINGS]
+        known_setup = latest_known_values(row['setup'] for _, row in reversed(rows))
+        settings = [setting_value(key, known_setup.get(key, [])) for key in GEO_SETTINGS]
         settings[1] = generated_size(geometry, 'mapSize')
         settings[2] = generated_size(geometry, 'islandSize')
-        start = [*serials[:4],newest_seconds/86400,record_seconds/86400,serials[4],record_name]
+        campaign_statistics = [statistics[key] for key in sorted({f"{r['seed']}:{r['campaign_id']}" for _, r in rows})
+                               if statistics and key in statistics]
+        totals = variant_totals(campaign_statistics, len(rows))
+        start = [totals['campaigns'], totals['play_ms']/86400000 if totals['play_ms'] is not None else None]
         details = [*display[:4],clock(newest_seconds),clock(record_seconds),display[4],record_name]
-        results.append(dict(identity=[seed,index,mode_for(latest['setup'])],links=links,
+        results.append(dict(identity=[seed,index,mode_for(known_setup)],links=links,
                             settings=[len(rows),profiles,*settings,source,*start],delta=delta,
                             fields=[*settings,*details],raw=latest['setup'],sizes=[
                                 (link['label'],*region['size']) for link,region in zip(links,geometry,strict=True)],
-                            sort={'first':stamps[2],'latest':stamps[3],'recordDate':stamps[4],
-                                  'latestTime':newest_seconds,'recordTime':record_seconds},
+                            sort={'first':stamps[2],'latest':stamps[3],
+                                  'totalTime':totals['play_ms']//1000 if totals['play_ms'] is not None else 0},
                             profiles=profiles,source=source,
                             profile_names=sorted({profile_name('Spielkonto', name) for name,_ in rows}),
-                            statistics=[statistics[key] for key in sorted({f"{r['seed']}:{r['campaign_id']}" for _, r in rows})
-                                        if statistics and key in statistics]))
+                            statistics=campaign_statistics, totals=totals))
     return results,new_maps
 
 
 def write_html(rows, total, stage, updated_at, total_playtime, profiles):
     cards = []
-    for row in rows:
+    for row in sorted(rows, key=lambda row: row['sort']['latest'], reverse=True):
         seed, index, mode = row['identity']
-        save_details = ''
-        if row['delta']:
-            save_details += f'<p class="marker">Älterer Save: +{clock(row["delta"])} mehr Spielzeit</p>'
-        save_details += '<dl>' + ''.join(
-            f'<div><dt>{escape(name)}</dt><dd>{escape(value)}</dd></div>'
-            for name, value in zip(TIME_COLUMNS, row['fields'][len(SETTINGS):], strict=True))
-        save_details += f'</dl><p>Kartenstand: {escape(row["source"])}</p>'
+        save_details = f'<p>Kartenstand: {escape(row["source"])}</p>'
         maps = []
         for link in row['links']:
             path, name = escape(link['path'], quote=True), escape(link['label'])
@@ -375,7 +372,8 @@ def write_html(rows, total, stage, updated_at, total_playtime, profiles):
             settings += f'<div><dt>{escape(name)}</dt><dd>{escape(setting_value(key, values))}</dd></div>'
         cards.append(render_card(seed, index, mode, row['profile_names'], row['profiles'], row['sort'],
                                  row.get('statistics', []), row['settings'][0], save_details,
-                                 ''.join(maps), settings + '</dl>'))
+                                 ''.join(maps), settings + '</dl>',
+                                 describe_options(zip(SETTINGS[:8], row['fields'][:8], strict=True))))
     page = render_catalog_page('anno117', cards, [row['identity'][0] for row in rows], total,
                                updated_at, total_playtime, ranking_html(profiles, clock))
     (stage/'map-gallery.html').write_text(page, encoding='utf-8')
@@ -436,7 +434,7 @@ def main():
             zone = ZoneInfo(CONFIG.zone)
             statistics, statistics_cache = collect_statistics(
                 [dict(campaign=f"{row['seed']}:{row['campaign_id']}", path=account/name,
-                      source=name, profile=profile_name('Spielkonto', name), seed=row['seed'], stamp=row['stamp'])
+                      source=name, profile=profile_name('Spielkonto', name), seed=row['seed'], stamp=row['stamp'], play_ms=row['play'])
                  for name, row in saves.items()], FileDBStatistics('anno117', args.game_data),
                 output/'anno117-statistics.json', zone, args.rescan)
             rows,new_maps=prepare(saves,account,Maps(args.game_data,cards),zone,maps,statistics)
@@ -449,7 +447,7 @@ def main():
             total_playtime = clock(sum(ms for _, _, ms in profiles) // 1000)
             write_html(rows,len(saves),stage,updated_at,total_playtime,profiles)
             report='anno117-map-seeds.xlsx'
-            write_workbook(rows,SETTINGS,TIME_COLUMNS,CONFIG.zone,stage,output/report,output,updated_at, None, total_playtime, profiles)
+            write_workbook(rows,SETTINGS,['Partien insgesamt', 'Gespeicherte Gesamtspielzeit'],CONFIG.zone,stage,output/report,output,updated_at, None, total_playtime, profiles)
             (stage/'report.xlsx').rename(stage/report)
             for name,data in (('anno117-scan.json',saves),('anno117-maps.json',new_maps)):
                 (stage/name).write_text(json.dumps(data,ensure_ascii=False),encoding='utf8')

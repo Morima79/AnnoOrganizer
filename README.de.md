@@ -110,6 +110,8 @@ Die Galerien liegen unter `stamps/stamp-gallery.html` und `reports/map-gallery.h
 
 ## Entwicklung und Veröffentlichung
 
+Vorgemerkte Erweiterungen stehen in der [Wunschliste](docs/wishlist.de.md).
+
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 ```
@@ -135,3 +137,5 @@ Karten- und Stempelgalerien verwenden jeweils eine gemeinsame Seitenvorlage mit 
 ## Automatische Veröffentlichung
 
 Release-ZIPs und die Demo-Seite werden über GitHub Actions veröffentlicht. Details zur Release-Erstellung, GitHub-Pages-Einrichtung und Demo-Aktualisierung stehen in der [Veröffentlichungsanleitung](docs/publishing.de.md).
+
+Save-Anzahl und Spielzeitangaben stehen pro Partie in deren Save-Details. Kartenvarianten zeigen nur die Gesamtsummen; Spielzeitvergleiche bleiben innerhalb derselben Partie.

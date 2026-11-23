@@ -12,7 +12,7 @@
 <details class="gallery-notes"><summary data-i18n="map.notes">Hinweise zu Karten und Spielzeit</summary>
 <p data-i18n="map.totalNote">Für die Gesamtspielzeit zählt pro gespeicherter Partie der höchste gespeicherte Spielzeitwert.</p>
 <p>@@GEOMETRY@@</p><p>@@TIME_NOTE@@</p>
-<p data-i18n="map.variantNote">Eine Variante fasst Saves mit gleichem Seed und gleicher gespeicherter Kartenkonfiguration zusammen. Unterschiedliche Bevölkerungs- oder Geldstände allein erzeugen keine neue Variante.</p>
+<p data-i18n="map.variantNote">Varianten unterscheiden Kartenoptionen wie Kartentyp, Grösse und Startregion. Die Save-Historie einer Partie bleibt zusammen; technische Änderungen durch Patches erzeugen keine zusätzlichen Varianten.</p>
 </details>
 </header>
 @@RANKING@@
@@ -24,11 +24,10 @@
 <option value="Kampagne" data-i18n="mode.campaign">Kampagne</option><option value="Szenario" data-i18n="mode.scenario">Szenario</option>
 <option value="Kreativmodus" data-i18n="mode.creative">Kreativmodus</option></select></label>
 <label><span data-i18n="filters.sort">Sortieren nach</span><select id="sort">
+<option value="latest" selected data-i18n="filters.newest">Neuester Save zuerst</option>
 <option value="variant" data-i18n="filters.seedVariant">Seed und Variante</option>
-<option value="latest" data-i18n="filters.newest">Neuester Save zuerst</option><option value="first" data-i18n="filters.oldest">Ältester Save zuerst</option>
-<option value="recordDate" data-i18n="time.recordDate">Datum des Saves mit längster Spielzeit</option>
-<option value="recordTime" data-i18n="filters.recordTime">Längste gespeicherte Spielzeit zuerst</option>
-<option value="latestTime" data-i18n="filters.latestTime">Spielzeit im neuesten Save zuerst</option></select></label>
+<option value="first" data-i18n="filters.oldest">Ältester Save zuerst</option>
+<option value="totalTime" data-i18n="history.totalTime">Gesamtspielzeit der Partien</option></select></label>
 <button type="button" class="profile-back" data-back-to-profiles hidden><span data-i18n="ranking.back">Zurück zur Profilrangliste</span></button>
 </div>
 <p id="count" role="status" aria-live="polite"></p>

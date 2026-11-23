@@ -2,9 +2,9 @@
 
 [English](save-statistics.md) · [Deutsch](save-statistics.de.md)
 
-The Anno 117, 1800 and 1404 map galleries include the current state of each identified campaign. **Last played on**, **Population**, **Wealth and Balance** inside **Finances**, **Residences** and **Ships** are directly visible. Population, finances, residences and ships start collapsed. Clicking or using the keyboard opens only that group. Population tiers and settled islands, income/expenses, residences by tier and blueprints, and ship types appear inside the corresponding group. Previous save dates, playtime records, file counts and sources are grouped under **Save details**; map settings have their own collapsed group.
+The Anno 117, 1800 and 1404 map galleries include the current state of each identified campaign. **Last played on**, **Population**, **Wealth and Balance** inside **Finances**, **Residences** and **Ships** are directly visible. Population, finances, residences and ships start collapsed. Clicking or using the keyboard opens only that group. Population tiers and settled islands, income/expenses, residences by tier and blueprints, and ship types appear inside the corresponding group. Save dates, playtime records, file counts and sources are grouped per campaign under **Save details for this campaign**; map settings have their own collapsed group.
 
-All statistics for a campaign come from the same latest save. Different campaigns sharing a seed are never added together. A map variant may therefore contain several separate campaign summaries. Map images remain reconstructions of saved terrain, without building or ownership overlays. Statistic and map sources are listed in the save details. The DE/EN switch works offline and preserves expanded groups.
+All statistics for a campaign come from the same latest save. Each campaign belongs to exactly one variant; its current date and values are not copied into older technical subgroups. Different campaigns sharing a seed are never added together. A map variant may therefore contain several separate campaign summaries. Map images remain reconstructions of saved terrain, without building or ownership overlays. Statistic and map sources are listed in the save details. The DE/EN switch works offline and preserves expanded groups.
 
 ## Selection and refresh
 
@@ -36,12 +36,26 @@ The new features use no online services. Personal statistics, caches and logs mu
 
 ## What is a map variant?
 
-A variant groups map configurations, not progress or save dates. Several campaigns may share a variant, and the same seed may have several variants. Population, wealth, residences and ships do not enter the grouping. The collapsed map-settings section shows the saved values used for comparison.
+For Anno 117 and 1800, a campaign keeps its complete save history together. Grouping compares the latest known map options. When the latest save lacks an option, its last known value from the same campaign is used; unknown values are not guessed as defaults. Technical fields, DLC/mod lists, participant lists, warehouse/continental-start flags and patch-added internal fields do not create additional variants. Original raw values remain available in map settings.
 
-| Game | Distinguishing saved data |
+Different campaigns sharing a seed are grouped by these player-facing map options:
+
+| Game | Comparable map options |
 |---|---|
-| 117 | Map type, world/island size and difficulty, fertility/resources, forest, starting province, mode, continental start/settling rules, default rivals, active DLCs and mods |
-| 1800 | Map type, world/island size and difficulty, fertility/resources, mode, saved map definitions, traders/pirates and rivals, active DLCs/mods, and warehouse start |
-| 1404 | Mode, seed, game-type variation (including campaign chapter), scenario outside sandbox, actual island layout or terrain fallback, map settings except `RandomMap`, and AI names |
+| 117 | Map type, world/island size, island difficulty, fertility, resources, forest and starting province, plus game mode |
+| 1800 | Map type, world/island size, island difficulty, fertility and resources, plus game mode; scenario map for scenarios |
+| 1404 | Unchanged: mode, seed, game-type variation (including campaign chapter), scenario outside sandbox, actual island layout or terrain fallback, map settings except `RandomMap`, and AI names |
 
-For 117/1800 the displayed variant number is an export index and may change when groups are added. The 1404 variant ID derives from the grouping hash. A variant is distinct from a campaign identity, which selects the latest statistics. Configuration differences can create separate variants even when their map previews look alike; this is not a claim that their terrain differs.
+The 117/1800 card titles are followed by readable map options for direct comparison. A variant preview comes from one of its saves; identical menu options do not prove identical terrain when mods are involved. Population, wealth and playtime changes alone do not create a variant. Unknown map options in unrelated campaigns are not assumed equal.
+
+The 117/1800 variant number is an export index and may change when groups are added; the 1404 variant ID derives from a hash. Each assigned campaign shows its own latest save with its own date and statistics. The gallery defaults to **Newest save first**, including without JavaScript. Every card has an always-visible **Back to top** link at its bottom right; the jump preserves filters and expanded groups.
+
+## Save counts and playtime per campaign
+
+Each campaign block has its own initially collapsed **Save details for this campaign**: file count, oldest/newest save and source, playtime in the latest save, and the longest saved playtime with date/source. The older-save playtime warning only compares saves of that same campaign. Different campaigns sharing a profile name remain separate.
+
+A variant shows only **total campaigns**, **total save files** and **total campaign playtime**. The latter adds the longest saved playtime of each campaign once; autosave playtimes are not added together. The map preview source has a separate disclosure. Sorting by total playtime uses that same sum.
+
+117/1800 file counts include scanned archive copies. 1404 keeps its existing content deduplication: identical save copies count once, and extra copies are reported in the page header. Variant and campaign counts use the same basis.
+
+Excel lists campaign counts, save dates, playtimes and sources on **Aktuelle Spielstände**. **Kartenseeds** shows only variant totals for these values, without comparing playtime across campaigns.

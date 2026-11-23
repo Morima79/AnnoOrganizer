@@ -2,9 +2,9 @@
 
 [English](save-statistics.md) · [Deutsch](save-statistics.de.md)
 
-Die Kartengalerien für Anno 117, 1800 und 1404 zeigen zusätzlich den aktuellen Stand jeder erkannten Partie. Direkt sichtbar sind **Zuletzt gespielt am**, **Bevölkerung**, **Vermögen und Bilanz** in der Gruppe **Geld**, **Wohnhäuser** und **Schiffe**. Bevölkerung, Geld, Wohnhäuser und Schiffe sind zunächst geschlossene Gruppen. Ein Klick oder die Tastatur öffnet nur die betreffende Gruppe. Bevölkerungsstufen und besiedelte Inseln, Einnahmen/Ausgaben, Wohnhäuser pro Stufe und Baupläne sowie Schiffstypen erscheinen erst dort. Die bisherigen Save-Zeitpunkte, Spielzeitrekorde, Dateizahlen und Quellen stehen unter **Save-Details**; die Karteneinstellungen besitzen eine eigene geschlossene Gruppe.
+Die Kartengalerien für Anno 117, 1800 und 1404 zeigen zusätzlich den aktuellen Stand jeder erkannten Partie. Direkt sichtbar sind **Zuletzt gespielt am**, **Bevölkerung**, **Vermögen und Bilanz** in der Gruppe **Geld**, **Wohnhäuser** und **Schiffe**. Bevölkerung, Geld, Wohnhäuser und Schiffe sind zunächst geschlossene Gruppen. Ein Klick oder die Tastatur öffnet nur die betreffende Gruppe. Bevölkerungsstufen und besiedelte Inseln, Einnahmen/Ausgaben, Wohnhäuser pro Stufe und Baupläne sowie Schiffstypen erscheinen erst dort. Save-Zeitpunkte, Spielzeitrekorde, Dateizahlen und Quellen stehen pro Partie unter **Save-Details dieser Partie**; die Karteneinstellungen besitzen eine eigene geschlossene Gruppe.
 
-Alle Kennzahlen einer Partie stammen aus demselben neuesten Save. Unterschiedliche Partien mit demselben Seed werden nicht addiert. Eine Kartenvariante kann deshalb mehrere getrennte Partiezusammenfassungen enthalten. Die Kartenbilder bleiben Rekonstruktionen des gespeicherten Geländes und erhalten keine Gebäude- oder Besitzüberlagerung. Die Quellen der Kennzahlen und der Kartenbilder sind in den Save-Details nachvollziehbar. Der DE/EN-Schalter funktioniert offline und erhält die geöffneten Gruppen.
+Alle Kennzahlen einer Partie stammen aus demselben neuesten Save. Jede Partie ist genau einer Variante zugeordnet; ihr aktuelles Datum und ihre Kennzahlen werden nicht in frühere technische Teilgruppen kopiert. Unterschiedliche Partien mit demselben Seed werden nicht addiert. Eine Kartenvariante kann deshalb mehrere getrennte Partiezusammenfassungen enthalten. Die Kartenbilder bleiben Rekonstruktionen des gespeicherten Geländes und erhalten keine Gebäude- oder Besitzüberlagerung. Die Quellen der Kennzahlen und der Kartenbilder sind in den Save-Details nachvollziehbar. Der DE/EN-Schalter funktioniert offline und erhält die geöffneten Gruppen.
 
 ## Auswahl und Aktualisierung
 
@@ -36,12 +36,26 @@ Die neuen Funktionen verwenden keine Online-Dienste. Persönliche Kennzahlen, Ca
 
 ## Was ist eine Kartenvariante?
 
-Eine Variante gruppiert Kartenkonfigurationen, keine Fortschritte oder Save-Daten. Mehrere Partien können dieselbe Variante verwenden; derselbe Seed kann mehrere Varianten haben. Bevölkerung, Vermögen, Wohnhäuser und Schiffe gehen nicht in die Gruppierung ein. Die aufklappbaren Karteneinstellungen zeigen die gespeicherten Vergleichswerte.
+Für Anno 117 und 1800 bleibt die gesamte Save-Historie einer Partie zusammen. Verglichen werden die zuletzt bekannten Kartenoptionen. Fehlt eine Option im neuesten Save, wird ihr letzter bekannter Wert aus derselben Partie übernommen; unbekannte Werte werden nicht als Standardwerte geraten. Technische Felder, DLC-/Mod-Listen, Teilnehmerlisten, Kontor-/Kontinentalstart-Flags und neue interne Angaben nach Patches erzeugen keine zusätzlichen Varianten. Die unveränderten Rohdaten bleiben in den Karteneinstellungen nachvollziehbar.
 
-| Spiel | Unterscheidende gespeicherte Angaben |
+Unterschiedliche Partien mit gleichem Seed werden nach diesen verständlichen Kartenoptionen gruppiert:
+
+| Spiel | Vergleichbare Kartenoptionen |
 |---|---|
-| 117 | Kartentyp, Welt-/Inselgrösse und Schwierigkeit, Fruchtbarkeit/Vorkommen, Wald, Startprovinz, Modus, Kontinentalstart-/Besiedlungsregeln, Standardrivalen, aktive DLCs und Mods |
-| 1800 | Kartentyp, Welt-/Inselgrösse und Schwierigkeit, Fruchtbarkeit/Vorkommen, Modus, gespeicherte Kartendefinitionen, Händler/Piraten und Rivalen, aktive DLCs/Mods und Kontorstart |
-| 1404 | Modus, Seed, Spieltypvariation (einschliesslich Kampagnenkapitel), Szenario ausserhalb des Endlosspiels, tatsächliches Insellayout oder Geländeersatz, Karteneinstellungen ohne `RandomMap` und KI-Namen |
+| 117 | Kartentyp, Welt-/Inselgrösse, Inselschwierigkeit, Fruchtbarkeit, Vorkommen, Wald und Startprovinz sowie Spielmodus |
+| 1800 | Kartentyp, Welt-/Inselgrösse, Inselschwierigkeit, Fruchtbarkeit und Vorkommen sowie Spielmodus; bei Szenarien zusätzlich die Szenariokarte |
+| 1404 | Wie bisher: Modus, Seed, Spieltypvariation (einschliesslich Kampagnenkapitel), Szenario ausserhalb des Endlosspiels, tatsächliches Insellayout oder Geländeersatz, Karteneinstellungen ohne `RandomMap` und KI-Namen |
 
-Bei 117/1800 ist die angezeigte Variantennummer ein Exportindex und kann sich durch zusätzliche Gruppen ändern. Die Varianten-ID bei 1404 wird aus dem Gruppierungs-Hash abgeleitet. Eine Variante ist von der Partiekennung zu unterscheiden, über die der neueste Kennzahlenstand gewählt wird. Konfigurationsunterschiede können getrennte Varianten erzeugen, selbst wenn die Kartenvorschauen gleich aussehen; daraus folgt kein Unterschied im Gelände.
+Unter dem Titel der 117-/1800-Kacheln stehen die lesbaren Kartenoptionen zum direkten Vergleich. Die Vorschau einer Variante stammt aus einem zugehörigen Save; gleiche Menüoptionen beweisen bei Mods keine identische Kartengeometrie. Reine Änderungen an Bevölkerung, Geld oder Spielzeit erzeugen keine Variante. Bei unterschiedlichen Partien mit unbekannten Kartenoptionen wird keine Gleichheit erfunden.
+
+Die Variantennummer bei 117/1800 ist ein Exportindex und kann sich durch zusätzliche Gruppen ändern; bei 1404 wird die Varianten-ID aus einem Hash abgeleitet. Jede zugeordnete Partie zeigt ihren eigenen neuesten Save mit eigenem Datum und eigenen Kennzahlen. Die Galerie startet mit **Neuester Save zuerst**, auch ohne JavaScript. Jede Kachel besitzt unten rechts einen stets sichtbaren Link **Nach oben**; der Sprung erhält Filter und geöffnete Gruppen.
+
+## Save-Anzahl und Spielzeit pro Partie
+
+Jeder Partieblock besitzt eigene, zunächst geschlossene **Save-Details dieser Partie**: Dateizahl, ältester und neuester Save samt Quelle, Spielzeit im neuesten Save und längster gespeicherter Stand mit Datum/Quelle. Der Hinweis auf einen älteren Save mit mehr Spielzeit vergleicht ausschliesslich Saves derselben Partie. Unterschiedliche Partien mit gleichem Profilnamen bleiben getrennt.
+
+Die Variante zeigt nur **Partien insgesamt**, **Save-Dateien insgesamt** und die **Gesamtspielzeit der Partien**. Dafür wird der längste gespeicherte Stand jeder Partie einmal addiert; Autosaves werden nicht als zusätzliche Spielzeit summiert. Die Quelle der Kartenvorschau hat eine eigene Gruppe. Die Sortierung nach Gesamtspielzeit verwendet dieselbe Summe.
+
+In 117/1800 zählt die Dateizahl die erfassten Dateien einschliesslich Archivkopien. In 1404 bleibt die bestehende Inhalts-Deduplizierung erhalten: identische Save-Kopien zählen einmal, zusätzliche Kopien werden im Seitenkopf ausgewiesen. Die Varianten- und Partie-Dateizahlen verwenden dieselbe Grundlage.
+
+Excel führt Dateizahl, Save-Zeitpunkte, Spielzeiten und Quellen je Partie auf **Aktuelle Spielstände**. **Kartenseeds** enthält dafür nur Varianten-Gesamtsummen; dort gibt es keinen Vergleich der Spielzeiten unterschiedlicher Partien mehr.

@@ -69,4 +69,6 @@ body.gallery-map { margin: 0; padding: 0; max-width: none; min-height: 100vh; ba
 .gallery-map .marker { font-weight: 600; color: var(--gallery-heading); }
 .gallery-map .map-catalog details { margin-top: 8px; }
 .gallery-map .map-catalog .stat-group { margin: 0; }
+.gallery-map .card-navigation { display: block; text-align: right; margin: 16px 0 0; }
+.gallery-map .variant-description { color: var(--gallery-muted); font-size: .9rem; }
 @media (max-width: 700px) { .gallery-map .gallery-shell { padding: 24px 18px 40px; } .gallery-map .game-logo { width: min(100%, 230px); } }

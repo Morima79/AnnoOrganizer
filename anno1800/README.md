@@ -71,3 +71,5 @@ When redistributing the scripts, including modified versions, retain the copyrig
 [Map gallery / Kartengalerie](https://morima79.github.io/AnnoOrganizer/anno1800/maps/) · [Stamp gallery / Stempelgalerie](https://morima79.github.io/AnnoOrganizer/anno1800/stamps/) · [All demos / Alle Demos](https://morima79.github.io/AnnoOrganizer/)
 
 The online galleries show the bundled examples without installation. Automated releases and GitHub Pages are documented in the [publishing guide](../docs/publishing.md).
+
+Save counts and playtime are listed in each campaign’s save details. Map variants show only totals; playtime comparisons stay within one campaign.

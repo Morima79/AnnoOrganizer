@@ -18,8 +18,9 @@ def write_workbook(rows, settings, times, zone, stage, target, output, updated_a
 
     extra_count = max(1, *(len(regional_links(row)[1]) for row in rows))
     headers = ['Seed', 'Variante', 'Spielmodus', *REGIONS, 'Szenario / weitere Region',
-               'Spielstände', 'Profile', *settings, 'Spielstand für die Kartenbilder', *times,
-               'Mehr Spielzeit im älteren Save']
+               'Save-Dateien insgesamt', 'Profile', *settings, 'Spielstand für die Kartenbilder', *times]
+    extra_start = len(headers)
+    time_start = 3 + len(REGIONS) + 1 + 2 + len(settings) + 1
     headers.extend(f'Weitere Region {i}' for i in range(2, extra_count + 1))
 
     with xlsxwriter.Workbook(stage/'report.xlsx', {
@@ -42,7 +43,6 @@ def write_workbook(rows, settings, times, zone, stage, target, output, updated_a
         delta_format = book.add_format({**common, 'num_format':'"+"[h]:mm:ss'})
         count = book.add_format({**common, 'num_format':'#,##0'})
         link_format = book.add_format({**common, 'font_color':'#125C93', 'underline':1, 'text_wrap':True})
-        marker = book.add_format({'bg_color':'#FFEBBF', 'font_color':'#633900', 'bold':True})
         sheet.set_row(1, 24)
         sheet.set_row(5, 34)
         for i in range(len(headers)):
@@ -64,22 +64,20 @@ def write_workbook(rows, settings, times, zone, stage, target, output, updated_a
         })
         for row_index, row in enumerate(rows, 6):
             regions, other = regional_links(row)
-            values = [*row['identity'], *([None] * 6), *row['settings']]
+            values = [*row['identity'], *([None] * (len(REGIONS) + 1)), *row['settings']]
             lines = 3
             for column, value in enumerate(values):
                 if value is None:
                     continue
-                fmt = (count if column == 9 else
-                       date if column in (21, 22, 23, 24, 27) else
-                       time if column in (25, 26) else body)
+                fmt = count if column in (3 + len(REGIONS) + 1, time_start) else time if column == time_start + 1 else body
                 sheet.write(row_index, column, value, fmt)
                 if isinstance(value, str):
-                    chars = max(1, WIDTHS[column] // 7)
+                    chars = max(1, (WIDTHS[column] if column < len(WIDTHS) else 170) // 7)
                     lines = max(lines, sum(max(1, (len(line) + chars - 1) // chars)
                                            for line in value.split('\n')))
             sheet.set_row(row_index, min(400, max(45, lines * 13 + 6)))
             for column, link in [*enumerate(regions, 3),
-                                 *((8 if i == 0 else 29 + i, link) for i, link in enumerate(other))]:
+                                 *((3 + len(REGIONS) if i == 0 else extra_start + i - 1, link) for i, link in enumerate(other))]:
                 if link is None:
                     continue
                 relative = Path(link['path'])
@@ -90,12 +88,6 @@ def write_workbook(rows, settings, times, zone, stage, target, output, updated_a
                                          link['label'].removeprefix('Szenario · '))
                 if status != 0:
                     raise ValueError(f'Excel konnte den Kartenlink nicht speichern: {relative}')
-            n = row_index + 1
-            formula = f'=IF(AND(AB{n}<Y{n},AA{n}>Z{n}),ROUND((AA{n}-Z{n})*86400,0)/86400,"")'
-            cached = row['delta']/86400 if row['delta'] else ''
-            sheet.write_formula(row_index, 29, formula, delta_format, cached)
-        for address in (f'A7:B{len(rows)+6}', f'AD7:AD{len(rows)+6}'):
-            sheet.conditional_format(address, {'type':'formula', 'criteria':'=ISNUMBER($AD7)', 'format':marker})
 
         ranking = book.add_worksheet('Spielzeit pro Profil')
         ranking.hide_gridlines(2)
