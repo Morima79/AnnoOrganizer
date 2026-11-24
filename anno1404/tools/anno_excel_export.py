@@ -19,6 +19,8 @@ def write_workbook(target, data):
         date = book.add_format({**common, 'num_format': 'dd.mm.yyyy hh:mm:ss'})
         hours = book.add_format({**common, 'num_format': '[h]:mm:ss'})
         delta = book.add_format({**common, 'num_format': '"+"[h]:mm:ss'})
+        count_format = book.add_format({**common, 'num_format': '#,##0'})
+        seed_format = book.add_format({**common, 'num_format': '0'})
         sheet.write('A1', 'Anno 1404 · Venedig · History Edition', title)
         sheet.set_row(0, 26)
         sheet.write('A2', data['note'])
@@ -40,7 +42,8 @@ def write_workbook(target, data):
             values = [row['values'][column] for column in selected] + [totals['campaigns'],
                       totals['play_ms']/86400000 if totals['play_ms'] is not None else None]
             for column, value in enumerate(values):
-                sheet.write(i, column, value, hours if column == len(headers)-1 else body)
+                fmt = hours if column == len(headers)-1 else seed_format if column == 0 else count_format if isinstance(value, (int, float)) else body
+                sheet.write(i, column, value, fmt)
             sheet.write_url(i, 4, 'external:' + row['image'].replace('/', '\\'), link, row['values'][4])
         ranking = book.add_worksheet('Spielzeit pro Profil')
         ranking.hide_gridlines(2)
@@ -52,4 +55,6 @@ def write_workbook(target, data):
             ranking.set_column_pixels(i, i, size)
         for i, (name, count, milliseconds) in enumerate(data['ranking'], 4):
             ranking.write_row(i, 0, [i-3, name, count], body)
+            ranking.write_number(i, 0, i-3, count_format)
+            ranking.write_number(i, 2, count, count_format)
             ranking.write_number(i, 3, milliseconds/86400000, hours)

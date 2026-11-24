@@ -698,5 +698,8 @@
   "gameSetting.anno117.SetupStartSessionIslandDifficulty.value.0": "Normal",
   "gameSetting.anno117.SetupStartSessionIslandDifficulty.value.1": "Schwer",
   "stats.residencePopulation": "Bevölkerung in Wohnhäusern",
-  "stats.populationCountersDiffer": "Die gespeicherten Wohnhauswerte weichen vom Profil-Gesamtzähler ab. Beide Werte werden unverändert angezeigt."
+  "stats.populationCountersDiffer": "Die gespeicherten Wohnhauswerte weichen vom Profil-Gesamtzähler ab. Beide Werte werden unverändert angezeigt.",
+  "demo.excel": "Demo-Excel herunterladen",
+  "demo.excelMaps": "Excel mit Kartenbildern (ZIP)",
+  "demo.excelNote": "Die Arbeitsmappen sind auf Deutsch. Für funktionierende Kartenlinks das ZIP vollständig entpacken und die Ordnerstruktur beibehalten."
 }

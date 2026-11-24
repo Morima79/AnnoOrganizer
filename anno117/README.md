@@ -24,6 +24,8 @@ Standardised gallery header and Latium island overview with seed, saved map sett
 
 [Open the compact map gallery HTML demo](https://morima79.github.io/AnnoOrganizer/anno117/maps/)
 
+Demo Excel: [workbook](https://morima79.github.io/AnnoOrganizer/downloads/anno117-map-demo.xlsx) · [ZIP with map images](https://morima79.github.io/AnnoOrganizer/downloads/anno117-map-demo.zip). Workbooks are in German. Extract the ZIP completely to use the map links. Counts and money use integer display with grouping; seeds have no grouping.
+
 ## Quick start
 
 Install Python 3.11 or later if needed, then double-click **Launch.cmd** and choose **Demo** (or press Enter). The launcher sets up the Python environment and packages automatically on first use; this requires an internet connection. Missing settings are created automatically.

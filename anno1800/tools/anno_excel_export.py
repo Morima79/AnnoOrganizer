@@ -42,6 +42,7 @@ def write_workbook(rows, settings, times, zone, stage, target, output, updated_a
         time = book.add_format({**common, 'num_format':'[h]:mm:ss'})
         delta_format = book.add_format({**common, 'num_format':'"+"[h]:mm:ss'})
         count = book.add_format({**common, 'num_format':'#,##0'})
+        seed_format = book.add_format({**common, 'num_format':'0'})
         link_format = book.add_format({**common, 'font_color':'#125C93', 'underline':1, 'text_wrap':True})
         sheet.set_row(1, 24)
         sheet.set_row(5, 34)
@@ -70,6 +71,10 @@ def write_workbook(rows, settings, times, zone, stage, target, output, updated_a
                 if value is None:
                     continue
                 fmt = count if column in (3 + len(REGIONS) + 1, time_start) else time if column == time_start + 1 else body
+                if column == 0:
+                    fmt = seed_format
+                elif fmt is body and isinstance(value, (int, float)):
+                    fmt = count
                 sheet.write(row_index, column, value, fmt)
                 if isinstance(value, str):
                     chars = max(1, (WIDTHS[column] if column < len(WIDTHS) else 170) // 7)
@@ -109,4 +114,6 @@ def write_workbook(rows, settings, times, zone, stage, target, output, updated_a
             excel_row = index + 4
             ranking.set_row(excel_row, 19)
             ranking.write_row(excel_row, 0, (index, profile, games), body)
+            ranking.write_number(excel_row, 0, index, count)
+            ranking.write_number(excel_row, 2, games, count)
             ranking.write_number(excel_row, 3, (milliseconds // 1000) / 86400, time)

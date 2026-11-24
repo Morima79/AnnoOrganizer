@@ -24,6 +24,8 @@ Standardised gallery header and Old World island overview with seed, saved map s
 
 [Open the compact map gallery HTML demo](https://morima79.github.io/AnnoOrganizer/anno1800/maps/)
 
+Demo Excel: [workbook](https://morima79.github.io/AnnoOrganizer/downloads/anno1800-map-demo.xlsx) · [ZIP with map images](https://morima79.github.io/AnnoOrganizer/downloads/anno1800-map-demo.zip). Workbooks are in German. Extract the ZIP completely to use the map links. Counts and money use integer display with grouping; seeds have no grouping.
+
 ## Quick start
 
 Install Python 3.11 or later if needed, then double-click **Launch.cmd** and choose **Demo** (or press Enter). The launcher sets up the Python environment and packages automatically on first use; this requires an internet connection. Missing settings are created automatically.

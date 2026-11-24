@@ -59,3 +59,9 @@ local-data/
 dist/
 !site/**/stamps/
 !site/**/stamps/**
+!site/downloads/anno117-map-demo.xlsx
+!site/downloads/anno1800-map-demo.xlsx
+!site/downloads/anno1404-map-demo.xlsx
+!site/downloads/anno117-map-demo.zip
+!site/downloads/anno1800-map-demo.zip
+!site/downloads/anno1404-map-demo.zip

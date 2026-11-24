@@ -211,7 +211,8 @@ def write_statistics_sheet(book, entries):
     sheet.set_column(2, 9, 18)
     sheet.set_column(10, 10, 65)
     heading = book.add_format({'bold': True, 'text_wrap': True})
-    numeric = book.add_format({'num_format': '#,##0.##'})
+    numeric = book.add_format({'num_format': '#,##0'})
+    seed_format = book.add_format({'num_format': '0'})
     date_format = book.add_format({'num_format': 'dd.mm.yyyy hh:mm:ss'})
     headers = ['Profil', 'Zuletzt gespielt am', 'Seed', 'Bevölkerung', 'Vermögen', 'Bilanz / min',
                'Wohnhäuser', 'Schiffe', 'Besiedelte Inseln', 'Wohnhaus-Baupläne', 'Save']
@@ -230,7 +231,8 @@ def write_statistics_sheet(book, entries):
             if column == 1:
                 sheet.write_datetime(index, column, datetime.strptime(value, '%d.%m.%Y %H:%M:%S'), date_format)
                 continue
-            sheet.write(index, column, 'nicht verfügbar' if value is None else value, numeric if isinstance(value, (int, float)) else None)
+            fmt = seed_format if column == 2 else numeric if isinstance(value, (int, float)) else None
+            sheet.write(index, column, 'nicht verfügbar' if value is None else value, fmt)
         sheet.write(index, 19, 'nicht verfügbar' if stats.get('population_residences') is None else stats['population_residences'], numeric)
         history = entry.get('history')
         if history:
@@ -246,6 +248,6 @@ def write_statistics_sheet(book, entries):
                 elif column in (14, 15, 18):
                     sheet.write_number(index, column, value / 86400000, hours)
                 else:
-                    sheet.write(index, column, value)
+                    sheet.write(index, column, value, numeric if isinstance(value, (int, float)) else None)
     if entries:
         sheet.autofilter(0, 0, len(entries), len(headers) - 1)

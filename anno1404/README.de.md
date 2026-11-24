@@ -16,6 +16,8 @@ Einheitlicher Galerie-Kopfbereich und drei Kartenvarianten aus Anno 1404, Venedi
 
 [Kompakte Kartengalerie als HTML-Demo öffnen](https://morima79.github.io/AnnoOrganizer/anno1404/maps/)
 
+Demo-Excel: [Arbeitsmappe](https://morima79.github.io/AnnoOrganizer/downloads/anno1404-map-demo.xlsx) · [ZIP mit Kartenbildern](https://morima79.github.io/AnnoOrganizer/downloads/anno1404-map-demo.zip). Die Arbeitsmappen sind auf Deutsch. Für funktionierende Bildlinks das ZIP vollständig entpacken. Kennzahlen und Geld erscheinen als Ganzzahlen mit Tausendertrennzeichen, Seeds ohne Trennzeichen.
+
 ## Schnellstart
 
 Falls nötig Python 3.11 oder neuer installieren. Danach **Launch.cmd** doppelklicken und **Demo** wählen oder Enter drücken. Die Python-Umgebung und benötigten Pakete werden beim ersten Start automatisch eingerichtet; dafür wird eine Internetverbindung benötigt. Fehlende Einstellungen legt der Starter selbst an.

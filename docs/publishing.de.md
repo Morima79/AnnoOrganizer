@@ -9,7 +9,7 @@ Anleitung für die Pflege des Repositories: Releases erstellen, GitHub Pages ver
 - **Webseite:** Änderungen an `site/` auf `main` werden nach einer Link- und Pfadprüfung automatisch über GitHub Pages veröffentlicht. Einmalig muss unter `Settings → Pages → Source` die Option **GitHub Actions** aktiviert sein.
 - **Demo aktualisieren:** Neue Ausgaben lokal ausschliesslich aus den mitgelieferten Demo-Dateien erzeugen. Die fünf `index.html`-Dateien unter `site/<Spiel>/maps/` bzw. `stamps/` und nur ihre referenzierten Bilder ersetzen. Relative Bildpfade beibehalten, absolute lokale Pfade entfernen und die Rücklinks zur Demo-Startseite erhalten. Danach `python scripts/validate_site.py` ausführen. Die Originalgalerien und persönlichen Einstellungen bleiben unverändert. GitHub erzeugt diese Momentaufnahmen nicht neu, da die Werkzeuge dafür teilweise installierte Spieldaten benötigen.
 
-`site/` enthält ausschliesslich HTML und benötigte Vorschau-/Bauplanbilder, keine Spieldatenarchive, Caches oder privaten Konfigurationen. `scripts/build_release.py` paketiert ausschliesslich versionierte Dateien; lokale Einstellungen und Ausgabeordner bleiben ausgeschlossen.
+`site/` enthält HTML, benötigte Vorschau-/Bauplanbilder und die sechs freigegebenen Demo-Downloads als Arbeitsmappen/ZIPs, keine Spieldatenarchive, Caches oder privaten Konfigurationen. `scripts/build_release.py` paketiert ausschliesslich versionierte Dateien; lokale Einstellungen und Ausgabeordner bleiben ausgeschlossen.
 
 ## Projektumbenennung
 
@@ -24,3 +24,7 @@ Lokale Kompatibilitätskennungen (`ANNOTOOLS_SETTINGS`, `.annotools-game.json`, 
 Die aktuelle offizielle `actions/deploy-pages@v5` enthält noch eine Abhängigkeit, die Nodes veraltetes `punycode`-Modul lädt. Der Pages-Workflow verwendet deshalb ausschliesslich für diesen Deploy-Schritt einen [lokalen Kompatibilitätsadapter](../.github/actions/pages-runtime/README.md). Er lädt die unveränderte, mit MIT-Lizenz und Prüfsummen dokumentierte Userland-Implementierung, statt Warnungen zu unterdrücken. Andere Warnungen bleiben sichtbar; Berechtigungen und OIDC-Deployment bleiben unverändert.
 
 Vor dem Deployment prüft `node --test tests/pages_runtime.cjs` die Korrektur unter Node 24. Nach einer künftigen offiziellen Behebung kann der Adapter gemäss seiner Anleitung wieder entfernt werden. Die Korrektur wird erst mit einem Commit und Push des Workflows auf GitHub wirksam.
+
+## Demo-Excel herunterladen
+
+Nach dem Export ausschliesslich der mitgelieferten Demo-Eingaben aller drei Spiele `python scripts/publish_demo_workbooks.py --reports-root local-data/statistics-demo` ausführen. Die Auswertung muss jeweils unter `<reports-root>/<spiel>/reports/<spiel>-map-seeds.xlsx` liegen. Das Skript prüft auf Rechnerpfade und erlaubt nur relative Links auf `map-images/*.png`. Es erstellt die drei freigegebenen Arbeitsmappen und ZIPs mit den verknüpften Bildern unter `site/downloads/`. Die ZIPs erhalten die relativen Bildlinks für die Offline-Nutzung. Persönliche Auswertungen niemals als Veröffentlichungseingaben verwenden. Startseite und beide README-Sprachen verlinken diese Momentaufnahmen; Pages veröffentlicht sie beim nächsten beauftragten Site-Push.

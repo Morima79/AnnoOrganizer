@@ -31,6 +31,8 @@ The online demos require no installation. They are validated snapshots of the bu
 
 The demo landing page and galleries share the same **DE/EN switch**. Your saved language choice carries across navigation between these pages when browser storage is available.
 
+Demo Excel downloads (German workbooks): [Anno 117](site/downloads/anno117-map-demo.xlsx) / [ZIP](site/downloads/anno117-map-demo.zip) · [Anno 1800](site/downloads/anno1800-map-demo.xlsx) / [ZIP](site/downloads/anno1800-map-demo.zip) · [Anno 1404](site/downloads/anno1404-map-demo.xlsx) / [ZIP](site/downloads/anno1404-map-demo.zip). The ZIP includes the map images; extract it completely to use the workbook links. Counts and money display as grouped integers; seeds have no grouping. Dates and playtime keep their existing formats.
+
 ## Gallery previews
 
 The previews show all five bundled demo galleries in English; click an image for full resolution. The German README uses matching German screenshots. Map demos include settled islands, population and residence counts in compact disclosure groups. All galleries use game logos and matching colours; Anno 1404 uses a light parchment theme.

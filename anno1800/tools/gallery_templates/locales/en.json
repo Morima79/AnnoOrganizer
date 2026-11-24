@@ -698,5 +698,8 @@
   "gameSetting.anno117.SetupStartSessionIslandDifficulty.value.0": "Normal",
   "gameSetting.anno117.SetupStartSessionIslandDifficulty.value.1": "Hard",
   "stats.residencePopulation": "Residents in residences",
-  "stats.populationCountersDiffer": "The stored residence counters differ from the profile total. Both values are shown unchanged."
+  "stats.populationCountersDiffer": "The stored residence counters differ from the profile total. Both values are shown unchanged.",
+  "demo.excel": "Download demo Excel",
+  "demo.excelMaps": "Excel with map images (ZIP)",
+  "demo.excelNote": "Workbooks are in German. Extract the complete ZIP and keep its folder structure to use the map links."
 }

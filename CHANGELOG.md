@@ -7,11 +7,15 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Display Excel statistics as grouped integers and seeds without grouping. Add three downloadable demo workbooks and offline ZIPs with linked map images, bilingual demo links and README documentation.
+
 - Make both stamp image dialogs participate in browser Back/Forward navigation without changing gallery URLs or filters.
 
 - Preserve map search, filters, sorting and profile selection when returning from a map image in all three games. Document the unverified gameplay meaning of Anno 1800's stored Dockworkers setting.
 
 ### Deutsch
+
+- Excel-Kennzahlen als Ganzzahlen mit Tausendertrennzeichen und Seeds ohne Trennzeichen formatiert. Drei Demo-Arbeitsmappen und Offline-ZIPs mit verknüpften Kartenbildern, zweisprachigen Demo-Links und README-Hinweisen ergänzt.
 
 - Bilddialoge beider Stempelgalerien mit Browser-Zurück/Vorwärts bedienbar gemacht; Galerieadresse und Filter bleiben erhalten.
 

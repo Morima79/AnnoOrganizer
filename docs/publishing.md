@@ -9,7 +9,7 @@ Repository maintenance guide: create releases, publish GitHub Pages and refresh 
 - **Website:** Changes to `site/` on `main` are automatically deployed through GitHub Pages after link and local-path validation. The repository needs **GitHub Actions** selected once under `Settings → Pages → Source`.
 - **Refreshing demos:** Generate fresh output locally using only the bundled demo inputs. Replace the five `index.html` pages under `site/<game>/maps/` or `stamps/` and only their referenced images. Keep relative image paths, remove absolute local paths, and preserve the links back to the demo landing page. Run `python scripts/validate_site.py` before publishing. Original galleries and personal settings remain unchanged. GitHub does not regenerate these snapshots because some exporters require installed game data.
 
-`site/` contains only HTML and required preview/blueprint images, without game resource archives, caches or private configurations. `scripts/build_release.py` packages tracked files only; local settings and output directories remain excluded.
+`site/` contains HTML, required preview/blueprint images and the six approved demo workbook/ZIP downloads, without game resource archives, caches or private configurations. `scripts/build_release.py` packages tracked files only; local settings and output directories remain excluded.
 
 ## Project rename
 
@@ -24,3 +24,7 @@ Local compatibility identifiers (`ANNOTOOLS_SETTINGS`, `.annotools-game.json`, `
 The current official `actions/deploy-pages@v5` still bundles a dependency that loads Node's deprecated built-in `punycode`. The workflow therefore uses a [local compatibility adapter](../.github/actions/pages-runtime/README.md) only for that deployment step. It loads the unchanged userland implementation, recorded with its MIT licence and checksums, instead of suppressing warnings. Other warnings, permissions and the OIDC deployment flow are unaffected.
 
 Before deployment, `node --test tests/pages_runtime.cjs` verifies the correction on Node 24. Remove the adapter as described in its guide once an official release fixes the dependency. The correction takes effect on GitHub after committing and pushing the workflow.
+
+## Demo Excel downloads
+
+After exporting only the bundled demo inputs for all three games, run `python scripts/publish_demo_workbooks.py --reports-root local-data/statistics-demo`. Each game must have its report in `<reports-root>/<game>/reports/<game>-map-seeds.xlsx`. The script checks for machine paths and only accepts relative `map-images/*.png` links, then writes the three approved workbooks and ZIPs with their referenced images to `site/downloads/`. ZIPs preserve the relative links for offline use. Personal reports must never be used as publishing inputs. The landing page and both README languages link these snapshots; Pages publishes them with the next authorised site push.

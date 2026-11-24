@@ -44,8 +44,11 @@ def validate_site(folder):
             if not target.is_file():
                 raise ValueError(f'{page}: missing target {reference}')
     allowed = {'.html', '.png', '.jpg', '.jpeg', '.svg', '.webp'}
+    downloads = {f'downloads/{game}-map-demo{suffix}'
+                 for game in ('anno117', 'anno1800', 'anno1404') for suffix in ('.xlsx', '.zip')}
     for path in folder.rglob('*'):
-        if path.is_file() and path.name != '.nojekyll' and path.suffix not in allowed:
+        if (path.is_file() and path.name != '.nojekyll' and path.suffix not in allowed
+                and path.relative_to(folder).as_posix() not in downloads):
             raise ValueError('Unexpected public file: ' + str(path))
     print(f'Validated {len(pages)} pages and all local image/navigation references.')
 

@@ -43,6 +43,15 @@ class SiteValidationTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'Local machine path'):
                 validate_site(root)
 
+    def test_arbitrary_workbooks_and_archives_remain_excluded(self):
+        for suffix in ('.xlsx', '.zip'):
+            with self.subTest(suffix=suffix), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                self.fixture(root, '')
+                (root / ('private' + suffix)).write_bytes(b'private')
+                with self.assertRaisesRegex(ValueError, 'Unexpected public file'):
+                    validate_site(root)
+
 
 if __name__ == '__main__':
     unittest.main()
