@@ -130,7 +130,100 @@ bestimmten Commit oder Release sind keine pauschale Freigabe für spätere Aufga
   Vorschauen 360 Pixel breit, anklickbar in voller Auflösung; betroffene Haupt-
   und Spiel-READMEs in beiden Sprachen gemeinsam aktualisieren.
 
-### Geprüfter Aufnahmeweg für README-Screenshots
+### Hintergrundaufnahmen für README-Screenshots
+
+**Bevorzugter Weg: unsichtbarer integrierter Browser über `cua_repl`.**
+Am Sonntag, 22. November 2026, wurden damit lokale HTTP-Demos aufgenommen.
+Am 24. November wurden sowohl die veröffentlichte HTTPS-Demo als auch dieselbe
+lokale Demo erneut erfolgreich unsichtbar aufgenommen. Eine Veröffentlichung ist
+keine Voraussetzung. Die Edge-DevTools weiter unten sind eine Alternative.
+
+1. Neue Demo-Inhalte zuerst exportieren und `site/` aktualisieren. Für noch nicht
+   veröffentlichte Änderungen immer die lokale Ausgabe aufnehmen. Im Repo einen
+   temporären Server nur für die öffentlichen Demo-Dateien starten:
+
+   ```powershell
+   .\.venv\Scripts\python.exe -u -m http.server 8771 --bind 127.0.0.1 --directory site
+   ```
+
+   Den Server über eine laufende Tool-Sitzung betreiben und deren ID für das
+   spätere Beenden aufbewahren. Kein sichtbares Terminalfenster erforderlich.
+   Falls `Start-Process` verwendet wird, mit `-WindowStyle Hidden` starten.
+   Bei `WinError 10013` oder einem nur im Browser auftretenden Timeout zuerst
+   den Server mit einem lokalen HTTP-Abruf prüfen. Der Test am 24. November
+   benötigte für Server und Kontrollabruf die genehmigte Ausführung ausserhalb
+   der Netzwerk-Sandbox (`require_escalated`). Danach funktionierte die Seite
+   auch im integrierten Browser. Bindung an `127.0.0.1` und Verzeichnis `site/`
+   beibehalten; weder Firewallregeln ändern noch private Verzeichnisse anbieten.
+2. In `cua_repl` eine unsichtbare lokale Browserseite öffnen. Bei der ersten
+   Verwendung muss dieser Einstieg allein im Tool-Aufruf stehen:
+
+   ```javascript
+   var tab = await cua.createBrowserTab(
+     'iab', 'http://127.0.0.1:8771/anno117/stamps/', {visible:false});
+   ```
+
+   Für bereits veröffentlichte Inhalte funktioniert stattdessen beispielsweise
+   `https://morima79.github.io/AnnoOrganizer/anno117/stamps/`.
+   Die fünf Pfade lauten `anno117/maps/`, `anno1800/maps/`, `anno1404/maps/`,
+   `anno117/stamps/` und `anno1800/stamps/`. `file://` ist kein gleichwertiger
+   Einstieg: Der integrierte Browser kann dieses Protokoll ablehnen. Eine solche
+   Ablehnung belegt keinen Fehler des unterstützten HTTP-/HTTPS-Aufnahmewegs.
+3. Die aktuelle Browser-Dokumentation sowie `screenshots`,
+   `local-web-development` und die `viewport`-Capability lesen. Den beim Einstieg
+   zurückgegebenen Browser-Identifier verwenden, keine historische ID fest
+   einbauen. Für die vereinbarten README-Abmessungen setzen:
+
+   ```javascript
+   var viewport = await browser.capabilities.get('viewport');
+   await viewport.set({width:1280,height:900});
+   nodeRepl.write(await tab.playwright.domSnapshot());
+   ```
+
+   DE wählen und bei Karten die Profilrangliste einklappen. Alle Such- und
+   Filterfelder bleiben für die Aufnahme leer. Mit anhand des aktuellen DOM
+   gewählten Überschriften bis zur letzten Karte scrollen, etwa durch einen
+   Klick auf deren Überschrift; anschliessend über den DE-Button zum Kopfbereich
+   zurückkehren. Nach Aktionen den Zustand prüfen. `fullPage` allein garantiert
+   nicht, dass entfernte Lazy-Loading-Bilder bereits geladen sind.
+4. Geladene Bilder und Seitenhöhe über eine lesende DOM-Prüfung kontrollieren,
+   dann direkt JPEG-Bytes aufnehmen; keine Bildschirmaufnahme des Desktop nötig:
+
+   ```javascript
+   var metrics = await tab.playwright.evaluate(() => ({
+     height: document.documentElement.scrollHeight,
+     loaded: [...document.images].filter(i => i.getAttribute('src'))
+       .every(i => i.complete && i.naturalWidth > 0)
+   }));
+   if (!metrics.loaded) throw Error('Demo images are still loading');
+   var shot = await tab.screenshot({fullPage:true,
+     clip:{x:0,y:0,width:1264,height:metrics.height}});
+   var fs = await import('node:fs/promises');
+   var os = await import('node:os');
+   var out = await fs.mkdtemp(os.tmpdir()+'/anno-screenshots-');
+   await fs.writeFile(out+'/stamp-gallery.jpg',shot);
+   nodeRepl.write(out);
+   await nodeRepl.emitImage(shot);
+   await viewport.reset();
+   ```
+
+   Die Screenshot-API liefert JPEG, unabhängig vom Dateinamen. Temporären
+   Ausgabeordner ausgeben lassen und anschliessend die geprüften Bilder mit dem
+   Dateisystem-Tool ins Repo kopieren. Der Browser-Tempordner kann anders liegen
+   als der Shell-Tempordner; keinen AppContainer-Pfad fest einbauen. Bei direktem
+   Schreiben ins Repo auftretende Pfadfehler nicht als Aufnahmefehler behandeln.
+5. Nach der Browserarbeit die vorgeschriebene `browser-complete`-Meldung senden,
+   bevor andere Tools verwendet werden. Mit Pillow JPEG-Format, positive Höhe
+   und exakt 1264 Pixel Breite prüfen. Bilder visuell kontrollieren; nur dann
+   nach `<spiel>/docs/images/map-gallery.jpg` bzw. `stamp-gallery.jpg` übernehmen.
+   Keine README-Bilder allein für einen Ablauf-Test überschreiben. Beide
+   README-Sprachen gemeinsam pflegen und vorhandene 360-Pixel-Verweise erhalten.
+6. Viewport auch im Fehlerfall zurücksetzen, temporäre Tabs unmarkiert lassen
+   und nur den eigenen Testserver über seine Tool-Sitzung mit `Ctrl+C` beenden.
+   Nicht wegen eines nicht erreichbaren lokalen Servers ersatzweise veraltete
+   veröffentlichte Demos als aktuellen lokalen Stand ausgeben.
+
+### Alternative: README-Screenshots über Edge-DevTools
 
 Am 24. November 2026 mit Edge und dem Computer-Use-Skill geprüft:
 
@@ -142,8 +235,7 @@ Am 24. November 2026 mit Edge und dem Computer-Use-Skill geprüft:
 3. Mit `Ctrl+Shift+I` die DevTools und mit `Ctrl+Shift+M` die Geräteansicht öffnen.
    Gerätetyp **Dynamisch**, Breite **1280**, Höhe **900**, Zoom **An Fenster
    anpassen**. Eine feste Höhe vermeidet Leerraum bei schmal angedockten DevTools.
-   Bei den
-   117-/1800-Karten die Profilrangliste einklappen; Kennzahlengruppen geschlossen
+   Bei den 117-/1800-Karten die Profilrangliste einklappen; Kennzahlengruppen geschlossen
    lassen. Im Seiteninhalt einmal mit `Ctrl+End` ans Ende und mit `Ctrl+Home`
    zurück springen, damit auch Lazy-Loading-Bilder geladen sind. Vor der Aufnahme
    geladene Karten und Stempelbilder prüfen.
