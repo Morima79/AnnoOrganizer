@@ -30,7 +30,7 @@ Map galleries use this theme throughout the page. Stamp galleries use it for the
 
 ## DE / EN languages
 
-All five galleries share a language switch in their header. Stamp galleries also provide it inside the modal image viewer. Switching preserves search, filter values, sorting, selected profiles, expanded details and the open image with its zoom state. The HTML language, page title, placeholders and accessible image/button descriptions also change.
+All five galleries share a language switch in their header. All galleries also provide it inside the modal image viewer. Switching preserves search, filter values, sorting, selected profiles, expanded details and the open image with its zoom state. The HTML language, page title, placeholders and accessible image/button descriptions also change.
 
 The demo landing page uses the same DE/EN switch and stored language choice. Navigation to a gallery and back through its demo link retains the selected language when browser storage is available. Its title, meta description, introduction, gallery links and footer use the central `demo.*` resources. `--refresh-site` renders `templates/demo_index.html` into `site/index.html`; `--check` detects a stale landing page. [English landing-page preview](images/demo-home-en.jpg).
 
@@ -61,9 +61,9 @@ Operational and file-status messages belong in logs rather than galleries. Maps,
 
 Shared presentation lives in `templates/anno_save_summary.py`; conservative readers live in `templates/anno_save_statistics.py`. Both are synchronised into the independently usable game bundles together with the templates. Exporters supply separate campaign summaries; native `details`/`summary` elements keep details collapsed initially. Labels and population tiers are maintained in both central language resources. [Statistics and limitations](save-statistics.md).
 
-## Stamp image navigation
+## Image navigation
 
-Stamp images open in the existing zoom/download dialog, while map images link directly to their PNG files. Both stamp galleries add one history entry with the unchanged gallery URL when opening the dialog. Browser Back closes it; Forward reopens the same stamp. Close, Escape and backdrop clicks also return to the gallery entry. Filters remain on the page. Blocked history access leaves the dialog usable, but cannot provide browser navigation. The shared runtime is `templates/stamp_viewer.js`; run `node --test tests/stamp_viewer_runtime.cjs` for its navigation regressions.
+All five galleries open images in a dialog with zoom and PNG download. All three map galleries share `templates/map_viewer.html` and `map_viewer.js`, with original-size/fit controls, image-click zoom and an in-dialog DE/EN switch. Native PNG links remain available without JavaScript and for modified clicks. The existing stamp dialogs and all map dialogs share history handling in `templates/stamp_viewer.js`, using separate history keys. Opening a dialog adds one entry with the unchanged gallery URL. Browser Back closes it; Forward reopens the same image. Close, Escape and backdrop clicks also return to the gallery entry. Filters stay on the page; language changes retain the zoom state. Blocked history access leaves the dialog usable, but cannot provide browser navigation. Run `node --test tests/map_viewer_runtime.cjs tests/stamp_viewer_runtime.cjs` for navigation and viewer regressions.
 
 ## Map catalogue controls
 

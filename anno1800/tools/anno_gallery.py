@@ -89,7 +89,7 @@ def render_gallery(page, game, kind):
         if not re.search(r'id=["\']gallery-theme["\']', match[1]):
             styles.append(match[2])
     scripts = '\n'.join(match[0] for match in re.finditer(r'<script\b([^>]*)>.*?</script>', page, flags=re.DOTALL | re.IGNORECASE)
-                        if not re.search(r'id=["\']gallery-(?:language-resources|i18n|stamp-viewer)["\']', match[1]))
+                        if not re.search(r'id=["\']gallery-(?:language-resources|i18n|stamp-viewer|map-viewer)["\']', match[1]))
     if '<!-- gallery-content:start -->' in page:
         header, content, navigation, footer = (marker(page, name) for name in ('header', 'content', 'navigation', 'footer'))
     else:
@@ -128,8 +128,9 @@ def render_gallery(page, game, kind):
     logo = logo_markup(image, theme['label'])
     theme_css = ':root{' + ';'.join('--gallery-' + name + ':' + value for name, value in theme.items() if name != 'label') + '}'
     folder = HERE / 'gallery_templates'
-    if kind == 'stamp':
-        scripts += '\n<script id="gallery-stamp-viewer">' + (folder / 'stamp_viewer.js').read_text(encoding='utf-8') + '</script>'
+    if kind == 'map':
+        scripts += '\n<script id="gallery-map-viewer">' + (folder / 'map_viewer.js').read_text(encoding='utf-8') + '</script>'
+    scripts += '\n<script id="gallery-stamp-viewer">' + (folder / 'stamp_viewer.js').read_text(encoding='utf-8') + '</script>'
     resources = _i18n.load_resources(folder / 'locales')
     if kind == 'stamp':
         header += '\n' + stamp_totals(content, resources)
@@ -144,7 +145,8 @@ def render_gallery(page, game, kind):
                     'NAVIGATION': navigation, 'FOOTER': '<footer class="gallery-footer">' + footer + '</footer>' if footer else '',
                     'LANGUAGE_SWITCH': language_switch,
                     'LOCALIZATION': '<script id="gallery-language-resources" type="application/json">' + _i18n.script_json(resources) + '</script>\n<script id="gallery-i18n">' + (folder / 'gallery_i18n.js').read_text(encoding='utf-8') + '</script>',
-                    'SCRIPTS': scripts}
+                    'SCRIPTS': scripts,
+                    'IMAGE_VIEWER': (folder / 'map_viewer.html').read_text(encoding='utf-8').replace('@@LANGUAGE_SWITCH@@', language_switch) if kind == 'map' else ''}
     # Substitute once so marker-looking text inside user data is not interpreted.
     rendered = re.sub(r'@@([A-Z_]+)@@', lambda match: replacements[match[1]], template)
     return _i18n.bind_messages(rendered, resources, kind)

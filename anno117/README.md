@@ -26,6 +26,8 @@ Standardised gallery header and Latium island overview with seed, saved map sett
 
 Demo Excel: [workbook](https://morima79.github.io/AnnoOrganizer/downloads/anno117-map-demo.xlsx) · [ZIP with map images](https://morima79.github.io/AnnoOrganizer/downloads/anno117-map-demo.zip). Workbooks are in German. Extract the ZIP completely to use the map links. Counts and money use integer display with grouping; seeds have no grouping.
 
+Map images in all three games open in a dialog with original-size/fit zoom, PNG download and DE/EN controls. Browser Back closes the image and preserves gallery filters; Forward reopens it.
+
 ## Quick start
 
 Install Python 3.11 or later if needed, then double-click **Launch.cmd** and choose **Demo** (or press Enter). The launcher sets up the Python environment and packages automatically on first use; this requires an internet connection. Missing settings are created automatically.
@@ -58,7 +60,7 @@ New output defaults to `local-data/` next to this launcher. Gallery files are `r
 
 Detailed documentation is currently in German: [Settings](docs/settings.de.md), [Formats and limitations](docs/formats-and-limitations.de.md). This is an unofficial project with no affiliation to Ubisoft. Game logos are included for identification and are not covered by the tool code's MIT license; game resource archives are not bundled. Tool code: [MIT license](LICENSE).
 
-Use **DE / EN** at the top right to switch gallery language; stamp galleries also offer the switch in the image viewer. Search, filters and open views are preserved. The browser remembers your choice when storage is available. Both languages are embedded in the HTML and work offline. Custom names, paths, labels inside PNGs and Excel reports retain their original language.
+Use **DE / EN** at the top right to switch gallery language; all galleries also offer the switch in the image viewer. Search, filters and open views are preserved. The browser remembers your choice when storage is available. Both languages are embedded in the HTML and work offline. Custom names, paths, labels inside PNGs and Excel reports retain their original language.
 
 ## Current save statistics
 

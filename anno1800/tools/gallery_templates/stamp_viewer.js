@@ -2,11 +2,12 @@
   'use strict';
   const viewer = document.querySelector('#viewer');
   if (!viewer) return;
-  const previews = [...document.querySelectorAll('.preview')];
+  const previews = [...document.querySelectorAll('.preview, [data-map-preview]')];
+  const historyKey = viewer.dataset?.historyKey || 'annoStampViewer';
   let restoring = false;
 
   function savedViewer() {
-    try { return window.history.state?.annoStampViewer; }
+    try { return window.history.state?.[historyKey]; }
     catch { return null; }
   }
 
@@ -15,7 +16,7 @@
     preview.addEventListener('click', () => {
       if (restoring || !viewer.open) return;
       try {
-        window.history.pushState({...window.history.state, annoStampViewer: {
+        window.history.pushState({...window.history.state, [historyKey]: {
           version: 1, source: preview.dataset.full, name: preview.dataset.name
         }}, '');
       } catch { /* The existing dialog remains usable with blocked history access. */ }

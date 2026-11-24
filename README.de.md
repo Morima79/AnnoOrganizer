@@ -33,6 +33,8 @@ Demo-Startseite und Galerien verwenden denselben **DE/EN-Schalter**. Die gespeic
 
 Demo-Excel herunterladen (deutsche Arbeitsmappen): [Anno 117](site/downloads/anno117-map-demo.xlsx) / [ZIP](site/downloads/anno117-map-demo.zip) · [Anno 1800](site/downloads/anno1800-map-demo.xlsx) / [ZIP](site/downloads/anno1800-map-demo.zip) · [Anno 1404](site/downloads/anno1404-map-demo.xlsx) / [ZIP](site/downloads/anno1404-map-demo.zip). Das ZIP enthält die Kartenbilder; für funktionierende Bildlinks vollständig entpacken. Kennzahlen und Geld erscheinen als Ganzzahlen mit Tausendertrennzeichen, Seeds ohne Trennzeichen. Datum und Spielzeit behalten ihre bisherigen Formate.
 
+Kartenbilder öffnen in allen drei Spielen einen Dialog mit Originalgrösse/Einpassen, PNG-Download und DE/EN-Schalter. Browser-Zurück schliesst das Bild und erhält die Galeriefilter; Vorwärts öffnet es wieder.
+
 ## Galerie-Vorschau
 
 Die Vorschauen zeigen alle fünf mitgelieferten Demo-Galerien auf Deutsch; ein Klick öffnet das Bild in voller Auflösung. Die englische README verwendet die entsprechenden englischen Aufnahmen. Die Kartendemos enthalten Einwohner- und Wohnhauszahlen in kompakten aufklappbaren Gruppen. Alle Galerien verwenden Spiel-Logos und passende Farben; Anno 1404 eine helle Pergamentoptik.

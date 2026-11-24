@@ -102,7 +102,7 @@ class GalleryLanguageTests(unittest.TestCase):
                 self.assertIsNotNone(resources)
                 self.assertEqual(json.loads(resources[1]), self.resources)
                 self.assertEqual(text.count('id="gallery-i18n"'), 1)
-                switches = 2 if '/stamps/' in page.as_posix() else 1
+                switches = 2 if page.parent != ROOT / 'site' else 1
                 self.assertEqual(text.count('data-gallery-language="de"'), switches)
                 self.assertEqual(text.count('data-gallery-language="en"'), switches)
                 self.assertNotRegex(text, r'<script[^>]+src=')

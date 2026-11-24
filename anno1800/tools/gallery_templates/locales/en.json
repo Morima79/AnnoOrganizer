@@ -10,7 +10,7 @@
   "stamp.heading": "Your blueprints, all in one place.",
   "stamp.description117": "All stamps from your current in-game library. Organised by region and game folder, with scale floor plans and downloadable PNGs.",
   "stamp.description1800": "Floor plans with buildings, field modules, roads and railways. Organised by game region and stamp folder.",
-  "map.description": "The gallery groups local saves by seed and saved map configuration. Click a map to open the full-size PNG.",
+  "map.description": "The gallery groups local saves by seed and saved map configuration. Click a map to open the enlarged view with zoom and PNG download.",
   "map.notes": "Notes on maps and playtime",
   "map.totalNote": "Total playtime uses the highest saved playtime for each game.",
   "map.geometry117": "The maps combine saved island positions and rotations with graphics from the local game installation. They show islands and terrain, without cities, buildings or ownership. In Aegyptus, seams may be visible between the province's four terrain sections.",
@@ -701,5 +701,7 @@
   "stats.populationCountersDiffer": "The stored residence counters differ from the profile total. Both values are shown unchanged.",
   "demo.excel": "Download demo Excel",
   "demo.excelMaps": "Excel with map images (ZIP)",
-  "demo.excelNote": "Workbooks are in German. Extract the complete ZIP and keep its folder structure to use the map links."
+  "demo.excelNote": "Workbooks are in German. Extract the complete ZIP and keep its folder structure to use the map links.",
+  "viewer.originalSize": "Original size",
+  "viewer.fit": "Fit to window"
 }

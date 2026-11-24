@@ -18,6 +18,8 @@ Einheitlicher Galerie-Kopfbereich und drei Kartenvarianten aus Anno 1404, Venedi
 
 Demo-Excel: [Arbeitsmappe](https://morima79.github.io/AnnoOrganizer/downloads/anno1404-map-demo.xlsx) · [ZIP mit Kartenbildern](https://morima79.github.io/AnnoOrganizer/downloads/anno1404-map-demo.zip). Die Arbeitsmappen sind auf Deutsch. Für funktionierende Bildlinks das ZIP vollständig entpacken. Kennzahlen und Geld erscheinen als Ganzzahlen mit Tausendertrennzeichen, Seeds ohne Trennzeichen.
 
+Kartenbilder öffnen in allen drei Spielen einen Dialog mit Originalgrösse/Einpassen, PNG-Download und DE/EN-Schalter. Browser-Zurück schliesst das Bild und erhält die Galeriefilter; Vorwärts öffnet es wieder.
+
 ## Schnellstart
 
 Falls nötig Python 3.11 oder neuer installieren. Danach **Launch.cmd** doppelklicken und **Demo** wählen oder Enter drücken. Die Python-Umgebung und benötigten Pakete werden beim ersten Start automatisch eingerichtet; dafür wird eine Internetverbindung benötigt. Fehlende Einstellungen legt der Starter selbst an.
@@ -50,7 +52,7 @@ Neue Ausgaben liegen standardmässig in `local-data/` neben dem Starter; überno
 
 Inoffizielles Projekt ohne Verbindung zu Ubisoft. Spiel-Logos sind zur Kennzeichnung enthalten und nicht Teil der MIT-Lizenz des Werkzeugcodes; Spieldatenarchive werden nicht mitgeliefert; Python-Abhängigkeiten stehen in `requirements.txt`.
 
-Galerien lassen sich oben rechts mit **DE / EN** umschalten, in Stempelgalerien auch in der Grossansicht. Suche, Filter und offene Ansichten bleiben erhalten. Die Sprachwahl wird nach Möglichkeit im Browser gespeichert. Beide Sprachen sind in der HTML-Datei enthalten und funktionieren offline. Eigene Namen, Dateipfade, Beschriftungen in PNGs und Excel-Auswertungen behalten ihre bisherige Sprache.
+Galerien lassen sich oben rechts mit **DE / EN** umschalten, auch in der Grossansicht. Suche, Filter und offene Ansichten bleiben erhalten. Die Sprachwahl wird nach Möglichkeit im Browser gespeichert. Beide Sprachen sind in der HTML-Datei enthalten und funktionieren offline. Eigene Namen, Dateipfade, Beschriftungen in PNGs und Excel-Auswertungen behalten ihre bisherige Sprache.
 
 ## Aktuelle Spielstand-Kennzahlen
 

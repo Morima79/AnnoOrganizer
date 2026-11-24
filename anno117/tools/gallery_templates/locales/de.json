@@ -10,7 +10,7 @@
   "stamp.heading": "Deine Baupläne, an einem Ort.",
   "stamp.description117": "Alle Stempel aus deiner aktuellen Spielbibliothek. Nach Regionen und Spielordnern gegliedert, mit massstäblichen Grundrissen und PNGs zum Herunterladen.",
   "stamp.description1800": "Grundrisse mit Gebäuden, Feldmodulen, Strassen und Eisenbahn. Nach Spielregion und Stempelordner gegliedert.",
-  "map.description": "Die Galerie gruppiert lokale Spielstände nach Seed und gespeicherter Kartenkonfiguration. Ein Klick auf eine Karte öffnet die PNG-Datei in voller Grösse.",
+  "map.description": "Die Galerie gruppiert lokale Spielstände nach Seed und gespeicherter Kartenkonfiguration. Ein Klick auf eine Karte öffnet die Grossansicht mit Zoom und PNG-Download.",
   "map.notes": "Hinweise zu Karten und Spielzeit",
   "map.totalNote": "Für die Gesamtspielzeit zählt pro gespeicherter Partie der höchste gespeicherte Spielzeitwert.",
   "map.geometry117": "Die Karten kombinieren gespeicherte Inselpositionen und Drehungen mit Grafiken der lokalen Spielinstallation. Sie zeigen Inseln und Gelände, keine Städte, Gebäude oder Besitzverhältnisse. Bei Aegyptus können Nahtstellen zwischen den vier Geländeteilen der Provinz sichtbar sein.",
@@ -701,5 +701,7 @@
   "stats.populationCountersDiffer": "Die gespeicherten Wohnhauswerte weichen vom Profil-Gesamtzähler ab. Beide Werte werden unverändert angezeigt.",
   "demo.excel": "Demo-Excel herunterladen",
   "demo.excelMaps": "Excel mit Kartenbildern (ZIP)",
-  "demo.excelNote": "Die Arbeitsmappen sind auf Deutsch. Für funktionierende Kartenlinks das ZIP vollständig entpacken und die Ordnerstruktur beibehalten."
+  "demo.excelNote": "Die Arbeitsmappen sind auf Deutsch. Für funktionierende Kartenlinks das ZIP vollständig entpacken und die Ordnerstruktur beibehalten.",
+  "viewer.originalSize": "Originalgrösse",
+  "viewer.fit": "Einpassen"
 }
