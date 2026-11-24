@@ -5,6 +5,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ## [Unreleased]
 
+## [v0.1.12] - 2026-11-24
+
 ### English
 
 - Display Excel statistics as grouped integers and seeds without grouping. Add three downloadable demo workbooks and offline ZIPs with linked map images, bilingual demo links and README documentation.
