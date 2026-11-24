@@ -7,7 +7,8 @@ body.gallery-stamp { margin: 0; padding: 0; max-width: none; min-height: 100vh; 
 .gallery-stamp h2 { font: 700 1.5rem/1.55 system-ui, sans-serif; }
 .gallery-stamp .gallery-header p { max-width: 850px; color: var(--gallery-muted); line-height: 1.7; }
 .gallery-stamp .gallery-header .eyebrow { color: var(--gallery-link); }
-.gallery-stamp .gallery-header .summary span { border-color: var(--gallery-border); color: var(--gallery-ink); }
+.gallery-stamp .stamp-totals { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+.gallery-stamp .stamp-totals > .stamp-total { display: inline-block; border: 1px solid var(--gallery-border); border-radius: 8px; padding: 8px 12px; color: var(--gallery-ink); font-size: 14px; }
 .gallery-stamp .gallery-shell { box-sizing: border-box; width: calc(100% - 48px); max-width: 1272px; padding: 26px 0 60px; margin: 0 auto; }
 .gallery-stamp .gallery-footer { margin-top: 40px; font-size: 12px; color: #647467; }
 .gallery-stamp > nav { padding: 12px max(24px, calc((100vw - 1272px) / 2)) !important; background: var(--gallery-background) !important; color: var(--gallery-ink) !important; border-bottom: 1px solid var(--gallery-border); }

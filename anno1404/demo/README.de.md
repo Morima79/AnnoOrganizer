@@ -6,6 +6,8 @@ Diese Beispiele wurden aus den Dateien des Projektinhabers für die Werkzeug-Dem
 
 ## Spielstände
 
+Die Saves enthalten besiedelte Inseln mit gespeicherten Einwohner- und Wohnhauszahlen.
+
 - `saves/Demo-01/demo-01.sww` – Anno 1404
 - `saves/Demo-02/demo-02.sww` – Venedig
 - `saves/Demo-03/demo-03.sww` – History Edition

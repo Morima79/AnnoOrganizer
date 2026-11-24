@@ -20,6 +20,8 @@ Fünf Beispielbaupläne, darunter die beiden Lavendelvarianten mit ihrer Ausbaur
 
 Einheitlicher Galerie-Kopfbereich und Latium-Inselübersicht mit Seed, gespeicherten Karteneinstellungen und Angaben zum Spielstand.
 
+[<img src="docs/images/map-gallery.jpg" alt="Kartengalerie mit Bevölkerung und Wohnhäusern" width="360">](docs/images/map-gallery.jpg)
+
 [Kompakte Kartengalerie als HTML-Demo öffnen](https://morima79.github.io/AnnoOrganizer/anno117/maps/)
 
 ## Schnellstart

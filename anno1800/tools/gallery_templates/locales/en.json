@@ -696,5 +696,7 @@
   "gameSetting.anno117.GeneratedIslandSize.value.1": "Regular",
   "gameSetting.anno117.GeneratedIslandSize.value.2": "Large",
   "gameSetting.anno117.SetupStartSessionIslandDifficulty.value.0": "Normal",
-  "gameSetting.anno117.SetupStartSessionIslandDifficulty.value.1": "Hard"
+  "gameSetting.anno117.SetupStartSessionIslandDifficulty.value.1": "Hard",
+  "stats.residencePopulation": "Residents in residences",
+  "stats.populationCountersDiffer": "The stored residence counters differ from the profile total. Both values are shown unchanged."
 }

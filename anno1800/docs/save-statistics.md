@@ -19,7 +19,7 @@ Excel includes an additional **Aktuelle Spielstände** worksheet with one row pe
 | Value | Anno 117 | Anno 1800 | Anno 1404 |
 |---|---|---|---|
 | Total population and wealth | Saved profile values | Saved profile values where present | `stats.xml` |
-| Population tiers | Residences plus attributable contributions from other buildings, cross-checked | Saved residence inhabitants, cross-checked | Saved per-player counters, cross-checked |
+| Population tiers | Residences plus attributable contributions from other buildings, cross-checked | Stored residents in owned residences, independently of the profile total | Saved per-player counters, cross-checked |
 | Balance, income and expenses | Saved per-minute values, arithmetic checked | not available | not available |
 | Built residences | Owned residence objects | Owned residence objects | Owned `ResidenceBuilding` objects |
 | Residence blueprints | Separate count | Separate count | not available |
@@ -27,6 +27,8 @@ Excel includes an additional **Aktuelle Spielstände** worksheet with one row pe
 | Settled islands | Current ownership; unavailable for Aegyptus sectors | Current ownership; shares are not island ownership | Started owned warehouses, once per island |
 
 **Values that cannot be read reliably show “not available” / “nicht verfügbar”, never an invented zero.** This includes incomplete demo saves, unknown formats, uncertain player identity or an unconfirmed tier breakdown. A confirmed zero remains `0`. Missing detail values do not prevent independently confirmed totals from being shown.
+
+Anno 1800 stores integer resident counts in `Residence7/ResidentCount`; each residence asset identifies its population tier. These counters can be read even when an older save lacks `CorporationProfile/TotalPopulation`. The gallery then explicitly shows **Residents in residences**. When both sources exist, the profile total stays unchanged; the expanded group shows the residence sum and tiers, with a note if the counters disagree. Two examined large saves differed by three residents in opposite directions. The cause is not established; this is not Float32 rounding. Historical maximum population and highscore counters are not current population. Excel keeps the profile total and residence sum in separate columns. Unknown house assets or invalid resident counts still prevent a supposedly complete breakdown.
 
 Anno 117 stores some population values as Float32. Simply summing residence inhabitants misses population contributed by market/tavern and other effects on non-residential buildings. The reader uses local building and population definitions, and checks the result against the saved total. Residence workforce bonuses must not be mistaken for additional population. Fractional values are retained during calculation; individual tiers are rounded down for display and may therefore sum to slightly less than the overall total. Unknown or inconsistent contributions make the tier breakdown unavailable. Blueprints are excluded from built residences; empty built residences still count.
 

@@ -16,6 +16,8 @@ Karten- und Stempelgalerien verwenden einheitlich `system-ui, sans-serif`, einsc
 
 Logo und DE/EN-Schalter stehen in einer gemeinsamen, oben bündigen Zeile. Der Renderer berechnet den sichtbaren Alphabereich des Logos und blendet transparente Ränder nur im Layout aus; die eingebetteten Original-PNGs bleiben unverändert. Auf schmalen Bildschirmen verkleinert sich das Logo, während die Sprachbuttons erreichbar bleiben. [Vorschau des kompakten Kopfbereichs](images/gallery-header.jpg).
 
+Beide Stempel-Header zeigen die ungefilterte Gesamtzahl der exportierten Stempel und die Anzahl Regionen, aus denen diese Stempel stammen. Der gemeinsame Renderer ermittelt die Zahlen aus den Karten; gemeinsame `stamp-totals`-Stile geben jeder Anzeige genau einen Rahmen. Übersetzungsfelder erhalten keine eigenen Rahmen.
+
 ## Farben
 
 Die Farben orientieren sich an der jeweiligen Spieloberfläche. Die transparenten Logos fügen sich in diese Flächen ein. `THEMES` im gemeinsamen Renderer legt Hintergrund sowie lesbare Text-, Rahmen- und Linkfarben fest:
@@ -42,7 +44,7 @@ Eigene Profil-, Ordner- und Stempelnamen, Dateipfade, technische Rohwerte und au
 
 Neue oder geänderte Übersetzungen in beiden zentralen JSON-Dateien pflegen, danach die Vorlagen synchronisieren und die Demo-Seiten aktualisieren. Die Tests prüfen Ressourcen-/Platzhaltergleichheit, gültige Bindungen aller fünf Seiten, unveränderte Identitäten, sichere Einbettung, eigenständige Anno-Kopien sowie das JavaScript-Verhalten bei gesperrtem oder ungültigem Browserspeicher. `node --test tests/gallery_i18n_runtime.cjs tests/map_catalog_runtime.cjs` führt die JavaScript-Tests separat aus; die Python-Tests rufen sie bei verfügbarem Node.js ebenfalls auf.
 
-[Englische Galerie-Vorschau mit DE/EN-Schalter](../anno117/docs/images/stamp-gallery-en.jpg). Die Stempelvorschauen zeigen die deutsche Oberfläche mit Sprachschalter; die Karten-READMEs verlinken direkt auf die kompakten HTML-Demos. Vorhandene Aufnahmen haben dieselbe Bildbreite.
+[Englische Galerie-Vorschau mit DE/EN-Schalter](../anno117/docs/images/stamp-gallery-en.jpg). Alle fünf README-Vorschauen zeigen die aktuellen deutschen Demos mit Sprachschalter. Der geprüfte Aufnahmeweg über die Edge-DevTools steht in `AGENTS.md`. Vorhandene Aufnahmen haben dieselbe Bildbreite.
 
 ## Vorlagen ändern
 

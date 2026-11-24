@@ -2,6 +2,7 @@
 import base64
 import importlib.util
 from html import escape
+from html.parser import HTMLParser
 from pathlib import Path
 import re
 
@@ -49,6 +50,34 @@ def logo_markup(image, label):
             f'<img class="game-logo" src="data:image/png;base64,{data}" alt="{escape(label)}"></div>')
 
 
+class StampInventory(HTMLParser):
+    """Count exported cards independently of filters and translated text."""
+    def __init__(self, content):
+        super().__init__(convert_charrefs=True)
+        self.count = 0
+        self.regions = set()
+        self.feed(content)
+
+    def handle_starttag(self, tag, attrs):
+        values = dict(attrs)
+        if tag == 'article' and 'card' in values.get('class', '').split():
+            self.count += 1
+            if values.get('data-region'):
+                self.regions.add(values['data-region'])
+
+
+def stamp_totals(content, resources):
+    inventory = StampInventory(content)
+    badges = []
+    for key, count in [('stamp.total', inventory.count), ('stamp.regions', len(inventory.regions))]:
+        key += '.one' if count == 1 else ''
+        text = resources['de'][key]
+        badges.append('<span class="stamp-total" data-i18n="' + key
+                      + '" data-i18n-params="' + escape('{"count":' + str(count) + '}', quote=True)
+                      + '">' + text.format(count=count) + '</span>')
+    return '<div class="stamp-totals">' + ''.join(badges) + '</div>'
+
+
 def render_gallery(page, game, kind):
     if kind not in ('map', 'stamp'):
         raise ValueError('Unknown gallery kind: ' + str(kind))
@@ -87,6 +116,7 @@ def render_gallery(page, game, kind):
     header = re.sub(r'<img\b[^>]*class=["\'][^"\']*\bgame-logo\b[^"\']*["\'][^>]*>', '', header,
                     flags=re.IGNORECASE).strip()
     if kind == 'stamp':
+        header = re.sub(r'<div\b[^>]*class=[\"\'](?:summary|stamp-totals)[\"\'][^>]*>.*?</div>', '', header, flags=re.DOTALL).strip()
         date = re.search(r'(?:Stand|Aktualisiert):\s*([^<·]+)', footer)
         if date is None:
             raise ValueError('Stamp gallery update timestamp missing')
@@ -99,6 +129,8 @@ def render_gallery(page, game, kind):
     theme_css = ':root{' + ';'.join('--gallery-' + name + ':' + value for name, value in theme.items() if name != 'label') + '}'
     folder = HERE / 'gallery_templates'
     resources = _i18n.load_resources(folder / 'locales')
+    if kind == 'stamp':
+        header += '\n' + stamp_totals(content, resources)
     language_switch = '<div class="gallery-language" role="group" aria-label="Sprache" data-i18n-aria-label="language.label"><button type="button" data-gallery-language="de" aria-pressed="true" lang="de">DE</button><button type="button" data-gallery-language="en" aria-pressed="false" lang="en">EN</button></div>'
     if kind == 'stamp' and 'data-gallery-language=' not in content:
         # A modal makes the page header inert, so offer the same switch in the viewer.

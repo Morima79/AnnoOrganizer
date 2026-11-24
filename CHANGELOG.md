@@ -7,6 +7,10 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Unify stamp-header totals for Anno 117 and 1800, counting exported stamps and represented regions with one border per badge in both languages.
+
+- Select demo saves with settled campaigns containing population and residences for all three games; refresh all five README screenshots and document the verified capture workflow. Read Anno 1800 residence population independently of missing or differing profile totals, with explicit source labels and discrepancy notes.
+
 - Use verified game-specific DE/EN setting headings and enum labels for all three games, preserving contextual meanings and unknown raw values. Correct Anno 117 setup island-size IDs separately from generated geometry and Anno 1800 mainly-small/medium/large island labels. Document text IDs, datasets and limitations.
 
 - Scope save counts, dates, playtime records and older-save warnings to individual campaigns in all three games. Variant summaries and Excel map sheets show campaign/file totals and summed campaign playtime, avoiding cross-campaign comparisons.
@@ -17,6 +21,10 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 - Added latest-save population, wealth, supported balance, residence, ship and settled-island statistics for all three games. Compact, initially collapsed bilingual groups keep details and save history out of the summary; uncertain values show “not available”. Excel includes a current-campaign worksheet. Added source/limitation documentation and regression coverage.
 
 ### Deutsch
+
+- Stempel-Header für Anno 117 und 1800 vereinheitlicht: Gesamtzahl der Stempel und vertretenen Regionen mit genau einem Rahmen pro Anzeige in beiden Sprachen.
+
+- Für alle drei Spiele Demo-Saves mit besiedelten Partien, Bevölkerung und Wohnhäusern ausgewählt, alle fünf README-Screenshots erneuert und den geprüften Aufnahmeweg dokumentiert. Anno-1800-Wohnhausbevölkerung unabhängig von fehlenden oder abweichenden Profil-Gesamtzählern ausgelesen, mit klarer Quellenbezeichnung und Abweichungshinweis.
 
 - Geprüfte spielbezogene DE/EN-Einstellungsnamen und Enum-Texte für alle drei Spiele eingebunden; kontextabhängige Bedeutungen und unbekannte Rohwerte bleiben getrennt. Anno-117-Setup-Inselgrössen separat von erzeugter Geometrie und Anno-1800-Inselgrössen mit «Mehrheitlich …» korrigiert. Text-IDs, Datasets und Grenzen dokumentiert.
 

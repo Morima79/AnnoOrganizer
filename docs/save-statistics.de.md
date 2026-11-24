@@ -19,7 +19,7 @@ Die Excel-Ausgabe enthält das zusätzliche Blatt **Aktuelle Spielstände**, mit
 | Angabe | Anno 117 | Anno 1800 | Anno 1404 |
 |---|---|---|---|
 | Gesamteinwohner und Vermögen | Gespeicherte Profilwerte | Gespeicherte Profilwerte, sofern vorhanden | `stats.xml` |
-| Bevölkerungsstufen | Wohnhäuser plus zuordenbare Beiträge anderer Gebäude, mit Gegenprüfung | Gespeicherte Wohnhausbewohner, mit Gegenprüfung | Gespeicherte Spielerzähler, mit Gegenprüfung |
+| Bevölkerungsstufen | Wohnhäuser plus zuordenbare Beiträge anderer Gebäude, mit Gegenprüfung | Gespeicherte Bewohner eigener Wohnhäuser, unabhängig vom Profil-Gesamtzähler | Gespeicherte Spielerzähler, mit Gegenprüfung |
 | Bilanz, Einnahmen und Ausgaben | Gespeicherte Minutenwerte, mit Gegenrechnung | nicht verfügbar | nicht verfügbar |
 | Gebaute Wohnhäuser | Eigene Wohnhausobjekte | Eigene Wohnhausobjekte | Eigene `ResidenceBuilding`-Objekte |
 | Wohnhaus-Baupläne | Separat | Separat | nicht verfügbar |
@@ -27,6 +27,8 @@ Die Excel-Ausgabe enthält das zusätzliche Blatt **Aktuelle Spielstände**, mit
 | Besiedelte Inseln | Aktuelle Besitzdaten; für Aegyptus-Sektoren nicht verfügbar | Aktuelle Besitzdaten; Anteile zählen nicht als Inselbesitz | Eigene gestartete Kontore, je Insel einmal |
 
 **Nicht zuverlässig auslesbare Werte erscheinen als «nicht verfügbar» / «not available», niemals als erfundene Null.** Das betrifft auch unvollständige Demos, unbekannte Formate, ungesicherte Spielerzuordnung oder eine nicht bestätigte Stufenaufteilung. Eine bestätigte Null bleibt dagegen `0`. Fehlende Detailwerte verhindern nicht die Ausgabe unabhängig bestätigter Gesamtwerte.
+
+Anno 1800 speichert ganzzahlige Bewohnerzahlen in `Residence7/ResidentCount`; das Wohnhaus-Asset ordnet die Bevölkerungsstufe zu. Diese Zähler sind auch auslesbar, wenn in älteren Saves `CorporationProfile/TotalPopulation` fehlt. Die Galerie zeigt dann ausdrücklich **Bevölkerung in Wohnhäusern**. Sind beide Quellen vorhanden, bleibt der Profil-Gesamtwert unverändert; die aufgeklappte Gruppe zeigt Wohnhaussumme und Stufen sowie einen Hinweis bei Abweichungen. In zwei untersuchten grossen Saves betrug die Differenz jeweils drei Einwohner in unterschiedlicher Richtung. Die Ursache ist nicht geklärt; dies ist keine Float32-Rundung. Historische Bevölkerungsrekorde und Highscore-Zähler sind keine aktuelle Einwohnerzahl. Excel hält Profil-Gesamtwert und Wohnhaussumme in getrennten Spalten. Unbekannte Wohnhaus-Assets oder ungültige Bewohnerzahlen verhindern weiterhin eine vermeintlich vollständige Aufteilung.
 
 Anno 117 speichert Einwohnerwerte teilweise als Float32. Ein reines Summieren der Wohnhausbewohner reicht nicht: Bevölkerungsbeiträge von Markt-/Tavernen- und anderen Effekten auf Nichtwohngebäude gehören ebenfalls zur Gesamtzahl. Die Zuordnung verwendet lokale Gebäude- und Bevölkerungsassets und wird gegen den gespeicherten Gesamtwert geprüft. Arbeitskraftboni von Wohnhäusern dürfen nicht als zusätzliche Einwohner interpretiert werden. Bruchteile bleiben bei der Berechnung erhalten; Stufen werden für die Anzeige einzeln abgerundet und können deshalb zusammen um einzelne Einwohner vom Gesamtwert abweichen. Unbekannte beziehungsweise nicht passende Beiträge führen zu «nicht verfügbar» bei der Stufenaufteilung. Baupläne werden nicht als gebaute Häuser gezählt; leere gebaute Häuser zählen als Häuser.
 

@@ -33,12 +33,12 @@ Demo-Startseite und Galerien verwenden denselben **DE/EN-Schalter**. Die gespeic
 
 ## Galerie-Vorschau
 
-Die Stempelvorschauen zeigen die mitgelieferten Demos; ein Klick öffnet das Bild in voller Auflösung. Die Kartenlinks öffnen die HTML-Snapshots mit den neuen kompakten Kennzahlen und aufklappbaren Gruppen. Alle Galerien verwenden Spiel-Logos und passende Farben; Anno 1404 eine helle Pergamentoptik.
+Die Vorschauen zeigen alle fünf mitgelieferten Demo-Galerien; ein Klick öffnet das Bild in voller Auflösung. Die Kartendemos enthalten Einwohner- und Wohnhauszahlen in kompakten aufklappbaren Gruppen. Alle Galerien verwenden Spiel-Logos und passende Farben; Anno 1404 eine helle Pergamentoptik.
 
 | Galerie | Anno 117 | Anno 1800 | Anno 1404 |
 |---|---|---|---|
 | Stempel | [<img src="anno117/docs/images/stamp-gallery.jpg" alt="Anno-117-Demo mit Stadtbauplänen, Ceres-Filtern und Lavendel-Ausbaureserve" width="360">](anno117/docs/images/stamp-gallery.jpg) | [<img src="anno1800/docs/images/stamp-gallery.jpg" alt="Anno-1800-Demo mit Filtern für Traktoren, Silos, Strom, Rathaus und Handelskammer" width="360">](anno1800/docs/images/stamp-gallery.jpg) | Nicht implementiert |
-| Karten | [Kompakte HTML-Demo](site/anno117/maps/index.html) | [Kompakte HTML-Demo](site/anno1800/maps/index.html) | [Kompakte HTML-Demo](site/anno1404/maps/index.html) |
+| Karten | [<img src="anno117/docs/images/map-gallery.jpg" alt="Anno 117 Demo-Kartengalerie mit Bevölkerung und Wohnhäusern" width="360">](anno117/docs/images/map-gallery.jpg) | [<img src="anno1800/docs/images/map-gallery.jpg" alt="Anno 1800 Demo-Kartengalerie mit Bevölkerung und Wohnhäusern" width="360">](anno1800/docs/images/map-gallery.jpg) | [<img src="anno1404/docs/images/map-gallery.jpg" alt="Anno 1404 Demo-Kartengalerie mit Bevölkerung und Wohnhäusern" width="360">](anno1404/docs/images/map-gallery.jpg) |
 
 ## Schnellstart
 

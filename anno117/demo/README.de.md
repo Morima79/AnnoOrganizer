@@ -6,9 +6,11 @@ Diese Beispiele wurden aus den Dateien des Projektinhabers für die Werkzeug-Dem
 
 ## Spielstände
 
-- `saves/Demo-01/demo-01.a8s` – Seed 8163
-- `saves/Demo-02/demo-02.a8s` – Seed 31031979
-- `saves/Demo-03/demo-03.a8s` – Seed 2676
+Die Saves enthalten besiedelte Inseln mit gespeicherten Einwohner- und Wohnhauszahlen.
+
+- `saves/Demo-01/demo-01.a8s` – Seed 31031979
+- `saves/Demo-02/demo-02.a8s` – Seed 3087
+- `saves/Demo-03/demo-03.a8s` – Seed 8163
 
 ## Stempel
 

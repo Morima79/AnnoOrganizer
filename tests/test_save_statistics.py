@@ -99,6 +99,28 @@ class StatisticsTests(unittest.TestCase):
         self.assertEqual(result['population'], 10)
         self.assertIsNone(result['population_levels'])
 
+    def test_1800_residence_counters_survive_missing_or_different_profile_totals(self):
+        for total in (None, 4, 7):
+            reader = reader_fixture(game='anno1800')
+            fields = reader.formats.fields
+            def integer_residents(data):
+                for path, raw in fields(data):
+                    if path[-2:] == ('Residence7', 'ResidentCount'):
+                        raw = u(round(struct.unpack('<f', raw)[0]))
+                    yield path, raw
+            reader.formats.fields = integer_residents
+            result = stats.empty_statistics()
+            result['population'] = total
+            reader.read_world(b'outer', 0, result)
+            self.assertEqual(result['population'], total)
+            self.assertEqual(result['population_residences'], 4)
+            self.assertEqual(sum(row['count'] for row in result['population_levels']), 4)
+            html = summary.render_statistics([dict(campaign='one', date='24.11.2026 12:00:00',
+                                                   profile='Demo', values=result)])
+            self.assertIn('stats.residencePopulation', html)
+            self.assertEqual('stats.populationCountersDiffer' in html, total == 7)
+            self.assertNotIn('stats.rounding', html)
+
     def test_117_checks_individual_island_population_not_only_the_grand_total(self):
         reader = reader_fixture()
         fields = reader.formats.fields

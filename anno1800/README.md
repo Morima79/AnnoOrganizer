@@ -20,6 +20,8 @@ Five sample layouts across four regions, with technology and administration filt
 
 Standardised gallery header and Old World island overview with seed, saved map settings and save metadata.
 
+[<img src="docs/images/map-gallery.jpg" alt="Map gallery with population and residences" width="360">](docs/images/map-gallery.jpg)
+
 [Open the compact map gallery HTML demo](https://morima79.github.io/AnnoOrganizer/anno1800/maps/)
 
 ## Quick start

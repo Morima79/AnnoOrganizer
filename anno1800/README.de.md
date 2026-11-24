@@ -20,6 +20,8 @@ Fünf Beispielbaupläne aus vier Regionen mit Technik- und Verwaltungsfiltern.
 
 Einheitlicher Galerie-Kopfbereich und Alte-Welt-Inselübersicht mit Seed, gespeicherten Karteneinstellungen und Angaben zum Spielstand.
 
+[<img src="docs/images/map-gallery.jpg" alt="Kartengalerie mit Bevölkerung und Wohnhäusern" width="360">](docs/images/map-gallery.jpg)
+
 [Kompakte Kartengalerie als HTML-Demo öffnen](https://morima79.github.io/AnnoOrganizer/anno1800/maps/)
 
 ## Schnellstart

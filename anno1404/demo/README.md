@@ -6,6 +6,8 @@ These examples were selected from the project owner's files for the bundled tool
 
 ## Saves
 
+The saves include settled islands with stored population and residence counts.
+
 - `saves/Demo-01/demo-01.sww` – Anno 1404
 - `saves/Demo-02/demo-02.sww` – Venedig
 - `saves/Demo-03/demo-03.sww` – History Edition

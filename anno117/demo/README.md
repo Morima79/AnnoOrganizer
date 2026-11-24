@@ -6,9 +6,11 @@ These examples were selected from the project owner's files for the bundled tool
 
 ## Saves
 
-- `saves/Demo-01/demo-01.a8s` – Seed 8163
-- `saves/Demo-02/demo-02.a8s` – Seed 31031979
-- `saves/Demo-03/demo-03.a8s` – Seed 2676
+The saves include settled islands with stored population and residence counts.
+
+- `saves/Demo-01/demo-01.a8s` – Seed 31031979
+- `saves/Demo-02/demo-02.a8s` – Seed 3087
+- `saves/Demo-03/demo-03.a8s` – Seed 8163
 
 ## Stamps
 

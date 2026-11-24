@@ -116,8 +116,10 @@ def render_statistics(entries):
         result.append('<p class="last-played">' + label('stats.lastPlayed') + ': <time>' + date + '</time></p>')
         result.append('<div class="stat-groups">')
         population = named_rows(stats.get('population_levels'))
+        if stats.get('population_residences') is not None:
+            population = '<p>' + label('stats.residencePopulation') + ': ' + number(stats['population_residences']) + '</p>' + population
         if stats.get('population_levels') is not None and stats.get('population') is not None and sum(r['count'] for r in stats['population_levels']) != stats['population']:
-            population += '<p class="stat-note">' + label('stats.rounding') + '</p>'
+            population += '<p class="stat-note">' + label('stats.populationCountersDiffer' if stats.get('population_residences') is not None else 'stats.rounding') + '</p>'
         population += '<p>' + label('stats.islands') + ': ' + number(stats.get('islands')) + '</p>'
         money = label('stats.wealth') + ' ' + number(stats.get('money')) + ' · ' + label('stats.balance') + ' ' + number(stats.get('balance'), True)
         if stats.get('balance') is not None:
@@ -127,7 +129,9 @@ def render_statistics(entries):
             finance += '<div><dt>' + label('stats.' + key) + '</dt><dd>' + number(stats.get(key)) + ' ' + label('stats.perMinute') + '</dd></div>'
         finance += '</dl>'
         result.append(group('stats.money', money, finance))
-        result.append(group('stats.population', number(stats.get('population')), population))
+        population_key = 'stats.population' if stats.get('population') is not None or stats.get('population_residences') is None else 'stats.residencePopulation'
+        population_value = stats.get('population') if population_key == 'stats.population' else stats['population_residences']
+        result.append(group(population_key, number(population_value), population))
         houses = named_rows(stats.get('house_levels'))
         houses += '<p>' + label('stats.blueprints') + ': ' + number(stats.get('blueprints')) + '</p>'
         result.append(group('stats.houses', number(stats.get('houses')), houses))
@@ -213,7 +217,7 @@ def write_statistics_sheet(book, entries):
                'Wohnhäuser', 'Schiffe', 'Besiedelte Inseln', 'Wohnhaus-Baupläne', 'Save']
     headers += ['Save-Dateien dieser Partie', 'Ältester Save am', 'Ältester Save', 'Spielzeit im neuesten Save',
                 'Längste gespeicherte Spielzeit', 'Save mit längster Spielzeit am', 'Save mit längster Spielzeit',
-                'Mehr Spielzeit im älteren Save']
+                'Mehr Spielzeit im älteren Save', 'Bevölkerung in Wohnhäusern']
     hours = book.add_format({'num_format': '[h]:mm:ss'})
     sheet.set_column(11, 18, 24)
     sheet.write_row(0, 0, headers, heading)
@@ -227,6 +231,7 @@ def write_statistics_sheet(book, entries):
                 sheet.write_datetime(index, column, datetime.strptime(value, '%d.%m.%Y %H:%M:%S'), date_format)
                 continue
             sheet.write(index, column, 'nicht verfügbar' if value is None else value, numeric if isinstance(value, (int, float)) else None)
+        sheet.write(index, 19, 'nicht verfügbar' if stats.get('population_residences') is None else stats['population_residences'], numeric)
         history = entry.get('history')
         if history:
             record = history['record']

@@ -696,5 +696,7 @@
   "gameSetting.anno117.GeneratedIslandSize.value.1": "Regulär",
   "gameSetting.anno117.GeneratedIslandSize.value.2": "Gross",
   "gameSetting.anno117.SetupStartSessionIslandDifficulty.value.0": "Normal",
-  "gameSetting.anno117.SetupStartSessionIslandDifficulty.value.1": "Schwer"
+  "gameSetting.anno117.SetupStartSessionIslandDifficulty.value.1": "Schwer",
+  "stats.residencePopulation": "Bevölkerung in Wohnhäusern",
+  "stats.populationCountersDiffer": "Die gespeicherten Wohnhauswerte weichen vom Profil-Gesamtzähler ab. Beide Werte werden unverändert angezeigt."
 }

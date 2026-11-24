@@ -57,6 +57,27 @@ class GalleryTemplateTests(unittest.TestCase):
         self.assertIn('--gallery-background:#173345', page)
         self.assertEqual(page, module.render_gallery(page, 'anno1800', 'stamp'))
 
+    def test_stamp_headers_share_totals_without_nested_badges(self):
+        for game in ('anno117', 'anno1800'):
+            module = load_renderer(ROOT / game / 'tools/anno_gallery.py', 'totals_' + game)
+            for cards, count, regions in [('', 0, 0),
+                ('<article class="card" data-region="Latium &amp; Albion"></article>', 1, 1),
+                ('<article class="card" data-region="A"></article>'
+                 '<article class="card" data-region="A" hidden></article>'
+                 '<article class="card other" data-region="B"></article>', 3, 2)]:
+                source = ('<header><h1>Stamps</h1><div class="summary"><span><span>99 Stempel</span>'
+                          '</span><span>99 Regionen</span></div></header>' + cards
+                          + '<footer>Stand: 24.11.2026 12:00</footer>')
+                page = module.render_gallery(source, game, 'stamp')
+                header = module.marker(page, 'header')
+                self.assertEqual(header.count('class="stamp-total"'), 2)
+                self.assertNotIn('class="summary"', header)
+                self.assertNotIn('<span><span', header)
+                for key, value in [('stamp.total', count), ('stamp.regions', regions)]:
+                    self.assertIn('data-i18n="' + key + ('.one' if value == 1 else '') + '"', header)
+                    self.assertIn('&quot;count&quot;:' + str(value), header)
+                self.assertEqual(page, module.render_gallery(page, game, 'stamp'))
+
     def test_all_public_snapshots_use_the_current_shared_frame(self):
         for game in ('anno117', 'anno1800', 'anno1404'):
             module = load_renderer(ROOT / game / 'tools/anno_gallery.py', 'snapshot_' + game)

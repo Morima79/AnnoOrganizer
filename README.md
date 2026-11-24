@@ -33,12 +33,12 @@ The demo landing page and galleries share the same **DE/EN switch**. Your saved 
 
 ## Gallery previews
 
-The stamp previews show the bundled demos; click an image for full resolution. Map links open the HTML snapshots with the new compact statistics and disclosure groups. All galleries use game logos and matching colours; Anno 1404 uses a light parchment theme.
+The previews show all five bundled demo galleries; click an image for full resolution. Map demos include settled islands, population and residence counts in compact disclosure groups. All galleries use game logos and matching colours; Anno 1404 uses a light parchment theme.
 
 | Gallery | Anno 117 | Anno 1800 | Anno 1404 |
 |---|---|---|---|
 | Stamps | [<img src="anno117/docs/images/stamp-gallery.jpg" alt="Anno 117 demo stamp gallery with city layouts, Ceres filters and lavender expansion reserve" width="360">](anno117/docs/images/stamp-gallery.jpg) | [<img src="anno1800/docs/images/stamp-gallery.jpg" alt="Anno 1800 demo stamp gallery with tractor, silo, electricity, town hall and trade union filters" width="360">](anno1800/docs/images/stamp-gallery.jpg) | Not implemented |
-| Maps | [Compact HTML demo](site/anno117/maps/index.html) | [Compact HTML demo](site/anno1800/maps/index.html) | [Compact HTML demo](site/anno1404/maps/index.html) |
+| Maps | [<img src="anno117/docs/images/map-gallery.jpg" alt="Anno 117 demo map gallery with population and residences" width="360">](anno117/docs/images/map-gallery.jpg) | [<img src="anno1800/docs/images/map-gallery.jpg" alt="Anno 1800 demo map gallery with population and residences" width="360">](anno1800/docs/images/map-gallery.jpg) | [<img src="anno1404/docs/images/map-gallery.jpg" alt="Anno 1404 demo map gallery with population and residences" width="360">](anno1404/docs/images/map-gallery.jpg) |
 
 ## Quick start
 

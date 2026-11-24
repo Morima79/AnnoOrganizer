@@ -12,6 +12,8 @@ Dieser Ordner ist unabhängig nutzbar und enthält seinen eigenen Starter, Einst
 
 Einheitlicher Galerie-Kopfbereich und drei Kartenvarianten aus Anno 1404, Venedig und der History Edition.
 
+[<img src="docs/images/map-gallery.jpg" alt="Kartengalerie mit Bevölkerung und Wohnhäusern" width="360">](docs/images/map-gallery.jpg)
+
 [Kompakte Kartengalerie als HTML-Demo öffnen](https://morima79.github.io/AnnoOrganizer/anno1404/maps/)
 
 ## Schnellstart

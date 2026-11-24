@@ -6,7 +6,7 @@ from pathlib import Path
 import struct
 from xml.etree import ElementTree as ET
 
-STATISTICS_VERSION = 1
+STATISTICS_VERSION = 2
 LEVELS_1404 = {'Outlaw', 'Beggar_on_street', 'Beggar_in_hospice', 'Ruin_of_ambassador',
                'Ruin_of_peasant', 'Nomad', 'Ambassador', 'Peasant', 'Citizen', 'Patrician', 'Nobleman'}
 LEVELS = {
@@ -20,7 +20,7 @@ LEVELS = {
 def empty_statistics():
     return dict.fromkeys(('population', 'money', 'balance', 'income', 'expenses', 'houses',
                           'blueprints', 'ships', 'airships', 'islands', 'population_levels',
-                          'house_levels', 'ship_types'))
+                          'house_levels', 'ship_types', 'population_residences'))
 
 
 def integer(raw):
@@ -311,7 +311,11 @@ class FileDBStatistics:
                 key = area['session'], area['id']
                 if key not in area_population or abs(reconstructed_areas[key] - area_population[key]) > 0.05:
                     population_valid = False
-        if population_valid and result['population'] is not None and abs(total - result['population']) < 1:
+        if self.game == 'anno1800' and population_valid:
+            # Residence counters are independent of the optional profile total.
+            result['population_residences'] = whole(total)
+            result['population_levels'] = assets.rows(population, self.game)
+        elif population_valid and result['population'] is not None and abs(total - result['population']) < 1:
             # Preserve fractional values until the final UI floor operation.
             if whole(total) == result['population']:
                 result['population_levels'] = assets.rows(population, self.game)

@@ -12,6 +12,8 @@ This folder is independently usable. It includes its own launcher, settings, dep
 
 Standardised gallery header and three map variants from Anno 1404, Venice and the History Edition.
 
+[<img src="docs/images/map-gallery.jpg" alt="Map gallery with population and residences" width="360">](docs/images/map-gallery.jpg)
+
 [Open the compact map gallery HTML demo](https://morima79.github.io/AnnoOrganizer/anno1404/maps/)
 
 ## Quick start

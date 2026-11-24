@@ -3,21 +3,21 @@
   "saves": [
     {
       "file": "saves/Demo-01/demo-01.a8s",
-      "bytes": 360084,
-      "sha256": "ff23a112cd503748fd3d9545e3fb66bc81eb83b27626c1648921728e66c93138",
-      "seed": 8163
-    },
-    {
-      "file": "saves/Demo-02/demo-02.a8s",
-      "bytes": 436487,
-      "sha256": "4a63558071afb826e49eb41fd3bba30a8c0771b58b9d12c33eeb12c39b2ac2ab",
+      "bytes": 882343,
+      "sha256": "7b02315eab66f449a1e897d4127ddb668d2f121266bf9a0058165eaf5f827be0",
       "seed": 31031979
     },
     {
+      "file": "saves/Demo-02/demo-02.a8s",
+      "bytes": 1222507,
+      "sha256": "4eba454370cd0cc234d4defe1908ba53fc30fd5bddc514e1ae3a0395469f3728",
+      "seed": 3087
+    },
+    {
       "file": "saves/Demo-03/demo-03.a8s",
-      "bytes": 1092713,
-      "sha256": "22d885a4eb6959efb71f4cbc34ce7d451254c1e373ba82c4c160f83678707ad9",
-      "seed": 2676
+      "bytes": 1297626,
+      "sha256": "4d100cdf521d374247c0f98dae26442ff371003885219133cba78cb09952efa9",
+      "seed": 8163
     }
   ],
   "stamps": [

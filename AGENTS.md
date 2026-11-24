@@ -130,6 +130,38 @@ bestimmten Commit oder Release sind keine pauschale Freigabe für spätere Aufga
   Vorschauen 360 Pixel breit, anklickbar in voller Auflösung; betroffene Haupt-
   und Spiel-READMEs in beiden Sprachen gemeinsam aktualisieren.
 
+### Geprüfter Aufnahmeweg für README-Screenshots
+
+Am 24. November 2026 mit Edge und dem Computer-Use-Skill geprüft:
+
+1. Die Demo-Inhalte zuerst regulär exportieren und `site/` aktualisieren. Nur
+   öffentliche Demo-Seiten aufnehmen, keine persönlichen Galerien.
+2. Ein separates Edge-Fenster öffnen und die jeweilige lokale
+   `site/<spiel>/maps/index.html` bzw. `stamps/index.html` über die Adressleiste
+   laden. DE wählen; automatische Browserübersetzung nicht verwenden.
+3. Mit `Ctrl+Shift+I` die DevTools und mit `Ctrl+Shift+M` die Geräteansicht öffnen.
+   Gerätetyp **Dynamisch**, Breite **1280**, Höhe **900**, Zoom **An Fenster
+   anpassen**. Eine feste Höhe vermeidet Leerraum bei schmal angedockten DevTools.
+   Bei den
+   117-/1800-Karten die Profilrangliste einklappen; Kennzahlengruppen geschlossen
+   lassen. Im Seiteninhalt einmal mit `Ctrl+End` ans Ende und mit `Ctrl+Home`
+   zurück springen, damit auch Lazy-Loading-Bilder geladen sind. Vor der Aufnahme
+   geladene Karten und Stempelbilder prüfen.
+4. Im Drei-Punkte-Menü der Geräteansicht **Vollbild-Bildschirmfoto erfassen**
+   wählen. Dies lädt ein PNG der ganzen Seite herunter, ohne Browserrahmen oder
+   DevTools. Der Downloadordner kann umgeleitet sein; den tatsächlich verwendeten
+   Ordner ermitteln, keinen festen Benutzerpfad voraussetzen.
+5. Geräte-Pixeldichte beachten: Bei DPR 2 ist das PNG 2560 Pixel breit. Mit Pillow
+   proportional auf 1280 Pixel normalisieren (`Image.Resampling.LANCZOS`), dann
+   nur je 8 Pixel äusseren Rand abschneiden (`crop((8, 0, 1272, height))`). Das
+   ergibt die vereinbarte Bildbreite von **1264 Pixeln**, ohne Text oder Karten
+   umzugestalten. Als RGB-JPEG mit Qualität 90 unter
+   `<spiel>/docs/images/map-gallery.jpg` bzw. `stamp-gallery.jpg` speichern.
+6. Alle fünf fertigen Bilder visuell prüfen. Beide Haupt-READMEs und beide
+   Sprachfassungen der Spiel-READMEs mit anklickbaren 360-Pixel-Vorschauen
+   aktualisieren. Den Aufnahmeweg erst nach einem erfolgreichen neuen Versuch
+   ändern; ein Fehler des integrierten Browsers belegt keinen Edge-Fehler.
+
 ## Fachliche Erkennung und Validierung
 
 - DLC-/CDLC- und Technikhinweise aus tatsächlich enthaltenen Objekten und gewählten

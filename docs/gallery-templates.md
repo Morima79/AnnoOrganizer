@@ -16,6 +16,8 @@ Map and stamp galleries consistently use `system-ui, sans-serif`, including page
 
 The logo and DE/EN switch share a top-aligned row. The renderer measures the logo's visible alpha bounds and hides transparent margins in layout while preserving the embedded original PNG bytes. On narrow screens the logo shrinks and the language buttons remain accessible. [Compact header preview](images/gallery-header.jpg).
 
+Both stamp headers show the unfiltered number of exported stamps and the number of regions represented by those stamps. The shared renderer derives these totals from the cards; shared `stamp-totals` styles give each badge one border. Translation spans do not receive badge styling.
+
 ## Colours
 
 Colours are inspired by each game's interface. Transparent logos blend into those surfaces. `THEMES` in the shared renderer defines the background and readable text, border and link colours:
@@ -42,7 +44,7 @@ Custom profile, folder and stamp names, paths, raw technical values and object/D
 
 Maintain both canonical JSON files, then synchronise the templates and refresh the demos. Tests cover matching keys/placeholders, valid bindings on all five pages, identity preservation, safe embedding, independent game bundles and JavaScript behaviour with blocked or invalid browser storage. Run `node --test tests/gallery_i18n_runtime.cjs tests/map_catalog_runtime.cjs` for the JavaScript tests alone; Python tests also run them when Node.js is available.
 
-[English gallery preview with the DE/EN switch](../anno117/docs/images/stamp-gallery-en.jpg). Stamp previews show the German interface with its language switch; map READMEs link directly to the compact HTML demos. Existing captures use the same image width.
+[English gallery preview with the DE/EN switch](../anno117/docs/images/stamp-gallery-en.jpg). All five README previews show the current German demos with their language switch and use the same image width. The verified Edge DevTools capture workflow is documented in `AGENTS.md`.
 
 ## Changing templates
 
