@@ -61,7 +61,15 @@ Reine Betriebs- und Dateistatusmeldungen gehören in die Protokolle, nicht in di
 
 Die gemeinsame Darstellung liegt in `templates/anno_save_summary.py`, die konservative Auslesung in `templates/anno_save_statistics.py`. Beide Dateien werden zusammen mit den Vorlagen in die eigenständig nutzbaren Spielordner synchronisiert. Die Exporter liefern getrennte Zusammenfassungen pro Partie; Details werden mit nativen, zunächst geschlossenen `details`/`summary`-Elementen dargestellt. Labels und Bevölkerungsstufen liegen in beiden zentralen Sprachressourcen. [Kennzahlen und Grenzen](save-statistics.de.md).
 
+## Navigation der Stempelbilder
+
+Stempelbilder öffnen den vorhandenen Dialog mit Zoom und Download; Kartenbilder verweisen direkt auf ihre PNG-Dateien. Beide Stempelgalerien legen beim Öffnen des Dialogs einen Verlaufseintrag mit unveränderter Galerieadresse an. Browser-Zurück schliesst ihn; Vorwärts öffnet denselben Stempel wieder. Schliessen, Escape und ein Klick auf den Hintergrund führen ebenfalls zum Galerieeintrag zurück. Die Filter bleiben auf der Seite erhalten. Bei gesperrtem Verlauf bleibt der Dialog bedienbar, die Browsernavigation steht dann jedoch nicht zur Verfügung. Die gemeinsame Laufzeit liegt in `templates/stamp_viewer.js`; `node --test tests/stamp_viewer_runtime.cjs` prüft die Navigation.
+
 ## Bedienung des Kartenkatalogs
+
+Anno 1404 stellt ebenso Suche, Edition, Sortierung und Profilwahl aus dem jeweiligen Verlaufseintrag wieder her.
+
+117/1800 speichern Suche, Spielmodus, Sortierung und die genaue Profilwahl im aktuellen Browser-Verlaufseintrag. Nach dem Öffnen eines Kartenbildes stellt «Zurück» diese Auswahl und die Trefferzahl wieder her, auch wenn der Browser die Seite neu lädt. Getrennte Galerieeinträge bleiben unabhängig. Gesperrter Zugriff auf den Verlauf verhindert das Filtern nicht; die Wiederherstellung ist dann jedoch nicht verfügbar.
 
 117 und 1800 verwenden dieselbe Profilrangliste, aufklappbare Seed-Liste, Suche, Modusfilter, Sortierung, Trefferzahl und zwei Rücksprung-Schaltflächen. Die Seed-Liste zählt die unterschiedlichen Seeds des Exports. Profillinks wählen ein exaktes Profil und springen zu den Filtern; der Rücksprung setzt Profil-, Such- und Modusfilter zurück und stellt den Fokus auf den gewählten Ranglistenlink. Die Suche verwendet `data-profiles` unabhängig von sichtbaren Kennzahlengruppen; rein numerische Eingaben treffen einen exakten Seed. Die Bedienelemente stehen unten bündig und umbrechen bei wenig Platz. Sortieren und DE/EN-Wechsel verschieben bestehende Karten und erhalten geöffnete Gruppen. In allen drei Spielen steht Geld vor Bevölkerung, Wohnhäusern und Schiffen; dadurch bleiben Bevölkerung und Wohnhäuser benachbart. Regressionstests führen die gemeinsame Laufzeit auch mit Karten ohne optionalen `.profiles`-Absatz aus.
 

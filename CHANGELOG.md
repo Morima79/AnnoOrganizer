@@ -5,6 +5,18 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ## [Unreleased]
 
+### English
+
+- Make both stamp image dialogs participate in browser Back/Forward navigation without changing gallery URLs or filters.
+
+- Preserve map search, filters, sorting and profile selection when returning from a map image in all three games. Document the unverified gameplay meaning of Anno 1800's stored Dockworkers setting.
+
+### Deutsch
+
+- Bilddialoge beider Stempelgalerien mit Browser-Zurück/Vorwärts bedienbar gemacht; Galerieadresse und Filter bleiben erhalten.
+
+- Suche, Filter, Sortierung und Profilwahl beim Zurückkehren vom Kartenbild in allen drei Spielen erhalten. Nicht bestätigte Spielwirkung der gespeicherten Anno-1800-Einstellung Hafenarbeiter dokumentiert.
+
 ## [v0.1.11] - 2026-11-24
 
 ### English

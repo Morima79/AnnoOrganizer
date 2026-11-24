@@ -289,6 +289,26 @@ const filter = document.querySelector('#filter');
 const ranking = document.querySelector('#rangliste');
 let profile = '';
 
+function restoreState() {
+  try {
+    const saved = window.history.state?.annoMap1404;
+    if (!saved || saved.version !== 1) return;
+    if (typeof saved.query === 'string') query.value = saved.query;
+    if (typeof saved.edition === 'string') edition.value = saved.edition;
+    if (['timestamp', 'oldest', 'time', 'seed'].includes(saved.sort)) sort.value = saved.sort;
+    profile = typeof saved.profile === 'string' &&
+      rows.some(row => JSON.parse(row.dataset.profiles).includes(saved.profile)) ? saved.profile : '';
+  } catch { /* History access may be blocked for local files. */ }
+}
+
+function saveState() {
+  try {
+    window.history.replaceState({...window.history.state, annoMap1404: {
+      version: 1, query: query.value, edition: edition.value, sort: sort.value, profile
+    }}, '');
+  } catch { /* Filtering also works when history storage is unavailable. */ }
+}
+
 function update() {
   const text = query.value.trim().toLocaleLowerCase('de-CH');
   const key = sort.value;
@@ -305,6 +325,7 @@ function update() {
   }
   count.textContent = galleryI18n.t('map.count',{shown,total:rows.length}) + (profile ? ' · ' + profile : '');
   for (const button of backs) button.hidden = !profile;
+  saveState();
 }
 for (const element of [query, edition, sort]) element.addEventListener('input', update);
 for (const button of document.querySelectorAll('[data-profile]')) {
@@ -326,6 +347,8 @@ for (const button of backs) {
     ranking.scrollIntoView();
   });
 }
+window.addEventListener('pageshow', () => { restoreState(); update(); });
+restoreState();
 update();
 document.addEventListener('gallerylanguagechange',update);
 </script>

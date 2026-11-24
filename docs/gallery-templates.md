@@ -61,7 +61,15 @@ Operational and file-status messages belong in logs rather than galleries. Maps,
 
 Shared presentation lives in `templates/anno_save_summary.py`; conservative readers live in `templates/anno_save_statistics.py`. Both are synchronised into the independently usable game bundles together with the templates. Exporters supply separate campaign summaries; native `details`/`summary` elements keep details collapsed initially. Labels and population tiers are maintained in both central language resources. [Statistics and limitations](save-statistics.md).
 
+## Stamp image navigation
+
+Stamp images open in the existing zoom/download dialog, while map images link directly to their PNG files. Both stamp galleries add one history entry with the unchanged gallery URL when opening the dialog. Browser Back closes it; Forward reopens the same stamp. Close, Escape and backdrop clicks also return to the gallery entry. Filters remain on the page. Blocked history access leaves the dialog usable, but cannot provide browser navigation. The shared runtime is `templates/stamp_viewer.js`; run `node --test tests/stamp_viewer_runtime.cjs` for its navigation regressions.
+
 ## Map catalogue controls
+
+Anno 1404 likewise restores search, edition, sorting and profile selection on its own history entry.
+
+117/1800 store search, mode, sorting and exact profile selection on the current browser history entry. Opening a map image and returning with Back restores those controls and the result count, including when the browser reloads the page instead of using its page cache. Separate gallery entries remain independent. Blocked history access does not prevent filtering, but restoration is then unavailable.
 
 117 and 1800 use the same profile ranking, collapsed seed list, search, mode filter, sorting, result count and two return buttons. The seed list counts distinct seeds in the export. Profile links select an exact profile and scroll to the filters; returning clears the profile/search/mode filters and restores focus to the selected ranking link. Search uses `data-profiles`, independent of visible statistic groups, and numeric queries match an exact seed. The controls align along their bottom edge and wrap on narrow screens. Sorting and DE/EN changes move existing cards and preserve their open groups. Finances precede population, residences and ships in all three games, keeping population and residences adjacent. Regression tests execute the shared runtime, including cards without the optional `.profiles` paragraph.
 

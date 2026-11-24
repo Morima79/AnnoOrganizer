@@ -3,6 +3,7 @@ import importlib.util
 from pathlib import Path
 import re
 import shutil
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -20,6 +21,11 @@ def load_renderer(path, name):
 
 
 class GalleryTemplateTests(unittest.TestCase):
+    @unittest.skipUnless(shutil.which('node'), 'Node.js is needed for stamp viewer runtime tests')
+    def test_stamp_viewer_history_runtime(self):
+        subprocess.run(['node', '--test', str(ROOT / 'tests/stamp_viewer_runtime.cjs')],
+                       cwd=ROOT, check=True, capture_output=True, text=True, encoding='utf-8')
+
     def test_bundled_templates_match_the_canonical_sources(self):
         sync(check=True)
 

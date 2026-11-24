@@ -27,6 +27,8 @@ Originalschreibweisen, einschliesslich Gross-/Kleinschreibung und `ß`, bleiben 
 
 ## Grenzen
 
+Anno 1800s **Hafenarbeiter / Dockworkers** ist die originale Text-ID `11017` zum gespeicherten Einstellungsfeld `SetupDistributionWorkforce`. Das Dataset benennt die Werte als Reichlich/Mittel/Spärlich. Es handelt sich um eine gespeicherte Setup-Option, keine gezählte Arbeiterzahl oder Bevölkerungsstufe. Ihre praktische Wirkung im veröffentlichten Spiel ist nicht geprüft; die Bezeichnung allein belegt keine aktive Spielmechanik.
+
 Unbekannte Werte erscheinen mit dem unveränderten Rohwert und **unbekannte Zuordnung / unmapped value**. Fehlende Werte erscheinen als **nicht verfügbar / not available**. Für nicht eindeutig zugeordnete Bitmasken, zusammengesetzte Startbedingungen oder interne Setup-Felder werden keine Bezeichnungen geraten. Insbesondere ist «Startsituation» bei 1404 eine Menügruppe und keine belegte Übersetzung jedes einzelnen Startfelds.
 
 Die aktuellen Spieldaten beweisen keine unveränderte historische Bedeutung aller Felder. Deshalb werden Gruppierung und Rohdaten durch diese Beschriftungsänderung nicht verändert. Die Anzeige basiert auf der mitgelieferten geprüften Tabelle; ein späteres Spielupdate muss gegen Text-IDs und Datasets geprüft werden. PNG-Beschriftungen und eigene Objekt-/Profilnamen werden durch den HTML-Sprachwechsel nicht übersetzt. Excel verwendet die deutschen Bezeichnungen.

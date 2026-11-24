@@ -14,7 +14,7 @@ function element(dataset = {}) {
     click() { this.listeners.click({preventDefault() {}}); }};
 }
 
-function environment(source = runtime) {
+function environment(source = runtime, history = {state: null}) {
   const nodes = Object.fromEntries(['query', 'mode', 'sort', 'count', 'variants', 'profile-ranking', 'variant-filters']
     .map(id => [id, element()]));
   nodes.sort.value = 'latest';
@@ -43,8 +43,11 @@ function environment(source = runtime) {
     assert.equal(key, 'map.count');
     return language === 'de' ? `${shown} von ${total} Varianten` : `${shown} of ${total} variants`;
   }};
-  vm.runInNewContext(source, {document, galleryI18n});
-  return {nodes, cards, links, backs, chips,
+  history.replaceState ??= function(state) { this.state = structuredClone(state); };
+  const window = {history, listeners: {},
+    addEventListener(type, listener) { this.listeners[type] = listener; }};
+  vm.runInNewContext(source, {document, galleryI18n, window});
+  return {nodes, cards, links, backs, chips, history, window,
     search(text) { nodes.query.value = text; nodes.query.listeners.input(); },
     language() { language = 'en'; document.listeners.gallerylanguagechange(); }};
 }
@@ -118,6 +121,45 @@ test('sorting reorders existing cards and language switching preserves filters a
   assert.ok(e.backs.every(button => button.hidden));
 });
 
+test('image navigation and back restore exact profile, mode and sort on a fresh page', () => {
+  const before = environment();
+  before.links[0].click();
+  before.nodes.mode.value = 'Kampagne'; before.nodes.mode.listeners.change();
+  before.nodes.sort.value = 'variant'; before.nodes.sort.listeners.change();
+  const after = environment(runtime, before.history);
+  assert.equal(after.nodes.query.value, 'Mori');
+  assert.equal(after.nodes.mode.value, 'Kampagne');
+  assert.equal(after.nodes.sort.value, 'variant');
+  assert.deepEqual(after.cards.map(card => card.hidden), [true, true, false]);
+  assert.ok(after.backs.every(button => !button.hidden));
+  after.backs[0].click();
+  assert.equal(after.links[0].focused, true);
+});
+
+test('back restores search and zero results, including browser-restored controls on pageshow', () => {
+  const before = environment();
+  before.search('unknown');
+  const after = environment(runtime, before.history);
+  assert.equal(after.nodes.count.textContent, '0 von 3 Varianten');
+  after.nodes.query.value = '';
+  after.window.listeners.pageshow();
+  assert.equal(after.nodes.query.value, 'unknown');
+  assert.equal(after.nodes.count.textContent, '0 von 3 Varianten');
+});
+
+test('history state remains entry-local, preserves other state and tolerates blocked history', () => {
+  const first = environment(runtime, {state: {otherFeature: 7}});
+  first.search('20');
+  assert.equal(first.history.state.otherFeature, 7);
+  assert.equal(environment().nodes.query.value, '');
+  const blocked = environment(runtime, {
+    get state() { throw Error('Blocked'); }, replaceState() { throw Error('Blocked'); }
+  });
+  blocked.search('7');
+  blocked.window.listeners.pageshow();
+  assert.equal(blocked.nodes.count.textContent, '1 von 3 Varianten');
+});
+
 test('public 117 and 1800 exports embed the identical canonical runtime and shared controls', () => {
   for (const game of ['anno117', 'anno1800']) {
     const page = fs.readFileSync(path.join(root, 'site', game, 'maps/index.html'), 'utf8');
@@ -129,4 +171,56 @@ test('public 117 and 1800 exports embed the identical canonical runtime and shar
     assert.equal((page.match(/data-back-to-profiles/g) || []).length, 3); // Two buttons and script selector.
     environment(script[1]);
   }
+});
+
+function environment1404(history = {state: null}) {
+  const source = fs.readFileSync(path.join(root, 'anno1404/tools/map_gallery_template.html'), 'utf8')
+    .match(/<script>([\s\S]*?)<\/script>/)[1];
+  const nodes = Object.fromEntries(['cards', 'query', 'edition', 'sort', 'count', 'filter', 'rangliste']
+    .map(id => [id, element()]));
+  nodes.sort.value = 'timestamp';
+  const rows = ['Mori', 'Mori 2'].map((profile, index) => element({
+    profiles: JSON.stringify([profile]), editions: JSON.stringify([index ? 'Venedig' : 'History Edition']),
+    seed: index + 1, timestamp: index + 2, oldest: index, time: index + 10
+  }));
+  const backs = [element(), element()];
+  const links = ['Mori', 'Mori 2'].map(profile => element({profile}));
+  nodes.cards.querySelectorAll = () => rows;
+  nodes.cards.append = () => {};
+  const window = {history, listeners: {}, addEventListener(type, fn) { this.listeners[type] = fn; }};
+  history.replaceState ??= function(state) { this.state = structuredClone(state); };
+  const document = {querySelector(selector) { return nodes[selector.slice(1)]; },
+    querySelectorAll(selector) { return selector === '.back' ? backs : links; }, addEventListener() {}};
+  const galleryI18n = {searchText(row) { return row.dataset.profiles; },
+    t(key, {shown, total}) { return `${shown}/${total}`; }};
+  vm.runInNewContext(source, {document, galleryI18n, window});
+  return {nodes, rows, backs, links, history, window};
+}
+
+test('1404 restores exact profile, edition and sort after image navigation and Back', () => {
+  const before = environment1404();
+  before.links[0].click();
+  before.nodes.edition.value = 'Venedig'; before.nodes.edition.listeners.input();
+  before.nodes.sort.value = 'seed'; before.nodes.sort.listeners.input();
+  const after = environment1404(before.history);
+  assert.equal(after.nodes.edition.value, 'Venedig');
+  assert.equal(after.nodes.sort.value, 'seed');
+  assert.equal(after.nodes.count.textContent, '0/2 · Mori');
+  assert.ok(after.backs.every(button => !button.hidden));
+  after.nodes.edition.value = '';
+  after.window.listeners.pageshow();
+  assert.equal(after.nodes.edition.value, 'Venedig');
+  after.backs[0].click();
+  assert.equal(after.nodes.count.textContent, '2/2');
+});
+
+test('1404 restores search and works with blocked history', () => {
+  const before = environment1404();
+  before.nodes.query.value = 'Mori 2'; before.nodes.query.listeners.input();
+  assert.equal(environment1404(before.history).nodes.count.textContent, '1/2');
+  const blocked = environment1404({get state() { throw Error('Blocked'); },
+    replaceState() { throw Error('Blocked'); }});
+  blocked.nodes.query.value = 'missing'; blocked.nodes.query.listeners.input();
+  blocked.window.listeners.pageshow();
+  assert.equal(blocked.nodes.count.textContent, '0/2');
 });

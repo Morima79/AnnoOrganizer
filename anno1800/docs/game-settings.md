@@ -27,6 +27,8 @@ Original game spelling, case and `ß` are preserved in imported text. German doc
 
 ## Limitations
 
+Anno 1800's **Hafenarbeiter / Dockworkers** is the original text ID `11017` associated with the saved setup field `SetupDistributionWorkforce`. Its dataset labels are Plenty/Medium/Sparse. This is a stored setup option, not a count of dockworkers or a population tier. Its practical effect in the released game has not been verified; the label alone does not establish an active gameplay mechanic.
+
 Unknown values retain the raw value with **unbekannte Zuordnung / unmapped value**. Missing values show **nicht verfügbar / not available**. Unconfirmed bitmasks, composite starting conditions and internal setup fields are not guessed. In particular, “Start situation” is a 1404 menu group, not a confirmed label for each individual starting field.
 
 Current game data does not prove unchanged historical semantics. Grouping and raw data are therefore unchanged by this presentation update. Display uses the bundled verified table; future game updates need comparison against text IDs and datasets. PNG labels and custom object/profile names are outside the HTML switch. Excel uses German labels.
