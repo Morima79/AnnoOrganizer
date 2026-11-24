@@ -33,7 +33,7 @@ Demo-Startseite und Galerien verwenden denselben **DE/EN-Schalter**. Die gespeic
 
 ## Galerie-Vorschau
 
-Die Vorschauen zeigen alle fünf mitgelieferten Demo-Galerien; ein Klick öffnet das Bild in voller Auflösung. Die Kartendemos enthalten Einwohner- und Wohnhauszahlen in kompakten aufklappbaren Gruppen. Alle Galerien verwenden Spiel-Logos und passende Farben; Anno 1404 eine helle Pergamentoptik.
+Die Vorschauen zeigen alle fünf mitgelieferten Demo-Galerien auf Deutsch; ein Klick öffnet das Bild in voller Auflösung. Die englische README verwendet die entsprechenden englischen Aufnahmen. Die Kartendemos enthalten Einwohner- und Wohnhauszahlen in kompakten aufklappbaren Gruppen. Alle Galerien verwenden Spiel-Logos und passende Farben; Anno 1404 eine helle Pergamentoptik.
 
 | Galerie | Anno 117 | Anno 1800 | Anno 1404 |
 |---|---|---|---|

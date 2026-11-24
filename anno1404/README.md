@@ -6,13 +6,13 @@
 
 [English](README.md) · [Deutsch](README.de.md)
 
-This folder is independently usable. It includes its own launcher, settings, dependencies and license and does not require the repository's main launcher or the other games. Source game files are read only. Menus, messages and gallery text currently remain German.
+This folder is independently usable. It includes its own launcher, settings, dependencies and license and does not require the repository's main launcher or the other games. Source game files are read only. Menus and log messages remain German; HTML galleries provide a DE/EN switch.
 
 ## Preview
 
 Standardised gallery header and three map variants from Anno 1404, Venice and the History Edition.
 
-[<img src="docs/images/map-gallery.jpg" alt="Map gallery with population and residences" width="360">](docs/images/map-gallery.jpg)
+[<img src="docs/images/map-gallery-en.jpg" alt="Map gallery with population and residences" width="360">](docs/images/map-gallery-en.jpg)
 
 [Open the compact map gallery HTML demo](https://morima79.github.io/AnnoOrganizer/anno1404/maps/)
 

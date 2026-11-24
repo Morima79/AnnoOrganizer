@@ -44,7 +44,7 @@ Custom profile, folder and stamp names, paths, raw technical values and object/D
 
 Maintain both canonical JSON files, then synchronise the templates and refresh the demos. Tests cover matching keys/placeholders, valid bindings on all five pages, identity preservation, safe embedding, independent game bundles and JavaScript behaviour with blocked or invalid browser storage. Run `node --test tests/gallery_i18n_runtime.cjs tests/map_catalog_runtime.cjs` for the JavaScript tests alone; Python tests also run them when Node.js is available.
 
-[English gallery preview with the DE/EN switch](../anno117/docs/images/stamp-gallery-en.jpg). All five README previews show the current German demos with their language switch and use the same image width. The verified Edge DevTools capture workflow is documented in `AGENTS.md`.
+[English gallery preview with the DE/EN switch](../anno117/docs/images/stamp-gallery-en.jpg). All five galleries have matching German (`*-gallery.jpg`) and English (`*-gallery-en.jpg`) screenshots. Each README uses its own language, with clickable 360-pixel previews and a source image width of 1264 pixels. The verified Edge DevTools capture workflow is documented in `AGENTS.md`.
 
 ## Changing templates
 

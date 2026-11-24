@@ -44,7 +44,7 @@ Eigene Profil-, Ordner- und Stempelnamen, Dateipfade, technische Rohwerte und au
 
 Neue oder geänderte Übersetzungen in beiden zentralen JSON-Dateien pflegen, danach die Vorlagen synchronisieren und die Demo-Seiten aktualisieren. Die Tests prüfen Ressourcen-/Platzhaltergleichheit, gültige Bindungen aller fünf Seiten, unveränderte Identitäten, sichere Einbettung, eigenständige Anno-Kopien sowie das JavaScript-Verhalten bei gesperrtem oder ungültigem Browserspeicher. `node --test tests/gallery_i18n_runtime.cjs tests/map_catalog_runtime.cjs` führt die JavaScript-Tests separat aus; die Python-Tests rufen sie bei verfügbarem Node.js ebenfalls auf.
 
-[Englische Galerie-Vorschau mit DE/EN-Schalter](../anno117/docs/images/stamp-gallery-en.jpg). Alle fünf README-Vorschauen zeigen die aktuellen deutschen Demos mit Sprachschalter. Der geprüfte Aufnahmeweg über die Edge-DevTools steht in `AGENTS.md`. Vorhandene Aufnahmen haben dieselbe Bildbreite.
+[Englische Galerie-Vorschau mit DE/EN-Schalter](../anno117/docs/images/stamp-gallery-en.jpg). Alle fünf Galerien besitzen passende deutsche (`*-gallery.jpg`) und englische (`*-gallery-en.jpg`) Aufnahmen. Jede README verwendet ihre eigene Sprache, mit anklickbaren 360-Pixel-Vorschauen und 1264 Pixel Bildbreite. Der geprüfte Aufnahmeweg über die Edge-DevTools steht in `AGENTS.md`. Vorhandene Aufnahmen haben dieselbe Bildbreite.
 
 ## Vorlagen ändern
 

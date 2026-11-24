@@ -7,6 +7,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Capture all five demo galleries in German and English in the background; use matching screenshot languages and uniform 360-pixel previews throughout the eight READMEs.
+
 - Unify stamp-header totals for Anno 117 and 1800, counting exported stamps and represented regions with one border per badge in both languages.
 
 - Select demo saves with settled campaigns containing population and residences for all three games; refresh all five README screenshots and document the verified capture workflow. Read Anno 1800 residence population independently of missing or differing profile totals, with explicit source labels and discrepancy notes.
@@ -21,6 +23,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 - Added latest-save population, wealth, supported balance, residence, ship and settled-island statistics for all three games. Compact, initially collapsed bilingual groups keep details and save history out of the summary; uncertain values show “not available”. Excel includes a current-campaign worksheet. Added source/limitation documentation and regression coverage.
 
 ### Deutsch
+
+- Alle fünf Demo-Galerien im Hintergrund auf Deutsch und Englisch aufgenommen; passende Bildsprachen und einheitliche 360-Pixel-Vorschauen in allen acht READMEs eingebunden.
 
 - Stempel-Header für Anno 117 und 1800 vereinheitlicht: Gesamtzahl der Stempel und vertretenen Regionen mit genau einem Rahmen pro Anzeige in beiden Sprachen.
 

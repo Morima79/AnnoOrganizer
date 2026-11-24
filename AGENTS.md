@@ -216,6 +216,8 @@ keine Voraussetzung. Die Edge-DevTools weiter unten sind eine Alternative.
    bevor andere Tools verwendet werden. Mit Pillow JPEG-Format, positive Höhe
    und exakt 1264 Pixel Breite prüfen. Bilder visuell kontrollieren; nur dann
    nach `<spiel>/docs/images/map-gallery.jpg` bzw. `stamp-gallery.jpg` übernehmen.
+   Deutsche Aufnahmen verwenden `*-gallery.jpg`, englische `*-gallery-en.jpg`;
+   jede README-Sprachfassung verlinkt ihre eigene Bildsprache.
    Keine README-Bilder allein für einen Ablauf-Test überschreiben. Beide
    README-Sprachen gemeinsam pflegen und vorhandene 360-Pixel-Verweise erhalten.
 6. Viewport auch im Fehlerfall zurücksetzen, temporäre Tabs unmarkiert lassen

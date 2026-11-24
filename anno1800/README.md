@@ -6,7 +6,7 @@
 
 [English](README.md) · [Deutsch](README.de.md)
 
-This folder is independently usable. It includes its own launcher, settings, dependencies and license and does not require the repository's main launcher or the other games. Source game files are read only. Menus, messages and gallery text currently remain German.
+This folder is independently usable. It includes its own launcher, settings, dependencies and license and does not require the repository's main launcher or the other games. Source game files are read only. Menus and log messages remain German; HTML galleries provide a DE/EN switch.
 
 ## Preview
 
@@ -14,13 +14,13 @@ This folder is independently usable. It includes its own launcher, settings, dep
 
 Five sample layouts across four regions, with technology and administration filters.
 
-[![Anno 1800 demo stamp gallery with tractor, silo, electricity, town hall and trade union filters](docs/images/stamp-gallery.jpg)](docs/images/stamp-gallery.jpg)
+[<img src="docs/images/stamp-gallery-en.jpg" alt="Anno 1800 demo stamp gallery with tractor, silo, electricity, town hall and trade union filters" width="360">](docs/images/stamp-gallery-en.jpg)
 
 ### Map gallery
 
 Standardised gallery header and Old World island overview with seed, saved map settings and save metadata.
 
-[<img src="docs/images/map-gallery.jpg" alt="Map gallery with population and residences" width="360">](docs/images/map-gallery.jpg)
+[<img src="docs/images/map-gallery-en.jpg" alt="Map gallery with population and residences" width="360">](docs/images/map-gallery-en.jpg)
 
 [Open the compact map gallery HTML demo](https://morima79.github.io/AnnoOrganizer/anno1800/maps/)
 

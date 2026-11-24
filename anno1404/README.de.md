@@ -6,7 +6,7 @@
 
 [English](README.md) · [Deutsch](README.de.md)
 
-Dieser Ordner ist unabhängig nutzbar und enthält seinen eigenen Starter, Einstellungen, Abhängigkeiten und Lizenz. Die anderen Anno-Ordner und der Hauptstarter werden nicht benötigt. Quelldateien werden ausschliesslich gelesen. Die technische Benennung ist Englisch; Menüs, Meldungen und Galerien bleiben Deutsch.
+Dieser Ordner ist unabhängig nutzbar und enthält seinen eigenen Starter, Einstellungen, Abhängigkeiten und Lizenz. Die anderen Anno-Ordner und der Hauptstarter werden nicht benötigt. Quelldateien werden ausschliesslich gelesen. Die technische Benennung ist Englisch; Menüs und Protokollmeldungen bleiben Deutsch. Die HTML-Galerien bieten einen DE/EN-Schalter.
 
 ## Vorschau
 
