@@ -5,6 +5,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ## [Unreleased]
 
+## [v0.1.11] - 2026-11-24
+
 ### English
 
 - Capture all five demo galleries in German and English in the background; use matching screenshot languages and uniform 360-pixel previews throughout the eight READMEs.
