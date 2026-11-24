@@ -139,3 +139,5 @@ Map and stamp galleries each use a shared page template with colours inspired by
 Release ZIPs and the demo site are published through GitHub Actions. See the [publishing guide](docs/publishing.md) for release creation, GitHub Pages setup and refreshing the demos.
 
 Save counts and playtime are listed in each campaign’s save details. Map variants show only totals; playtime comparisons stay within one campaign.
+
+Map and game settings use verified DE/EN game labels with contextual value mappings. Unknown values remain explicit. [Original labels and limitations](docs/game-settings.md).

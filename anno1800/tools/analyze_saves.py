@@ -13,7 +13,8 @@ from datetime import datetime
 from pathlib import Path
 import sys
 from anno_settings import settings_for, protect_output
-from anno_map_catalog import render_card, render_catalog_page, describe_options
+import anno_game_settings as game_labels
+from anno_map_catalog import render_card, render_catalog_page
 from anno_map_variants import campaign_variants, latest_known_values
 from anno_save_summary import collect_statistics, variant_totals
 from anno_save_statistics import FileDBStatistics
@@ -367,10 +368,6 @@ def read_asset(rec):
 
 REGIONS = {655:'Szenario · Eden Burning',24734:'Szenario · Seasons of Silver',100811:'Szenario · Pride and Peddlers',180023:'Alte Welt',180025:'Neue Welt',110934:'Kap Trelawney',
            180045:'Arktis',112132:'Enbesa',180014:'Kampagnenprolog'}
-MAPTYPES={1:'Archipel',2:'Atoll',3:'Inselbogen',4:'Ecken',5:'Schneeflocke'}
-SIZES={0:'Klein',1:'Mittel',2:'Gross'}
-AMOUNTS={0:'Knapp',1:'Normal',2:'Reichlich'}
-DIFF={0:'Normal',1:'Schwer'}
 PARTIES={73:'Anne Harlow',76:'Jean La Fortune',29:'Isabel Sarmento',46:'Eli Bleakworth',78:'Madame Kahina'}
 DLC={410040:'Versunkene Schätze',410041:'Botanika',410042:'Die Passage',
      410083:'Speicherstadt',24963:'Aufstieg der Neuen Welt',24961:'Keim der Hoffnung',
@@ -379,10 +376,11 @@ DLC={410040:'Versunkene Schätze',410041:'Botanika',410042:'Die Passage',
 
 ZONE_NAME = CONFIG.zone
 STANDARD_REGIONS = (180023, 180025, 110934, 180045, 112132)
-GAME_SETTINGS = [
-    'Kartentyp', 'Weltgrösse', 'Inselgrösse', 'Inselschwierigkeit', 'Fruchtbarkeit',
-    'Rohstoffvorkommen', 'KI-Slots (IDs)', 'Händler und Piraten (Stufe als ID)', 'Aktive DLCs',
-]
+MAP_SETTING_KEYS = ['SetupMapType', 'SetupStartSession', 'SetupStartSessionIslandSize',
+                    'SetupStartSessionIslandDifficulty', 'SetupFertility', 'SetupRawMaterial']
+GAME_SETTINGS = [*(game_labels.name('anno1800', key) for key in MAP_SETTING_KEYS),
+                 'KI-Slots (IDs)', 'Händler und Piraten (Stufe als ID)', 'Aktive DLCs']
+
 TIME_COLUMNS = [
     'Ältester Save des Seeds', 'Neuester Save des Seeds',
     'Ältester Save der Variante', 'Neuester Save der Variante', 'Spielzeit im neuesten Save',
@@ -497,9 +495,6 @@ def render_catalog(rows, groups, maps, stage, updated_at, total_playtime, profil
         return [v for p,v in setup if p[0]==k and p[-1]!='count']
     def one(setup,k,default=None):
         return next(iter(get(setup,k)),default)
-    def decode(setup,k,labels):
-        n=one(setup,k)
-        return labels.get(n,f'ID {n}') if n is not None else '—'
     def mode(setup):
         return next((label for k,label in [('EnableScenario','Szenario'),('EnableCampaign','Kampagne'),
              ('CreativeMode','Kreativmodus')] if one(setup,k,0)), 'Sandkasten')
@@ -513,7 +508,7 @@ def render_catalog(rows, groups, maps, stage, updated_at, total_playtime, profil
         d=defaultdict(list)
         for k,v in setup:
             d['/'.join(k)].append(v)
-        return '<dl>'+''.join(f'<div><dt>{esc(k)}</dt><dd>{esc(show_values(v))}</dd></div>' for k,v in d.items())+'</dl>'
+        return '<dl>'+''.join(game_labels.row('anno1800', k.split('/')[0], v, k) for k,v in d.items())+'</dl>'
     def preset_details():
         chunks=[]
         played={one(k,'GameSeed') for k,_ in groups}
@@ -557,17 +552,13 @@ def render_catalog(rows, groups, maps, stage, updated_at, total_playtime, profil
         variants=Counter(groupset(r) for r in rs)
         third=get(k,'ThirdParties')
         traders=[f'{PARTIES.get(p, f"ID {p}")} ({("0","1","2")[d] if d in (0,1,2) else d})' for p,d in zip(third[::2],third[1::2])]
-        def label(key,lookup): return decode(k,key,lookup)
-        values = [
-            label('SetupMapType', MAPTYPES), label('SetupStartSession', SIZES),
-            label('SetupStartSessionIslandSize', SIZES), label('SetupStartSessionIslandDifficulty', DIFF),
-            label('SetupFertility', AMOUNTS), label('SetupRawMaterial', AMOUNTS),
-            show_values(get(k, 'SecondParties')), show_values(traders),
-            show_values([DLC.get(n, f'ID {n}') for n in get(k, 'ActiveDLCs')]),
-        ]
+        values = [*(game_labels.value('anno1800', key, get(k, key)) for key in MAP_SETTING_KEYS),
+                  show_values(get(k, 'SecondParties')), show_values(traders),
+                  show_values([DLC.get(n, f'ID {n}') for n in get(k, 'ActiveDLCs')])]
         times = time_values(rs, seed_bounds[seed], updated_at.tzinfo)
-        table = ''.join(f'<div><small>{esc(h)}</small>{esc(v)}</div>'
-                        for h,v in zip(GAME_SETTINGS, values, strict=True))
+        table = ''.join(game_labels.row('anno1800', key, get(k, key)) for key in MAP_SETTING_KEYS)
+        table += ''.join(f'<div><small>{esc(h)}</small><span data-i18n-ignore>{esc(v)}</span></div>'
+                         for h,v in zip(GAME_SETTINGS[6:], values[6:], strict=True))
         campaign_statistics = [statistics[key] for key in sorted({f"{seed}:{r['campaign_id']}" for r in rs})
                                if statistics and key in statistics]
         raw=''.join(f'<details><summary>Einstellungen · {n} Datei(en)</summary>{details(v)}</details>' for v,n in variants.most_common())
@@ -579,7 +570,7 @@ def render_catalog(rows, groups, maps, stage, updated_at, total_playtime, profil
                                  sort_values, campaign_statistics, len(rs),
                                  f'<p class="source">{esc(source)}</p>',
                                  ''.join(pics), f'<div class="settings">{table}</div>{raw}',
-                                 describe_options(zip(GAME_SETTINGS[:6], values[:6], strict=True))))
+                                 game_labels.description('anno1800', ((key, get(k, key)) for key in MAP_SETTING_KEYS))))
         excel_rows.append({'identity':[seed, i, mode(k)], 'links':links,
                            'settings':[len(rs), '\n'.join(profiles), *values, source, totals['campaigns'],
                                        totals['play_ms']/86400000 if totals['play_ms'] is not None else None],

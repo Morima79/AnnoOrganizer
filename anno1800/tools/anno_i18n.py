@@ -32,10 +32,11 @@ def script_json(value):
 class Messages:
     def __init__(self, resources):
         self.de = resources['de']
-        self.exact = {value: key for key, value in self.de.items() if '{' not in value}
+        # Context-specific game labels must be bound explicitly by their exporter.
+        self.exact = {value: key for key, value in self.de.items() if '{' not in value and not key.startswith('gameSetting.')}
         self.patterns = []
         for key, value in self.de.items():
-            if '{' not in value:
+            if '{' not in value or key.startswith('gameSetting.'):
                 continue
             parts = []
             for literal, field, _, _ in Formatter().parse(value):

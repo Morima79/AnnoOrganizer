@@ -1,0 +1,1969 @@
+{
+  "version": 1,
+  "verified_on": "2026-11-24",
+  "games": {
+    "anno117": {
+      "SetupConstructionCostRefund": {
+        "label": "gameSetting.anno117.SetupConstructionCostRefund.label",
+        "label_id": "-6913060369312292900",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno117.SetupConstructionCostRefund.value.0",
+            "enum": "Full",
+            "text_id": "-6909101567763114248"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupConstructionCostRefund.value.1",
+            "enum": "Half",
+            "text_id": "-6914927902694820268"
+          },
+          "2": {
+            "key": "gameSetting.anno117.SetupConstructionCostRefund.value.2",
+            "enum": "None",
+            "text_id": "-6908768463495000480"
+          },
+          "3": {
+            "key": "gameSetting.anno117.SetupConstructionCostRefund.value.3",
+            "enum": "PayCredits",
+            "text_id": "-6910638177284356908"
+          }
+        },
+        "dataset": "DCConstructionCostRefund"
+      },
+      "SetupContinentalIslandAllowRivalSettling": {
+        "label": "gameSetting.anno117.SetupContinentalIslandAllowRivalSettling.label",
+        "label_id": "-6907956943574714105",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno117.SetupContinentalIslandAllowRivalSettling.value.0",
+            "enum": "No",
+            "text_id": "-6900693295097381426"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupContinentalIslandAllowRivalSettling.value.1",
+            "enum": "Yes",
+            "text_id": "-6917335913921979170"
+          }
+        },
+        "dataset": "DCContinentalIslandAllowRivalSettling"
+      },
+      "SetupContinentalIslandStart": {
+        "label": "gameSetting.anno117.SetupContinentalIslandStart.label",
+        "label_id": "-6903983765087134124",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno117.SetupContinentalIslandStart.value.0",
+            "enum": "Regular",
+            "text_id": "-6914071006992001660"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupContinentalIslandStart.value.1",
+            "enum": "ContinentalLatium",
+            "text_id": "-6899975162447025295"
+          }
+        },
+        "dataset": "DCContinentalIslandStart"
+      },
+      "SetupContinetnalIslandSettlementCosts": {
+        "label": "gameSetting.anno117.SetupContinetnalIslandSettlementCosts.label",
+        "label_id": "-6903385812166152505",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno117.SetupContinetnalIslandSettlementCosts.value.0",
+            "enum": "Normal",
+            "text_id": "-6908035157983223888"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupContinetnalIslandSettlementCosts.value.1",
+            "enum": "Free",
+            "text_id": "-6908768463495000480"
+          }
+        },
+        "dataset": "DCContinentalIslandSettlementCosts"
+      },
+      "SetupContractCooldown": {
+        "label": "gameSetting.anno117.SetupContractCooldown.label",
+        "label_id": "-6901088982390486758",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno117.SetupContractCooldown.value.0",
+            "enum": "Often",
+            "text_id": "-6899609745857745345"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupContractCooldown.value.1",
+            "enum": "Normal",
+            "text_id": "-6908035157983223888"
+          },
+          "2": {
+            "key": "gameSetting.anno117.SetupContractCooldown.value.2",
+            "enum": "Rare",
+            "text_id": "-6910992336132891655"
+          }
+        },
+        "dataset": "DCContractCooldown"
+      },
+      "SetupDistributionWorkforce": {
+        "label": "gameSetting.anno117.SetupDistributionWorkforce.label",
+        "label_id": "-6907714268470040710",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno117.SetupDistributionWorkforce.value.0",
+            "enum": "Plenty",
+            "text_id": "-6915727978684090673"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupDistributionWorkforce.value.1",
+            "enum": "Medium",
+            "text_id": "-6914984016984180941"
+          },
+          "2": {
+            "key": "gameSetting.anno117.SetupDistributionWorkforce.value.2",
+            "enum": "Spare",
+            "text_id": "-6914723201588256929"
+          }
+        },
+        "dataset": "DCDistributionWorkforce"
+      },
+      "SetupFertility": {
+        "label": "gameSetting.anno117.SetupFertility.label",
+        "label_id": "-6907770522750495863",
+        "label_origin": "game",
+        "values": {
+          "2": {
+            "key": "gameSetting.anno117.SetupFertility.value.2",
+            "enum": "High",
+            "text_id": "-6911117477677224041"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupFertility.value.1",
+            "enum": "Medium",
+            "text_id": "-6913123805385023712"
+          },
+          "0": {
+            "key": "gameSetting.anno117.SetupFertility.value.0",
+            "enum": "Low",
+            "text_id": "-6911031606833682159"
+          }
+        },
+        "dataset": "DCFertilities"
+      },
+      "SetupInactiveCosts": {
+        "label": "gameSetting.anno117.SetupInactiveCosts.label",
+        "label_id": "-6900307686468356901",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno117.SetupInactiveCosts.value.0",
+            "enum": "Off",
+            "text_id": "-6915598794844193522"
+          },
+          "2": {
+            "key": "gameSetting.anno117.SetupInactiveCosts.value.2",
+            "enum": "Half",
+            "text_id": "-6909993647005514771"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupInactiveCosts.value.1",
+            "enum": "On",
+            "text_id": "-6909043714352526863"
+          }
+        },
+        "dataset": "DCInactiveCosts"
+      },
+      "SetupIncidentPrevention": {
+        "label": "gameSetting.anno117.SetupIncidentPrevention.label",
+        "label_id": "-6911397052920011860",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno117.SetupIncidentPrevention.value.0",
+            "enum": "Easy",
+            "text_id": "-6906869361738324003"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupIncidentPrevention.value.1",
+            "enum": "Medium",
+            "text_id": "-6903275756866418531"
+          },
+          "2": {
+            "key": "gameSetting.anno117.SetupIncidentPrevention.value.2",
+            "enum": "NoPrevention",
+            "text_id": "-6900258297146550189"
+          }
+        },
+        "dataset": "DCIncidentPrevention"
+      },
+      "SetupIncidents": {
+        "label": "gameSetting.anno117.SetupIncidents.label",
+        "label_id": "-6903431344008070124",
+        "label_origin": "game",
+        "values": {
+          "1": {
+            "key": "gameSetting.anno117.SetupIncidents.value.1",
+            "enum": "Easy",
+            "text_id": "-6909853334638560479"
+          },
+          "2": {
+            "key": "gameSetting.anno117.SetupIncidents.value.2",
+            "enum": "Medium",
+            "text_id": "-6908067736684623116"
+          },
+          "3": {
+            "key": "gameSetting.anno117.SetupIncidents.value.3",
+            "enum": "Hard",
+            "text_id": "-6905076906066469589"
+          }
+        },
+        "dataset": "DCIncidents"
+      },
+      "SetupIncludeShipsForAnnihilation": {
+        "label": "gameSetting.anno117.SetupIncludeShipsForAnnihilation.label",
+        "label_id": "-6904065641311706315",
+        "label_origin": "game",
+        "values": {
+          "1": {
+            "key": "gameSetting.anno117.SetupIncludeShipsForAnnihilation.value.1",
+            "enum": "On",
+            "text_id": "-6915776447330948653"
+          },
+          "0": {
+            "key": "gameSetting.anno117.SetupIncludeShipsForAnnihilation.value.0",
+            "enum": "Off",
+            "text_id": "-6909464763685856596"
+          }
+        },
+        "dataset": "DCIncludeShipsForAnnihilation"
+      },
+      "SetupMaintenance": {
+        "label": "gameSetting.anno117.SetupMaintenance.label",
+        "label_id": "-6905861570802831678",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno117.SetupMaintenance.value.0",
+            "enum": "Low",
+            "text_id": "-6905287768011296038"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupMaintenance.value.1",
+            "enum": "Medium",
+            "text_id": "-6902671709770946476"
+          },
+          "2": {
+            "key": "gameSetting.anno117.SetupMaintenance.value.2",
+            "enum": "High",
+            "text_id": "-6900791646851570657"
+          }
+        },
+        "dataset": "DCMaintenance"
+      },
+      "SetupMetaInventoryAccess": {
+        "label": "gameSetting.anno117.SetupMetaInventoryAccess.label",
+        "label_id": "-6900716034537738772",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno117.SetupMetaInventoryAccess.value.0",
+            "enum": "Allow",
+            "text_id": "-6917335913921979170"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupMetaInventoryAccess.value.1",
+            "enum": "Deny",
+            "text_id": "-6900693295097381426"
+          }
+        },
+        "dataset": "DCMetaInventoryAccess"
+      },
+      "SetupMoneyBailout": {
+        "label": "gameSetting.anno117.SetupMoneyBailout.label",
+        "label_id": "-6903832568549775912",
+        "label_origin": "game",
+        "values": {
+          "2": {
+            "key": "gameSetting.anno117.SetupMoneyBailout.value.2",
+            "enum": "Always",
+            "text_id": "-6906510841970699297"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupMoneyBailout.value.1",
+            "enum": "Once",
+            "text_id": "-6907827262524699526"
+          },
+          "0": {
+            "key": "gameSetting.anno117.SetupMoneyBailout.value.0",
+            "enum": "Off",
+            "text_id": "-6904286788740289721"
+          }
+        },
+        "dataset": "DCMoneyBailout"
+      },
+      "SetupNeedConsumption": {
+        "label": "gameSetting.anno117.SetupNeedConsumption.label",
+        "label_id": "-6913906333329408040",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno117.SetupNeedConsumption.value.0",
+            "enum": "Low",
+            "text_id": "-6907364122241144641"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupNeedConsumption.value.1",
+            "enum": "Medium",
+            "text_id": "-6908673199729784694"
+          },
+          "2": {
+            "key": "gameSetting.anno117.SetupNeedConsumption.value.2",
+            "enum": "High",
+            "text_id": "-6899682967621127724"
+          },
+          "3": {
+            "key": "gameSetting.anno117.SetupNeedConsumption.value.3",
+            "enum": "VeryHigh",
+            "text_id": "-6899649259181839462"
+          }
+        },
+        "dataset": "DCNeedConsumption"
+      },
+      "SetupNegativeCityStatusAttributes": {
+        "label": "gameSetting.anno117.SetupNegativeCityStatusAttributes.label",
+        "label_id": "-6901709881869742646",
+        "label_origin": "game",
+        "values": {
+          "3": {
+            "key": "gameSetting.anno117.SetupNegativeCityStatusAttributes.value.3",
+            "enum": "VeryEasy",
+            "text_id": "-6907596495886040243"
+          },
+          "0": {
+            "key": "gameSetting.anno117.SetupNegativeCityStatusAttributes.value.0",
+            "enum": "Easy",
+            "text_id": "-6911547953491667251"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupNegativeCityStatusAttributes.value.1",
+            "enum": "Medium",
+            "text_id": "-6912400163690823739"
+          },
+          "2": {
+            "key": "gameSetting.anno117.SetupNegativeCityStatusAttributes.value.2",
+            "enum": "Hard",
+            "text_id": "-6901892241089528163"
+          }
+        },
+        "dataset": "DCNegativeCityStatusAttributes"
+      },
+      "SetupRawMaterial": {
+        "label": "gameSetting.anno117.SetupRawMaterial.label",
+        "label_id": "-6909762061332533889",
+        "label_origin": "game",
+        "values": {
+          "2": {
+            "key": "gameSetting.anno117.SetupRawMaterial.value.2",
+            "enum": "High",
+            "text_id": "-6911117477677224041"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupRawMaterial.value.1",
+            "enum": "Medium",
+            "text_id": "-6913123805385023712"
+          },
+          "0": {
+            "key": "gameSetting.anno117.SetupRawMaterial.value.0",
+            "enum": "Low",
+            "text_id": "-6911031606833682159"
+          }
+        },
+        "dataset": "DCRawMaterials"
+      },
+      "SetupRelocateBuildings": {
+        "label": "gameSetting.anno117.SetupRelocateBuildings.label",
+        "label_id": "-6914192609293425451",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno117.SetupRelocateBuildings.value.0",
+            "enum": "On",
+            "text_id": "-6913495692998822066"
+          },
+          "2": {
+            "key": "gameSetting.anno117.SetupRelocateBuildings.value.2",
+            "enum": "PayCredits",
+            "text_id": "-6903894405470627395"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupRelocateBuildings.value.1",
+            "enum": "Off",
+            "text_id": "-6916934666661324266"
+          }
+        },
+        "dataset": "DCRelocateBuildings"
+      },
+      "SetupResearchSpeed": {
+        "label": "gameSetting.anno117.SetupResearchSpeed.label",
+        "label_id": "-6909839372930668725",
+        "label_origin": "game",
+        "values": {
+          "5": {
+            "key": "gameSetting.anno117.SetupResearchSpeed.value.5",
+            "enum": "VeryFast",
+            "text_id": "-6912013046609073575"
+          },
+          "6": {
+            "key": "gameSetting.anno117.SetupResearchSpeed.value.6",
+            "enum": "Fast",
+            "text_id": "-6902279140254165489"
+          },
+          "7": {
+            "key": "gameSetting.anno117.SetupResearchSpeed.value.7",
+            "enum": "Medium",
+            "text_id": "-6908569666580838745"
+          },
+          "8": {
+            "key": "gameSetting.anno117.SetupResearchSpeed.value.8",
+            "enum": "Slow",
+            "text_id": "-6905932636801796682"
+          },
+          "9": {
+            "key": "gameSetting.anno117.SetupResearchSpeed.value.9",
+            "enum": "VerySlow",
+            "text_id": "-6916350050175646715"
+          }
+        },
+        "dataset": "DCResearchSpeed"
+      },
+      "SetupRevealedMap": {
+        "label": "gameSetting.anno117.SetupRevealedMap.label",
+        "label_id": "-6904518331408637804",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno117.SetupRevealedMap.value.0",
+            "enum": "On",
+            "text_id": "-6900512787955276010"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupRevealedMap.value.1",
+            "enum": "Off",
+            "text_id": "-6899829864585606801"
+          }
+        },
+        "dataset": "DCRevealedMap"
+      },
+      "SetupSettlementCost": {
+        "label": "gameSetting.anno117.SetupSettlementCost.label",
+        "label_id": "-6906064116538422427",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno117.SetupSettlementCost.value.0",
+            "enum": "Low",
+            "text_id": "-6917326542953858846"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupSettlementCost.value.1",
+            "enum": "Medium",
+            "text_id": "-6905897081876697687"
+          },
+          "2": {
+            "key": "gameSetting.anno117.SetupSettlementCost.value.2",
+            "enum": "High",
+            "text_id": "-6909469590179106864"
+          }
+        },
+        "dataset": "DCSettlementCost"
+      },
+      "SetupStartCredits": {
+        "label": "gameSetting.anno117.SetupStartCredits.label",
+        "label_id": "-6911396248521711000",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno117.SetupStartCredits.value.0",
+            "enum": "Plenty",
+            "text_id": "-6906625681895647354"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupStartCredits.value.1",
+            "enum": "Medium",
+            "text_id": "-6906354706985943811"
+          },
+          "2": {
+            "key": "gameSetting.anno117.SetupStartCredits.value.2",
+            "enum": "Spare",
+            "text_id": "-6910933618503481314"
+          }
+        },
+        "dataset": "DCStartCredits"
+      },
+      "SetupStartForestSize": {
+        "label": "gameSetting.anno117.SetupStartForestSize.label",
+        "label_id": "-6910912965567031226",
+        "label_origin": "game",
+        "values": {
+          "2": {
+            "key": "gameSetting.anno117.SetupStartForestSize.value.2",
+            "enum": "Large",
+            "text_id": "-6911117477677224041"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupStartForestSize.value.1",
+            "enum": "Medium",
+            "text_id": "-6913123805385023712"
+          },
+          "0": {
+            "key": "gameSetting.anno117.SetupStartForestSize.value.0",
+            "enum": "Small",
+            "text_id": "-6911031606833682159"
+          }
+        },
+        "dataset": "DCStartForestSize"
+      },
+      "SetupStartGoods": {
+        "label": "gameSetting.anno117.SetupStartGoods.label",
+        "label_id": "-6906421074954192343",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno117.SetupStartGoods.value.0",
+            "enum": "Plenty",
+            "text_id": "-6915136490592260249"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupStartGoods.value.1",
+            "enum": "Standard",
+            "text_id": "-6914767606189573748"
+          },
+          "2": {
+            "key": "gameSetting.anno117.SetupStartGoods.value.2",
+            "enum": "Little",
+            "text_id": "-6908808956147399078"
+          }
+        },
+        "dataset": "DCStartGoods"
+      },
+      "SetupStartSessionIslandSize": {
+        "label": "gameSetting.anno117.SetupStartSessionIslandSize.label",
+        "label_id": "-6916619436071703707",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno117.SetupStartSessionIslandSize.value.0",
+            "enum": "Large",
+            "text_id": "-6903736113450607875"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupStartSessionIslandSize.value.1",
+            "enum": "Medium",
+            "text_id": "-6913829917198285039"
+          },
+          "2": {
+            "key": "gameSetting.anno117.SetupStartSessionIslandSize.value.2",
+            "enum": "Small",
+            "text_id": "-6912877822416649390"
+          }
+        },
+        "dataset": "DCStartSessionIslandSize"
+      },
+      "SetupStartShips": {
+        "label": "gameSetting.anno117.SetupStartShips.label",
+        "label_id": "-6906472910998909454",
+        "label_origin": "game",
+        "values": {
+          "3": {
+            "key": "gameSetting.anno117.SetupStartShips.value.3",
+            "enum": "WarFleet",
+            "text_id": "-6904640615130329242"
+          },
+          "2": {
+            "key": "gameSetting.anno117.SetupStartShips.value.2",
+            "enum": "TradeFleet",
+            "text_id": "-6906057893919623816"
+          },
+          "4": {
+            "key": "gameSetting.anno117.SetupStartShips.value.4",
+            "enum": "Escort",
+            "text_id": "-6917214566592557456"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupStartShips.value.1",
+            "enum": "OneShip",
+            "text_id": "-6910808432323291396"
+          },
+          "0": {
+            "key": "gameSetting.anno117.SetupStartShips.value.0",
+            "enum": "None",
+            "text_id": "-6902533262803718203"
+          }
+        },
+        "dataset": "DCStartShips"
+      },
+      "SetupStartWithKontor": {
+        "label": "gameSetting.anno117.SetupStartWithKontor.label",
+        "label_id": "-6915994655500379295",
+        "label_origin": "game",
+        "values": {
+          "1": {
+            "key": "gameSetting.anno117.SetupStartWithKontor.value.1",
+            "enum": "Standard",
+            "text_id": "-6905528898907553000"
+          },
+          "0": {
+            "key": "gameSetting.anno117.SetupStartWithKontor.value.0",
+            "enum": "Off",
+            "text_id": "-6912361135584929652"
+          }
+        },
+        "dataset": "DCStartWithKontor"
+      },
+      "SetupTaxes": {
+        "label": "gameSetting.anno117.SetupTaxes.label",
+        "label_id": "-6917342770529799362",
+        "label_origin": "game",
+        "values": {
+          "2": {
+            "key": "gameSetting.anno117.SetupTaxes.value.2",
+            "enum": "Spare",
+            "text_id": "-6917326542953858846"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupTaxes.value.1",
+            "enum": "Medium",
+            "text_id": "-6905897081876697687"
+          },
+          "0": {
+            "key": "gameSetting.anno117.SetupTaxes.value.0",
+            "enum": "Plenty",
+            "text_id": "-6909469590179106864"
+          }
+        },
+        "dataset": "DCTaxes"
+      },
+      "SetupTraderPassiveTradeBudget": {
+        "label": "gameSetting.anno117.SetupTraderPassiveTradeBudget.label",
+        "label_id": "-6913260972591861850",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno117.SetupTraderPassiveTradeBudget.value.0",
+            "enum": "VeryHigh",
+            "text_id": "-6908989544516082326"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupTraderPassiveTradeBudget.value.1",
+            "enum": "Normal",
+            "text_id": "-6907238690530277469"
+          }
+        },
+        "dataset": "DCTraderPassiveTradeBudget"
+      },
+      "SetupTraderPassiveTradeStock": {
+        "label": "gameSetting.anno117.SetupTraderPassiveTradeStock.label",
+        "label_id": "-6904171754482483416",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno117.SetupTraderPassiveTradeStock.value.0",
+            "enum": "AllGoods",
+            "text_id": "-6906871073942765553"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupTraderPassiveTradeStock.value.1",
+            "enum": "Normal",
+            "text_id": "-6917083825927095249"
+          }
+        },
+        "dataset": "DCTraderPassiveTradeStock"
+      },
+      "SetupTraderRefillRate": {
+        "label": "gameSetting.anno117.SetupTraderRefillRate.label",
+        "label_id": "-6917191252996875094",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno117.SetupTraderRefillRate.value.0",
+            "enum": "Plenty",
+            "text_id": "-6905622970321862783"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupTraderRefillRate.value.1",
+            "enum": "Medium",
+            "text_id": "-6909645611784946116"
+          },
+          "2": {
+            "key": "gameSetting.anno117.SetupTraderRefillRate.value.2",
+            "enum": "Sparse",
+            "text_id": "-6908555934227883353"
+          }
+        },
+        "dataset": "DCTraderRefillRate"
+      },
+      "SetupTraderTraderPrices": {
+        "label": "gameSetting.anno117.SetupTraderTraderPrices.label",
+        "label_id": "-6912462109154752631",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno117.SetupTraderTraderPrices.value.0",
+            "enum": "Low",
+            "text_id": "-6903580987186577526"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupTraderTraderPrices.value.1",
+            "enum": "Normal",
+            "text_id": "-6909774196840006637"
+          }
+        },
+        "dataset": "DCTraderTradePrices"
+      },
+      "SetupVolcanoEruptionActive": {
+        "label": "gameSetting.anno117.SetupVolcanoEruptionActive.label",
+        "label_id": "-6916426676957104037",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno117.SetupVolcanoEruptionActive.value.0",
+            "enum": "On",
+            "text_id": "-6914181690504344116"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupVolcanoEruptionActive.value.1",
+            "enum": "Off",
+            "text_id": "-6903947109913605851"
+          }
+        },
+        "dataset": "DCVolcanoEruptionActive"
+      },
+      "SetupVolcanoIncidents": {
+        "label": "gameSetting.anno117.SetupVolcanoIncidents.label",
+        "label_id": "-6904931594010130787",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno117.SetupVolcanoIncidents.value.0",
+            "enum": "Easy",
+            "text_id": "-6909853334638560479"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupVolcanoIncidents.value.1",
+            "enum": "Hard",
+            "text_id": "-6905076906066469589"
+          }
+        },
+        "dataset": "DCVolcanoIncidents"
+      },
+      "SetupVolcanoObsidianDrops": {
+        "label": "gameSetting.anno117.SetupVolcanoObsidianDrops.label",
+        "label_id": "-6914608519731204490",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno117.SetupVolcanoObsidianDrops.value.0",
+            "enum": "Plenty",
+            "text_id": "-6911117477677224041"
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupVolcanoObsidianDrops.value.1",
+            "enum": "Medium",
+            "text_id": "-6913123805385023712"
+          },
+          "2": {
+            "key": "gameSetting.anno117.SetupVolcanoObsidianDrops.value.2",
+            "enum": "Off",
+            "text_id": "-6903947109913605851"
+          }
+        },
+        "dataset": "DCVolcanoObsidianDrops"
+      },
+      "SetupMapTemplateType": {
+        "label": "gameSetting.anno117.SetupMapTemplateType.label",
+        "label_id": "-6912721893088519379",
+        "label_origin": "game",
+        "values": {
+          "43181": {
+            "key": "gameSetting.anno117.SetupMapTemplateType.value.43181",
+            "enum": "MapType Random",
+            "text_id": "-6901503813460050950"
+          },
+          "43182": {
+            "key": "gameSetting.anno117.SetupMapTemplateType.value.43182",
+            "enum": "MapType Default",
+            "text_id": "-6907203164013497898"
+          },
+          "43183": {
+            "key": "gameSetting.anno117.SetupMapTemplateType.value.43183",
+            "enum": "MapType Donut",
+            "text_id": "-6899989503573904000"
+          },
+          "43184": {
+            "key": "gameSetting.anno117.SetupMapTemplateType.value.43184",
+            "enum": "MapType Rift",
+            "text_id": "-6910367713005134244"
+          },
+          "89065": {
+            "key": "gameSetting.anno117.SetupMapTemplateType.value.89065",
+            "enum": "MapType Corners",
+            "text_id": "-6909400035995926542"
+          },
+          "90702": {
+            "key": "gameSetting.anno117.SetupMapTemplateType.value.90702",
+            "enum": "MapType Chain",
+            "text_id": "-6906255909446166918"
+          }
+        },
+        "dataset": "MapTemplateType asset GUID"
+      },
+      "DefaultStartProvince": {
+        "label": "gameSetting.anno117.DefaultStartProvince.label",
+        "label_id": null,
+        "label_origin": "tool",
+        "values": {}
+      },
+      "ActiveDLCs": {
+        "label": "gameSetting.anno117.ActiveDLCs.label",
+        "label_id": null,
+        "label_origin": "tool",
+        "values": {}
+      },
+      "SetupStartSessionIslandDifficulty": {
+        "label": "gameSetting.anno117.SetupStartSessionIslandDifficulty.label",
+        "label_id": null,
+        "label_origin": "tool",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno117.SetupStartSessionIslandDifficulty.value.0",
+            "enum": "Normal",
+            "text_id": null
+          },
+          "1": {
+            "key": "gameSetting.anno117.SetupStartSessionIslandDifficulty.value.1",
+            "enum": "Hard",
+            "text_id": null
+          }
+        },
+        "dataset": "IslandDifficulty"
+      },
+      "GeneratedWorldSize": {
+        "label": "gameSetting.anno117.GeneratedWorldSize.label",
+        "label_id": null,
+        "label_origin": "tool",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno117.GeneratedWorldSize.value.0",
+            "enum": "0",
+            "text_id": null
+          },
+          "1": {
+            "key": "gameSetting.anno117.GeneratedWorldSize.value.1",
+            "enum": "1",
+            "text_id": null
+          },
+          "2": {
+            "key": "gameSetting.anno117.GeneratedWorldSize.value.2",
+            "enum": "2",
+            "text_id": null
+          }
+        }
+      },
+      "GeneratedIslandSize": {
+        "label": "gameSetting.anno117.GeneratedIslandSize.label",
+        "label_id": null,
+        "label_origin": "tool",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno117.GeneratedIslandSize.value.0",
+            "enum": "0",
+            "text_id": null
+          },
+          "1": {
+            "key": "gameSetting.anno117.GeneratedIslandSize.value.1",
+            "enum": "1",
+            "text_id": null
+          },
+          "2": {
+            "key": "gameSetting.anno117.GeneratedIslandSize.value.2",
+            "enum": "2",
+            "text_id": null
+          }
+        }
+      }
+    },
+    "anno1800": {
+      "SetupConstructionCostRefund": {
+        "label": "gameSetting.anno1800.SetupConstructionCostRefund.label",
+        "label_id": "11016",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1800.SetupConstructionCostRefund.value.0",
+            "enum": "Full",
+            "text_id": "11037"
+          },
+          "1": {
+            "key": "gameSetting.anno1800.SetupConstructionCostRefund.value.1",
+            "enum": "Half",
+            "text_id": "11038"
+          },
+          "2": {
+            "key": "gameSetting.anno1800.SetupConstructionCostRefund.value.2",
+            "enum": "None",
+            "text_id": "11039"
+          },
+          "3": {
+            "key": "gameSetting.anno1800.SetupConstructionCostRefund.value.3",
+            "enum": "PayCredits",
+            "text_id": "11040"
+          }
+        },
+        "dataset": "DCConstructionCostRefund"
+      },
+      "SetupDistributionWorkforce": {
+        "label": "gameSetting.anno1800.SetupDistributionWorkforce.label",
+        "label_id": "11017",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1800.SetupDistributionWorkforce.value.0",
+            "enum": "Plenty",
+            "text_id": "11036"
+          },
+          "1": {
+            "key": "gameSetting.anno1800.SetupDistributionWorkforce.value.1",
+            "enum": "Medium",
+            "text_id": "11035"
+          },
+          "2": {
+            "key": "gameSetting.anno1800.SetupDistributionWorkforce.value.2",
+            "enum": "Spare",
+            "text_id": "11034"
+          }
+        },
+        "dataset": "DCDistributionWorkforce"
+      },
+      "SetupFertility": {
+        "label": "gameSetting.anno1800.SetupFertility.label",
+        "label_id": "11061",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1800.SetupFertility.value.0",
+            "enum": "Low",
+            "text_id": "11034"
+          },
+          "1": {
+            "key": "gameSetting.anno1800.SetupFertility.value.1",
+            "enum": "Medium",
+            "text_id": "11035"
+          },
+          "2": {
+            "key": "gameSetting.anno1800.SetupFertility.value.2",
+            "enum": "High",
+            "text_id": "11036"
+          }
+        },
+        "dataset": "ResourceAmount"
+      },
+      "SetupHostileTakeover": {
+        "label": "gameSetting.anno1800.SetupHostileTakeover.label",
+        "label_id": "11056",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1800.SetupHostileTakeover.value.0",
+            "enum": "On",
+            "text_id": "11054"
+          },
+          "1": {
+            "key": "gameSetting.anno1800.SetupHostileTakeover.value.1",
+            "enum": "Off",
+            "text_id": "11055"
+          }
+        },
+        "dataset": "DCHostileTakeover"
+      },
+      "SetupInactiveCosts": {
+        "label": "gameSetting.anno1800.SetupInactiveCosts.label",
+        "label_id": "11018",
+        "label_origin": "game",
+        "values": {
+          "1": {
+            "key": "gameSetting.anno1800.SetupInactiveCosts.value.1",
+            "enum": "On",
+            "text_id": "11054"
+          },
+          "0": {
+            "key": "gameSetting.anno1800.SetupInactiveCosts.value.0",
+            "enum": "Off",
+            "text_id": "11055"
+          }
+        },
+        "dataset": "DCInactiveCosts"
+      },
+      "SetupIncidents": {
+        "label": "gameSetting.anno1800.SetupIncidents.label",
+        "label_id": "11019",
+        "label_origin": "game",
+        "values": {
+          "1": {
+            "key": "gameSetting.anno1800.SetupIncidents.value.1",
+            "enum": "Easy",
+            "text_id": "11031"
+          },
+          "2": {
+            "key": "gameSetting.anno1800.SetupIncidents.value.2",
+            "enum": "Medium",
+            "text_id": "11032"
+          },
+          "3": {
+            "key": "gameSetting.anno1800.SetupIncidents.value.3",
+            "enum": "Hard",
+            "text_id": "11033"
+          }
+        },
+        "dataset": "DCIncidents"
+      },
+      "SetupLossCondition": {
+        "label": "gameSetting.anno1800.SetupLossCondition.label",
+        "label_id": "11020",
+        "label_origin": "game",
+        "values": {},
+        "dataset": "DCLossCondition"
+      },
+      "SetupMapType": {
+        "label": "gameSetting.anno1800.SetupMapType.label",
+        "label_id": "17077",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1800.SetupMapType.value.0",
+            "enum": "Random",
+            "text_id": "16102"
+          },
+          "1": {
+            "key": "gameSetting.anno1800.SetupMapType.value.1",
+            "enum": "Archipelago",
+            "text_id": "17079"
+          },
+          "2": {
+            "key": "gameSetting.anno1800.SetupMapType.value.2",
+            "enum": "Atoll",
+            "text_id": "17080"
+          },
+          "3": {
+            "key": "gameSetting.anno1800.SetupMapType.value.3",
+            "enum": "Arc",
+            "text_id": "17081"
+          },
+          "4": {
+            "key": "gameSetting.anno1800.SetupMapType.value.4",
+            "enum": "Corners",
+            "text_id": "17082"
+          },
+          "5": {
+            "key": "gameSetting.anno1800.SetupMapType.value.5",
+            "enum": "Snowflake",
+            "text_id": "17083"
+          }
+        },
+        "dataset": "MapTemplateType"
+      },
+      "SetupOptionalQuestFrequency": {
+        "label": "gameSetting.anno1800.SetupOptionalQuestFrequency.label",
+        "label_id": "11021",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1800.SetupOptionalQuestFrequency.value.0",
+            "enum": "Often",
+            "text_id": "11045"
+          },
+          "1": {
+            "key": "gameSetting.anno1800.SetupOptionalQuestFrequency.value.1",
+            "enum": "Normal",
+            "text_id": "11046"
+          },
+          "2": {
+            "key": "gameSetting.anno1800.SetupOptionalQuestFrequency.value.2",
+            "enum": "Rare",
+            "text_id": "11047"
+          }
+        },
+        "dataset": "DCOptionalQuestFrequency"
+      },
+      "SetupOptionalQuestRewards": {
+        "label": "gameSetting.anno1800.SetupOptionalQuestRewards.label",
+        "label_id": "11022",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1800.SetupOptionalQuestRewards.value.0",
+            "enum": "Plenty",
+            "text_id": "11036"
+          },
+          "1": {
+            "key": "gameSetting.anno1800.SetupOptionalQuestRewards.value.1",
+            "enum": "Medium",
+            "text_id": "11035"
+          },
+          "2": {
+            "key": "gameSetting.anno1800.SetupOptionalQuestRewards.value.2",
+            "enum": "Spare",
+            "text_id": "11034"
+          },
+          "3": {
+            "key": "gameSetting.anno1800.SetupOptionalQuestRewards.value.3",
+            "enum": "PennyPinching",
+            "text_id": "11042"
+          }
+        },
+        "dataset": "DCOptionalQuestRewards"
+      },
+      "SetupOptionalQuestTimeout": {
+        "label": "gameSetting.anno1800.SetupOptionalQuestTimeout.label",
+        "label_id": "11023",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1800.SetupOptionalQuestTimeout.value.0",
+            "enum": "NotLimited",
+            "text_id": "11048"
+          },
+          "1": {
+            "key": "gameSetting.anno1800.SetupOptionalQuestTimeout.value.1",
+            "enum": "Long",
+            "text_id": "11049"
+          },
+          "2": {
+            "key": "gameSetting.anno1800.SetupOptionalQuestTimeout.value.2",
+            "enum": "Medium",
+            "text_id": "11050"
+          },
+          "3": {
+            "key": "gameSetting.anno1800.SetupOptionalQuestTimeout.value.3",
+            "enum": "Short",
+            "text_id": "11051"
+          }
+        },
+        "dataset": "DCOptionalQuestTimeout"
+      },
+      "SetupRawMaterial": {
+        "label": "gameSetting.anno1800.SetupRawMaterial.label",
+        "label_id": "11062",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1800.SetupRawMaterial.value.0",
+            "enum": "Low",
+            "text_id": "11034"
+          },
+          "1": {
+            "key": "gameSetting.anno1800.SetupRawMaterial.value.1",
+            "enum": "Medium",
+            "text_id": "11035"
+          },
+          "2": {
+            "key": "gameSetting.anno1800.SetupRawMaterial.value.2",
+            "enum": "High",
+            "text_id": "11036"
+          }
+        },
+        "dataset": "ResourceAmount"
+      },
+      "SetupRelocateBuildings": {
+        "label": "gameSetting.anno1800.SetupRelocateBuildings.label",
+        "label_id": "11024",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1800.SetupRelocateBuildings.value.0",
+            "enum": "On",
+            "text_id": "11054"
+          },
+          "2": {
+            "key": "gameSetting.anno1800.SetupRelocateBuildings.value.2",
+            "enum": "PayCredits",
+            "text_id": "11043"
+          },
+          "1": {
+            "key": "gameSetting.anno1800.SetupRelocateBuildings.value.1",
+            "enum": "Off",
+            "text_id": "11055"
+          }
+        },
+        "dataset": "DCRelocateBuildings"
+      },
+      "SetupRevealedMap": {
+        "label": "gameSetting.anno1800.SetupRevealedMap.label",
+        "label_id": "11057",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1800.SetupRevealedMap.value.0",
+            "enum": "On",
+            "text_id": "11054"
+          },
+          "1": {
+            "key": "gameSetting.anno1800.SetupRevealedMap.value.1",
+            "enum": "Off",
+            "text_id": "11055"
+          }
+        },
+        "dataset": "DCRevealedMap"
+      },
+      "SetupRevenue": {
+        "label": "gameSetting.anno1800.SetupRevenue.label",
+        "label_id": "11025",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1800.SetupRevenue.value.0",
+            "enum": "Plenty",
+            "text_id": "16119"
+          },
+          "1": {
+            "key": "gameSetting.anno1800.SetupRevenue.value.1",
+            "enum": "Medium",
+            "text_id": "11035"
+          },
+          "2": {
+            "key": "gameSetting.anno1800.SetupRevenue.value.2",
+            "enum": "Spare",
+            "text_id": "16120"
+          }
+        },
+        "dataset": "DCRevenue"
+      },
+      "SetupStartCredits": {
+        "label": "gameSetting.anno1800.SetupStartCredits.label",
+        "label_id": "11026",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1800.SetupStartCredits.value.0",
+            "enum": "Plenty",
+            "text_id": "16121"
+          },
+          "1": {
+            "key": "gameSetting.anno1800.SetupStartCredits.value.1",
+            "enum": "Medium",
+            "text_id": "11035"
+          },
+          "2": {
+            "key": "gameSetting.anno1800.SetupStartCredits.value.2",
+            "enum": "Spare",
+            "text_id": "16122"
+          }
+        },
+        "dataset": "DCStartCredits"
+      },
+      "SetupStartSession": {
+        "label": "gameSetting.anno1800.SetupStartSession.label",
+        "label_id": "11058",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1800.SetupStartSession.value.0",
+            "enum": "Small",
+            "text_id": "11065"
+          },
+          "1": {
+            "key": "gameSetting.anno1800.SetupStartSession.value.1",
+            "enum": "Medium",
+            "text_id": "11064"
+          },
+          "2": {
+            "key": "gameSetting.anno1800.SetupStartSession.value.2",
+            "enum": "Large",
+            "text_id": "11063"
+          }
+        },
+        "dataset": "MapTemplateSize"
+      },
+      "SetupStartSessionIslandDifficulty": {
+        "label": "gameSetting.anno1800.SetupStartSessionIslandDifficulty.label",
+        "label_id": "11059",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1800.SetupStartSessionIslandDifficulty.value.0",
+            "enum": "Normal",
+            "text_id": "11066"
+          },
+          "1": {
+            "key": "gameSetting.anno1800.SetupStartSessionIslandDifficulty.value.1",
+            "enum": "Hard",
+            "text_id": "11067"
+          }
+        },
+        "dataset": "IslandDifficulty"
+      },
+      "SetupStartSessionIslandSize": {
+        "label": "gameSetting.anno1800.SetupStartSessionIslandSize.label",
+        "label_id": "11060",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1800.SetupStartSessionIslandSize.value.0",
+            "enum": "Small",
+            "text_id": "11071"
+          },
+          "1": {
+            "key": "gameSetting.anno1800.SetupStartSessionIslandSize.value.1",
+            "enum": "Medium",
+            "text_id": "11070"
+          },
+          "2": {
+            "key": "gameSetting.anno1800.SetupStartSessionIslandSize.value.2",
+            "enum": "Large",
+            "text_id": "11069"
+          }
+        },
+        "dataset": "IslandSize"
+      },
+      "SetupStartShips": {
+        "label": "gameSetting.anno1800.SetupStartShips.label",
+        "label_id": "11141",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1800.SetupStartShips.value.0",
+            "enum": "None",
+            "text_id": "11073"
+          },
+          "1": {
+            "key": "gameSetting.anno1800.SetupStartShips.value.1",
+            "enum": "OneShip",
+            "text_id": "11074"
+          },
+          "2": {
+            "key": "gameSetting.anno1800.SetupStartShips.value.2",
+            "enum": "TradeFleet",
+            "text_id": "11075"
+          },
+          "3": {
+            "key": "gameSetting.anno1800.SetupStartShips.value.3",
+            "enum": "WarFleet",
+            "text_id": "11076"
+          }
+        },
+        "dataset": "DCStartShips"
+      },
+      "SetupStartWithKontor": {
+        "label": "gameSetting.anno1800.SetupStartWithKontor.label",
+        "label_id": "11027",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1800.SetupStartWithKontor.value.0",
+            "enum": "Off",
+            "text_id": "11055"
+          },
+          "1": {
+            "key": "gameSetting.anno1800.SetupStartWithKontor.value.1",
+            "enum": "Standard",
+            "text_id": "11078"
+          },
+          "2": {
+            "key": "gameSetting.anno1800.SetupStartWithKontor.value.2",
+            "enum": "Full",
+            "text_id": "11079"
+          }
+        },
+        "dataset": "DCStartWithKontor"
+      },
+      "SetupTraderRefillRate": {
+        "label": "gameSetting.anno1800.SetupTraderRefillRate.label",
+        "label_id": "11028",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1800.SetupTraderRefillRate.value.0",
+            "enum": "Plenty",
+            "text_id": "11045"
+          },
+          "1": {
+            "key": "gameSetting.anno1800.SetupTraderRefillRate.value.1",
+            "enum": "Medium",
+            "text_id": "11046"
+          },
+          "2": {
+            "key": "gameSetting.anno1800.SetupTraderRefillRate.value.2",
+            "enum": "Sparse",
+            "text_id": "11047"
+          }
+        },
+        "dataset": "DCTraderRefillRate"
+      },
+      "SetupVictoryConditionAllOrOne": {
+        "label": "gameSetting.anno1800.SetupVictoryConditionAllOrOne.label",
+        "label_id": "15812",
+        "label_origin": "game",
+        "values": {
+          "2": {
+            "key": "gameSetting.anno1800.SetupVictoryConditionAllOrOne.value.2",
+            "enum": "Off",
+            "text_id": "11055"
+          },
+          "0": {
+            "key": "gameSetting.anno1800.SetupVictoryConditionAllOrOne.value.0",
+            "enum": "One",
+            "text_id": "15775"
+          },
+          "1": {
+            "key": "gameSetting.anno1800.SetupVictoryConditionAllOrOne.value.1",
+            "enum": "All",
+            "text_id": "15776"
+          }
+        },
+        "dataset": "DCVictoryConditionAllOrOne"
+      },
+      "SetupVictoryConditionDiplomacy": {
+        "label": "gameSetting.anno1800.SetupVictoryConditionDiplomacy.label",
+        "label_id": "16145",
+        "label_origin": "game",
+        "values": {
+          "1": {
+            "key": "gameSetting.anno1800.SetupVictoryConditionDiplomacy.value.1",
+            "enum": "Off",
+            "text_id": "11055"
+          },
+          "2": {
+            "key": "gameSetting.anno1800.SetupVictoryConditionDiplomacy.value.2",
+            "enum": "On",
+            "text_id": "11054"
+          }
+        },
+        "dataset": "DCVictoryConditionDiplomacy"
+      },
+      "SetupVictoryConditionIncome": {
+        "label": "gameSetting.anno1800.SetupVictoryConditionIncome.label",
+        "label_id": "15706",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1800.SetupVictoryConditionIncome.value.0",
+            "enum": "None",
+            "text_id": "11055"
+          },
+          "1": {
+            "key": "gameSetting.anno1800.SetupVictoryConditionIncome.value.1",
+            "enum": "Easy",
+            "text_id": "11034"
+          },
+          "2": {
+            "key": "gameSetting.anno1800.SetupVictoryConditionIncome.value.2",
+            "enum": "Medium",
+            "text_id": "11035"
+          },
+          "3": {
+            "key": "gameSetting.anno1800.SetupVictoryConditionIncome.value.3",
+            "enum": "Hard",
+            "text_id": "11036"
+          }
+        },
+        "dataset": "DCVictoryConditionIncome"
+      },
+      "SetupVictoryConditionInvestors": {
+        "label": "gameSetting.anno1800.SetupVictoryConditionInvestors.label",
+        "label_id": "15703",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1800.SetupVictoryConditionInvestors.value.0",
+            "enum": "None",
+            "text_id": "11055"
+          },
+          "1": {
+            "key": "gameSetting.anno1800.SetupVictoryConditionInvestors.value.1",
+            "enum": "Easy",
+            "text_id": "11034"
+          },
+          "2": {
+            "key": "gameSetting.anno1800.SetupVictoryConditionInvestors.value.2",
+            "enum": "Medium",
+            "text_id": "11035"
+          },
+          "3": {
+            "key": "gameSetting.anno1800.SetupVictoryConditionInvestors.value.3",
+            "enum": "Hard",
+            "text_id": "11036"
+          }
+        },
+        "dataset": "DCVictoryConditionInvestors"
+      },
+      "SetupVictoryConditionMonuments": {
+        "label": "gameSetting.anno1800.SetupVictoryConditionMonuments.label",
+        "label_id": "15702",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1800.SetupVictoryConditionMonuments.value.0",
+            "enum": "None",
+            "text_id": "11055"
+          },
+          "1": {
+            "key": "gameSetting.anno1800.SetupVictoryConditionMonuments.value.1",
+            "enum": "Easy",
+            "text_id": "11034"
+          },
+          "2": {
+            "key": "gameSetting.anno1800.SetupVictoryConditionMonuments.value.2",
+            "enum": "Medium",
+            "text_id": "11035"
+          },
+          "3": {
+            "key": "gameSetting.anno1800.SetupVictoryConditionMonuments.value.3",
+            "enum": "Hard",
+            "text_id": "11036"
+          }
+        },
+        "dataset": "DCVictoryConditionMonuments"
+      },
+      "SetupVictoryConditionPopulation": {
+        "label": "gameSetting.anno1800.SetupVictoryConditionPopulation.label",
+        "label_id": "15704",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1800.SetupVictoryConditionPopulation.value.0",
+            "enum": "None",
+            "text_id": "11055"
+          },
+          "1": {
+            "key": "gameSetting.anno1800.SetupVictoryConditionPopulation.value.1",
+            "enum": "Easy",
+            "text_id": "11034"
+          },
+          "2": {
+            "key": "gameSetting.anno1800.SetupVictoryConditionPopulation.value.2",
+            "enum": "Medium",
+            "text_id": "11035"
+          },
+          "3": {
+            "key": "gameSetting.anno1800.SetupVictoryConditionPopulation.value.3",
+            "enum": "Hard",
+            "text_id": "11036"
+          }
+        },
+        "dataset": "DCVictoryConditionPopulation"
+      },
+      "SetupVictoryConditionWealth": {
+        "label": "gameSetting.anno1800.SetupVictoryConditionWealth.label",
+        "label_id": "15705",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1800.SetupVictoryConditionWealth.value.0",
+            "enum": "None",
+            "text_id": "11055"
+          },
+          "1": {
+            "key": "gameSetting.anno1800.SetupVictoryConditionWealth.value.1",
+            "enum": "Easy",
+            "text_id": "11034"
+          },
+          "2": {
+            "key": "gameSetting.anno1800.SetupVictoryConditionWealth.value.2",
+            "enum": "Medium",
+            "text_id": "11035"
+          },
+          "3": {
+            "key": "gameSetting.anno1800.SetupVictoryConditionWealth.value.3",
+            "enum": "Hard",
+            "text_id": "11036"
+          }
+        },
+        "dataset": "DCVictoryConditionWealth"
+      }
+    },
+    "anno1404": {
+      "WorldSize": {
+        "label": "gameSetting.anno1404.WorldSize.label",
+        "label_id": "100016",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1404.WorldSize.value.0",
+            "enum": "Small",
+            "text_id": "100021"
+          },
+          "1": {
+            "key": "gameSetting.anno1404.WorldSize.value.1",
+            "enum": "Medium",
+            "text_id": "100022"
+          },
+          "2": {
+            "key": "gameSetting.anno1404.WorldSize.value.2",
+            "enum": "Large",
+            "text_id": "100023"
+          },
+          "3": {
+            "key": "gameSetting.anno1404.WorldSize.value.3",
+            "enum": "Extralarge",
+            "text_id": "100048"
+          }
+        },
+        "dataset": "CG_WorldSize"
+      },
+      "IslandDifficulty": {
+        "label": "gameSetting.anno1404.IslandDifficulty.label",
+        "label_id": "100017",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1404.IslandDifficulty.value.0",
+            "enum": "Easy",
+            "text_id": "100024"
+          },
+          "1": {
+            "key": "gameSetting.anno1404.IslandDifficulty.value.1",
+            "enum": "Medium",
+            "text_id": "100025"
+          },
+          "2": {
+            "key": "gameSetting.anno1404.IslandDifficulty.value.2",
+            "enum": "Hard",
+            "text_id": "100026"
+          }
+        },
+        "dataset": "CG_IslandDifficulty"
+      },
+      "Fertilities": {
+        "label": "gameSetting.anno1404.Fertilities.label",
+        "label_id": "100018",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1404.Fertilities.value.0",
+            "enum": "Spare",
+            "text_id": "100029"
+          },
+          "1": {
+            "key": "gameSetting.anno1404.Fertilities.value.1",
+            "enum": "Medium",
+            "text_id": "100025"
+          },
+          "2": {
+            "key": "gameSetting.anno1404.Fertilities.value.2",
+            "enum": "Plenty",
+            "text_id": "100030"
+          }
+        },
+        "dataset": "CG_Fertilities"
+      },
+      "Resources": {
+        "label": "gameSetting.anno1404.Resources.label",
+        "label_id": "100019",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1404.Resources.value.0",
+            "enum": "Spare",
+            "text_id": "100029"
+          },
+          "1": {
+            "key": "gameSetting.anno1404.Resources.value.1",
+            "enum": "Medium",
+            "text_id": "100025"
+          },
+          "2": {
+            "key": "gameSetting.anno1404.Resources.value.2",
+            "enum": "Plenty",
+            "text_id": "100030"
+          }
+        },
+        "dataset": "CG_Resources"
+      },
+      "IslandSize": {
+        "label": "gameSetting.anno1404.IslandSize.label",
+        "label_id": "100020",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1404.IslandSize.value.0",
+            "enum": "Small",
+            "text_id": "100021"
+          },
+          "1": {
+            "key": "gameSetting.anno1404.IslandSize.value.1",
+            "enum": "Medium",
+            "text_id": "100022"
+          },
+          "2": {
+            "key": "gameSetting.anno1404.IslandSize.value.2",
+            "enum": "Large",
+            "text_id": "100023"
+          }
+        },
+        "dataset": "CG_IslandSize"
+      },
+      "CorsairStrength": {
+        "label": "gameSetting.anno1404.CorsairStrength.label",
+        "label_id": "100047",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1404.CorsairStrength.value.0",
+            "enum": "Off",
+            "text_id": "100044"
+          },
+          "1": {
+            "key": "gameSetting.anno1404.CorsairStrength.value.1",
+            "enum": "Easy",
+            "text_id": "100024"
+          },
+          "2": {
+            "key": "gameSetting.anno1404.CorsairStrength.value.2",
+            "enum": "Medium",
+            "text_id": "100025"
+          },
+          "3": {
+            "key": "gameSetting.anno1404.CorsairStrength.value.3",
+            "enum": "Hard",
+            "text_id": "100026"
+          }
+        },
+        "dataset": "CG_CorsairStrength"
+      },
+      "NeutralBuildingAmount": {
+        "label": "gameSetting.anno1404.NeutralBuildingAmount.label",
+        "label_id": "100049",
+        "label_origin": "game",
+        "values": {},
+        "dataset": "CG_NeutralBuildingAmount"
+      },
+      "DemolitionReturn": {
+        "label": "gameSetting.anno1404.DemolitionReturn.label",
+        "label_id": "100051",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1404.DemolitionReturn.value.0",
+            "enum": "Nothing",
+            "text_id": "100044"
+          },
+          "1": {
+            "key": "gameSetting.anno1404.DemolitionReturn.value.1",
+            "enum": "Half",
+            "text_id": "100053"
+          },
+          "2": {
+            "key": "gameSetting.anno1404.DemolitionReturn.value.2",
+            "enum": "Full",
+            "text_id": "100052"
+          }
+        },
+        "dataset": "CG_DemolitionReturn"
+      },
+      "QuestFrequency": {
+        "label": "gameSetting.anno1404.QuestFrequency.label",
+        "label_id": "100054",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1404.QuestFrequency.value.0",
+            "enum": "Off",
+            "text_id": "100044"
+          },
+          "1": {
+            "key": "gameSetting.anno1404.QuestFrequency.value.1",
+            "enum": "Standard",
+            "text_id": "100025"
+          },
+          "2": {
+            "key": "gameSetting.anno1404.QuestFrequency.value.2",
+            "enum": "Often",
+            "text_id": "100055"
+          }
+        },
+        "dataset": "CG_QuestFrequency"
+      },
+      "StartCredit": {
+        "label": "gameSetting.anno1404.StartCredit.label",
+        "label_id": "100069",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1404.StartCredit.value.0",
+            "enum": "Spare",
+            "text_id": "100029"
+          },
+          "1": {
+            "key": "gameSetting.anno1404.StartCredit.value.1",
+            "enum": "Medium",
+            "text_id": "100025"
+          },
+          "2": {
+            "key": "gameSetting.anno1404.StartCredit.value.2",
+            "enum": "Plenty",
+            "text_id": "100030"
+          },
+          "3": {
+            "key": "gameSetting.anno1404.StartCredit.value.3",
+            "enum": "VeryMuch",
+            "text_id": "100070"
+          }
+        },
+        "dataset": "CG_StartCredit"
+      },
+      "StartHonour": {
+        "label": "gameSetting.anno1404.StartHonour.label",
+        "label_id": "100071",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1404.StartHonour.value.0",
+            "enum": "Off",
+            "text_id": "100044"
+          },
+          "1": {
+            "key": "gameSetting.anno1404.StartHonour.value.1",
+            "enum": "Spare",
+            "text_id": "100029"
+          },
+          "2": {
+            "key": "gameSetting.anno1404.StartHonour.value.2",
+            "enum": "Medium",
+            "text_id": "100025"
+          },
+          "3": {
+            "key": "gameSetting.anno1404.StartHonour.value.3",
+            "enum": "Plenty",
+            "text_id": "100030"
+          }
+        },
+        "dataset": "CG_StartHonour"
+      },
+      "StartItems": {
+        "label": "gameSetting.anno1404.StartItems.label",
+        "label_id": "100072",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1404.StartItems.value.0",
+            "enum": "None",
+            "text_id": "100044"
+          },
+          "1": {
+            "key": "gameSetting.anno1404.StartItems.value.1",
+            "enum": "StandardPool",
+            "text_id": "100073"
+          },
+          "2": {
+            "key": "gameSetting.anno1404.StartItems.value.2",
+            "enum": "PowerfulPool",
+            "text_id": "100074"
+          }
+        },
+        "dataset": "CG_StartItems"
+      },
+      "DiscoveredMap": {
+        "label": "gameSetting.anno1404.DiscoveredMap.label",
+        "label_id": "100075",
+        "label_origin": "game",
+        "values": {
+          "0": {
+            "key": "gameSetting.anno1404.DiscoveredMap.value.0",
+            "enum": "False",
+            "text_id": "100044"
+          },
+          "1": {
+            "key": "gameSetting.anno1404.DiscoveredMap.value.1",
+            "enum": "True",
+            "text_id": "100093"
+          }
+        }
+      },
+      "Disasters": {
+        "label": "gameSetting.anno1404.Disasters.label",
+        "label_id": "100092",
+        "label_origin": "game",
+        "values": {},
+        "dataset": "CG_Disasters"
+      },
+      "StartWithWarehouse": {
+        "label": "gameSetting.anno1404.StartWithWarehouse.label",
+        "label_id": null,
+        "label_origin": "tool",
+        "values": {}
+      },
+      "StartShips": {
+        "label": "gameSetting.anno1404.StartShips.label",
+        "label_id": null,
+        "label_origin": "tool",
+        "values": {}
+      },
+      "RandomMap": {
+        "label": "gameSetting.anno1404.RandomMap.label",
+        "label_id": null,
+        "label_origin": "tool",
+        "values": {}
+      },
+      "Difficulty": {
+        "label": "gameSetting.anno1404.Difficulty.label",
+        "label_id": null,
+        "label_origin": "tool",
+        "values": {}
+      },
+      "MissionDifficulty": {
+        "label": "gameSetting.anno1404.MissionDifficulty.label",
+        "label_id": null,
+        "label_origin": "tool",
+        "values": {}
+      },
+      "Espionage": {
+        "label": "gameSetting.anno1404.Espionage.label",
+        "label_id": null,
+        "label_origin": "tool",
+        "values": {}
+      },
+      "TownAcquisition": {
+        "label": "gameSetting.anno1404.TownAcquisition.label",
+        "label_id": null,
+        "label_origin": "tool",
+        "values": {}
+      },
+      "EnableTraderQuests": {
+        "label": "gameSetting.anno1404.EnableTraderQuests.label",
+        "label_id": null,
+        "label_origin": "tool",
+        "values": {}
+      },
+      "InitialPeaceTreaty": {
+        "label": "gameSetting.anno1404.InitialPeaceTreaty.label",
+        "label_id": null,
+        "label_origin": "tool",
+        "values": {}
+      }
+    }
+  },
+  "sources": {
+    "anno117": {
+      "dataset_sha256": "004e60e19d2bee10aba8dab5082aaa5d98c1e16a7ca77f6c6e5a1779eb26a30c",
+      "metadata_file": "data/base/config/export/properties-meta.xml",
+      "balancing_asset": "2002450"
+    },
+    "anno1800": {
+      "dataset_sha256": "814e866f3bd38b271e0aa4fa91a1080e9e64121d54431d98c74d916739c30a48",
+      "metadata_file": "data/config/export/main/asset/properties-toolone.xml",
+      "balancing_asset": "2002450"
+    },
+    "anno1404": {
+      "dataset_sha256": "627b5b5b0857797d7b522bc56fcb7ea419e88eec279853dafd689ed83ea12cb7",
+      "metadata_file": "data/config/game/properties.xml",
+      "text_files": [
+        "data/loca/ger/txt/interface.txt",
+        "data/loca/eng/txt/interface.txt"
+      ],
+      "numeric_encoding": "zero-based Choice item order; only listed enum/text matches are translated"
+    }
+  }
+}

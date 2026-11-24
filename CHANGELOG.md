@@ -7,6 +7,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Use verified game-specific DE/EN setting headings and enum labels for all three games, preserving contextual meanings and unknown raw values. Correct Anno 117 setup island-size IDs separately from generated geometry and Anno 1800 mainly-small/medium/large island labels. Document text IDs, datasets and limitations.
+
 - Scope save counts, dates, playtime records and older-save warnings to individual campaigns in all three games. Variant summaries and Excel map sheets show campaign/file totals and summed campaign playtime, avoiding cross-campaign comparisons.
 
 - Keep 117/1800 campaign histories in one map variant based on readable map options, eliminating repeated current dates/statistics across patch-driven variants. Default to newest save first and add an unconditional back-to-top link to every map card.
@@ -15,6 +17,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 - Added latest-save population, wealth, supported balance, residence, ship and settled-island statistics for all three games. Compact, initially collapsed bilingual groups keep details and save history out of the summary; uncertain values show “not available”. Excel includes a current-campaign worksheet. Added source/limitation documentation and regression coverage.
 
 ### Deutsch
+
+- Geprüfte spielbezogene DE/EN-Einstellungsnamen und Enum-Texte für alle drei Spiele eingebunden; kontextabhängige Bedeutungen und unbekannte Rohwerte bleiben getrennt. Anno-117-Setup-Inselgrössen separat von erzeugter Geometrie und Anno-1800-Inselgrössen mit «Mehrheitlich …» korrigiert. Text-IDs, Datasets und Grenzen dokumentiert.
 
 - Save-Anzahl, Zeitpunkte, Spielzeitrekorde und Hinweise auf ältere längere Saves in allen drei Spielen pro Partie zugeordnet. Varianten und Excel-Kartenblätter zeigen Gesamtsummen statt irreführender Vergleiche unterschiedlicher Partien.
 

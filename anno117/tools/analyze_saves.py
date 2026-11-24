@@ -12,7 +12,8 @@ import os
 from pathlib import Path
 import sys
 from anno_settings import settings_for, protect_output
-from anno_map_catalog import render_card, render_catalog_page, describe_options
+import anno_game_settings as game_labels
+from anno_map_catalog import render_card, render_catalog_page
 from anno_map_variants import campaign_variants, latest_known_values
 from anno_save_summary import collect_statistics, variant_totals
 from anno_save_statistics import FileDBStatistics
@@ -29,22 +30,12 @@ HERE = Path(__file__).resolve().parent
 ACCOUNT = CONFIG.path('account')
 GAME = CONFIG.path('game_data')
 REGIONS = {3245: 'Latium', 6627: 'Albion', 149679: 'Aegyptus'}
-MAP_TYPES = {43181:'Zufällig', 43182:'Archipel', 43183:'Atoll', 43184:'Graben',
-             89065:'Ecken', 90702:'Inselkette'}
 # German labels from config.rda (assets.xml and texts_german.xml).
 DLC_NAMES = {67902:'Verheißung des Vulkans', 67903:'Das Hippodrom', 67904:'Erwachen des Deltas'}
 RIVALS = {31099:'Dorian', 31100:'Tarragon', 31101:'Licia Ma'}
 EMPERORS = {31637:'Gnaeus Firmius Calidus', 31721:'Kaiser Lucius Augustus', 31722:'Julia Augusta'}
-AMOUNTS = {0:'Karg', 1:'Normal', 2:'Im Überfluss'}
-SIZES = {0:'Klein', 1:'Regulär', 2:'Gross'}
-VALUE_NAMES = {
-    'SetupMapTemplateType':MAP_TYPES, 'DefaultStartProvince':REGIONS,
-    'ActiveDLCs':DLC_NAMES, 'DefaultSecondParties':RIVALS, 'SetupStartEmperor':EMPERORS,
-    'SetupFertility':AMOUNTS, 'SetupRawMaterial':AMOUNTS,
-    'SetupStartSessionIslandDifficulty':{0:'Normal',1:'Schwer'},
-    'SetupStartForestSize':{0:'Karg', 1:'Normal', 2:'Im Überfluss'},
-    'EnableCampaign':{0:'Nein', 1:'Ja'},
-}
+VALUE_NAMES = {'DefaultStartProvince': REGIONS, 'ActiveDLCs': DLC_NAMES,
+               'DefaultSecondParties': RIVALS, 'SetupStartEmperor': EMPERORS}
 DETAIL_LABELS = {'DefaultSecondParties':'Rivalen (Standard)', 'SetupStartEmperor':'Kaiser',
                  'EnableCampaign':'Kampagne', 'GameSeed':'Seed'}
 GEO_SETTINGS = {
@@ -59,7 +50,8 @@ TIME_COLUMNS = ['Ältester Save des Seeds','Neuester Save des Seeds','Ältester 
 MAP_KEYS = set(GEO_SETTINGS) | {'GameSeed','EnableCampaign','EnableScenario','CreativeMode',
                                'SetupContinentalIslandStart','SetupContinentalIslandAllowRivalSettling',
                                'DefaultSecondParties','ActiveMods','ActiveLocalMods'}
-SETTINGS = list(GEO_SETTINGS.values())
+DISPLAY_KEYS = ['GeneratedWorldSize' if key == 'SetupStartSession' else 'GeneratedIslandSize' if key == 'SetupStartSessionIslandSize' else key for key in GEO_SETTINGS]
+SETTINGS = [game_labels.name('anno117', key, fallback) for key, fallback in zip(DISPLAY_KEYS, GEO_SETTINGS.values(), strict=True)]
 
 
 def int_pair(raw):
@@ -274,6 +266,8 @@ def mode_for(setup):
 def setting_value(key, values):
     if not values:
         return '—'
+    if game_labels.known('anno117', key) and key not in ('ActiveDLCs', 'DefaultStartProvince'):
+        return game_labels.value('anno117', key, values)
     labels = VALUE_NAMES.get(key)
     if labels is None:
         return ', '.join(map(str, values))
@@ -285,8 +279,8 @@ def generated_size(geometry, key):
              if region.get('generation', {}).get(key) is not None}
     if len(sizes) == 1:
         size = sizes.pop()
-        return SIZES.get(size, f'ID {size}')
-    return ', '.join(f"{REGIONS.get(region['guid'], region['guid'])}: {SIZES.get(size, f'ID {size}')}"
+        return game_labels.value('anno117', 'GeneratedWorldSize' if key == 'mapSize' else 'GeneratedIslandSize', [size])
+    return ', '.join(f"{REGIONS.get(region['guid'], region['guid'])}: {game_labels.value('anno117', 'GeneratedWorldSize' if key == 'mapSize' else 'GeneratedIslandSize', [size])}"
                      for region in geometry
                      if (size := region.get('generation', {}).get(key)) is not None) or '—'
 
@@ -340,7 +334,7 @@ def prepare(saves, accounts, map_writer, zone, cached_maps, statistics=None):
         details = [*display[:4],clock(newest_seconds),clock(record_seconds),display[4],record_name]
         results.append(dict(identity=[seed,index,mode_for(known_setup)],links=links,
                             settings=[len(rows),profiles,*settings,source,*start],delta=delta,
-                            fields=[*settings,*details],raw=latest['setup'],sizes=[
+                            fields=[*settings,*details],raw=latest['setup'],display_setup=known_setup,generated=geometry,sizes=[
                                 (link['label'],*region['size']) for link,region in zip(links,geometry,strict=True)],
                             sort={'first':stamps[2],'latest':stamps[3],
                                   'totalTime':totals['play_ms']//1000 if totals['play_ms'] is not None else 0},
@@ -361,19 +355,38 @@ def write_html(rows, total, stage, updated_at, total_playtime, profiles):
             maps.append(f'<figure><a href="{path}"><img src="{path}" loading="lazy" alt="{name}"></a>'
                         f'<figcaption>{name}</figcaption></figure>')
         settings = '<dl>'
-        for name, value in zip(SETTINGS, row['fields'][:len(SETTINGS)], strict=True):
-            settings += f'<div><dt>{escape(name)}</dt><dd>{escape(value)}</dd></div>'
+        descriptions = []
+        for key, display_key, fallback in zip(GEO_SETTINGS, DISPLAY_KEYS, SETTINGS, strict=True):
+            name = game_labels.name('anno117', display_key, fallback, html=True)
+            if display_key.startswith('Generated'):
+                generation_key = 'mapSize' if display_key == 'GeneratedWorldSize' else 'islandSize'
+                regions = [(region['guid'], region.get('generation', {}).get(generation_key)) for region in row['generated']]
+                known = {value for _, value in regions if value is not None}
+                if len(known) == 1:
+                    value = game_labels.value('anno117', display_key, list(known), html=True)
+                else:
+                    value = ' · '.join('<span data-i18n-ignore>' + escape(str(REGIONS.get(guid, guid))) + '</span>: '
+                                       + game_labels.value('anno117', display_key, [raw] if raw is not None else [], html=True)
+                                       for guid, raw in regions) or game_labels.value('anno117', display_key, [], html=True)
+            elif key in ('ActiveDLCs', 'DefaultStartProvince'):
+                value = '<span data-i18n-ignore>' + escape(setting_value(key, row['display_setup'].get(key, []))) + '</span>'
+            else:
+                value = game_labels.value('anno117', key, row['display_setup'].get(key, []), html=True)
+            settings += '<div><dt>' + name + '</dt><dd>' + value + '</dd></div>'
+            if key != 'ActiveDLCs':
+                descriptions.append(name + ': ' + value)
         for name, x, y in row['sizes']:
             settings += f'<div><dt>{escape(name)} · Kartengrösse</dt><dd>{x} × {y}</dd></div>'
         for key, values in sorted(row['raw'].items()):
-            name = DETAIL_LABELS.get(key, GEO_SETTINGS.get(key, key))
-            if key in ('SetupStartSession', 'SetupStartSessionIslandSize'):
-                name += ' (gespeicherter Setup-Wert)'
-            settings += f'<div><dt>{escape(name)}</dt><dd>{escape(setting_value(key, values))}</dd></div>'
+            if key in ('ActiveDLCs', 'DefaultStartProvince', 'DefaultSecondParties', 'SetupStartEmperor'):
+                name = game_labels.name('anno117', key, DETAIL_LABELS.get(key, GEO_SETTINGS.get(key, key)), html=True)
+                settings += '<div><dt>' + name + '</dt><dd data-i18n-ignore>' + escape(setting_value(key, values)) + '</dd></div>'
+            else:
+                settings += game_labels.row('anno117', key, values)
         cards.append(render_card(seed, index, mode, row['profile_names'], row['profiles'], row['sort'],
                                  row.get('statistics', []), row['settings'][0], save_details,
                                  ''.join(maps), settings + '</dl>',
-                                 describe_options(zip(SETTINGS[:8], row['fields'][:8], strict=True))))
+                                 ' · '.join(descriptions)))
     page = render_catalog_page('anno117', cards, [row['identity'][0] for row in rows], total,
                                updated_at, total_playtime, ranking_html(profiles, clock))
     (stage/'map-gallery.html').write_text(page, encoding='utf-8')

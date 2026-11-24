@@ -11,6 +11,7 @@ import os
 from pathlib import Path
 import sys
 from anno_settings import settings_for, protect_output
+import anno_game_settings as game_labels
 from anno_gallery import render_gallery
 from anno_save_summary import collect_statistics, render_statistics, totals_html, variant_totals, label as summary_label
 from anno_save_statistics import Statistics1404
@@ -46,6 +47,7 @@ SETTINGS = {
     'Disasters': 'Katastrophen', 'Espionage': 'Spionage', 'TownAcquisition': 'Ratsitze',
     'EnableTraderQuests': 'Händleraufträge', 'InitialPeaceTreaty': 'Friedensvertrag zu Beginn',
 }
+SETTINGS = {key: game_labels.name('anno1404', key, name) for key, name in SETTINGS.items()}
 MODES = {0: 'Endlosspiel', 1: 'Szenario', 4: 'Kampagne', 5: 'Szenario'}
 DATE_COLUMNS = (8, 10, 14)
 TIME_COLUMNS = (12, 13, 16)
@@ -365,14 +367,14 @@ def report(saves, file_count, sources, statistics=None):
             date(first['timestamp']), first['name'], date(last['timestamp']), last['name'],
             last['duration']/86400000, longest['duration']/86400000, date(longest['timestamp']),
             longest['name'], diff/86400000 if diff else None, last['world'], last['islands'],
-            *(int(v) if v.lstrip('-').isdigit() else v or None for v in last['settings'].values()),
+            *(game_labels.value('anno1404', k, [v]) if v else None for k, v in last['settings'].items()),
         ]
         campaign_statistics = [statistics[campaign] for campaign in sorted({campaign_key(save) for save in members})
                                if statistics and campaign in statistics]
         totals_row = variant_totals(campaign_statistics, len(members))
         rows.append({'values': values, 'image': last['map'], 'editions': editions, 'profiles': profiles,
                      'timestamp': last['timestamp'], 'oldest': first['timestamp'], 'longest': longest['duration'],
-                     'settings': dict(zip(SETTINGS.values(), values[19:])),
+                     'settings': dict(zip(SETTINGS.values(), values[19:])), 'raw_settings': last['settings'],
                      'paths': [first['path'], last['path'], longest['path']],
                      'statistics': campaign_statistics, 'totals': totals_row})
     rows.sort(key=lambda row: (-row['timestamp'], row['values'][1]))
@@ -410,8 +412,8 @@ def write_html(stage, payload):
     for row in payload['rows']:
         v = row['values']
         anchor = f'Seed {v[0]}' if v[0] is not None else v[2]
-        details = ''.join(f'<dt>{esc(k)}</dt><dd>{esc(value)}</dd>' for k, value in row['settings'].items()
-                          if value is not None)
+        details = ''.join(game_labels.row('anno1404', k, [value] if value else [])
+                          for k, value in row['raw_settings'].items())
         cards.append(f'''<article data-editions="{esc(json.dumps(row['editions']))}"
           data-profiles="{esc(json.dumps(row['profiles']))}" data-seed="{v[0] if v[0] is not None else 99999999}"
           data-timestamp="{row['timestamp']}" data-oldest="{row['oldest']}" data-time="{row['totals']['play_ms'] or 0}">

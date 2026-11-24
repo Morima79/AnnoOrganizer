@@ -139,3 +139,5 @@ Karten- und Stempelgalerien verwenden jeweils eine gemeinsame Seitenvorlage mit 
 Release-ZIPs und die Demo-Seite werden über GitHub Actions veröffentlicht. Details zur Release-Erstellung, GitHub-Pages-Einrichtung und Demo-Aktualisierung stehen in der [Veröffentlichungsanleitung](docs/publishing.de.md).
 
 Save-Anzahl und Spielzeitangaben stehen pro Partie in deren Save-Details. Kartenvarianten zeigen nur die Gesamtsummen; Spielzeitvergleiche bleiben innerhalb derselben Partie.
+
+Karten- und Spieleinstellungen verwenden geprüfte DE/EN-Spieltexte und kontextbezogene Wertzuordnungen. Unbekannte Werte bleiben erkennbar. [Originalbezeichnungen und Grenzen](docs/game-settings.de.md).

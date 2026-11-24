@@ -21,6 +21,9 @@ function environment({stored = null, blocked = false, missingEnglish = false} = 
   const heading = element({'data-i18n': 'stamp.heading'});
   const population = element({'data-i18n': 'stats.population'});
   const unavailable = element({'data-i18n': 'stats.unavailable'});
+  const fertility117 = element({'data-i18n': 'gameSetting.anno117.SetupFertility.value.1'});
+  const difficulty1404 = element({'data-i18n': 'gameSetting.anno1404.IslandDifficulty.value.1'});
+  const islands1800 = element({'data-i18n': 'gameSetting.anno1800.SetupStartSessionIslandSize.value.0'});
   const populationGroup = {open: false};
   const moneyGroup = {open: true};
   population.parentElement = populationGroup;
@@ -38,7 +41,7 @@ function environment({stored = null, blocked = false, missingEnglish = false} = 
   const document = {documentElement: {lang: ''},
     getElementById(id) { assert.equal(id, 'gallery-language-resources'); return {textContent: JSON.stringify(messages)}; },
     querySelectorAll(selector) {
-      return ({'[data-i18n]': [heading, option, population, unavailable], '[data-i18n-placeholder]': [input],
+      return ({'[data-i18n]': [heading, option, population, unavailable, fertility117, difficulty1404, islands1800], '[data-i18n-placeholder]': [input],
         '[data-i18n-alt]': [preview], '[data-i18n-content]': [description], '[data-gallery-language]': [de, en]})[selector] || [];
     },
     dispatchEvent(event) { events.push(event); }};
@@ -47,8 +50,22 @@ function environment({stored = null, blocked = false, missingEnglish = false} = 
     setItem(key, value) { if (blocked) throw Error('Storage unavailable'); storage.set(key, value); }};
   const window = {};
   vm.runInNewContext(runtime, {document, window, localStorage, CustomEvent: class {constructor(type, init) { this.type = type; this.detail = init.detail; }}});
-  return {document, i18n: window.galleryI18n, heading, option, userName, input, preview, description, de, en, storage, events, population, unavailable, populationGroup, moneyGroup};
+  return {document, i18n: window.galleryI18n, heading, option, userName, input, preview, description, de, en, storage, events, population, unavailable, populationGroup, moneyGroup, fertility117, difficulty1404, islands1800};
 }
+
+test('game setting contexts preserve different original English meanings and input state', () => {
+  const e = environment();
+  assert.equal(e.fertility117.textContent, 'Normal');
+  assert.equal(e.difficulty1404.textContent, 'normal');
+  e.en.listeners.click();
+  assert.equal(e.fertility117.textContent, 'Regular');
+  assert.equal(e.difficulty1404.textContent, 'medium');
+  assert.equal(e.islands1800.textContent, 'Mainly Small');
+  assert.equal(e.input.value, 'Lavendel');
+  assert.equal(e.option.value, 'Sandkasten');
+  e.de.listeners.click();
+  assert.equal(e.islands1800.textContent, 'Mehrheitlich klein');
+});
 
 test('DE/EN switching preserves inputs, option values and identity text', () => {
   const e = environment();
