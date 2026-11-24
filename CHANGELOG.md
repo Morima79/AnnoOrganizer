@@ -5,6 +5,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ## [Unreleased]
 
+## [v0.1.13] - 2026-11-24
+
 ### English
 
 - Unify enlarged map images across all three games with a shared zoom/download dialog, DE/EN controls and the same Back/Forward behaviour as stamp viewers. Preserve filters and native PNG links; add viewer regressions.
