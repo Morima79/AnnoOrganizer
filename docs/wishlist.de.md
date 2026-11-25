@@ -15,3 +15,7 @@ Die folgenden Ideen sind vorgemerkt und noch nicht zur Umsetzung eingeplant.
 - Unterschiedliche DLC-Mechaniken von Anno 117 und 1800 berücksichtigen. Frühere Kartenansichten könnten optional Teil des Verlaufs sein; DLC-Ereignisse allein müssen keine neue Kartenvariante erzeugen.
 
 Vor einer Umsetzung Erkennbarkeit und Nutzen anhand lückenhafter realer Save-Sammlungen prüfen. Die aktuelle Aufbewahrungsvoreinstellung von Anno 117 ist hier nicht als bestätigte Produkteigenschaft festgehalten.
+
+## Desktop-Anwendung
+
+Der [GUI-Vorschlag](desktop-gui.de.md) beschreibt die geplante portable Windows-Anwendung, den MVP-Umfang und die Abnahmekriterien.

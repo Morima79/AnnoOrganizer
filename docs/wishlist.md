@@ -15,3 +15,7 @@ These ideas are recorded for later consideration and are not scheduled for imple
 - Account for different DLC mechanisms in Anno 117 and 1800. Historical map previews could optionally join the timeline; a DLC event alone need not create a map variant.
 
 Before implementation, verify detectability and usefulness with incomplete real save collections. This document does not assert Anno 117's current default autosave retention setting.
+
+## Desktop application
+
+See the [desktop GUI proposal](desktop-gui.md) for the proposed portable Windows application, MVP scope and acceptance criteria.
