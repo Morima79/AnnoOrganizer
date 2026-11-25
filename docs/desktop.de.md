@@ -36,7 +36,7 @@ Das absolute Ausgabeziel steht vor dem Start unter den Eingaben. Während der Ve
 - **Neu laden**: Die aktuelle Datei erneut lesen. Ungespeicherte Änderungen werden nur nach Bestätigung verworfen.
 - **Speichern**: Die angezeigten Werte in die unter **Einstellungsdatei** genannte Datei schreiben. Der bisherige Inhalt wird unter `backups/` neben der Datei gesichert. Wenn eine andere Anwendung die Datei seit dem Laden geändert hat, neu laden statt überschreiben.
 
-Die Tabs **Eingaben** und **Ausgaben und Zeitzone** enthalten die spielspezifischen Felder. Bei Anno 1404 steht jeder Spielstandordner in einer eigenen Zeile. Leere optionale Ausgabeziele verwenden die bisherigen Standardunterordner. Auch bei kleinen Fenstern bleiben die Felder über die Scrollleisten erreichbar. Details zu Schlüsseln und Platzhaltern: [Einstellungen](settings.de.md).
+Die Tabs **Eingaben** und **Ausgaben und Zeitzone** enthalten die spielspezifischen Felder. Bei Anno 1404 hat jeder Spielstandordner ein eigenes einzeiliges Pfadfeld ohne Zeilenumbruch; **Ordner hinzufügen** und **Entfernen** verwalten mehrere Ordner. Leere optionale Ausgabeziele verwenden die bisherigen Standardunterordner. Auch bei kleinen Fenstern bleiben die Felder über die Scrollleisten erreichbar. Details zu Schlüsseln und Platzhaltern: [Einstellungen](settings.de.md).
 
 **Erzeugen verwendet die angezeigten Werte, ohne die persönliche Einstellungsdatei zu speichern.** Jeder Auftrag bekommt eine vorübergehende Konfigurationskopie mit denselben aufgelösten Pfadzielen. Diese Kopie wird nach Prozessende entfernt. Demoläufe bleiben unter `<output>/demo/` und ignorieren getrennte persönliche Berichts-, Stempel- und Logziele.
 
@@ -53,6 +53,8 @@ Eine externe Konfiguration lässt sich auch direkt öffnen:
 ```
 
 ## Sprache, Status und Abbruch
+
+Position, Grösse und Maximierungszustand von Hauptfenster, Info und Protokollen werden in `gui.json` gespeichert und beim nächsten Öffnen wiederhergestellt. Minimiert wird nicht wiederhergestellt; nach einem Monitorwechsel werden Fenster in einen erreichbaren Bildschirmbereich verschoben. Info und Protokolle gehören zum Hauptfenster und bleiben über ihm. Der gewählte Tab und die aktive Sprache sind goldgelb markiert; die Tab-Grösse bleibt beim Wechsel gleich.
 
 Beim ersten Start bestimmt die bevorzugte Windows-Anzeigesprache die Oberfläche: `de`, `de-DE`, `de-CH` oder `de-AT` ergeben Deutsch, alle anderen Sprachen und Erkennungsfehler Englisch. **DE/EN** kann jederzeit umgeschaltet werden; die manuelle Auswahl wird gespeichert und hat künftig Vorrang. Eingaben, Spiel, Aktion und gewählter Tab bleiben beim Umschalten erhalten. Die Sprachwahl der HTML-Galerien bleibt unabhängig; Rohdaten, Pfade und Logs werden nicht übersetzt.
 

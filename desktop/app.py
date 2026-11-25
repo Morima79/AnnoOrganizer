@@ -14,6 +14,7 @@ import webbrowser
 from desktop.language import choose_language, resources
 from desktop.settings_store import ConfigDocument, GAMES, ROOT, SettingsConflict, SettingsStore
 from desktop.worker_client import WorkerClient
+from desktop.window_state import WindowState
 
 
 def source_version():
@@ -35,7 +36,8 @@ class DesktopApp:
         self.documents, self.baselines = {}, {}
         self.document = None
         self.fields = {}
-        self.folder_text = None
+        self.folder_fields = []
+        self.child_windows = {}
         self.controls = []
         self.status = 'ready'
         self.stage_action = None
@@ -50,11 +52,13 @@ class DesktopApp:
         self.root.title('AnnoOrganizer')
         self.root.geometry('1080x820')
         self.root.minsize(860, 720)
+        self.window_state = WindowState(self.root, self.store)
         self.root.protocol('WM_DELETE_WINDOW', self.close)
         self.root.bind('<Destroy>', self.on_destroy, add='+')
         self._style()
         self._load(game, config)
         self.render()
+        self.window_state.watch(self.root, 'main')
         self._poll_id = self.root.after(80, self.poll)
 
     def on_destroy(self, event):
@@ -80,10 +84,15 @@ class DesktopApp:
         style.map('TButton', background=[('active', '#505966')], foreground=[('disabled', '#89919d')])
         style.configure('Accent.TButton', background='#cba56a', foreground='#171b22', font=('Segoe UI', 10, 'bold'))
         style.map('Accent.TButton', background=[('active', '#dfb875')])
+        style.configure('LanguageSelected.TButton', background='#cba56a', foreground='#171b22')
+        style.map('LanguageSelected.TButton', background=[('active', '#dfb875')])
         style.configure('TEntry', fieldbackground='#181c22', foreground='#e5e7eb', padding=5)
         style.configure('TNotebook', background='#20252d', borderwidth=0)
         style.configure('TNotebook.Tab', background='#3c424c', padding=(14, 7))
-        style.map('TNotebook.Tab', background=[('selected', '#505966')])
+        style.map('TNotebook.Tab', background=[('selected', '#cba56a'), ('!selected', '#3c424c')],
+                  foreground=[('selected', '#171b22'), ('!selected', '#e5e7eb')],
+                  padding=[('selected', (14, 7)), ('!selected', (14, 7))],
+                  lightcolor=[('selected', '#cba56a'), ('!selected', '#3c424c')])
         style.configure('TRadiobutton', background='#20252d', foreground='#e5e7eb')
         style.map('TRadiobutton', background=[('disabled', '#20252d')],
                   foreground=[('disabled', '#89919d')])
@@ -111,24 +120,29 @@ class DesktopApp:
             value = variable.get().strip()
             if value or key in self.document.data:
                 self.document.data[key] = value
-        if self.folder_text is not None:
-            self.document.data['save_folders'] = [line.strip() for line in
-                self.folder_text.get('1.0', 'end-1c').splitlines() if line.strip()]
+        if self.game == 'anno1404':
+            self.document.data['save_folders'] = [field.get().strip() for field in self.folder_fields
+                                                 if field.get().strip()]
 
     def render(self):
         selected = self.notebook.index('current') if hasattr(self, 'notebook') else 0
-        for child in self.root.winfo_children():
-            child.destroy()
-        self.fields, self.controls, self.folder_text = {}, [], None
+        if hasattr(self, 'shell'):
+            self.shell.destroy()
+        self.fields, self.controls, self.folder_fields = {}, [], []
         self.wrap_labels = []
         shell = ttk.Frame(self.root, padding=20)
+        self.shell = shell
         shell.pack(fill='both', expand=True)
         header = ttk.Frame(shell)
         header.pack(fill='x', pady=(0, 18))
         ttk.Label(header, text='AnnoOrganizer', style='Title.TLabel').pack(side='left')
+        self.language_buttons = {}
         for language in ('en', 'de'):
-            ttk.Button(header, text=language.upper(), width=4,
-                       command=lambda value=language: self.change_language(value)).pack(side='right', padx=3)
+            button = ttk.Button(header, text=language.upper(), width=4,
+                                style='LanguageSelected.TButton' if language == self.language else 'TButton',
+                                command=lambda value=language: self.change_language(value))
+            button.pack(side='right', padx=3)
+            self.language_buttons[language] = button
         body = ttk.Frame(shell)
         body.pack(fill='both', expand=True)
         navigation = ttk.Frame(body, width=160)
@@ -167,13 +181,14 @@ class DesktopApp:
         if self.document is not None:
             if self.game == 'anno1404':
                 ttk.Label(inputs, text=self.t('save_folders')).grid(row=0, column=0, sticky='w')
-                self.folder_text = tk.Text(inputs, height=5, width=45, font=('Segoe UI', 10),
-                                           background='#181c22', foreground='#e5e7eb', insertbackground='white')
-                self.folder_text.grid(row=1, column=0, sticky='nsew', pady=6)
-                self.folder_text.insert('1.0', '\n'.join(self.document.data.get('save_folders', [])))
-                button = ttk.Button(inputs, text=self.t('browse'), command=lambda: self.browse('save_folders'))
-                button.grid(row=1, column=1, padx=(8, 0))
-                self.controls.extend([self.folder_text, button])
+                self.folder_fields = [tk.StringVar(self.root, value) for value in
+                                      (self.document.data.get('save_folders') or [''])]
+                self.folder_rows = ttk.Frame(inputs)
+                self.folder_rows.grid(row=1, column=0, sticky='ew', pady=(3, 10))
+                self.draw_folder_rows()
+                button = ttk.Button(inputs, text=self.t('add_folder'), command=self.add_save_folder)
+                button.grid(row=2, column=0, sticky='w')
+                self.controls.append(button)
             else:
                 keys = ['game_data', 'account', 'stamps'] + (['archive'] if self.game == 'anno1800' else [])
                 for row, key in enumerate(keys):
@@ -218,6 +233,42 @@ class DesktopApp:
             variable.trace_add('write', lambda *_: self.refresh_destination())
         self.refresh_destination()
         self.apply_busy()
+        self.refresh_child_language()
+
+    def draw_folder_rows(self):
+        for widget in self.folder_rows.winfo_children():
+            widget.destroy()
+        self.controls = [widget for widget in self.controls if widget.winfo_exists()]
+        self.folder_entries = []
+        self.folder_rows.columnconfigure(0, weight=1)
+        for row, variable in enumerate(self.folder_fields):
+            entry = ttk.Entry(self.folder_rows, textvariable=variable, width=50)
+            entry.grid(row=row, column=0, sticky='ew', pady=(0, 6))
+            browse = ttk.Button(self.folder_rows, text=self.t('browse'),
+                                command=lambda field=variable: self.browse_save_folder(field))
+            browse.grid(row=row, column=1, padx=(8, 0), pady=(0, 6))
+            remove = ttk.Button(self.folder_rows, text=self.t('remove_folder'),
+                                command=lambda index=row: self.remove_save_folder(index))
+            remove.grid(row=row, column=2, padx=(5, 0), pady=(0, 6))
+            self.folder_entries.append(entry)
+            self.controls.extend([entry, browse, remove])
+
+    def add_save_folder(self, value=''):
+        self.folder_fields.append(tk.StringVar(self.root, value))
+        self.draw_folder_rows()
+        self.folder_entries[-1].focus_set()
+
+    def remove_save_folder(self, index):
+        if len(self.folder_fields) == 1:
+            self.folder_fields[0].set('')
+        else:
+            self.folder_fields.pop(index)
+            self.draw_folder_rows()
+
+    def browse_save_folder(self, variable):
+        path = filedialog.askdirectory(parent=self.root, title=self.t('save_folders'))
+        if path:
+            variable.set(path)
 
     def page(self, key):
         page = ttk.Frame(self.notebook)
@@ -297,17 +348,14 @@ class DesktopApp:
     def browse(self, key):
         path = filedialog.askdirectory(parent=self.root, title=self.t(key))
         if path:
-            if key == 'save_folders':
-                current = self.folder_text.get('1.0', 'end-1c').strip()
-                self.folder_text.insert('end', ('\n' if current else '') + path)
-            else:
-                self.fields[key].set(path)
+            self.fields[key].set(path)
 
     def change_language(self, language):
         self.collect()
         self.language, self.texts = language, resources(language)
         self.store.preferences['language'] = language
         try:
+            self.window_state.remember_all()
             self.store.save_preferences()
         except Exception as exc:
             self.error(exc)
@@ -490,7 +538,7 @@ class DesktopApp:
                     self.cleanup_snapshot()
                     self.apply_busy()
                     if self.closing:
-                        self.root.destroy()
+                        self.finish_close()
                         return
                 self.status_label.configure(text=self.status_text())
         except Empty:
@@ -522,8 +570,9 @@ class DesktopApp:
             self.error(exc)
 
     def show_logs(self):
-        window = tk.Toplevel(self.root)
-        window.title(self.t('logs'))
+        window = self.new_child('logs')
+        if window is None:
+            return
         window.geometry('850x500')
         text = tk.Text(window, wrap='word')
         text.pack(fill='both', expand=True)
@@ -536,14 +585,63 @@ class DesktopApp:
                 content += '\n' + str(exc)
         text.insert('1.0', content.strip() or self.t('log_empty'))
         text.configure(state='disabled')
+        self.show_child(window, 'logs')
 
     def about(self):
-        window = tk.Toplevel(self.root)
-        window.title(self.t('about'))
+        window = self.new_child('about')
+        if window is None:
+            return
         key = 'about_portable_text' if getattr(sys, 'frozen', False) else 'about_text'
-        ttk.Label(window, text=self.t(key, version=source_version()), padding=22).pack()
-        ttk.Button(window, text=self.t('check_releases'), command=lambda: webbrowser.open(
-            'https://github.com/Morima79/AnnoOrganizer/releases')).pack(pady=(0, 18))
+        self.about_label = ttk.Label(window, text=self.t(key, version=source_version()), padding=22)
+        self.about_label.pack()
+        self.release_button = ttk.Button(window, text=self.t('check_releases'), command=lambda: webbrowser.open(
+            'https://github.com/Morima79/AnnoOrganizer/releases'))
+        self.release_button.pack(pady=(0, 18))
+        self.show_child(window, 'about')
+
+    def new_child(self, key):
+        existing = self.child_windows.get(key)
+        if existing is not None and existing.winfo_exists():
+            existing.deiconify()
+            existing.lift(self.root)
+            existing.focus_set()
+            return None
+        window = tk.Toplevel(self.root)
+        window.withdraw()
+        window.transient(self.root)
+        window.title(self.t(key))
+        window.protocol('WM_DELETE_WINDOW', lambda: self.close_child(key))
+        self.child_windows[key] = window
+        return window
+
+    def show_child(self, window, key):
+        self.window_state.watch(window, key, owner=self.root)
+        window.deiconify()
+        window.lift(self.root)
+        window.focus_set()
+
+    def close_child(self, key):
+        try:
+            self.window_state.close_child(key)
+        except Exception as exc:
+            self.error(exc)
+
+    def refresh_child_language(self):
+        for key, window in self.child_windows.items():
+            if window.winfo_exists():
+                window.title(self.t(key))
+                if key == 'about':
+                    text = 'about_portable_text' if getattr(sys, 'frozen', False) else 'about_text'
+                    self.about_label.configure(text=self.t(text, version=source_version()))
+                    self.release_button.configure(text=self.t('check_releases'))
+
+    def finish_close(self):
+        try:
+            self.window_state.remember_all()
+            self.store.save_preferences()
+        except Exception as exc:
+            self.error(exc)
+        self.root.destroy()
 
     def close(self):
         if self.client.running or self.snapshot is not None:
@@ -566,7 +664,7 @@ class DesktopApp:
                 except Exception as exc:
                     self.error(exc)
                     return
-        self.root.destroy()
+        self.finish_close()
 
 
 def main(*, directory=None, game='anno117', config=None):

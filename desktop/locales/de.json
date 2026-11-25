@@ -11,7 +11,7 @@
   "account": "Spielstand-/Account-Ordner",
   "stamps": "Stempelordner",
   "archive": "Save-Archiv (optional)",
-  "save_folders": "Spielstandordner (einer pro Zeile)",
+  "save_folders": "Spielstandordner",
   "output": "Arbeits- und Demo-Ausgabe",
   "report_output": "Berichte (optional)",
   "stamp_output": "Stempel-Ausgabe (optional)",
@@ -43,7 +43,7 @@
   "close_dirty": "Ungespeicherte Änderungen vor dem Schliessen speichern?",
   "close_running": "Abbruch anfordern und nach Ende der Verarbeitung schliessen?",
   "missing_output": "Noch keine passende Ausgabe vorhanden.",
-  "about_text": "Desktop-Vorschau aus dem Quellcode.\nStand: {version}\n\nInoffizielles Projekt von Morima79, MIT-Lizenz.\nDie Nutzung erfolgt auf eigene Gefahr.\nQuelldateien werden ausschliesslich gelesen.\n\nNoch keine portable EXE; Python wird benötigt.",
+  "about_text": "Desktop-Vorschau aus dem Quellcode.\nStand: {version}\n\nInoffizielles Projekt von Morima79, MIT-Lizenz.\nDie Nutzung erfolgt auf eigene Gefahr.\nQuelldateien werden ausschliesslich gelesen.\n\nFür diesen Quellcode-Start wird Python benötigt.",
   "check_releases": "Releases auf GitHub",
   "snapshot_hint": "Erzeugen nutzt die angezeigten Werte; nur Speichern ändert die Einstellungsdatei.",
   "preview_hint": "Desktop-Vorschau · Python erforderlich",
@@ -54,5 +54,7 @@
   "use_preview": "Diese Datei am bisherigen Ort verwenden?\n\n{source}\n\nAufgelöste Ziele:\n{paths}",
   "settings_error": "Die Einstellungen konnten nicht verwendet werden. Details stehen unter Protokolle.",
   "portable_hint": "Portables Windows-Paket",
-  "about_portable_text": "Portables Windows-Paket.\nStand: {version}\n\nInoffizielles Projekt von Morima79, MIT-Lizenz.\nDie Nutzung erfolgt auf eigene Gefahr.\nQuelldateien werden ausschliesslich gelesen.\n\nKeine Python-Installation erforderlich."
+  "about_portable_text": "Portables Windows-Paket.\nStand: {version}\n\nInoffizielles Projekt von Morima79, MIT-Lizenz.\nDie Nutzung erfolgt auf eigene Gefahr.\nQuelldateien werden ausschliesslich gelesen.\n\nKeine Python-Installation erforderlich.",
+  "add_folder": "Ordner hinzufügen",
+  "remove_folder": "Entfernen"
 }

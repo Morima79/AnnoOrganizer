@@ -7,6 +7,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Remember desktop window positions, sizes and maximized states with monitor recovery; keep About/Logs above their owner, use single-line Anno 1404 folder fields, and highlight selected tabs/language in gold without shrinking tabs.
+
 - Build a portable Windows x64 GUI/worker package with pinned dependencies, licenses, source/resource manifests, SHA-256 checksums and extracted-EXE smoke tests; integrate it into the existing release workflow and protect internal resources against writes.
 
 - Reserve actual output/log/cache trees across desktop and CLI processes, recover crash-stale reservations, and stage stamp galleries/caches with publication rollback and retained recovery data if rollback is blocked.
@@ -22,6 +24,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 - Prepare shared non-interactive execution for all three game launchers, including validated demo plans, structured stage/completion callbacks and output results. Add `--non-interactive`; retain the transitional Python script backend and document remaining GUI/worker work.
 
 ### Deutsch
+
+- Fensterpositionen, Grössen und Maximierung mit Monitorwiederherstellung speichern; Info/Protokolle über ihrem Hauptfenster halten, einzeilige Anno-1404-Pfadfelder verwenden und gewählte Tabs/Sprache goldgelb markieren, ohne Tabs zu verkleinern.
 
 - Portables Windows-x64-Paket für GUI und Worker mit fixierten Abhängigkeiten, Lizenzen, Quell-/Ressourcenmanifest, SHA-256-Prüfsummen und Tests der entpackten EXE ergänzt; in den vorhandenen Release-Workflow integriert und interne Ressourcen gegen Schreibzugriffe geschützt.
 

@@ -36,7 +36,7 @@ The absolute output destination is displayed before starting. The window stays r
 - **Reload**: Read the current file again. Discarding unsaved changes requires confirmation.
 - **Save**: Write displayed values to the file shown under **Settings file**. Previous content is backed up under `backups/` beside that file. If another application changed it since loading, reload instead of overwriting.
 
-The **Inputs** and **Outputs and time zone** tabs contain game-specific fields. For Anno 1404, enter one save folder per line. Empty optional output fields use existing default subdirectories. Scrollbars keep fields accessible in small windows. For keys and placeholders, see [settings documentation](settings.de.md) (German).
+The **Inputs** and **Outputs and time zone** tabs contain game-specific fields. For Anno 1404, each save folder has its own single-line path field without wrapping; **Add folder** and **Remove** manage multiple folders. Empty optional output fields use existing default subdirectories. Scrollbars keep fields accessible in small windows. For keys and placeholders, see [settings documentation](settings.de.md) (German).
 
 **Generate uses displayed values without saving the personal configuration.** Each job receives a temporary configuration copy with the same resolved path destinations. That copy is removed after the process exits. Demo runs stay under `<output>/demo/` and ignore separate personal report, stamp and log destinations.
 
@@ -53,6 +53,8 @@ You can also open an external configuration directly:
 ```
 
 ## Language, status and cancellation
+
+Main, About and Logs window positions, sizes and maximized states are saved in `gui.json` and restored when reopened. Minimized states are not restored; windows are moved into a reachable screen area after monitor changes. About and Logs belong to the main window and stay above it. The selected tab and active language are highlighted in gold; tab sizes remain unchanged when switching.
 
 On first launch, the preferred Windows display language selects the interface: `de`, `de-DE`, `de-CH` or `de-AT` selects German; other languages or detection failures select English. **DE/EN** can be changed at any time; the saved manual choice takes precedence on subsequent launches. Inputs, game, action and selected tab survive language changes. HTML galleries keep their independent language choice; raw data, paths and logs are not translated.
 

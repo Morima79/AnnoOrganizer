@@ -11,7 +11,7 @@
   "account": "Save/account folder",
   "stamps": "Stamp folder",
   "archive": "Save archive (optional)",
-  "save_folders": "Save folders (one per line)",
+  "save_folders": "Save folders",
   "output": "Working and demo output",
   "report_output": "Reports (optional)",
   "stamp_output": "Stamp output (optional)",
@@ -43,7 +43,7 @@
   "close_dirty": "Save unsaved changes before closing?",
   "close_running": "Request cancellation and close after processing ends?",
   "missing_output": "No matching output exists yet.",
-  "about_text": "Desktop preview running from source.\nVersion: {version}\n\nUnofficial project by Morima79, MIT license.\nUse at your own risk.\nSource files are read only.\n\nNo portable executable yet; Python is required.",
+  "about_text": "Desktop preview running from source.\nVersion: {version}\n\nUnofficial project by Morima79, MIT license.\nUse at your own risk.\nSource files are read only.\n\nThis source launch requires Python.",
   "check_releases": "Releases on GitHub",
   "snapshot_hint": "Generate uses the displayed values; only Save changes the settings file.",
   "preview_hint": "Desktop preview · Python required",
@@ -54,5 +54,7 @@
   "use_preview": "Use this file in place?\n\n{source}\n\nResolved destinations:\n{paths}",
   "settings_error": "Could not use these settings. See Logs for details.",
   "portable_hint": "Portable Windows package",
-  "about_portable_text": "Portable Windows package.\nVersion: {version}\n\nUnofficial project by Morima79, MIT license.\nUse at your own risk.\nSource files are read only.\n\nNo Python installation required."
+  "about_portable_text": "Portable Windows package.\nVersion: {version}\n\nUnofficial project by Morima79, MIT license.\nUse at your own risk.\nSource files are read only.\n\nNo Python installation required.",
+  "add_folder": "Add folder",
+  "remove_folder": "Remove"
 }

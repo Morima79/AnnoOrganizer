@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from desktop.language import choose_language, resources
 from desktop.worker_client import WorkerClient
+from desktop.window_state import visible_bounds, work_areas
 
 
 class LanguageTests(unittest.TestCase):
@@ -33,6 +34,22 @@ class LanguageTests(unittest.TestCase):
         for key in de:
             self.assertEqual(set(re.findall(r'{([^}]+)}', de[key])),
                              set(re.findall(r'{([^}]+)}', en[key])), key)
+
+
+class WindowBoundsTests(unittest.TestCase):
+    def test_removed_monitor_is_recovered_and_negative_monitor_positions_remain_valid(self):
+        saved = dict(x=-1800, y=100, width=900, height=740)
+        areas = [(-1920, 0, 0, 1080), (0, 0, 1920, 1080)]
+        self.assertEqual(visible_bounds(saved, areas, (860, 720))['x'], -1800)
+        self.assertEqual(visible_bounds(saved, areas[1:], (860, 720))['x'], 0)
+        saved['x'] = 0
+        self.assertEqual(visible_bounds(saved, areas, (860, 720))['x'], 0)
+
+    def test_invalid_geometry_is_ignored_and_minimized_state_is_not_restored(self):
+        areas = [(0, 0, 1920, 1080)]
+        self.assertIsNone(visible_bounds({'width': 'huge'}, areas, (1, 1)))
+        result = visible_bounds(dict(x=10, y=10, width=900, height=740, state='iconic'), areas, (860, 720))
+        self.assertEqual(result['state'], 'normal')
 
 
 class WorkerClientTests(unittest.TestCase):
@@ -89,11 +106,11 @@ class DesktopUITests(unittest.TestCase):
 
     def test_language_switch_preserves_draft_and_selected_tab_and_persists(self):
         self.app.fields['output'].set(str(self.folder / 'Äusserer Ordner'))
-        self.app.folder_text.insert('end', '\n' + str(self.folder / 'More Saves'))
+        self.app.add_save_folder(str(self.folder / 'More Saves'))
         self.app.notebook.select(1)
         self.app.change_language('en')
         self.assertEqual(self.app.fields['output'].get(), str(self.folder / 'Äusserer Ordner'))
-        self.assertIn('More Saves', self.app.folder_text.get('1.0', 'end'))
+        self.assertTrue(any('More Saves' in field.get() for field in self.app.folder_fields))
         self.assertEqual(self.app.notebook.index('current'), 1)
         self.assertEqual(json.loads(self.app.store.preferences_path.read_text(encoding='utf-8'))['language'], 'en')
         self.assertFalse(self.app.document.path.exists())
@@ -106,6 +123,89 @@ class DesktopUITests(unittest.TestCase):
         self.app.switch_game('anno1404')
         self.assertEqual(self.app.action.get(), 'demo')
         self.assertEqual(self.app.fields['output'].get(), str(self.folder / 'Changed'))
+
+    def test_1404_uses_single_line_fields_and_preserves_multiple_paths(self):
+        from tkinter import ttk
+        self.assertIsInstance(self.app.folder_entries[0], ttk.Entry)
+        long_path = str(self.folder / ('long path ' * 15).strip())
+        self.app.folder_fields[0].set(long_path)
+        self.app.add_save_folder(str(self.folder / 'Second Save Folder'))
+        self.app.collect()
+        self.assertEqual(self.app.document.data['save_folders'], [long_path, str(self.folder / 'Second Save Folder')])
+        self.app.remove_save_folder(1)
+        self.app.collect()
+        self.assertEqual(self.app.document.data['save_folders'], [long_path])
+
+    def test_selected_language_and_tabs_use_gold_without_padding_changes(self):
+        from tkinter import ttk
+        style = ttk.Style(self.root)
+        self.assertEqual(style.lookup(self.app.language_buttons['de'].cget('style'), 'background'), '#cba56a')
+        self.app.change_language('en')
+        self.assertEqual(style.lookup(self.app.language_buttons['en'].cget('style'), 'background'), '#cba56a')
+        self.assertNotEqual(self.app.language_buttons['de'].cget('style'), 'LanguageSelected.TButton')
+        self.assertEqual(style.lookup('TNotebook.Tab', 'background', ('selected',)), '#cba56a')
+        self.assertEqual(str(style.lookup('TNotebook.Tab', 'padding', ('selected',))),
+                         str(style.lookup('TNotebook.Tab', 'padding', ('!selected',))))
+
+    def test_about_is_owned_by_main_and_survives_language_changes(self):
+        self.app.about()
+        window = self.app.child_windows['about']
+        self.assertEqual(str(window.transient()), str(self.root))
+        self.app.about()
+        self.assertIs(self.app.child_windows['about'], window)
+        self.app.change_language('en')
+        self.assertTrue(window.winfo_exists())
+        self.assertEqual(window.title(), 'About')
+
+    def test_window_geometry_survives_restart(self):
+        from desktop.app import DesktopApp
+        self.root.deiconify()
+        self.root.geometry('950x780+100+120')
+        self.root.update()
+        self.app.window_state.remember_all()
+        self.app.store.save_preferences()
+        saved = self.app.store.preferences['windows']['main']
+        expected = visible_bounds(saved, work_areas(self.root), (860, 720))
+        second = tk.Tk()
+        self.addCleanup(second.destroy)
+        second.withdraw()
+        DesktopApp(second, directory=self.app.store.directory, game='anno1404')
+        second.deiconify()
+        second.update()
+        self.assertEqual(second.winfo_width(), expected['width'])
+        self.assertEqual(second.winfo_height(), expected['height'])
+        self.assertAlmostEqual(second.winfo_x(), expected['x'], delta=2)
+        self.assertAlmostEqual(second.winfo_y(), expected['y'], delta=2)
+
+    def test_maximizing_keeps_normal_bounds_for_restoration(self):
+        self.root.deiconify()
+        self.root.geometry('950x780+100+120')
+        self.root.update()
+        self.app.window_state.remember_all()
+        normal = dict(self.app.store.preferences['windows']['main'])
+        self.root.state('zoomed')
+        self.root.update()
+        self.app.window_state.remember_all()
+        saved = self.app.store.preferences['windows']['main']
+        self.assertEqual(saved, dict(normal, state='zoomed'))
+
+    def test_child_window_bounds_are_saved_and_restored_on_reopen(self):
+        self.root.deiconify()
+        self.root.update()
+        self.app.about()
+        window = self.app.child_windows['about']
+        window.geometry('500x300+130+150')
+        self.root.update()
+        self.app.close_child('about')
+        saved = self.app.store.preferences['windows']['about']
+        expected = visible_bounds(saved, work_areas(self.root), (1, 1))
+        self.app.about()
+        window = self.app.child_windows['about']
+        self.root.update()
+        self.assertEqual(window.winfo_width(), expected['width'])
+        self.assertEqual(window.winfo_height(), expected['height'])
+        self.assertAlmostEqual(window.winfo_x(), expected['x'], delta=2)
+        self.assertAlmostEqual(window.winfo_y(), expected['y'], delta=2)
 
     def test_save_retains_unknown_values(self):
         self.app.document.data['custom'] = {'keep': True}
