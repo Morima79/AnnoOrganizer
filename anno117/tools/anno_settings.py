@@ -1,5 +1,6 @@
 """Load per-game settings and protect source data from overlapping output paths."""
 from pathlib import Path
+import copy
 import ctypes
 import json
 import os
@@ -40,13 +41,28 @@ class Settings:
         if not self.filename.is_file():
             raise ValueError('Einstellungen fehlen. settings.example.json als settings.json kopieren und Pfade anpassen.')
         try:
-            self.data = json.loads(self.filename.read_text(encoding='utf-8-sig'))
-            if not isinstance(self.data, dict) or self.data.get('version') != 1:
-                raise ValueError('Die Einstellungen benötigen version: 1.')
+            data = json.loads(self.filename.read_text(encoding='utf-8-sig'))
+            self._configure(data)
         except (ValueError, OSError) as exc:
             raise ValueError(f'Einstellungen nicht lesbar: {self.filename}: {exc}') from exc
-        if self.data.get('game') != game:
-            raise ValueError('Die Einstellungsdatei gehört nicht zu ' + game + '.')
+
+    @classmethod
+    def from_data(cls, game, filename, data):
+        """Resolve an unsaved configuration without creating files or outputs."""
+        if game not in GAMES:
+            raise ValueError('Unbekanntes Spiel: ' + str(game))
+        instance = cls.__new__(cls)
+        instance.game = game
+        instance.filename = Path(filename).resolve()
+        instance._configure(data)
+        return instance
+
+    def _configure(self, data):
+        if not isinstance(data, dict) or type(data.get('version')) is not int or data['version'] != 1:
+            raise ValueError('Die Einstellungen benötigen version: 1.')
+        self.data = copy.deepcopy(data)
+        if self.data.get('game') != self.game:
+            raise ValueError('Die Einstellungsdatei gehört nicht zu ' + self.game + '.')
         self.values = self.data
         self.zone = self.data.get('timezone', 'Europe/Zurich')
         ZoneInfo(self.zone)

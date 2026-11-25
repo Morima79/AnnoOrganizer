@@ -108,7 +108,7 @@ Example using an existing external configuration:
 
 The five generators no longer load configuration at import time. Their `run(settings, rescan=False)` service receives settings explicitly; existing direct script calls remain available through `main`. The shared service loads a fresh generator module per action and calls that service without another Python subprocess. Log output is captured separately from events. No temporary demo configuration file is needed; `settings.filename` is preserved. The existing `output` lock still covers the entire demo job. Module-global processing contexts remain limited to one game process for now; the 1800 game-resource index is reset when configuration changes. This prepares a frozen build, but no such build has been created or verified yet.
 
-Reservations across separate output destinations, further progress events, complete stamp-output transactions and the packaged worker remain open. GUI, LocalAppData management and automatic language detection are still planned. Because game modules share names, the source service must be used within a single game process; switching games will use a new worker.
+Reservations across separate output destinations, further progress events, complete stamp-output transactions and the packaged worker remain open. LocalAppData settings management is implemented; the GUI and automatic language detection are built on top of it. Because game modules share names, the source service must be used within a single game process; switching games will use a new worker.
 
 ## Implementation status: source worker
 
@@ -123,6 +123,12 @@ stdout contains only UTF-8 JSON lines in the event format described above. Gener
 A cancellation command on stdin is `{"protocol_version":1,"run_id":"<run_id>","type":"cancel"}` followed by a newline. Only matching versions and job identifiers are accepted; EOF does not cancel. A background reader sets the cancellation request. Checks occur before execution, between actions, between parsed saves or map variants, between stamps and before publication. Active parsers, thread-pool tasks and individual write/publication operations are allowed to finish. Completed demo actions remain listed if cancellation happens later. Stamp generators still write individual images/caches directly; partial output is therefore possible and complete rollback is not promised yet. The GUI must remain responsive until the completion event and wait for these safe boundaries.
 
 Automated checks cover a real 1404 source-worker demo, protocol errors and cancellation through stdin. A packaged executable worker and runtime behavior using 117/1800 game resources have not been established by these checks.
+
+## Implementation status: settings management
+
+`desktop/settings_store.py` manages one configuration per game beneath the actual LocalAppData directory reported by Windows. New configurations initially exist in memory only and reference bundled examples; saving creates files. External files can be used in place or explicitly copied. Copying resolves known relative paths and implicit output destinations against the source directory, preserving unknown values. A missing external file is never silently recreated.
+
+`Settings.from_data` provides the same path resolution for unsaved values. `anno_settings.py` is now also synchronized from `templates/`. Saving checks schema, path types and overlaps with inputs/code; missing installations may still be configured, with complete action-specific checks before processing. Changes use an edit lock, a backup of previous content and atomic replacement. Detected external edits since loading cause a conflict instead of an overwrite; editors that do not share the lock cannot be covered by a complete transaction guarantee. GUI preferences and external file selections persist in `gui.json`.
 
 ## Implementation sequence
 
