@@ -64,5 +64,7 @@
   "map_gallery": "Map gallery",
   "stamp_gallery": "Stamp gallery",
   "demo_map_gallery": "Map gallery (demo)",
-  "demo_stamp_gallery": "Stamp gallery (demo)"
+  "demo_stamp_gallery": "Stamp gallery (demo)",
+  "already_running": "AnnoOrganizer is already open with this GUI data directory. Use the existing window.",
+  "browser_failed": "Could not open the gallery in the default browser.\n\n{path}\n\nYou can also open this file directly in File Explorer."
 }

@@ -221,6 +221,27 @@ class DesktopUITests(unittest.TestCase):
         self.assertEqual(style.lookup('TEntry', 'insertcolor'), '#ffffff')
         self.assertEqual(str(style.lookup('TEntry', 'insertwidth')), '2')
 
+    def test_failed_browser_launch_reports_the_existing_gallery_path(self):
+        page = self.app.document.view().report_output / 'map-gallery.html'
+        page.parent.mkdir(parents=True)
+        page.write_text('<html>existing gallery</html>', encoding='utf-8')
+        with patch('desktop.app.webbrowser.open', return_value=False), \
+                patch('desktop.app.messagebox.showerror') as error:
+            self.app.open_galleries()
+        self.assertIn(str(page), error.call_args.args[1])
+        self.assertIn(str(page), self.app.details)
+
+    def test_worker_diagnostics_remain_available_after_temporary_job_cleanup(self):
+        self.app.client.events.put(dict(type='completed', payload=dict(
+            status='failed', galleries=[], logs=[], partial_output=False,
+            message='Permission denied: output folder')))
+        self.app.poll()
+        log = self.app.store.directory / 'logs/anno1404-last-run.json'
+        saved = json.loads(log.read_text(encoding='utf-8'))
+        self.assertEqual(saved['result']['message'], 'Permission denied: output folder')
+        self.assertEqual(saved['result']['status'], 'failed')
+        self.assertIsNone(self.app.snapshot)
+
     def test_browse_starts_at_resolved_draft_or_nearest_existing_parent(self):
         source = self.app.document.path.parent / 'Saved Games'
         source.mkdir(parents=True)

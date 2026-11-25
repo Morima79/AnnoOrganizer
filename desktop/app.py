@@ -1,5 +1,6 @@
 """Tk desktop preview backed by isolated game workers and explicit settings."""
 import copy
+from datetime import datetime, timezone
 import json
 import os
 from pathlib import Path
@@ -13,7 +14,7 @@ from tkinter import filedialog, messagebox, ttk
 import webbrowser
 
 from desktop.language import choose_language, resources
-from desktop.settings_store import ConfigDocument, GAMES, ROOT, SettingsConflict, SettingsStore
+from desktop.settings_store import ConfigDocument, GAMES, ROOT, SettingsConflict, SettingsStore, gui_session, local_app_data
 from desktop.worker_client import WorkerClient
 from desktop.window_state import WindowState
 
@@ -93,6 +94,9 @@ class DesktopApp:
                             lightcolor='#3c424c', darkcolor='#3c424c', bordercolor='#3c424c')
             style.map(name, lightcolor=[('active', '#505966')], darkcolor=[('active', '#505966')],
                       bordercolor=[('active', '#505966')])
+        style.layout('Gallery.TMenubutton', [('Menubutton.border', dict(sticky='nswe', children=[
+            ('Menubutton.padding', dict(sticky='nswe', children=[('Menubutton.indicator', dict(sticky=''))]))]))])
+        style.configure('Gallery.TMenubutton', padding=0)
         style.configure('Accent.TButton', background='#cba56a', foreground='#171b22', font=('Segoe UI', 10, 'bold'))
         style.map('Accent.TButton', background=[('active', '#dfb875')])
         style.configure('LanguageSelected.TButton', background='#cba56a', foreground='#171b22')
@@ -234,8 +238,10 @@ class DesktopApp:
         self.cancel_button.pack(side='left')
         gallery_group = tk.Frame(commands, background='#89919d', padx=1, pady=1)
         gallery_group.pack(side='right')
-        self.gallery_menu_button = ttk.Menubutton(gallery_group, width=1, style='Gallery.TMenubutton')
+        self.gallery_menu_button = ttk.Menubutton(gallery_group, width=0, style='Gallery.TMenubutton')
         self.gallery_menu_button.grid(row=0, column=2, sticky='nsew')
+        self.gallery_menu_button.bind('<Map>', lambda _: self.size_gallery_arrow())
+        self.gallery_menu_button.bind('<Configure>', lambda _: self.size_gallery_arrow())
         self.gallery_menu = tk.Menu(self.gallery_menu_button, tearoff=False, postcommand=self.fill_gallery_menu)
         self.gallery_menu_button.configure(menu=self.gallery_menu)
         self.gallery_button = ttk.Button(gallery_group, text=self.t('open_galleries'),
@@ -260,6 +266,11 @@ class DesktopApp:
         self.refresh_destination()
         self.apply_busy()
         self.refresh_child_language()
+
+    def size_gallery_arrow(self):
+        """Keep a compact, centred arrow area half as wide as the button is tall."""
+        group = self.gallery_menu_button.master
+        group.columnconfigure(2, minsize=max(16, (self.gallery_button.winfo_height() + 1) // 2))
 
     def draw_folder_rows(self):
         for widget in self.folder_rows.winfo_children():
@@ -574,10 +585,23 @@ class DesktopApp:
             if self.snapshot is not None:
                 self.cleanup_snapshot()
             self.last_result = dict(status='failed', galleries=[], logs=[], partial_output=False)
+            self.last_result['message'] = str(exc)
             self.status = 'failed'
             self.apply_busy()
             self.status_label.configure(text=self.status_text())
+            self.record_result()
             self.error(exc)
+
+    def record_result(self):
+        """Retain the last job's diagnostics even after the GUI closes."""
+        try:
+            folder = self.store.directory / 'logs'
+            folder.mkdir(parents=True, exist_ok=True)
+            (folder / (self.game + '-last-run.json')).write_text(json.dumps(dict(
+                updated_at=datetime.now(timezone.utc).isoformat(), action=self.action.get(),
+                result=self.last_result), ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+        except OSError as exc:
+            self.details += '\n' + str(exc)
 
     def cleanup_snapshot(self):
         snapshot, self.snapshot = self.snapshot, None
@@ -608,6 +632,7 @@ class DesktopApp:
                 elif event['type'] == 'completed':
                     self.last_result = event['payload']
                     self.details = '\n'.join(str(self.last_result.get(key, '')) for key in ('message', 'diagnostics'))
+                    self.record_result()
                     self.status = self.last_result['status']
                     self.cleanup_snapshot()
                     self.apply_busy()
@@ -657,7 +682,13 @@ class DesktopApp:
     def open_galleries(self, selected=None):
         for _, path in self.available_galleries():
             if selected is None or path == selected:
-                webbrowser.open(path.as_uri())
+                try:
+                    if not webbrowser.open(path.as_uri()):
+                        raise OSError(self.t('browser_failed', path=path))
+                except OSError as exc:
+                    self.details = str(exc)
+                    messagebox.showerror(self.t('error'), self.t('browser_failed', path=path), parent=self.root)
+                    break
 
     def open_output(self):
         try:
@@ -780,9 +811,19 @@ class DesktopApp:
 
 def main(*, directory=None, game='anno117', config=None):
     root = tk.Tk()
+    root.withdraw()
     try:
-        DesktopApp(root, directory=directory, game=game, config=config)
-        root.mainloop()
+        directory = Path(directory).resolve() if directory is not None else local_app_data()
+        try:
+            with gui_session(directory):
+                DesktopApp(root, directory=directory, game=game, config=config)
+                root.deiconify()
+                root.mainloop()
+        except SettingsConflict:
+            language = choose_language()
+            messagebox.showinfo('AnnoOrganizer', resources(language)['already_running'], parent=root)
+            root.destroy()
+            return 1
     except Exception as exc:
         messagebox.showerror('AnnoOrganizer', str(exc), parent=root)
         root.destroy()

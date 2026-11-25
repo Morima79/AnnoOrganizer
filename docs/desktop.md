@@ -30,7 +30,7 @@ The absolute output destination is displayed before starting. The window stays r
 
 **Open galleries** opens all existing map and stamp galleries for this game in the displayed output destinations, including separate demo outputs. The small arrow beside it offers individual selection. Existing pages are available immediately after restarting and after failed or cancelled jobs. Availability is checked periodically; it does not indicate that the current job succeeded.
 
-The gallery button and selection arrow share one outline with a subtle inner divider. The left side opens all available galleries; the right side selects an individual gallery.
+The gallery button and selection arrow share one outline with a subtle inner divider. The left side opens all available galleries; the right side selects an individual gallery. The arrow area is compact with a centred arrow. If Windows cannot open a gallery in the default browser, the GUI shows its path for opening the file directly.
 
 ## Edit and reuse settings
 
@@ -54,6 +54,8 @@ New GUI files live under `%LOCALAPPDATA%/AnnoOrganizer/<game>/settings.json`, wi
 .\Launch.cmd --gui --gui-data-dir "D:/AnnoOrganizer Data"
 ```
 
+Only one interface runs per GUI data directory. A second launch shows a notice instead of writing competing preferences. The OS-owned lock is released after a process crash too. Separate GUI data directories remain possible; existing output locks still protect shared destinations.
+
 You can also open an external configuration directly:
 
 ```powershell
@@ -69,6 +71,8 @@ On first launch, the preferred Windows display language selects the interface: `
 Status names the current processing step. The moving indicator shows activity rather than an estimated percentage. **Cancel** requests cooperative cancellation. An active parser or publication may finish before the next safe boundary. Closing during processing asks whether to cancel. **No** lets the job continue; **Yes** requests cancellation and waits for process completion before closing. Unsaved settings are then offered for saving as during normal closing. Force quitting through Task Manager is not an orderly cancellation.
 
 Success is displayed only when the worker completion and process exit code agree. Failure or cancellation reports possible partial output. **Logs** shows diagnostics and action logs. **About** shows development version, license information and a link to GitHub releases; no automatic update takes place.
+
+Each game's latest job and error details are saved to `<GUI data directory>/logs/<game>-last-run.json`. Errors that occur before generator logs start remain readable after closing the GUI. These files may contain personal paths and stay local.
 
 ## Current limitations
 

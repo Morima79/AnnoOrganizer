@@ -30,7 +30,7 @@ Das absolute Ausgabeziel steht vor dem Start unter den Eingaben. Während der Ve
 
 **Galerien öffnen** öffnet alle vorhandenen Karten- und Stempelgalerien dieses Spiels aus den aktuell angezeigten Ausgabezielen, einschliesslich der getrennten Demo-Ausgaben. Der kleine Pfeil daneben bietet die einzelne Auswahl. Vorhandene Seiten sind auch direkt nach einem Neustart und nach einem fehlgeschlagenen oder abgebrochenen Lauf erreichbar. Die Verfügbarkeit wird regelmässig geprüft; sie sagt nichts über den Erfolg des laufenden Auftrags aus.
 
-Galeriebutton und Auswahlpfeil bilden ein gemeinsames Bedienelement mit einer dezenten inneren Trennlinie. Links werden alle vorhandenen Galerien geöffnet, rechts lässt sich eine einzelne wählen.
+Galeriebutton und Auswahlpfeil bilden ein gemeinsames Bedienelement mit einer dezenten inneren Trennlinie. Links werden alle vorhandenen Galerien geöffnet, rechts lässt sich eine einzelne wählen. Der Pfeilbereich ist kompakt und der Pfeil darin zentriert. Kann Windows die Galerie nicht im Standardbrowser öffnen, zeigt die GUI den Dateipfad zum direkten Öffnen an.
 
 ## Einstellungen bearbeiten und übernehmen
 
@@ -54,6 +54,8 @@ Neue GUI-Dateien liegen unter `%LOCALAPPDATA%/AnnoOrganizer/<spiel>/settings.jso
 .\Launch.cmd --gui --gui-data-dir "D:/AnnoOrganizer Data"
 ```
 
+Pro GUI-Datenordner läuft nur eine Oberfläche gleichzeitig. Ein weiterer Start zeigt einen Hinweis, statt konkurrierende Einstellungen zu speichern. Die Betriebssystemsperre wird auch nach einem Prozessabsturz freigegeben. Unabhängige GUI-Datenordner bleiben möglich; die bestehenden Sperren schützen weiterhin gemeinsame Ausgabeziele.
+
 Eine externe Konfiguration lässt sich auch direkt öffnen:
 
 ```powershell
@@ -69,6 +71,8 @@ Beim ersten Start bestimmt die bevorzugte Windows-Anzeigesprache die Oberfläche
 Die Statusanzeige nennt den aktuellen Verarbeitungsschritt. Die bewegte Anzeige zeigt Aktivität und keinen geschätzten Prozentwert. **Abbrechen** fordert einen kooperativen Abbruch an. Ein laufender Parser oder eine Veröffentlichung darf bis zur nächsten sicheren Grenze fertiglaufen. Beim Schliessen während einer Verarbeitung fragt die GUI nach einem Abbruch. **Nein** lässt den Auftrag weiterlaufen; **Ja** fordert den Abbruch an und wartet vor dem Schliessen auf das Prozessende. Anschliessend werden ungespeicherte Einstellungen wie beim normalen Schliessen angeboten. Erzwungenes Beenden über den Task-Manager ist kein geordneter Abbruch.
 
 Erfolg wird erst angezeigt, wenn Worker-Abschluss und Prozess-Exitcode zusammenpassen. Bei Fehler oder Abbruch werden mögliche Teilergebnisse genannt. **Protokolle** zeigt Diagnosen und die Aktionslogs. **Info** zeigt den Entwicklungsstand, Lizenzhinweise und einen Link zu den GitHub-Releases; es erfolgt kein automatisches Update.
+
+Der letzte Auftrag jedes Spiels wird samt Fehlerdetails unter `<GUI-Datenordner>/logs/<spiel>-last-run.json` gespeichert. Dadurch bleiben auch Fehler vor dem Start eines Generatorlogs nach dem Schliessen lesbar. Diese Dateien können persönliche Pfade enthalten und bleiben lokal.
 
 ## Aktuelle Grenzen
 

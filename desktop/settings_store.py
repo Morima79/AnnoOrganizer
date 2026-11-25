@@ -96,6 +96,15 @@ def edit_lock(path):
             msvcrt.locking(lock.fileno(), msvcrt.LK_UNLCK, 1)
 
 
+@contextmanager
+def gui_session(directory):
+    """Hold an OS-owned lock for one GUI session per preferences directory."""
+    directory = Path(directory).resolve()
+    directory.mkdir(parents=True, exist_ok=True)
+    with edit_lock(directory / 'gui-session'):
+        yield
+
+
 def atomic_save(path, data, expected):
     """Back up and replace JSON, detecting changes immediately before replacement."""
     path = Path(path).resolve()

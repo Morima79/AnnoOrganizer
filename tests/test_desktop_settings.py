@@ -3,16 +3,30 @@ import json
 import os
 from pathlib import Path
 import sys
+import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from desktop.settings_store import ConfigDocument, SettingsConflict, SettingsStore, game_api
+from desktop.settings_store import ConfigDocument, SettingsConflict, SettingsStore, game_api, gui_session
 
 
 class DesktopSettingsTests(unittest.TestCase):
+    @unittest.skipUnless(os.name == 'nt', 'Windows session lock')
+    def test_gui_profile_lock_rejects_another_process_and_releases_on_close(self):
+        code = 'from desktop.settings_store import gui_session\nimport sys\nwith gui_session(sys.argv[1]):\n    pass\n'
+        profile = self.folder / 'gui-session'
+        with gui_session(profile):
+            result = subprocess.run([sys.executable, '-c', code, str(profile)], cwd=ROOT,
+                                    capture_output=True, text=True)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn('SettingsConflict', result.stderr)
+        result = subprocess.run([sys.executable, '-c', code, str(profile)], cwd=ROOT,
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)

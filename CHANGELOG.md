@@ -7,6 +7,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Centre the arrow in a narrower gallery selector, prevent competing GUI sessions for the same preferences directory, retain last-job diagnostics and report failed browser launches.
+
 - Join gallery opening and individual selection into one visually unified split button.
 
 - Brighten desktop entry cursors, start browsing at resolved field paths, select installations through visible EXEs, explain time zones, lock the interface during jobs and preserve unsaved settings on cancellation/close. Add individual gallery selection and discover existing pages independently of the last run.
@@ -28,6 +30,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 - Prepare shared non-interactive execution for all three game launchers, including validated demo plans, structured stage/completion callbacks and output results. Add `--non-interactive`; retain the transitional Python script backend and document remaining GUI/worker work.
 
 ### Deutsch
+
+- Pfeil im schmaleren Galerie-Auswahlbereich zentriert, konkurrierende GUI-Instanzen pro Einstellungsordner verhindert, letzte Auftragsdiagnosen gespeichert und fehlgeschlagene Browserstarts gemeldet.
 
 - Galerieöffnung und Einzelauswahl zu einem optisch zusammengehörigen Button mit Auswahlpfeil verbunden.
 
