@@ -2,6 +2,7 @@
 from pathlib import Path
 import sys
 from anno_settings import settings_for, protect_output
+from anno_execution import checkpoint
 from anno_gallery import render_gallery
 CONFIG = None
 
@@ -245,6 +246,7 @@ def configure(settings):
     global CONFIG, ROOT, GAME, LIB, OUT, CACHE
     if settings.game != 'anno1800':
         raise ValueError('Die Einstellungsdatei gehört nicht zu anno1800.')
+    checkpoint()
     settings.validate('stamps')
     CONFIG = settings
     ROOT = settings.output
@@ -268,6 +270,7 @@ def main(*, settings=None):
     CACHE.mkdir(parents=True,exist_ok=True);OUT.mkdir(parents=True,exist_ok=True)
     snapshot={p:sha(p) for p in LIB.rglob('*') if p.is_file()};entries=[]
     for path,digest in sorted(snapshot.items()):
+        checkpoint()
         if path.suffix.lower()=='.ini':continue
         relative=path.relative_to(LIB);region=REGIONS.get(relative.parts[0],relative.parts[0]);folder='/'.join(relative.parts[1:-1])
         entries.append({'name':path.name,'region':region,'folder':folder,'source':str(relative),'stamp_hash':digest,'data':decode(path)})
@@ -303,6 +306,7 @@ def main(*, settings=None):
     inventoryfile=CACHE/'inventory.json';old=json.loads(inventoryfile.read_text(encoding='utf-8')) if inventoryfile.exists() else [];by_path={e['png']:e for e in old}
     renderhash=sha(Path(__file__))+sha(Path(__file__).with_name('anno_stamp_blueprint.py'));manifest=[];thumbs=OUT/'_thumbnails';thumbs.mkdir(exist_ok=True);used=set();rendered=0
     for i,e in enumerate(entries):
+        checkpoint()
         packs=set();skin_unknown=False
         for b in e['data']['buildings']:
             a=assets.get(b['guid']);packs.update(packids(a))
@@ -332,6 +336,7 @@ def main(*, settings=None):
         row={k:e[k] for k in ['name','region','folder','source']};row.update(meta);row.update({'png':rel,'thumb':thumb.relative_to((CONFIG.stamp_output)).as_posix(),'fingerprint':fingerprint,'png_hash':sha(path),'requirements':req,'streets':e['data']['street_tiles'],'rail_points':e['data']['rail_points']});manifest.append(row)
         if (i+1)%75==0:print(f'{i+1}/{len(entries)} Plaene fertig.',flush=True)
     assert {p:sha(p) for p in LIB.rglob('*') if p.is_file()}==snapshot,'Stempelbibliothek wurde waehrend des Lesens geaendert.'
+    checkpoint()
     archive_old(old,manifest);write_gallery(manifest)
     inventoryfile.write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
     (CACHE/'source-checksums.json').write_text(json.dumps({str(p.relative_to(LIB)):v for p,v in snapshot.items()},ensure_ascii=False,indent=2),encoding='utf-8')

@@ -7,11 +7,15 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Add an isolated source-worker entry point with JSON-line events, explicit exit codes and matching-job cancellation requests; check cancellation between actions, saves, map variants and stamps, and before publication.
+
 - Expose explicit settings-based services for all five generators; remove configuration reads on import and script subprocesses from shared execution while retaining direct CLI entry points.
 
 - Prepare shared non-interactive execution for all three game launchers, including validated demo plans, structured stage/completion callbacks and output results. Add `--non-interactive`; retain the transitional Python script backend and document remaining GUI/worker work.
 
 ### Deutsch
+
+- Isolierten Quellcode-Worker mit JSON-Zeilen-Ereignissen, definierten Exitcodes und auftragsbezogenem Abbruch ergänzt; Abbruch zwischen Aktionen, Saves, Kartenvarianten und Stempeln sowie vor Veröffentlichung prüfen.
 
 - Dienste mit expliziter Konfiguration für alle fünf Generatoren ergänzt; Konfigurationszugriffe beim Import und Skript-Unterprozesse aus der gemeinsamen Ausführung entfernt. Direkte CLI-Einstiege bleiben erhalten.
 

@@ -11,6 +11,7 @@ import os
 from pathlib import Path
 import sys
 from anno_settings import settings_for, protect_output
+from anno_execution import checkpoint
 import anno_game_settings as game_labels
 from anno_gallery import render_gallery
 from anno_save_summary import collect_statistics, render_statistics, totals_html, variant_totals, label as summary_label
@@ -303,6 +304,7 @@ def collect(sources, stage, output, refresh):
     paths = sorted({p.resolve() for folder in sources if folder.is_dir()
                     for p in folder.rglob('*.sww') if p.is_file()})
     for index, path in enumerate(paths, 1):
+        checkpoint()
         try:
             stat = path.stat()
             fingerprint = [stat.st_mtime_ns, stat.st_size]
@@ -440,6 +442,7 @@ def write_excel(stage, payload):
 
 
 def publish(stage, output):
+    checkpoint()
     image_dir = output/'map-images'
     image_dir.mkdir(exist_ok=True)
     targets = (XLSX, HTML, CACHE, 'anno1404-statistics.json')
@@ -469,6 +472,7 @@ def configure(settings):
     global CONFIG
     if settings.game != 'anno1404':
         raise ValueError('Die Einstellungsdatei gehört nicht zu anno1404.')
+    checkpoint()
     settings.validate('analyze')
     CONFIG = settings
 

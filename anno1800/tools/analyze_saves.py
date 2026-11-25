@@ -13,6 +13,7 @@ from datetime import datetime
 from pathlib import Path
 import sys
 from anno_settings import settings_for, protect_output
+from anno_execution import checkpoint
 import anno_game_settings as game_labels
 from anno_map_catalog import render_card, render_catalog_page
 from anno_map_variants import campaign_variants, latest_known_values
@@ -215,7 +216,10 @@ def scan(cache_path, refresh=False):
 
     print(f'Spielstände prüfen: {len(candidates):,}', flush=True)
     with ThreadPoolExecutor(max_workers=6) as pool:
-        rows = list(pool.map(one, sorted(candidates)))
+        rows = []
+        for row in pool.map(one, sorted(candidates)):
+            checkpoint()
+            rows.append(row)
     failures = [row for row in rows if 'error' in row]
     if failures:
         for row in failures[:10]:
@@ -326,6 +330,7 @@ def collect_maps(groups, previous):
               for r in previous if r.get('maps') and 'signature' in r}
     result = []
     for i, (_, rows) in enumerate(groups, 1):
+        checkpoint()
         profiles = defaultdict(list)
         for row in rows:
             profiles[row['source'], Path(row['path']).parent].append(row)
@@ -659,6 +664,7 @@ def write_excel(rows, stage, workbook, output, updated_at, total_playtime, profi
 
 
 def publish(stage, output, workbook):
+    checkpoint()
     workbook.parent.mkdir(parents=True, exist_ok=True)
     images = output/'map-images'
     images.mkdir(exist_ok=True)
@@ -697,6 +703,7 @@ def configure(settings):
     global CONFIG, ACCOUNT, ARCHIVE, GAME, ZONE_NAME
     if settings.game != 'anno1800':
         raise ValueError('Die Einstellungsdatei gehört nicht zu anno1800.')
+    checkpoint()
     settings.validate('analyze')
     CONFIG = settings
     ACCOUNT = settings.path('account')

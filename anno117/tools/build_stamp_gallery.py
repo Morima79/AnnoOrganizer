@@ -2,6 +2,7 @@
 from pathlib import Path
 import sys
 from anno_settings import settings_for, protect_output
+from anno_execution import checkpoint
 from anno_gallery import render_gallery
 CONFIG = None
 
@@ -105,6 +106,7 @@ def configure(settings):
     global CONFIG, ROOT, GAME, LIB, OUT, CACHE
     if settings.game != 'anno117':
         raise ValueError('Die Einstellungsdatei gehört nicht zu anno117.')
+    checkpoint()
     settings.validate('stamps')
     CONFIG = settings
     ROOT = settings.output
@@ -134,6 +136,7 @@ def main(*, settings=None):
     snapshot={p:p.read_bytes() for p in LIB.rglob('*') if p.is_file()}
     entries=[]
     for path,data in sorted(snapshot.items()):
+        checkpoint()
         if path.suffix.lower()!='.json':continue
         content=json.loads(data.decode('utf-8-sig'))
         for s in content['Stamps']:
@@ -210,6 +213,7 @@ def main(*, settings=None):
     manifest=[];paths=set();thumbdir=OUT/'_thumbnails';thumbdir.mkdir(exist_ok=True)
     rendered=0;reused=0
     for i,entry in enumerate(entries):
+        checkpoint()
         sub=OUT/entry['region']
         if entry['folder']:sub=sub/safe(entry['folder'])
         sub.mkdir(parents=True,exist_ok=True)
@@ -230,6 +234,7 @@ def main(*, settings=None):
         manifest.append({k:entry[k] for k in ['name','region','folder','source','requirements']}|metadata|{'png':relative,'thumb':thumbnail.relative_to((CONFIG.stamp_output)).as_posix(),'fingerprint':fingerprint,'png_hash':digest(path),'thumb_hash':digest(thumbnail)})
     assert all(p.read_bytes()==b for p,b in snapshot.items()),'Bibliothek wurde waehrend der Erstellung geaendert.'
     assert {p for p in LIB.rglob('*') if p.is_file()}==set(snapshot)
+    checkpoint()
     archived=archive_obsolete(previous,manifest)
     write_gallery(manifest)
     inventoryfile.write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')

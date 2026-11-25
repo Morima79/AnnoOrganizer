@@ -12,6 +12,7 @@ import os
 from pathlib import Path
 import sys
 from anno_settings import settings_for, protect_output
+from anno_execution import checkpoint
 import anno_game_settings as game_labels
 from anno_map_catalog import render_card, render_catalog_page
 from anno_map_variants import campaign_variants, latest_known_values
@@ -106,7 +107,11 @@ def scan(accounts, cache, refresh):
         return relative, {**row,'signature':signature}
 
     with ThreadPoolExecutor(max_workers=6) as workers:
-        return dict(workers.map(read,files))
+        result = {}
+        for key, row in workers.map(read, files):
+            checkpoint()
+            result[key] = row
+        return result
 
 
 def maps_for(file):
@@ -297,6 +302,7 @@ def prepare(saves, accounts, map_writer, zone, cached_maps, statistics=None):
     def chronological(save):
         return save[1]['stamp'], save[0]
     for index, (seed, rows) in enumerate(groups, 1):
+        checkpoint()
         rows.sort(key=chronological)
         latest_name,latest = rows[-1]
         record_name,record = max(rows,key=lambda save:(save[1]['play'],chronological(save)))
@@ -393,6 +399,7 @@ def write_html(rows, total, stage, updated_at, total_playtime, profiles):
 
 
 def publish(stage, output):
+    checkpoint()
     pairs=[(stage/name,output/name) for name in
            ('anno117-map-seeds.xlsx','map-gallery.html','anno117-scan.json','anno117-maps.json','anno117-statistics.json')]
     old = {}
@@ -424,6 +431,7 @@ def configure(settings):
     global CONFIG, ACCOUNT, GAME
     if settings.game != 'anno117':
         raise ValueError('Die Einstellungsdatei gehört nicht zu anno117.')
+    checkpoint()
     settings.validate('analyze')
     CONFIG = settings
     ACCOUNT = settings.path('account')

@@ -3,6 +3,7 @@
 This module must be used within one game process, like the standalone launchers.
 """
 from contextlib import contextmanager, redirect_stdout, redirect_stderr
+from contextvars import ContextVar
 from dataclasses import dataclass
 import importlib.util
 import json
@@ -14,6 +15,18 @@ from anno_demo import demo_settings
 
 
 SCRIPTS = {'analyze': 'analyze_saves.py', 'stamps': 'build_stamp_gallery.py'}
+_cancellation = ContextVar('anno_cancellation', default=None)
+
+
+class ExecutionCancelled(Exception):
+    """A cooperative cancellation reached a safe boundary."""
+
+
+def checkpoint():
+    """Check the current job without interrupting an atomic operation."""
+    requested = _cancellation.get()
+    if requested is not None and requested():
+        raise ExecutionCancelled('Aktualisierung abgebrochen.')
 
 
 @dataclass(frozen=True)
@@ -138,15 +151,15 @@ def _run_task(plan, action, on_output):
     return gallery
 
 
-def execute_plan(plan, on_event=None, on_output=None):
+def execute_plan(plan, on_event=None, on_output=None, *, cancel_requested=None, run_id=None):
     """Run a prepared job, returning output paths; callbacks run on this thread.
 
     Events use the proposed version-1 envelope, but this is not a worker transport.
     Exceptions propagate after a failed completion event; completed demo actions
-    are reported as partial outputs. Cancellation is not implemented here yet.
+    are reported as partial outputs. Cancellation is checked at safe boundaries.
     """
     settings = plan.settings
-    run_id = str(uuid4())
+    run_id = run_id or str(uuid4())
     galleries = []
     logs = []
 
@@ -155,7 +168,9 @@ def execute_plan(plan, on_event=None, on_output=None):
             on_event(dict(protocol_version=1, run_id=run_id, type=kind, payload=payload))
 
     emit('started', game=settings.game, tasks=list(plan.tasks))
+    token = _cancellation.set(cancel_requested)
     try:
+        checkpoint()
         dependencies()
         # Revalidate in case inputs or output markers changed after preparation.
         for task in plan.tasks:
@@ -166,14 +181,18 @@ def execute_plan(plan, on_event=None, on_output=None):
             (settings.output / '.annotools-game.json').write_text(
                 json.dumps({'game': settings.game}), encoding='utf-8')
             for task in plan.tasks:
+                checkpoint()
                 logs.append(settings.log_output / (task + '.log'))
                 emit('stage', action=task, log=str(logs[-1]))
                 galleries.append(_run_task(plan, task, on_output))
-    except (Exception, KeyboardInterrupt) as exc:
-        emit('finished', status='cancelled' if isinstance(exc, KeyboardInterrupt) else 'failed',
+                checkpoint()
+    except (Exception, KeyboardInterrupt, SystemExit) as exc:
+        emit('finished', status='cancelled' if isinstance(exc, (KeyboardInterrupt, ExecutionCancelled)) else 'failed',
              galleries=[str(p) for p in galleries], logs=[str(p) for p in logs],
              partial_output=bool(logs), message=str(exc))
         raise
+    finally:
+        _cancellation.reset(token)
     emit('finished', status='success', galleries=[str(p) for p in galleries],
          logs=[str(p) for p in logs], partial_output=False)
     return ExecutionResult(tuple(galleries), tuple(logs))

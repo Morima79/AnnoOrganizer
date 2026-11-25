@@ -120,6 +120,11 @@ def main():
 
 
 if __name__ == '__main__':
+    if '--worker' in sys.argv[1:]:
+        from anno_worker import main as worker_main
+        worker_args = list(sys.argv[1:])
+        worker_args.remove('--worker')
+        sys.exit(worker_main(ROOT, GAME, worker_args))
     try:
         sys.exit(main())
     except KeyboardInterrupt:
