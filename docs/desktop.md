@@ -30,6 +30,8 @@ The absolute output destination is displayed before starting. The window stays r
 
 **Open galleries** opens all existing map and stamp galleries for this game in the displayed output destinations, including separate demo outputs. The small arrow beside it offers individual selection. Existing pages are available immediately after restarting and after failed or cancelled jobs. Availability is checked periodically; it does not indicate that the current job succeeded.
 
+The gallery button and selection arrow share one outline with a subtle inner divider. The left side opens all available galleries; the right side selects an individual gallery.
+
 ## Edit and reuse settings
 
 - **Use file**: Select an existing `settings.json` and review resolved destinations. The file stays in place; only **Save** modifies it. Relative paths remain relative to its directory.

@@ -88,6 +88,11 @@ class DesktopApp:
         style.configure('TMenubutton', padding=(5, 6), background='#3c424c', foreground='#e5e7eb', arrowcolor='#e5e7eb')
         style.map('TMenubutton', background=[('active', '#505966')], foreground=[('disabled', '#89919d')],
                   arrowcolor=[('disabled', '#89919d')])
+        for name in ('Gallery.TButton', 'Gallery.TMenubutton'):
+            style.configure(name, borderwidth=0, relief='flat', background='#3c424c',
+                            lightcolor='#3c424c', darkcolor='#3c424c', bordercolor='#3c424c')
+            style.map(name, lightcolor=[('active', '#505966')], darkcolor=[('active', '#505966')],
+                      bordercolor=[('active', '#505966')])
         style.configure('Accent.TButton', background='#cba56a', foreground='#171b22', font=('Segoe UI', 10, 'bold'))
         style.map('Accent.TButton', background=[('active', '#dfb875')])
         style.configure('LanguageSelected.TButton', background='#cba56a', foreground='#171b22')
@@ -227,12 +232,16 @@ class DesktopApp:
         self.generate_button.pack(side='left', padx=(0, 8))
         self.cancel_button = ttk.Button(commands, text=self.t('cancel'), command=self.cancel)
         self.cancel_button.pack(side='left')
-        self.gallery_menu_button = ttk.Menubutton(commands, width=2)
-        self.gallery_menu_button.pack(side='right')
+        gallery_group = tk.Frame(commands, background='#89919d', padx=1, pady=1)
+        gallery_group.pack(side='right')
+        self.gallery_menu_button = ttk.Menubutton(gallery_group, width=1, style='Gallery.TMenubutton')
+        self.gallery_menu_button.grid(row=0, column=2, sticky='nsew')
         self.gallery_menu = tk.Menu(self.gallery_menu_button, tearoff=False, postcommand=self.fill_gallery_menu)
         self.gallery_menu_button.configure(menu=self.gallery_menu)
-        self.gallery_button = ttk.Button(commands, text=self.t('open_galleries'), command=self.open_galleries)
-        self.gallery_button.pack(side='right')
+        self.gallery_button = ttk.Button(gallery_group, text=self.t('open_galleries'),
+                                         style='Gallery.TButton', command=self.open_galleries)
+        self.gallery_button.grid(row=0, column=0, sticky='nsew')
+        tk.Frame(gallery_group, background='#89919d', width=1).grid(row=0, column=1, sticky='ns', pady=6)
         self.controls.append(self.generate_button)
         footer = ttk.Frame(panel)
         footer.pack(fill='x')

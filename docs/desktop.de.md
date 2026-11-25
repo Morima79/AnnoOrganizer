@@ -30,6 +30,8 @@ Das absolute Ausgabeziel steht vor dem Start unter den Eingaben. Während der Ve
 
 **Galerien öffnen** öffnet alle vorhandenen Karten- und Stempelgalerien dieses Spiels aus den aktuell angezeigten Ausgabezielen, einschliesslich der getrennten Demo-Ausgaben. Der kleine Pfeil daneben bietet die einzelne Auswahl. Vorhandene Seiten sind auch direkt nach einem Neustart und nach einem fehlgeschlagenen oder abgebrochenen Lauf erreichbar. Die Verfügbarkeit wird regelmässig geprüft; sie sagt nichts über den Erfolg des laufenden Auftrags aus.
 
+Galeriebutton und Auswahlpfeil bilden ein gemeinsames Bedienelement mit einer dezenten inneren Trennlinie. Links werden alle vorhandenen Galerien geöffnet, rechts lässt sich eine einzelne wählen.
+
 ## Einstellungen bearbeiten und übernehmen
 
 - **Datei verwenden**: Eine bestehende `settings.json` auswählen und die aufgelösten Ziele prüfen. Die Datei bleibt am bisherigen Ort; erst **Speichern** ändert sie. Relative Pfade bleiben auf ihren Ordner bezogen.
