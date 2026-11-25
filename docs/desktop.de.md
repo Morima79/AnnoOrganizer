@@ -26,7 +26,9 @@ Der Starter richtet wie bisher die Python-Umgebung und benötigten Pakete ein. M
 
 Links ein Spiel wählen, **Mitgelieferte Demo** aktiviert lassen und **Erzeugen** drücken. Die Beispiele sind eingerichtet. Anno 117 und 1800 benötigen ihre Spielressourcen; eine leere Spielinstallation wird nach Möglichkeit automatisch erkannt. Andernfalls den Spielordner oder `maindata` auswählen. Die Anno-1404-Demo benötigt keine Spielinstallation. Demos lesen ausschliesslich die mitgelieferten Beispiele.
 
-Das absolute Ausgabeziel steht vor dem Start unter den Eingaben. Während der Verarbeitung bleibt das Fenster bedienbar; Spielwechsel und Konfigurationsänderungen sind gesperrt. Nach Erfolg lassen sich **Galerien öffnen** und **Ausgabeordner** verwenden. Die Galerien öffnen im Standardbrowser. Es werden keine privaten Daten hochgeladen.
+Das absolute Ausgabeziel steht vor dem Start unter den Eingaben. Während der Verarbeitung bleibt das Fenster reaktionsfähig; Eingaben, Spiel-/Sprachwechsel, Tabs und die übrigen Aktionsbuttons sind gesperrt. **Abbrechen** und das lesende Öffnen bereits vorhandener Galerien bleiben verfügbar. Die Galerien öffnen im Standardbrowser. Es werden keine privaten Daten hochgeladen.
+
+**Galerien öffnen** öffnet alle vorhandenen Karten- und Stempelgalerien dieses Spiels aus den aktuell angezeigten Ausgabezielen, einschliesslich der getrennten Demo-Ausgaben. Der kleine Pfeil daneben bietet die einzelne Auswahl. Vorhandene Seiten sind auch direkt nach einem Neustart und nach einem fehlgeschlagenen oder abgebrochenen Lauf erreichbar. Die Verfügbarkeit wird regelmässig geprüft; sie sagt nichts über den Erfolg des laufenden Auftrags aus.
 
 ## Einstellungen bearbeiten und übernehmen
 
@@ -37,6 +39,10 @@ Das absolute Ausgabeziel steht vor dem Start unter den Eingaben. Während der Ve
 - **Speichern**: Die angezeigten Werte in die unter **Einstellungsdatei** genannte Datei schreiben. Der bisherige Inhalt wird unter `backups/` neben der Datei gesichert. Wenn eine andere Anwendung die Datei seit dem Laden geändert hat, neu laden statt überschreiben.
 
 Die Tabs **Eingaben** und **Ausgaben und Zeitzone** enthalten die spielspezifischen Felder. Bei Anno 1404 hat jeder Spielstandordner ein eigenes einzeiliges Pfadfeld ohne Zeilenumbruch; **Ordner hinzufügen** und **Entfernen** verwalten mehrere Ordner. Leere optionale Ausgabeziele verwenden die bisherigen Standardunterordner. Auch bei kleinen Fenstern bleiben die Felder über die Scrollleisten erreichbar. Details zu Schlüsseln und Platzhaltern: [Einstellungen](settings.de.md).
+
+**Durchsuchen** öffnet den aufgelösten Pfad des jeweiligen Feldes. Relative Pfade beziehen sich auf die Einstellungsdatei; Platzhalter wie `${DOCUMENTS}` werden berücksichtigt. Bei noch nicht vorhandenen Zielen öffnet sich der nächste vorhandene Oberordner. Für die Spielinstallation werden EXE-Dateien angezeigt: Die Spiel-EXE auswählen, auch in einem `Bin`-Unterordner. Die GUI ermittelt und prüft den passenden `maindata`-Ordner und trägt ihn ein. Spiel- oder `maindata`-Ordner können weiterhin direkt eingegeben werden.
+
+**Zeitzone** steuert die Zeitangaben in Auswertungen und muss normalerweise nicht geändert werden. Für die Schweiz passt `Europe/Zurich`, inklusive Sommer-/Winterzeit. Andere IANA-Zeitzonen bleiben für andere Regionen oder bestehende Konfigurationen einstellbar. Die Anno-1404-Kartengalerie verwendet für Dateizeitstempel die lokale Windows-Zeit; die Statistik-Auswertung berücksichtigt die konfigurierte Zeitzone.
 
 **Erzeugen verwendet die angezeigten Werte, ohne die persönliche Einstellungsdatei zu speichern.** Jeder Auftrag bekommt eine vorübergehende Konfigurationskopie mit denselben aufgelösten Pfadzielen. Diese Kopie wird nach Prozessende entfernt. Demoläufe bleiben unter `<output>/demo/` und ignorieren getrennte persönliche Berichts-, Stempel- und Logziele.
 
@@ -56,11 +62,11 @@ Eine externe Konfiguration lässt sich auch direkt öffnen:
 
 Position, Grösse und Maximierungszustand von Hauptfenster, Info und Protokollen werden in `gui.json` gespeichert und beim nächsten Öffnen wiederhergestellt. Minimiert wird nicht wiederhergestellt; nach einem Monitorwechsel werden Fenster in einen erreichbaren Bildschirmbereich verschoben. Info und Protokolle gehören zum Hauptfenster und bleiben über ihm. Der gewählte Tab und die aktive Sprache sind goldgelb markiert; die Tab-Grösse bleibt beim Wechsel gleich.
 
-Beim ersten Start bestimmt die bevorzugte Windows-Anzeigesprache die Oberfläche: `de`, `de-DE`, `de-CH` oder `de-AT` ergeben Deutsch, alle anderen Sprachen und Erkennungsfehler Englisch. **DE/EN** kann jederzeit umgeschaltet werden; die manuelle Auswahl wird gespeichert und hat künftig Vorrang. Eingaben, Spiel, Aktion und gewählter Tab bleiben beim Umschalten erhalten. Die Sprachwahl der HTML-Galerien bleibt unabhängig; Rohdaten, Pfade und Logs werden nicht übersetzt.
+Beim ersten Start bestimmt die bevorzugte Windows-Anzeigesprache die Oberfläche: `de`, `de-DE`, `de-CH` oder `de-AT` ergeben Deutsch, alle anderen Sprachen und Erkennungsfehler Englisch. **DE/EN** kann ausserhalb laufender Aufträge umgeschaltet werden; die manuelle Auswahl wird gespeichert und hat künftig Vorrang. Eingaben, Spiel, Aktion und gewählter Tab bleiben beim Umschalten erhalten. Die Sprachwahl der HTML-Galerien bleibt unabhängig; Rohdaten, Pfade und Logs werden nicht übersetzt.
 
-Die Statusanzeige nennt den aktuellen Verarbeitungsschritt. Die bewegte Anzeige zeigt Aktivität und keinen geschätzten Prozentwert. **Abbrechen** fordert einen kooperativen Abbruch an. Ein laufender Parser oder eine Veröffentlichung darf bis zur nächsten sicheren Grenze fertiglaufen. Beim Schliessen während einer Verarbeitung kann ein Abbruch angefordert werden; das Fenster wartet dann weiter auf den Prozessabschluss.
+Die Statusanzeige nennt den aktuellen Verarbeitungsschritt. Die bewegte Anzeige zeigt Aktivität und keinen geschätzten Prozentwert. **Abbrechen** fordert einen kooperativen Abbruch an. Ein laufender Parser oder eine Veröffentlichung darf bis zur nächsten sicheren Grenze fertiglaufen. Beim Schliessen während einer Verarbeitung fragt die GUI nach einem Abbruch. **Nein** lässt den Auftrag weiterlaufen; **Ja** fordert den Abbruch an und wartet vor dem Schliessen auf das Prozessende. Anschliessend werden ungespeicherte Einstellungen wie beim normalen Schliessen angeboten. Erzwungenes Beenden über den Task-Manager ist kein geordneter Abbruch.
 
-Erfolg wird erst angezeigt, wenn Worker-Abschluss und Prozess-Exitcode zusammenpassen. Bei Fehler oder Abbruch werden mögliche Teilergebnisse genannt; Galerien lassen sich über den Erfolgsbutton erst nach einem erfolgreichen Lauf öffnen. **Protokolle** zeigt Diagnosen und die Aktionslogs, auch während eines laufenden Auftrags. **Info** zeigt den Entwicklungsstand, Lizenzhinweise und einen Link zu den GitHub-Releases; es erfolgt kein automatisches Update.
+Erfolg wird erst angezeigt, wenn Worker-Abschluss und Prozess-Exitcode zusammenpassen. Bei Fehler oder Abbruch werden mögliche Teilergebnisse genannt. **Protokolle** zeigt Diagnosen und die Aktionslogs. **Info** zeigt den Entwicklungsstand, Lizenzhinweise und einen Link zu den GitHub-Releases; es erfolgt kein automatisches Update.
 
 ## Aktuelle Grenzen
 

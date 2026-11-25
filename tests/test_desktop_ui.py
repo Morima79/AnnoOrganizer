@@ -215,6 +215,136 @@ class DesktopUITests(unittest.TestCase):
         self.assertFalse(self.app.dirty())
         self.assertEqual(self.errors, [])
 
+    def test_entries_use_a_bright_insertion_cursor(self):
+        from tkinter import ttk
+        style = ttk.Style(self.root)
+        self.assertEqual(style.lookup('TEntry', 'insertcolor'), '#ffffff')
+        self.assertEqual(str(style.lookup('TEntry', 'insertwidth')), '2')
+
+    def test_browse_starts_at_resolved_draft_or_nearest_existing_parent(self):
+        source = self.app.document.path.parent / 'Saved Games'
+        source.mkdir(parents=True)
+        self.app.folder_fields[0].set('./Saved Games')
+        with patch('desktop.app.filedialog.askdirectory', return_value='') as choose:
+            self.app.browse_save_folder(self.app.folder_fields[0])
+            self.assertEqual(Path(choose.call_args.kwargs['initialdir']), source.resolve())
+        self.app.fields['output'].set('./Saved Games/New Output')
+        with patch('desktop.app.filedialog.askdirectory', return_value=str(self.folder)) as choose:
+            self.app.browse('output')
+            self.assertEqual(Path(choose.call_args.kwargs['initialdir']), source.resolve())
+        self.assertEqual(self.app.fields['output'].get(), str(self.folder))
+
+    def test_game_browse_shows_executables_and_resolves_data_from_bin(self):
+        self.app.switch_game('anno1800')
+        installation = self.folder / 'Anno 1800'
+        data = installation / 'maindata'
+        data.mkdir(parents=True)
+        (data / 'data0.rda').write_bytes(b'fixture')
+        binary = installation / 'Bin/Win64/Anno1800.exe'
+        binary.parent.mkdir(parents=True)
+        binary.write_bytes(b'fixture, never executed')
+        self.app.fields['game_data'].set(str(data))
+        with patch('desktop.app.filedialog.askopenfilename', return_value=str(binary)) as choose:
+            self.app.browse('game_data')
+            self.assertEqual(Path(choose.call_args.kwargs['initialdir']), installation.resolve())
+            self.assertEqual(choose.call_args.kwargs['filetypes'][0][1], '*.exe')
+        self.assertEqual(Path(self.app.fields['game_data'].get()), data.resolve())
+        self.app.switch_game('anno117')
+        original = self.app.fields['game_data'].get()
+        with patch('desktop.app.filedialog.askopenfilename', return_value=str(binary)), \
+                patch('desktop.app.messagebox.showerror') as error:
+            self.app.browse('game_data')
+        error.assert_called_once()
+        self.assertEqual(self.app.fields['game_data'].get(), original)
+
+    def test_existing_galleries_survive_restart_and_offer_individual_selection(self):
+        self.app.switch_game('anno1800')
+        self.app.fields['output'].set(str(self.folder / 'Output'))
+        self.app.fields['report_output'].set(str(self.folder / 'Separate Reports'))
+        self.app.fields['stamp_output'].set(str(self.folder / 'Separate Stamps'))
+        view = self.app.draft_view()
+        pages = [view.report_output / 'map-gallery.html', view.stamp_output / 'stamp-gallery.html',
+                 view.output / 'demo/reports/map-gallery.html', view.output / 'demo/stamps/stamp-gallery.html']
+        for page in pages:
+            page.parent.mkdir(parents=True, exist_ok=True)
+            page.write_text('<html>existing gallery</html>', encoding='utf-8')
+        self.app.refresh_galleries()
+        self.assertIsNone(self.app.last_result)
+        self.assertTrue(self.app.gallery_button.instate(['!disabled']))
+        self.assertEqual({path for _, path in self.app.available_galleries()}, set(pages))
+        self.app.fill_gallery_menu()
+        self.assertEqual(self.app.gallery_menu.index('end'), 3)
+        with patch('desktop.app.webbrowser.open') as browser:
+            self.app.gallery_menu.invoke(0)
+            browser.assert_called_once_with(pages[0].as_uri())
+            browser.reset_mock()
+            self.app.open_galleries()
+            self.assertEqual(browser.call_count, 4)
+        self.app.collect()
+        self.assertTrue(self.app.save())
+        self.app.reload()
+        self.assertTrue(self.app.gallery_button.instate(['!disabled']))
+        pages[0].unlink()
+        self.assertEqual(len(self.app.available_galleries()), 3)
+
+    def test_busy_locks_interface_but_keeps_existing_galleries_readable(self):
+        view = self.app.document.view()
+        page = view.report_output / 'map-gallery.html'
+        page.parent.mkdir(parents=True)
+        page.write_text('<html>existing gallery</html>', encoding='utf-8')
+        def start(*args):
+            self.app.client.running = True
+        selected = self.app.notebook.select()
+        with patch.object(self.app.client, 'start', side_effect=start):
+            self.app.generate()
+        self.assertTrue(all(control.instate(['disabled']) for control in self.app.controls))
+        self.assertEqual(self.app.notebook.select(), selected)
+        self.assertTrue(all(self.app.notebook.tab(tab, 'state') == 'disabled'
+                            for tab in self.app.notebook.tabs() if tab != selected))
+        self.assertTrue(self.app.cancel_button.instate(['!disabled']))
+        self.assertTrue(self.app.gallery_button.instate(['!disabled']))
+        self.assertTrue(self.app.gallery_menu_button.instate(['!disabled']))
+        self.app.change_language('en')
+        self.app.switch_game('anno1800')
+        self.assertEqual(self.app.language, 'de')
+        self.assertEqual(self.app.game, 'anno1404')
+        self.app.client.running = False
+        self.app.cleanup_snapshot()
+        self.app.apply_busy()
+        self.assertEqual(self.app.notebook.select(), selected)
+        self.assertTrue(all(control.instate(['!disabled']) for control in self.app.controls))
+
+    def test_close_requests_cancellation_waits_and_keeps_unsaved_changes_reviewable(self):
+        self.app.fields['output'].set(str(self.folder / 'Unsaved output'))
+        def start(*args):
+            self.app.client.running = True
+        with patch.object(self.app.client, 'start', side_effect=start):
+            self.app.generate()
+        with patch('desktop.app.messagebox.askyesno', return_value=False), \
+                patch.object(self.app.client, 'cancel') as cancel:
+            self.app.close()
+            cancel.assert_not_called()
+        with patch('desktop.app.messagebox.askyesno', return_value=True), \
+                patch.object(self.app.client, 'cancel') as cancel:
+            self.app.close()
+            cancel.assert_called_once()
+        self.assertTrue(self.app.closing)
+        self.assertFalse(self.app.closed)
+        self.assertIsNotNone(self.app.snapshot)
+        self.app.client.running = False
+        self.app.client.events.put(dict(type='completed', payload=dict(
+            status='cancelled', galleries=[], logs=[], partial_output=False)))
+        with patch('desktop.app.messagebox.askyesnocancel', return_value=None):
+            self.app.poll()
+        self.assertFalse(self.app.closing)
+        self.assertFalse(self.app.closed)
+        self.assertIsNotNone(self.app._poll_id)
+        self.assertTrue(self.app.dirty())
+        with patch('desktop.app.messagebox.askyesnocancel', return_value=False), \
+                patch.object(self.app, 'finish_close') as finish:
+            self.app.close()
+            finish.assert_called_once()
+
     def test_use_then_import_external_config_preserves_source_and_destinations(self):
         source = self.folder / 'external.json'
         data = dict(version=1, game='anno1404', save_folders=['./Saves'],

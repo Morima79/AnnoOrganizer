@@ -7,6 +7,7 @@ from queue import Empty
 import re
 import sys
 import tempfile
+import time
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 import webbrowser
@@ -46,7 +47,9 @@ class DesktopApp:
         self.active_logs = []
         self.snapshot = None
         self.closing = False
+        self.closed = False
         self._poll_id = None
+        self._gallery_refresh = 0
         self.action = tk.StringVar(root, 'demo')
         self.action.trace_add('write', lambda *_: self.refresh_destination())
         self.root.title('AnnoOrganizer')
@@ -82,11 +85,15 @@ class DesktopApp:
         style.configure('Muted.TLabel', foreground='#b6bdc8')
         style.configure('TButton', padding=(10, 6), background='#3c424c')
         style.map('TButton', background=[('active', '#505966')], foreground=[('disabled', '#89919d')])
+        style.configure('TMenubutton', padding=(5, 6), background='#3c424c', foreground='#e5e7eb', arrowcolor='#e5e7eb')
+        style.map('TMenubutton', background=[('active', '#505966')], foreground=[('disabled', '#89919d')],
+                  arrowcolor=[('disabled', '#89919d')])
         style.configure('Accent.TButton', background='#cba56a', foreground='#171b22', font=('Segoe UI', 10, 'bold'))
         style.map('Accent.TButton', background=[('active', '#dfb875')])
         style.configure('LanguageSelected.TButton', background='#cba56a', foreground='#171b22')
         style.map('LanguageSelected.TButton', background=[('active', '#dfb875')])
-        style.configure('TEntry', fieldbackground='#181c22', foreground='#e5e7eb', padding=5)
+        style.configure('TEntry', fieldbackground='#181c22', foreground='#e5e7eb',
+                        insertcolor='#ffffff', insertwidth=2, padding=5)
         style.configure('TNotebook', background='#20252d', borderwidth=0)
         style.configure('TNotebook.Tab', background='#3c424c', padding=(14, 7))
         style.map('TNotebook.Tab', background=[('selected', '#cba56a'), ('!selected', '#3c424c')],
@@ -143,6 +150,7 @@ class DesktopApp:
                                 command=lambda value=language: self.change_language(value))
             button.pack(side='right', padx=3)
             self.language_buttons[language] = button
+            self.controls.append(button)
         body = ttk.Frame(shell)
         body.pack(fill='both', expand=True)
         navigation = ttk.Frame(body, width=160)
@@ -153,7 +161,9 @@ class DesktopApp:
                                 command=lambda value=game: self.switch_game(value))
             button.pack(fill='x', pady=(0, 10))
             self.controls.append(button)
-        ttk.Button(navigation, text=self.t('about'), command=self.about).pack(fill='x', pady=(24, 8))
+        about = ttk.Button(navigation, text=self.t('about'), command=self.about)
+        about.pack(fill='x', pady=(24, 8))
+        self.controls.append(about)
         ttk.Label(navigation, text=self.t('portable_hint' if getattr(sys, 'frozen', False) else 'preview_hint'),
                   style='Muted.TLabel', wraplength=145).pack(fill='x')
         panel = ttk.Frame(body)
@@ -217,6 +227,10 @@ class DesktopApp:
         self.generate_button.pack(side='left', padx=(0, 8))
         self.cancel_button = ttk.Button(commands, text=self.t('cancel'), command=self.cancel)
         self.cancel_button.pack(side='left')
+        self.gallery_menu_button = ttk.Menubutton(commands, width=2)
+        self.gallery_menu_button.pack(side='right')
+        self.gallery_menu = tk.Menu(self.gallery_menu_button, tearoff=False, postcommand=self.fill_gallery_menu)
+        self.gallery_menu_button.configure(menu=self.gallery_menu)
         self.gallery_button = ttk.Button(commands, text=self.t('open_galleries'), command=self.open_galleries)
         self.gallery_button.pack(side='right')
         self.controls.append(self.generate_button)
@@ -227,8 +241,11 @@ class DesktopApp:
         self.status_label = ttk.Label(footer, text=self.status_text(), wraplength=700)
         self.status_label.pack(anchor='w', pady=4)
         self.wrap_labels.append(self.status_label)
-        ttk.Button(footer, text=self.t('logs'), command=self.show_logs).pack(side='left', pady=8)
-        ttk.Button(footer, text=self.t('open_output'), command=self.open_output).pack(side='right', pady=8)
+        logs = ttk.Button(footer, text=self.t('logs'), command=self.show_logs)
+        logs.pack(side='left', pady=8)
+        output = ttk.Button(footer, text=self.t('open_output'), command=self.open_output)
+        output.pack(side='right', pady=8)
+        self.controls.extend([logs, output])
         for variable in self.fields.values():
             variable.trace_add('write', lambda *_: self.refresh_destination())
         self.refresh_destination()
@@ -266,7 +283,8 @@ class DesktopApp:
             self.draw_folder_rows()
 
     def browse_save_folder(self, variable):
-        path = filedialog.askdirectory(parent=self.root, title=self.t('save_folders'))
+        path = filedialog.askdirectory(parent=self.root, title=self.t('save_folders'),
+                                       initialdir=str(self.browse_start(variable.get())))
         if path:
             variable.set(path)
 
@@ -291,17 +309,35 @@ class DesktopApp:
         path = '—'
         if self.document is not None:
             try:
-                data = copy.deepcopy(self.document.data)
-                for key, value in self.fields.items():
-                    if value.get().strip() or key in data:
-                        data[key] = value.get().strip()
-                from desktop.settings_store import game_api
-                view = game_api(self.game).Settings.from_data(self.game, self.document.path, data)
+                view = self.draft_view()
                 path = (view.output / 'demo' if self.action.get() == 'demo' else
                         view.report_output if self.action.get() == 'analyze' else view.stamp_output)
             except Exception:
                 pass
         self.destination_label.configure(text=self.t('destination', path=path))
+        if hasattr(self, 'gallery_button') and self.gallery_button.winfo_exists():
+            self.refresh_galleries()
+
+    def draft_view(self):
+        from desktop.settings_store import game_api
+        data = copy.deepcopy(self.document.data)
+        for key, value in self.fields.items():
+            if value.get().strip() or key in data:
+                data[key] = value.get().strip()
+        return game_api(self.game).Settings.from_data(self.game, self.document.path, data)
+
+    def browse_start(self, value, *, game=False):
+        """Resolve drafts against the configuration and open the nearest existing folder."""
+        view = self.document.view()
+        path = view.expand(value.strip()) if value.strip() else (view.path('game_data') if game else None)
+        path = path or self.document.path.parent
+        if path.is_file():
+            path = path.parent
+        if game and path.name.lower() == 'maindata':
+            path = path.parent
+        while not path.is_dir() and path.parent != path:
+            path = path.parent
+        return path
 
     def field(self, parent, row, key):
         parent.columnconfigure(0, weight=1)
@@ -315,6 +351,9 @@ class DesktopApp:
             button = ttk.Button(parent, text=self.t('browse'), command=lambda: self.browse(key))
             button.grid(row=row * 2 + 1, column=1, padx=(8, 0), pady=(3, 10))
             self.controls.append(button)
+        else:
+            ttk.Label(parent, text=self.t('timezone_hint'), wraplength=600,
+                      style='Muted.TLabel').grid(row=row * 2 + 2, column=0, sticky='w')
 
     def status_text(self):
         text = self.t(self.status)
@@ -328,11 +367,15 @@ class DesktopApp:
         busy = self.client.running or self.snapshot is not None
         for widget in self.controls:
             widget.configure(state='disabled' if busy else 'normal')
+        selected = self.notebook.select()
+        for tab in self.notebook.tabs():
+            self.notebook.tab(tab, state='disabled' if busy and tab != selected else 'normal')
+        if hasattr(self, 'release_button') and self.release_button.winfo_exists():
+            self.release_button.configure(state='disabled' if busy else 'normal')
         if self.document is None:
             self.generate_button.state(['disabled'])
         self.cancel_button.configure(state='normal' if busy and self.status != 'cancelling' else 'disabled')
-        self.gallery_button.configure(state='normal' if not busy and self.last_result and
-            self.last_result.get('status') == 'success' else 'disabled')
+        self.refresh_galleries()
         if busy:
             self.progress.configure(mode='indeterminate')
             self.progress.start(15)
@@ -346,11 +389,31 @@ class DesktopApp:
                              else self.t('settings_error'), parent=self.root)
 
     def browse(self, key):
-        path = filedialog.askdirectory(parent=self.root, title=self.t(key))
+        initial = self.browse_start(self.fields[key].get(), game=key == 'game_data')
+        if key == 'game_data':
+            path = filedialog.askopenfilename(parent=self.root, title=self.t('choose_game_exe'),
+                initialdir=str(initial), filetypes=[(self.t('executables'), '*.exe')])
+            if not path:
+                return
+            from desktop.settings_store import game_api
+            marker = 'config.rda' if self.game == 'anno117' else 'data0.rda'
+            for folder in Path(path).resolve().parents:
+                data = game_api(self.game).resolve_game_data(folder, self.game)
+                if (data / marker).is_file():
+                    path = str(data)
+                    break
+            else:
+                self.details = self.t('invalid_game_exe')
+                messagebox.showerror(self.t('error'), self.details, parent=self.root)
+                return
+        else:
+            path = filedialog.askdirectory(parent=self.root, title=self.t(key), initialdir=str(initial))
         if path:
             self.fields[key].set(path)
 
     def change_language(self, language):
+        if self.client.running or self.snapshot is not None:
+            return
         self.collect()
         self.language, self.texts = language, resources(language)
         self.store.preferences['language'] = language
@@ -362,6 +425,8 @@ class DesktopApp:
         self.render()
 
     def switch_game(self, game):
+        if self.client.running or self.snapshot is not None:
+            return
         self.collect()
         self.status, self.last_result, self.stage_action = 'ready', None, None
         self.active_logs = []
@@ -538,18 +603,52 @@ class DesktopApp:
                     self.cleanup_snapshot()
                     self.apply_busy()
                     if self.closing:
-                        self.finish_close()
-                        return
+                        self.closing = False
+                        self.close()
+                        if self.closed:
+                            return
                 self.status_label.configure(text=self.status_text())
         except Empty:
             pass
+        if time.monotonic() >= self._gallery_refresh:
+            self.refresh_galleries()
+            self._gallery_refresh = time.monotonic() + 1
         self._poll_id = self.root.after(80, self.poll)
 
-    def open_galleries(self):
-        if self.last_result and self.last_result['status'] == 'success':
-            for path in self.last_result['galleries']:
-                if Path(path).is_file():
-                    webbrowser.open(Path(path).as_uri())
+    def available_galleries(self):
+        """Discover existing published pages in this configuration, including demos."""
+        if self.document is None:
+            return []
+        try:
+            view = self.draft_view()
+            candidates = [(self.t('map_gallery'), view.report_output / 'map-gallery.html'),
+                          (self.t('demo_map_gallery'), view.output / 'demo/reports/map-gallery.html')]
+            if self.game != 'anno1404':
+                candidates += [(self.t('stamp_gallery'), view.stamp_output / 'stamp-gallery.html'),
+                               (self.t('demo_stamp_gallery'), view.output / 'demo/stamps/stamp-gallery.html')]
+            result, seen = [], set()
+            for label, path in candidates:
+                if path.is_file() and path not in seen:
+                    result.append((label, path))
+                    seen.add(path)
+            return result
+        except (ValueError, OSError, KeyError):
+            return []
+
+    def refresh_galleries(self):
+        state = 'normal' if self.available_galleries() else 'disabled'
+        self.gallery_button.configure(state=state)
+        self.gallery_menu_button.configure(state=state)
+
+    def fill_gallery_menu(self):
+        self.gallery_menu.delete(0, 'end')
+        for label, path in self.available_galleries():
+            self.gallery_menu.add_command(label=label, command=lambda target=path: self.open_galleries(target))
+
+    def open_galleries(self, selected=None):
+        for _, path in self.available_galleries():
+            if selected is None or path == selected:
+                webbrowser.open(path.as_uri())
 
     def open_output(self):
         try:
@@ -641,9 +740,12 @@ class DesktopApp:
             self.store.save_preferences()
         except Exception as exc:
             self.error(exc)
+        self.closed = True
         self.root.destroy()
 
     def close(self):
+        if self.closing:
+            return
         if self.client.running or self.snapshot is not None:
             if messagebox.askyesno(self.t('cancel'), self.t('close_running'), parent=self.root):
                 self.closing = True

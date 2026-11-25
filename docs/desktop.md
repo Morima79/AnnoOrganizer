@@ -26,7 +26,9 @@ The launcher prepares the Python environment and required packages as before. Wi
 
 Choose a game on the left, leave **Bundled demo** selected and press **Generate**. Example inputs are already configured. Anno 117 and 1800 require their game resources; an empty installation field uses automatic detection where possible. Otherwise select the game folder or `maindata`. The Anno 1404 demo requires no game installation. Demos read bundled examples only.
 
-The absolute output destination is displayed before starting. The window stays responsive while processing; game selection and configuration changes are disabled. After success, use **Open galleries** and **Output folder**. Galleries open in the default browser. No private data is uploaded.
+The absolute output destination is displayed before starting. The window stays responsive while processing; inputs, game/language selection, tabs and other action buttons are disabled. **Cancel** and read-only access to existing galleries remain available. Galleries open in the default browser. No private data is uploaded.
+
+**Open galleries** opens all existing map and stamp galleries for this game in the displayed output destinations, including separate demo outputs. The small arrow beside it offers individual selection. Existing pages are available immediately after restarting and after failed or cancelled jobs. Availability is checked periodically; it does not indicate that the current job succeeded.
 
 ## Edit and reuse settings
 
@@ -37,6 +39,10 @@ The absolute output destination is displayed before starting. The window stays r
 - **Save**: Write displayed values to the file shown under **Settings file**. Previous content is backed up under `backups/` beside that file. If another application changed it since loading, reload instead of overwriting.
 
 The **Inputs** and **Outputs and time zone** tabs contain game-specific fields. For Anno 1404, each save folder has its own single-line path field without wrapping; **Add folder** and **Remove** manage multiple folders. Empty optional output fields use existing default subdirectories. Scrollbars keep fields accessible in small windows. For keys and placeholders, see [settings documentation](settings.de.md) (German).
+
+**Browse** opens the resolved path from that field. Relative paths use the configuration directory; placeholders such as `${DOCUMENTS}` are expanded. For destinations that do not exist yet, the nearest existing parent opens. Game installation browsing displays EXE files: select the game's executable, including one inside a `Bin` subdirectory. The GUI locates and checks its matching `maindata` folder and enters that path. Game or `maindata` folders can still be entered directly.
+
+**Time zone** controls report timestamps and normally needs no changes. `Europe/Zurich` suits Switzerland, including daylight saving time. Other IANA time zones remain configurable for other regions or existing configurations. Anno 1404 map galleries use local Windows time for file timestamps; statistics use the configured time zone.
 
 **Generate uses displayed values without saving the personal configuration.** Each job receives a temporary configuration copy with the same resolved path destinations. That copy is removed after the process exits. Demo runs stay under `<output>/demo/` and ignore separate personal report, stamp and log destinations.
 
@@ -56,11 +62,11 @@ You can also open an external configuration directly:
 
 Main, About and Logs window positions, sizes and maximized states are saved in `gui.json` and restored when reopened. Minimized states are not restored; windows are moved into a reachable screen area after monitor changes. About and Logs belong to the main window and stay above it. The selected tab and active language are highlighted in gold; tab sizes remain unchanged when switching.
 
-On first launch, the preferred Windows display language selects the interface: `de`, `de-DE`, `de-CH` or `de-AT` selects German; other languages or detection failures select English. **DE/EN** can be changed at any time; the saved manual choice takes precedence on subsequent launches. Inputs, game, action and selected tab survive language changes. HTML galleries keep their independent language choice; raw data, paths and logs are not translated.
+On first launch, the preferred Windows display language selects the interface: `de`, `de-DE`, `de-CH` or `de-AT` selects German; other languages or detection failures select English. **DE/EN** can be changed when no job is running; the saved manual choice takes precedence on subsequent launches. Inputs, game, action and selected tab survive language changes. HTML galleries keep their independent language choice; raw data, paths and logs are not translated.
 
-Status names the current processing step. The moving indicator shows activity rather than an estimated percentage. **Cancel** requests cooperative cancellation. An active parser or publication may finish before the next safe boundary. Closing during processing can request cancellation; the window then waits for process completion.
+Status names the current processing step. The moving indicator shows activity rather than an estimated percentage. **Cancel** requests cooperative cancellation. An active parser or publication may finish before the next safe boundary. Closing during processing asks whether to cancel. **No** lets the job continue; **Yes** requests cancellation and waits for process completion before closing. Unsaved settings are then offered for saving as during normal closing. Force quitting through Task Manager is not an orderly cancellation.
 
-Success is displayed only when the worker completion and process exit code agree. Failure or cancellation reports possible partial output; the gallery button becomes available after successful runs only. **Logs** shows diagnostics and action logs, including during an active job. **About** shows development version, license information and a link to GitHub releases; no automatic update takes place.
+Success is displayed only when the worker completion and process exit code agree. Failure or cancellation reports possible partial output. **Logs** shows diagnostics and action logs. **About** shows development version, license information and a link to GitHub releases; no automatic update takes place.
 
 ## Current limitations
 

@@ -56,5 +56,13 @@
   "portable_hint": "Portable Windows package",
   "about_portable_text": "Portable Windows package.\nVersion: {version}\n\nUnofficial project by Morima79, MIT license.\nUse at your own risk.\nSource files are read only.\n\nNo Python installation required.",
   "add_folder": "Add folder",
-  "remove_folder": "Remove"
+  "remove_folder": "Remove",
+  "timezone_hint": "Used for report timestamps, e.g. Europe/Zurich. Usually leave unchanged. Anno 1404 map galleries use local Windows time.",
+  "choose_game_exe": "Select game – open its EXE in the installation folder",
+  "executables": "Applications",
+  "invalid_game_exe": "No matching game installation found near this EXE. Select the chosen Anno game's EXE or enter its game/maindata folder directly.",
+  "map_gallery": "Map gallery",
+  "stamp_gallery": "Stamp gallery",
+  "demo_map_gallery": "Map gallery (demo)",
+  "demo_stamp_gallery": "Stamp gallery (demo)"
 }
