@@ -2,7 +2,7 @@
 
 [English](desktop-gui.md) · [Deutsch](desktop-gui.de.md) · [Wishlist](wishlist.md)
 
-Status: Proposed; not implemented.
+Status: Proposed; shared CLI execution prepared, GUI not implemented yet.
 
 ## Goal
 
@@ -39,7 +39,7 @@ Reuse the current per-game settings.json schema and semantics, including --confi
 
 ## Details of the three technical decisions
 
-The following decisions describe the intended initial implementation. They are not implemented yet; in particular, the current CLI does not provide a structured progress or cancellation contract.
+The following decisions describe the intended initial implementation. They are only partially implemented; current capabilities and remaining interfaces are described below.
 
 ### 1. Execution from source and in the Windows package
 
@@ -90,6 +90,25 @@ Initially use PyInstaller onedir and --windowed, distributed as a portable Windo
 - [ ] UI remains responsive; cancellation and failures are reported without falsely claiming success or damaging source files.
 - [ ] Logs and generated outputs can be opened; German and English UI work.
 - [ ] Release ZIP is reproducible through CI, includes required resources and licenses, and is smoke-tested after extraction.
+
+## Implementation status: preparing shared execution
+
+The first implementation step now provides `anno_execution.py`. Its canonical source lives under `templates/`; `scripts/sync_gallery_templates.py` distributes identical copies to `<game>/tools/` so each game folder remains independent. All three launchers use this service.
+
+- `prepare_execution(settings, project, action, rescan=False)` accepts an already loaded `Settings` object, selects supported actions, isolates demos and validates every stage without writes, prompts or browser launches. Relative paths and external configurations retain existing `Settings` semantics; personal configuration files are not modified.
+- `execute_plan(plan, on_event=None, on_output=None)` executes the plan and returns `ExecutionResult(galleries, logs)` containing `Path` objects. Exceptions propagate. `on_output` receives raw log lines; `on_event` receives dictionaries with `protocol_version: 1`, `run_id`, `type` and `payload`. Currently implemented: `started`, `stage` and `finished`. Callbacks run synchronously on the calling thread and must not raise; a future GUI adapter must marshal events to the UI thread.
+- `finished.payload` contains `status`, `galleries`, `logs` and `partial_output`, plus `message` on failure. `galleries` lists successfully completed actions only; `logs` lists intended log paths of actions already started. On failure, `partial_output: true` means outputs may exist even if the failed action did not produce a complete gallery. A missing gallery entry point despite exit code 0 is a failure. `KeyboardInterrupt` is reported as `cancelled` and re-raised; there is no cooperative cancellation channel yet.
+- Root and game launchers offer `--non-interactive`. An explicit action is required, plus a game for the root launcher. This mode does not create missing settings, prompt for installation paths or allow `--init-settings`. `--check` retains its read-only fallback to the example configuration at the default location. Continue to use `--no-open` to suppress browser launches.
+
+Example using an existing external configuration:
+
+```powershell
+.\.venv\Scripts\python.exe launch.py --game anno1404 --action demo --config "D:/Anno/settings.json" --non-interactive --no-open
+```
+
+Interface inspection found that generators currently load `CONFIG` and further game-specific modules at import time and use global arguments/environment. The shared service therefore still runs existing scripts through Python subprocesses as a transitional backend; this is not a packageable worker yet. Frozen executable mode is rejected before writes. The existing `output` lock remains and is now held across the entire demo job; the effective demo configuration is written only inside that lock without changing `settings.filename`.
+
+Direct generator services, JSON-lines transport with the exit-code contract, cooperative cancellation, reservations across separate output destinations, further progress events and the packaged worker remain open. GUI, LocalAppData management and automatic language detection are still planned. Because game modules share names, the source service must be used within a single game process; switching games will use a new worker.
 
 ## Implementation sequence
 

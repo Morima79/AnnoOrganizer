@@ -82,6 +82,7 @@ py -3 -m venv .venv
 ## Optionen und Einstellungen
 
 - `--check`: Pfade und Python-Pakete prüfen, ohne Ausgaben anzulegen.
+- `--non-interactive`: mit explizitem `--game` und `--action` ohne Abfragen oder automatische Einstellungsanlage starten; vorhandene Konfiguration verwenden. Mit `--no-open` auch den Browserstart unterdrücken.
 - `--no-open`: aktualisieren, ohne den Browser zu öffnen.
 - `--rescan`: bei `--action analyze` den Metadaten-Zwischenspeicher ignorieren.
 - `--config PFAD`: eine andere lokale Einstellungsdatei verwenden.

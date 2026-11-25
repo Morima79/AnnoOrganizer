@@ -82,6 +82,7 @@ py -3 -m venv .venv
 ## Options and settings
 
 - `--check`: check paths and Python dependencies without creating output.
+- `--non-interactive`: require explicit `--game` and `--action`, use an existing configuration, and disable prompts and automatic settings creation. Add `--no-open` to suppress the browser too.
 - `--no-open`: update without opening the browser.
 - `--rescan`: ignore save-metadata caches when using `--action analyze`.
 - `--config PATH`: use a different local settings file.

@@ -42,6 +42,8 @@ Build the map gallery and Excel report:
 
 A stamp gallery is not implemented for Anno 1404.
 
+`--non-interactive` requires `--action` and an existing configuration; it disables prompts and automatic settings creation. Add `--no-open` to keep the browser closed.
+
 Use `--check` to validate paths without generating output, `--no-open` to suppress the browser, `--config PATH` for an alternative settings file, or `--rescan` to ignore save-metadata caches during analysis. Close the report in Excel before updating it.
 
 New output defaults to `local-data/` next to this launcher. Gallery files are `reports/map-gallery.html` and, where supported, `stamps/stamp-gallery.html`. Logs are in `logs/` beneath the output directory. Stamp names, custom layouts and source files are not renamed or edited.

@@ -23,7 +23,10 @@ def main():
     parser.add_argument('--check', action='store_true')
     parser.add_argument('--no-open', '--update-only', action='store_true')
     parser.add_argument('--rescan', action='store_true')
+    parser.add_argument('--non-interactive', action='store_true')
     args = parser.parse_args()
+    if args.non_interactive and (not args.game or not args.action or args.init_settings):
+        parser.error('--non-interactive braucht --game und --action und erlaubt kein --init-settings.')
     if args.init_settings:
         if args.config and not args.game:
             parser.error('--config braucht hier --game.')
@@ -53,7 +56,7 @@ def main():
     command = [sys.executable, str(ROOT / game / 'launch.py'), '--action', action]
     if args.config:
         command += ['--config', str(args.config.resolve())]
-    for flag in ['check', 'no_open', 'rescan']:
+    for flag in ['check', 'no_open', 'rescan', 'non_interactive']:
         if getattr(args, flag):
             command.append('--' + flag.replace('_', '-'))
     return subprocess.call(command)

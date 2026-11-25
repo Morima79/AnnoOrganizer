@@ -25,7 +25,7 @@ def render_landing_page():
 def sync(check=False):
     mismatches = []
     for game in ('anno117', 'anno1800', 'anno1404'):
-        for name in ('anno_gallery.py', 'anno_i18n.py', 'anno_save_summary.py', 'anno_save_statistics.py', 'anno_map_catalog.py', 'anno_map_variants.py', 'anno_game_settings.py', 'game_settings.json', 'map_catalog.html', 'map_catalog.js', 'map_gallery.html', 'map_gallery.css', 'map_viewer.html', 'map_viewer.js', 'stamp_gallery.html', 'stamp_gallery.css', 'stamp_viewer.js', 'gallery_i18n.js', 'gallery_i18n.css', 'locales/de.json', 'locales/en.json'):
+        for name in ('anno_execution.py', 'anno_gallery.py', 'anno_i18n.py', 'anno_save_summary.py', 'anno_save_statistics.py', 'anno_map_catalog.py', 'anno_map_variants.py', 'anno_game_settings.py', 'game_settings.json', 'map_catalog.html', 'map_catalog.js', 'map_gallery.html', 'map_gallery.css', 'map_viewer.html', 'map_viewer.js', 'stamp_gallery.html', 'stamp_gallery.css', 'stamp_viewer.js', 'gallery_i18n.js', 'gallery_i18n.css', 'locales/de.json', 'locales/en.json'):
             source = ROOT / 'templates' / name
             target = ROOT / game / 'tools' / (name if name.endswith('.py') else 'gallery_templates/' + name)
             if not target.is_file() or source.read_bytes() != target.read_bytes():

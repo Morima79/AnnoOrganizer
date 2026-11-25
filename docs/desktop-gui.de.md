@@ -2,7 +2,7 @@
 
 [English](desktop-gui.md) · [Deutsch](desktop-gui.de.md) · [Wishlist](wishlist.de.md)
 
-Status: Vorschlag; noch nicht implementiert.
+Status: Vorschlag; gemeinsame CLI-Ausführung vorbereitet, GUI noch nicht implementiert.
 
 ## Ziel
 
@@ -39,7 +39,7 @@ Das bestehende spielspezifische settings.json-Schema einschliesslich --config, r
 
 ## Konkretisierung der drei technischen Punkte
 
-Die folgenden Festlegungen beschreiben den vorgesehenen ersten Implementierungsstand. Sie sind noch nicht umgesetzt; insbesondere bietet die heutige CLI noch keinen strukturierten Fortschritts- oder Abbruchvertrag.
+Die folgenden Festlegungen beschreiben den vorgesehenen ersten Implementierungsstand. Sie sind erst teilweise umgesetzt; der aktuelle Stand und die verbleibenden Schnittstellen sind unten beschrieben.
 
 ### 1. Ausführung im Quellcode und im Windows-Paket
 
@@ -90,6 +90,25 @@ Zunächst PyInstaller im onedir- und --windowed-Modus verwenden und als portable
 - [ ] GUI bleibt bedienbar; Abbruch und Fehler werden korrekt angezeigt, ohne falsche Erfolgsmeldungen oder beschädigte Quelldateien.
 - [ ] Logs und Ausgaben lassen sich öffnen; deutsche und englische Oberfläche funktionieren.
 - [ ] Release-ZIP ist über CI reproduzierbar, enthält erforderliche Ressourcen und Lizenzen und wird nach dem Entpacken getestet.
+
+## Implementierungsstand: gemeinsame Ausführung vorbereiten
+
+Der erste Umsetzungsschritt stellt jetzt `anno_execution.py` bereit. Die zentrale Quelle liegt unter `templates/`; `scripts/sync_gallery_templates.py` verteilt identische Kopien nach `<spiel>/tools/`, damit jeder Spielordner eigenständig bleibt. Alle drei Launcher verwenden diesen Dienst.
+
+- `prepare_execution(settings, project, action, rescan=False)` übernimmt ein bereits geladenes `Settings`-Objekt, wählt die unterstützten Aktionen, isoliert die Demo und validiert alle Schritte ohne Schreibzugriffe, Rückfragen oder Browserstart. Relative Pfade und externe Einstellungen behalten die bestehende `Settings`-Semantik; persönliche Konfigurationsdateien werden nicht verändert.
+- `execute_plan(plan, on_event=None, on_output=None)` führt den Plan aus und liefert `ExecutionResult(galleries, logs)` mit `Path`-Objekten. Ausnahmen werden weitergegeben. `on_output` erhält rohe Logzeilen; `on_event` erhält Dictionaries mit `protocol_version: 1`, `run_id`, `type` und `payload`. Bisher implementiert: `started`, `stage` und `finished`. Callbacks laufen synchron im aufrufenden Thread und dürfen keine Ausnahmen auslösen; ein späterer GUI-Adapter muss Ereignisse an den UI-Thread weiterreichen.
+- `finished.payload` enthält `status`, `galleries`, `logs` und `partial_output`, bei Fehler zusätzlich `message`. `galleries` nennt nur erfolgreich abgeschlossene Aktionen; `logs` nennt die vorgesehenen Logpfade bereits gestarteter Aktionen. `partial_output: true` bei einem Fehler bedeutet, dass Ausgaben möglich sind, auch wenn die fehlerhafte Aktion keine vollständige Galerie geliefert hat. Ein fehlender Galerie-Einstieg trotz Exitcode 0 gilt als Fehler. Ein `KeyboardInterrupt` wird als `cancelled` gemeldet und weitergegeben; ein kooperativer Abbruchkanal fehlt noch.
+- Haupt- und Spielstarter bieten `--non-interactive`. Die Aktion muss explizit sein, beim Hauptstarter zusätzlich das Spiel. Der Modus legt keine fehlenden Einstellungen an, fragt nicht nach einem Spielpfad und lässt sich nicht mit `--init-settings` kombinieren. `--check` behält seinen lesenden Rückfall auf die Beispielkonfiguration am Standardort. Zum Unterdrücken des Browserstarts weiterhin `--no-open` angeben.
+
+Beispiel für eine bereits vorhandene externe Konfiguration:
+
+```powershell
+.\.venv\Scripts\python.exe launch.py --game anno1404 --action demo --config "D:/Anno/settings.json" --non-interactive --no-open
+```
+
+Die Prüfung der Schnittstellen hat gezeigt: Generatoren laden `CONFIG` und weitere spielspezifische Module heute beim Import und verwenden globale Argumente/Umgebung. Deshalb startet der gemeinsame Dienst vorläufig weiterhin die vorhandenen Skripte über Python-Unterprozesse; das ist ausdrücklich noch kein paketierbarer Worker. Ein Start im eingefrorenen EXE-Modus wird vor Schreibzugriffen abgewiesen. Die bisherige Sperre auf `output` bleibt bestehen und wird nun über den gesamten Demo-Auftrag gehalten; die effektive Demo-Konfiguration wird erst innerhalb dieser Sperre geschrieben, ohne `settings.filename` umzubiegen.
+
+Noch offen sind direkt aufrufbare Generator-Dienste, der JSON-Zeilen-Transport mit Exitcode-Vertrag, kooperativer Abbruch, Sperren über getrennte Ausgabeziele, weitere Fortschrittsereignisse und der paketierte Worker. GUI, LocalAppData-Verwaltung und automatische Spracherkennung sind weiterhin Planung. Der Quellcode-Dienst darf wegen der gleichnamigen Spielmodule nur innerhalb eines einzelnen Spielprozesses verwendet werden; für einen Spielwechsel ist künftig ein neuer Worker vorgesehen.
 
 ## Umsetzungsschritte
 

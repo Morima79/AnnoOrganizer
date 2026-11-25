@@ -54,6 +54,8 @@ Stempelgalerie:
 .\.venv\Scripts\python.exe launch.py --action stamps
 ```
 
+`--non-interactive` verlangt `--action` und eine vorhandene Konfiguration; Abfragen und automatische Einstellungsanlage entfallen. Mit `--no-open` bleibt auch der Browser geschlossen.
+
 `--check` prüft Pfade ohne neue Ausgaben. `--no-open` unterdrückt den Browserstart. `--config PFAD` wählt eine andere Einstellungsdatei. `--rescan` ignoriert den Metadaten-Zwischenspeicher der Spielstandauswertung. Die bestehende Excel-Arbeitsmappe vor dem Aktualisieren schliessen.
 
 Neue Ausgaben liegen standardmässig in `local-data/` neben dem Starter; übernommene Ausgabeordner bleiben erhalten. Die Galeriepfade sind `reports/map-gallery.html` und bei unterstützten Spielen `stamps/stamp-gallery.html`. Protokolle stehen unter `logs/` im Ausgabeordner. Stempelnamen, eigene Layouts und Quelldateien werden nicht umbenannt oder verändert.

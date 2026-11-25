@@ -1,11 +1,8 @@
 """Launch a local AnnoOrganizer task or the bundled demo."""
 import argparse
-from contextlib import contextmanager
-import importlib.util
 import json
 import os
 from pathlib import Path
-import subprocess
 import sys
 
 for stream in (sys.stdout, sys.stderr):
@@ -15,39 +12,13 @@ for stream in (sys.stdout, sys.stderr):
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / 'tools'))
 from anno_settings import Settings, initialize_settings
-from anno_demo import demo_settings
+from anno_execution import dependencies, prepare_execution, execute_plan
 from anno_installation import resolve_game_data
 
 GAME = 'anno117'
 SCRIPTS = {'analyze': 'analyze_saves.py', 'stamps': 'build_stamp_gallery.py'}
 LABELS = {'demo': 'Demo mit den mitgelieferten Beispielen', 'stamps': 'Stempelgalerie der konfigurierten Daten',
           'analyze': 'Karten und Spielstände der konfigurierten Daten'}
-
-
-def dependencies():
-    missing = [package for package in ('PIL', 'xlsxwriter', 'tzdata') if importlib.util.find_spec(package) is None]
-    if missing:
-        raise ValueError('Python-Pakete fehlen: ' + ', '.join(missing) + '. Bitte Launch.cmd öffnen oder python -m pip install -r requirements.txt ausführen.')
-
-
-@contextmanager
-def updating(output):
-    import msvcrt
-    output.mkdir(parents=True, exist_ok=True)
-    with (output / '.annotools.lock').open('a+b') as lock:
-        lock.seek(0)
-        lock.write(b'0')
-        lock.flush()
-        lock.seek(0)
-        try:
-            msvcrt.locking(lock.fileno(), msvcrt.LK_NBLCK, 1)
-        except OSError as exc:
-            raise ValueError('Diese Ausgabe wird bereits aktualisiert.') from exc
-        try:
-            yield
-        finally:
-            lock.seek(0)
-            msvcrt.locking(lock.fileno(), msvcrt.LK_UNLCK, 1)
 
 
 def choose():
@@ -93,34 +64,6 @@ def ensure_installation(settings, check):
     settings.data = settings.values = data
 
 
-def run_task(settings, action, rescan=False):
-    command = [sys.executable, str(ROOT / 'tools' / SCRIPTS[action])]
-    if rescan and action == 'analyze':
-        command.append('--rescan')
-    env = dict(os.environ, ANNOTOOLS_SETTINGS=str(settings.filename), PYTHONIOENCODING='utf-8', PYTHONUTF8='1')
-    with updating(settings.output):
-        settings.validate(action)
-        (settings.output / '.annotools-game.json').write_text(json.dumps({'game': GAME}), encoding='utf-8')
-        logs = settings.log_output
-        logs.mkdir(parents=True, exist_ok=True)
-        logfile = logs / (action + '.log')
-        with logfile.open('w', encoding='utf-8') as log:
-            with subprocess.Popen(command, cwd=ROOT, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                                  text=True, encoding='utf-8', errors='replace', creationflags=subprocess.CREATE_NO_WINDOW) as process:
-                for line in process.stdout:
-                    log.write(line)
-                    log.flush()
-                    print(line, end='', flush=True)
-                status = process.wait()
-    if status:
-        raise ValueError(f'Aktualisierung fehlgeschlagen. Protokoll: {logfile}')
-    gallery = (settings.stamp_output / 'stamp-gallery.html' if action == 'stamps' else settings.report_output / 'map-gallery.html')
-    if not gallery.is_file():
-        raise ValueError('Galerie nach Aktualisierung nicht gefunden: ' + str(gallery))
-    print('Galerie: ' + str(gallery))
-    return gallery
-
-
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--action', choices=('demo', 'stamps', 'analyze'))
@@ -129,7 +72,11 @@ def main():
     parser.add_argument('--check', action='store_true', help='Prüfen, ohne Einstellungen oder Ausgaben anzulegen')
     parser.add_argument('--no-open', action='store_true', help='Galerie nach Erfolg nicht im Browser öffnen')
     parser.add_argument('--rescan', action='store_true', help='Spielstand-Zwischenspeicher ignorieren')
+    parser.add_argument('--non-interactive', action='store_true',
+                        help='Keine Abfragen oder automatische Einstellungsanlage; --action erforderlich')
     args = parser.parse_args()
+    if args.non_interactive and (not args.action or args.init_settings):
+        parser.error('--non-interactive braucht --action und erlaubt kein --init-settings.')
     example = ROOT / 'settings.example.json'
     if args.init_settings:
         created = initialize_settings(args.config, example)
@@ -148,27 +95,24 @@ def main():
             if selected.resolve() != (ROOT / 'settings.json').resolve():
                 raise ValueError('Einstellungsdatei nicht gefunden: ' + str(selected))
             selected = example
+        elif args.non_interactive:
+            raise ValueError('Einstellungsdatei nicht gefunden: ' + str(selected))
         else:
             initialize_settings(selected, example)
     settings = Settings(GAME, selected)
     dependencies()
-    ensure_installation(settings, args.check)
-    tasks = list(SCRIPTS) if action == 'demo' else [action]
-    if action == 'demo':
-        settings = demo_settings(settings, ROOT)
+    ensure_installation(settings, args.check or args.non_interactive)
+    plan = prepare_execution(settings, ROOT, action, args.rescan)
+    if plan.demo:
         print('Demo: ausschliesslich die mitgelieferten Beispiele werden eingelesen.')
-    for task in tasks:
-        settings.validate(task)
-    print('Ausgabe: ' + str(settings.output))
+    print('Ausgabe: ' + str(plan.settings.output))
     if args.check:
         print('Prüfung erfolgreich.')
         return 0
-    if action == 'demo':
-        settings.output.mkdir(parents=True, exist_ok=True)
-        effective = settings.output / 'demo-settings.json'
-        effective.write_text(json.dumps(settings.data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-        settings.filename = effective
-    galleries = [run_task(settings, task, args.rescan) for task in tasks]
+    result = execute_plan(plan, on_output=lambda line: print(line, end='', flush=True))
+    galleries = result.galleries
+    for gallery in galleries:
+        print('Galerie: ' + str(gallery))
     if not args.no_open:
         for gallery in galleries:
             os.startfile(gallery)
