@@ -7,6 +7,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Reserve actual output/log/cache trees across desktop and CLI processes, recover crash-stale reservations, and stage stamp galleries/caches with publication rollback and retained recovery data if rollback is blocked.
+
 - Add a Tkinter desktop preview via `Launch.cmd --gui`, with saved/system DE/EN selection, game-specific settings/imports, temporary job configurations, responsive worker execution, cancellation, logs and output navigation. Verify worker completion against its exit code before enabling successful results.
 
 - Add desktop settings management with LocalAppData defaults, external-file selection, path-preserving imports, unknown-key retention, backups and conflict-aware atomic saves; share CLI path resolution for unsaved settings.
@@ -18,6 +20,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 - Prepare shared non-interactive execution for all three game launchers, including validated demo plans, structured stage/completion callbacks and output results. Add `--non-interactive`; retain the transitional Python script backend and document remaining GUI/worker work.
 
 ### Deutsch
+
+- Tatsächliche Ausgabe-/Log-/Cacheziele über Desktop- und CLI-Prozesse reserviert, verwaiste Reservierungen nach Abstürzen freigegeben und Stempelgalerien/-Caches mit Rücknahme fehlgeschlagener Veröffentlichungen sowie erhaltenen Wiederherstellungsdaten abgesichert.
 
 - Tkinter-Desktop-Vorschau über `Launch.cmd --gui` mit gespeicherter/systembasierter DE/EN-Auswahl, spielspezifischen Einstellungen und Importen, temporären Auftragskonfigurationen, bedienbarer Worker-Ausführung, Abbruch, Logs und Ausgabe-Navigation ergänzt. Ergebnisse erst nach übereinstimmendem Worker-Abschluss und Exitcode als erfolgreich freigeben.
 

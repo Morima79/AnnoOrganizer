@@ -13,6 +13,7 @@ from pathlib import Path
 import sys
 from anno_settings import settings_for, protect_output
 from anno_execution import checkpoint
+from anno_output_lock import reserve_paths
 import anno_game_settings as game_labels
 from anno_map_catalog import render_card, render_catalog_page
 from anno_map_variants import campaign_variants, latest_known_values
@@ -455,44 +456,46 @@ def main(argv=None, *, settings=None):
     args=parser.parse_args(argv)
     from zoneinfo import ZoneInfo
     from anno_excel_export import write_workbook
-    CONFIG.validate('analyze')
-    protect_output(args.output, CONFIG.all_sources()+[args.account,args.game_data])
-    output=args.output.resolve()
-    output.mkdir(parents=True,exist_ok=True)
-    account=args.account.resolve()
-    with (output/'.anno117-analysis.lock').open('a+b') as lock:
-        lock.seek(0)
-        msvcrt.locking(lock.fileno(),msvcrt.LK_NBLCK,1)
-        saves=scan(account,output/'anno117-scan.json',args.rescan)
-        cache=output/'anno117-maps.json'
-        maps=json.loads(cache.read_text(encoding='utf8')) if cache.is_file() and not args.rescan else {}
-        with TemporaryDirectory(prefix='.anno117-',dir=output) as temp:
-            stage=Path(temp)
-            cards=stage/'map-images'
-            cards.mkdir()
-            zone = ZoneInfo(CONFIG.zone)
-            statistics, statistics_cache = collect_statistics(
-                [dict(campaign=f"{row['seed']}:{row['campaign_id']}", path=account/name,
-                      source=name, profile=profile_name('Spielkonto', name), seed=row['seed'], stamp=row['stamp'], play_ms=row['play'])
-                 for name, row in saves.items()], FileDBStatistics('anno117', args.game_data),
-                output/'anno117-statistics.json', zone, args.rescan)
-            rows,new_maps=prepare(saves,account,Maps(args.game_data,cards),zone,maps,statistics)
-            (stage/'anno117-statistics.json').write_text(json.dumps(statistics_cache,ensure_ascii=False),encoding='utf-8')
-            updated_at = datetime.now(zone)
-            profiles = profile_playtime(
-                (row['seed'], row, 'Spielkonto', path, row['play'], row['active'])
-                for path, row in saves.items()
-            )
-            total_playtime = clock(sum(ms for _, _, ms in profiles) // 1000)
-            write_html(rows,len(saves),stage,updated_at,total_playtime,profiles)
-            report='anno117-map-seeds.xlsx'
-            write_workbook(rows,SETTINGS,['Partien insgesamt', 'Gespeicherte Gesamtspielzeit'],CONFIG.zone,stage,output/report,output,updated_at, None, total_playtime, profiles)
-            (stage/'report.xlsx').rename(stage/report)
-            for name,data in (('anno117-scan.json',saves),('anno117-maps.json',new_maps)):
-                (stage/name).write_text(json.dumps(data,ensure_ascii=False),encoding='utf8')
-            publish(stage,output)
-    print(f'{len(saves)} Spielstände, {len(rows)} Kartenvarianten.')
-    print(f'Excel und HTML: {output}')
+    with reserve_paths([CONFIG.output, args.output, CONFIG.log_output]):
+        CONFIG.validate('analyze')
+        protect_output(args.output, CONFIG.all_sources()+[args.account,args.game_data])
+        output=args.output.resolve()
+        output.mkdir(parents=True,exist_ok=True)
+        account=args.account.resolve()
+        with (output/'.anno117-analysis.lock').open('a+b') as lock:
+            lock.seek(0)
+            msvcrt.locking(lock.fileno(),msvcrt.LK_NBLCK,1)
+            saves=scan(account,output/'anno117-scan.json',args.rescan)
+            cache=output/'anno117-maps.json'
+            maps=json.loads(cache.read_text(encoding='utf8')) if cache.is_file() and not args.rescan else {}
+            with TemporaryDirectory(prefix='.anno117-',dir=output) as temp:
+                stage=Path(temp)
+                cards=stage/'map-images'
+                cards.mkdir()
+                zone = ZoneInfo(CONFIG.zone)
+                statistics, statistics_cache = collect_statistics(
+                    [dict(campaign=f"{row['seed']}:{row['campaign_id']}", path=account/name,
+                          source=name, profile=profile_name('Spielkonto', name), seed=row['seed'], stamp=row['stamp'], play_ms=row['play'])
+                     for name, row in saves.items()], FileDBStatistics('anno117', args.game_data),
+                    output/'anno117-statistics.json', zone, args.rescan)
+                rows,new_maps=prepare(saves,account,Maps(args.game_data,cards),zone,maps,statistics)
+                (stage/'anno117-statistics.json').write_text(json.dumps(statistics_cache,ensure_ascii=False),encoding='utf-8')
+                updated_at = datetime.now(zone)
+                profiles = profile_playtime(
+                    (row['seed'], row, 'Spielkonto', path, row['play'], row['active'])
+                    for path, row in saves.items()
+                )
+                total_playtime = clock(sum(ms for _, _, ms in profiles) // 1000)
+                write_html(rows,len(saves),stage,updated_at,total_playtime,profiles)
+                report='anno117-map-seeds.xlsx'
+                write_workbook(rows,SETTINGS,['Partien insgesamt', 'Gespeicherte Gesamtspielzeit'],CONFIG.zone,stage,output/report,output,updated_at, None, total_playtime, profiles)
+                (stage/'report.xlsx').rename(stage/report)
+                for name,data in (('anno117-scan.json',saves),('anno117-maps.json',new_maps)):
+                    (stage/name).write_text(json.dumps(data,ensure_ascii=False),encoding='utf8')
+                publish(stage,output)
+        print(f'{len(saves)} Spielstände, {len(rows)} Kartenvarianten.')
+        print(f'Excel und HTML: {output}')
+
 
 
 if __name__=='__main__':

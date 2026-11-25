@@ -14,6 +14,7 @@ from pathlib import Path
 import sys
 from anno_settings import settings_for, protect_output
 from anno_execution import checkpoint
+from anno_output_lock import reserve_paths
 import anno_game_settings as game_labels
 from anno_map_catalog import render_card, render_catalog_page
 from anno_map_variants import campaign_variants, latest_known_values
@@ -735,72 +736,74 @@ def main(argv=None, *, settings=None):
     if opts.render_only and opts.rescan:
         parser.error('--render-only und --rescan sind Alternativen.')
     ACCOUNT, ARCHIVE, GAME = (path.resolve() for path in (opts.account, opts.archive, opts.game_data))
-    CONFIG.validate('analyze')
-    protect_output(opts.output, CONFIG.all_sources()+[opts.account,opts.archive,opts.game_data])
-    output = opts.output.resolve()
-    target = excel_target(output, opts.excel)
-    if not target.is_relative_to(output) or target.suffix.lower() != '.xlsx':
-        parser.error('Das Excel-Ziel muss eine .xlsx-Datei innerhalb des Ausgabeordners sein.')
-    if not ACCOUNT.is_dir() or not (GAME/'data0.rda').is_file():
-        parser.error('Spielkonto oder maindata fehlt. Pfade mit --account und --game-data prüfen.')
-    zone = ZoneInfo(ZONE_NAME)
-    try:
-        import PIL.Image  # Check Pillow before scanning.
-    except ImportError as exc:
-        raise ValueError('Pillow fehlt. Installation: python -m pip install Pillow') from exc
-    output.mkdir(parents=True, exist_ok=True)
-    excel_locks = (target.parent/('~$'+target.name), target.parent/('~$'+target.name[2:]))
-    if any(lock.exists() for lock in excel_locks):
-        raise ValueError('Bitte die Arbeitsmappe in Excel schliessen.')
-    scan_path = output/'anno-scan.json'
-    maps_path = output/'anno-maps.jsonl'
-    with (output/'.anno-analysis.lock').open('a+b') as lock:
-        lock.seek(0)
+    with reserve_paths([CONFIG.output, opts.output, CONFIG.log_output]):
+        CONFIG.validate('analyze')
+        protect_output(opts.output, CONFIG.all_sources()+[opts.account,opts.archive,opts.game_data])
+        output = opts.output.resolve()
+        target = excel_target(output, opts.excel)
+        if not target.is_relative_to(output) or target.suffix.lower() != '.xlsx':
+            parser.error('Das Excel-Ziel muss eine .xlsx-Datei innerhalb des Ausgabeordners sein.')
+        if not ACCOUNT.is_dir() or not (GAME/'data0.rda').is_file():
+            parser.error('Spielkonto oder maindata fehlt. Pfade mit --account und --game-data prüfen.')
+        zone = ZoneInfo(ZONE_NAME)
         try:
-            msvcrt.locking(lock.fileno(), msvcrt.LK_NBLCK, 1)
-        except OSError as exc:
-            raise ValueError('Eine Auswertung für diesen Ausgabeordner läuft bereits.') from exc
-        old_maps = []
-        if not opts.rescan and maps_path.exists():
+            import PIL.Image  # Check Pillow before scanning.
+        except ImportError as exc:
+            raise ValueError('Pillow fehlt. Installation: python -m pip install Pillow') from exc
+        output.mkdir(parents=True, exist_ok=True)
+        excel_locks = (target.parent/('~$'+target.name), target.parent/('~$'+target.name[2:]))
+        if any(lock.exists() for lock in excel_locks):
+            raise ValueError('Bitte die Arbeitsmappe in Excel schliessen.')
+        scan_path = output/'anno-scan.json'
+        maps_path = output/'anno-maps.jsonl'
+        with (output/'.anno-analysis.lock').open('a+b') as lock:
+            lock.seek(0)
             try:
-                old_maps = [json.loads(line) for line in maps_path.read_text(encoding='utf-8').splitlines()]
-            except ValueError:
-                pass
-        if opts.render_only:
-            rows = load_cache(scan_path, [])
-            if not rows or not all('stamp' in row and 'play_ms' in row and 'campaign_id' in row for row in rows):
-                raise ValueError('Zwischendaten fehlen oder sind veraltet. Ohne --render-only starten.')
-        else:
-            rows = scan(scan_path, opts.rescan)
-        groups = bucket(rows)
-        maps = collect_maps(groups, old_maps)
-        with tempfile.TemporaryDirectory(prefix='.anno-export-', dir=output) as temp:
-            stage = Path(temp)
-            updated_at = datetime.now(zone)
-            profiles = profile_playtime(
-                (dict(settings)[('GameSeed',)], row, row['source'], row['path'], row['play_ms'], False)
-                for settings, saves in groups for row in saves
-            )
-            total_playtime = duration(sum(ms for _, _, ms in profiles) // 1000)
-            statistics, statistics_cache = collect_statistics(
-                [dict(campaign=f"{dict(settings)[('GameSeed',)]}:{row['campaign_id']}", path=save_path(row),
-                      source=f"{row['source']}: {row['path']}", profile=profile_name(row['source'], row['path']),
-                      seed=dict(settings)[('GameSeed',)], stamp=row['stamp'], play_ms=row['play_ms'], live=row['source']=='Spielkonto')
-                 for settings, saves in groups for row in saves],
-                FileDBStatistics('anno1800', GAME, index_game), output/'anno1800-statistics.json', zone, opts.rescan,
-                cache_only=opts.render_only)
-            (stage/'anno1800-statistics.json').write_text(json.dumps(statistics_cache,ensure_ascii=False),encoding='utf-8')
-            excel_rows = render_catalog(rows, groups, maps, stage, updated_at, total_playtime, profiles, statistics)
-            write_excel(excel_rows, stage, target, output, updated_at, total_playtime, profiles)
-            (stage/'anno-scan.json').write_text(json.dumps(rows, ensure_ascii=False), encoding='utf-8')
-            (stage/'anno-maps.jsonl').write_text(
-                ''.join(json.dumps(row, ensure_ascii=False)+'\n' for row in maps), encoding='utf-8')
-            publish(stage, output, target)
-    print(f'Excel: {target}')
-    print(f"HTML: {output / 'map-gallery.html'}")
-    missing = [row for row in maps if row['error']]
-    if missing:
-        print(f'{len(missing)} Varianten ohne Karte. Gründe stehen in der Galerie.', file=sys.stderr)
+                msvcrt.locking(lock.fileno(), msvcrt.LK_NBLCK, 1)
+            except OSError as exc:
+                raise ValueError('Eine Auswertung für diesen Ausgabeordner läuft bereits.') from exc
+            old_maps = []
+            if not opts.rescan and maps_path.exists():
+                try:
+                    old_maps = [json.loads(line) for line in maps_path.read_text(encoding='utf-8').splitlines()]
+                except ValueError:
+                    pass
+            if opts.render_only:
+                rows = load_cache(scan_path, [])
+                if not rows or not all('stamp' in row and 'play_ms' in row and 'campaign_id' in row for row in rows):
+                    raise ValueError('Zwischendaten fehlen oder sind veraltet. Ohne --render-only starten.')
+            else:
+                rows = scan(scan_path, opts.rescan)
+            groups = bucket(rows)
+            maps = collect_maps(groups, old_maps)
+            with tempfile.TemporaryDirectory(prefix='.anno-export-', dir=output) as temp:
+                stage = Path(temp)
+                updated_at = datetime.now(zone)
+                profiles = profile_playtime(
+                    (dict(settings)[('GameSeed',)], row, row['source'], row['path'], row['play_ms'], False)
+                    for settings, saves in groups for row in saves
+                )
+                total_playtime = duration(sum(ms for _, _, ms in profiles) // 1000)
+                statistics, statistics_cache = collect_statistics(
+                    [dict(campaign=f"{dict(settings)[('GameSeed',)]}:{row['campaign_id']}", path=save_path(row),
+                          source=f"{row['source']}: {row['path']}", profile=profile_name(row['source'], row['path']),
+                          seed=dict(settings)[('GameSeed',)], stamp=row['stamp'], play_ms=row['play_ms'], live=row['source']=='Spielkonto')
+                     for settings, saves in groups for row in saves],
+                    FileDBStatistics('anno1800', GAME, index_game), output/'anno1800-statistics.json', zone, opts.rescan,
+                    cache_only=opts.render_only)
+                (stage/'anno1800-statistics.json').write_text(json.dumps(statistics_cache,ensure_ascii=False),encoding='utf-8')
+                excel_rows = render_catalog(rows, groups, maps, stage, updated_at, total_playtime, profiles, statistics)
+                write_excel(excel_rows, stage, target, output, updated_at, total_playtime, profiles)
+                (stage/'anno-scan.json').write_text(json.dumps(rows, ensure_ascii=False), encoding='utf-8')
+                (stage/'anno-maps.jsonl').write_text(
+                    ''.join(json.dumps(row, ensure_ascii=False)+'\n' for row in maps), encoding='utf-8')
+                publish(stage, output, target)
+        print(f'Excel: {target}')
+        print(f"HTML: {output / 'map-gallery.html'}")
+        missing = [row for row in maps if row['error']]
+        if missing:
+            print(f'{len(missing)} Varianten ohne Karte. Gründe stehen in der Galerie.', file=sys.stderr)
+
 
 
 if __name__ == '__main__':

@@ -12,6 +12,7 @@ import sys
 from uuid import uuid4
 
 from anno_demo import demo_settings
+from anno_output_lock import output_paths, reserve_paths
 
 
 SCRIPTS = {'analyze': 'analyze_saves.py', 'stamps': 'build_stamp_gallery.py'}
@@ -72,7 +73,7 @@ def prepare_execution(settings, project, action, rescan=False):
 
 @contextmanager
 def updating(output):
-    """Retain the existing output-root lock until broader reservations are added."""
+    """Retain the legacy output-root lock alongside complete write reservations."""
     import msvcrt
     output.mkdir(parents=True, exist_ok=True)
     with (output / '.annotools.lock').open('a+b') as lock:
@@ -175,7 +176,7 @@ def execute_plan(plan, on_event=None, on_output=None, *, cancel_requested=None, 
         # Revalidate in case inputs or output markers changed after preparation.
         for task in plan.tasks:
             settings.validate(task)
-        with updating(settings.output):
+        with reserve_paths(output_paths(settings, plan.tasks)), updating(settings.output):
             for task in plan.tasks:
                 settings.validate(task)
             (settings.output / '.annotools-game.json').write_text(

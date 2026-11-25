@@ -108,7 +108,7 @@ Example using an existing external configuration:
 
 The five generators no longer load configuration at import time. Their `run(settings, rescan=False)` service receives settings explicitly; existing direct script calls remain available through `main`. The shared service loads a fresh generator module per action and calls that service without another Python subprocess. Log output is captured separately from events. No temporary demo configuration file is needed; `settings.filename` is preserved. The existing `output` lock still covers the entire demo job. Module-global processing contexts remain limited to one game process for now; the 1800 game-resource index is reset when configuration changes. This prepares a frozen build, but no such build has been created or verified yet.
 
-Reservations across separate output destinations, further progress events, complete stamp-output transactions and the packaged worker remain open. LocalAppData settings management, GUI and automatic language detection are implemented as a source preview. Because game modules share names, the source service must be used within a single game process; switching games will use a new worker.
+Reservations across separate destinations and stamp publication are implemented as described below. Further progress events and the packaged worker remain open. LocalAppData settings management, GUI and automatic language detection are implemented as a source preview. Because game modules share names, the source service must be used within a single game process; switching games will use a new worker.
 
 ## Implementation status: source worker
 
@@ -120,7 +120,7 @@ Each game launcher internally accepts `--worker --action <action> --config <path
 
 stdout contains only UTF-8 JSON lines in the event format described above. Generator text goes to action logs. The `run_id` returned by `started` applies to every subsequent event. Exit codes are `0` for success, `1` for processing failure, `2` for an invalid job/configuration and `130` for cancellation. Invalid jobs also produce `started` and `finished` events; their `finished.payload.error_code` is `invalid_job`.
 
-A cancellation command on stdin is `{"protocol_version":1,"run_id":"<run_id>","type":"cancel"}` followed by a newline. Only matching versions and job identifiers are accepted; EOF does not cancel. A background reader sets the cancellation request. Checks occur before execution, between actions, between parsed saves or map variants, between stamps and before publication. Active parsers, thread-pool tasks and individual write/publication operations are allowed to finish. Completed demo actions remain listed if cancellation happens later. Stamp generators still write individual images/caches directly; partial output is therefore possible and complete rollback is not promised yet. The GUI must remain responsive until the completion event and wait for these safe boundaries.
+A cancellation command on stdin is `{"protocol_version":1,"run_id":"<run_id>","type":"cancel"}` followed by a newline. Only matching versions and job identifiers are accepted; EOF does not cancel. A background reader sets the cancellation request. Checks occur before execution, between actions, between parsed saves or map variants, between stamps and before publication. Active parsers, thread-pool tasks and individual write/publication operations are allowed to finish. Completed demo actions remain listed if cancellation happens later. Stamp generators now use the working-copy and rollback mechanism described below. Demo actions already published remain in place if cancellation occurs later. The GUI must remain responsive until the completion event and wait for these safe boundaries.
 
 Automated checks cover a real 1404 source-worker demo, protocol errors and cancellation through stdin. A packaged executable worker and runtime behavior using 117/1800 game resources have not been established by these checks.
 
@@ -136,7 +136,11 @@ Automated checks cover a real 1404 source-worker demo, protocol errors and cance
 
 `desktop/worker_client.py` reads worker events on a background thread and queues them for Tk. Success is enabled only after a consistent completion event and exit code. Cancellation requested before worker startup is forwarded after the job identifier arrives. Every job uses a private temporary configuration copy so Generate does not save a personal configuration. Inputs and selected tab survive language changes. Source startup, DE/EN and a 1404 demo were also inspected visibly; scrollable fields keep 860 × 720 pixels usable.
 
-Usage and remaining limitations: [desktop guide](desktop.md). Packaging, reservations across separate output destinations and complete stamp transactions remain open, so overall acceptance is not complete yet.
+Usage and remaining limitations: [desktop guide](desktop.md). Packaging and remaining overall acceptance remain open, so overall acceptance is not complete yet.
+
+## Implementation status: output protection
+
+`anno_output_lock.py` reserves complete write destinations through a per-user Windows registry lock. Equal and nested targets conflict across different configurations. Short paths and directory links are resolved before comparison. Reservation files carry a held OS lock; unlocked stale entries are removed under the registry guard. `anno_output_transaction.py` generates stamp galleries and resource caches in separate working copies, checks for external edits and publishes resources before HTML. Failed publication rolls back; blocked rollback retains backups and a local recovery index. Both modules are synchronized into every standalone game folder.
 
 ## Implementation sequence
 

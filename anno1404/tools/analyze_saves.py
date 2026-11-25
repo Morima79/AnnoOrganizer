@@ -12,6 +12,7 @@ from pathlib import Path
 import sys
 from anno_settings import settings_for, protect_output
 from anno_execution import checkpoint
+from anno_output_lock import reserve_paths
 import anno_game_settings as game_labels
 from anno_gallery import render_gallery
 from anno_save_summary import collect_statistics, render_statistics, totals_html, variant_totals, label as summary_label
@@ -492,37 +493,39 @@ def main(argv=None, *, settings=None):
     parser.add_argument('--output', type=Path, default=CONFIG.report_output)
     parser.add_argument('--rescan', action='store_true')
     args = parser.parse_args(argv)
-    CONFIG.validate('analyze')
-    protect_output(args.output, CONFIG.all_sources()+(args.save_folder or []))
-    output = args.output.resolve()
-    output.mkdir(parents=True, exist_ok=True)
-    sources = sorted(set(source_folders()) | {p.resolve() for p in (args.save_folder or [])})
-    with (output/'.anno-1404.lock').open('a+b') as lock:
-        try:
-            msvcrt.locking(lock.fileno(), msvcrt.LK_NBLCK, 1)
-        except OSError as error:
-            raise ValueError('Die Auswertung läuft in diesem Ordner bereits.') from error
-        with TemporaryDirectory(prefix='.anno-1404-', dir=output) as temp:
-            stage = Path(temp)
-            (stage/'map-images').mkdir()
-            saves, count = collect(sources, stage, output, args.rescan)
-            statistics, statistics_cache = collect_statistics(
-                [dict(campaign=campaign_key(save), path=Path(save['path']), source=save['name'],
-                      profile=', '.join(save['profiles']), seed=save['seed'], stamp=save['timestamp'], play_ms=save['duration'])
-                 for save in saves], Statistics1404(read_archive, unpack, binary_fields, metadata_tree),
-                output/'anno1404-statistics.json', ZoneInfo(CONFIG.zone), args.rescan)
-            (stage/'anno1404-statistics.json').write_text(json.dumps(statistics_cache,ensure_ascii=False),encoding='utf-8')
-            payload = report(saves, count, sources, statistics)
-            write_html(stage, payload)
-            write_excel(stage, payload)
-            with ZipFile(stage/XLSX) as archive:
-                if archive.testzip():
-                    raise ValueError('Excel-Datei ist unvollständig.')
-            publish(stage, output)
-        (output/'anno1404-errors.txt').unlink(missing_ok=True)
-    print(payload['note'])
-    print('Editionen: ' + ', '.join(f'{k} ({v})' for k, v in sorted(payload['editions'].items())))
-    print(f'Excel, HTML und Kartenbilder: {output}')
+    with reserve_paths([CONFIG.output, args.output, CONFIG.log_output]):
+        CONFIG.validate('analyze')
+        protect_output(args.output, CONFIG.all_sources()+(args.save_folder or []))
+        output = args.output.resolve()
+        output.mkdir(parents=True, exist_ok=True)
+        sources = sorted(set(source_folders()) | {p.resolve() for p in (args.save_folder or [])})
+        with (output/'.anno-1404.lock').open('a+b') as lock:
+            try:
+                msvcrt.locking(lock.fileno(), msvcrt.LK_NBLCK, 1)
+            except OSError as error:
+                raise ValueError('Die Auswertung läuft in diesem Ordner bereits.') from error
+            with TemporaryDirectory(prefix='.anno-1404-', dir=output) as temp:
+                stage = Path(temp)
+                (stage/'map-images').mkdir()
+                saves, count = collect(sources, stage, output, args.rescan)
+                statistics, statistics_cache = collect_statistics(
+                    [dict(campaign=campaign_key(save), path=Path(save['path']), source=save['name'],
+                          profile=', '.join(save['profiles']), seed=save['seed'], stamp=save['timestamp'], play_ms=save['duration'])
+                     for save in saves], Statistics1404(read_archive, unpack, binary_fields, metadata_tree),
+                    output/'anno1404-statistics.json', ZoneInfo(CONFIG.zone), args.rescan)
+                (stage/'anno1404-statistics.json').write_text(json.dumps(statistics_cache,ensure_ascii=False),encoding='utf-8')
+                payload = report(saves, count, sources, statistics)
+                write_html(stage, payload)
+                write_excel(stage, payload)
+                with ZipFile(stage/XLSX) as archive:
+                    if archive.testzip():
+                        raise ValueError('Excel-Datei ist unvollständig.')
+                publish(stage, output)
+            (output/'anno1404-errors.txt').unlink(missing_ok=True)
+        print(payload['note'])
+        print('Editionen: ' + ', '.join(f'{k} ({v})' for k, v in sorted(payload['editions'].items())))
+        print(f'Excel, HTML und Kartenbilder: {output}')
+
 
 
 if __name__ == '__main__':

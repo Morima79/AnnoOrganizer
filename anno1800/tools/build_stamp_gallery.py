@@ -3,6 +3,8 @@ from pathlib import Path
 import sys
 from anno_settings import settings_for, protect_output
 from anno_execution import checkpoint
+from anno_output_lock import output_paths, reserve_paths
+from anno_output_transaction import stamp_transaction
 from anno_gallery import render_gallery
 CONFIG = None
 
@@ -265,6 +267,14 @@ def run(settings, *, rescan=False):
 
 
 def main(*, settings=None):
+    settings = settings if settings is not None else settings_for('anno1800')
+    settings.validate('stamps')
+    with reserve_paths(output_paths(settings, ('stamps',))):
+        with stamp_transaction(settings, checkpoint) as staged:
+            _generate(settings=staged)
+
+
+def _generate(*, settings=None):
     configure(settings if settings is not None else settings_for('anno1800'))
     CONFIG.validate('stamps')
     CACHE.mkdir(parents=True,exist_ok=True);OUT.mkdir(parents=True,exist_ok=True)
