@@ -17,7 +17,7 @@ from anno_map_catalog import render_card, render_catalog_page
 from anno_map_variants import campaign_variants, latest_known_values
 from anno_save_summary import collect_statistics, variant_totals
 from anno_save_statistics import FileDBStatistics
-CONFIG = settings_for('anno117')
+CONFIG = None
 
 from anno_profile_playtime import profile_name, profile_playtime, ranking_html
 import struct
@@ -27,8 +27,8 @@ from tempfile import TemporaryDirectory
 from anno_file_formats import fields, members, rda_index, read_asset, val
 
 HERE = Path(__file__).resolve().parent
-ACCOUNT = CONFIG.path('account')
-GAME = CONFIG.path('game_data')
+ACCOUNT = None
+GAME = None
 REGIONS = {3245: 'Latium', 6627: 'Albion', 149679: 'Aegyptus'}
 # German labels from config.rda (assets.xml and texts_german.xml).
 DLC_NAMES = {67902:'Verheißung des Vulkans', 67903:'Das Hippodrom', 67904:'Erwachen des Deltas'}
@@ -419,14 +419,32 @@ def publish(stage, output):
         raise
 
 
-def main():
+def configure(settings):
+    """Bind one explicit configuration within this game worker process."""
+    global CONFIG, ACCOUNT, GAME
+    if settings.game != 'anno117':
+        raise ValueError('Die Einstellungsdatei gehört nicht zu anno117.')
+    settings.validate('analyze')
+    CONFIG = settings
+    ACCOUNT = settings.path('account')
+    GAME = settings.path('game_data')
+
+
+def run(settings, *, rescan=False):
+    """Generate outputs from explicit settings without parsing process arguments."""
+    main(['--rescan'] if rescan else [], settings=settings)
+    return settings.report_output / 'map-gallery.html'
+
+
+def main(argv=None, *, settings=None):
+    configure(settings if settings is not None else settings_for('anno117'))
     import msvcrt
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--account',type=Path,default=ACCOUNT,help='Ordner accounts oder einzelnes Spielkonto')
     parser.add_argument('--game-data',type=Path,default=GAME,help='maindata der Spielinstallation')
     parser.add_argument('--output',type=Path,default=CONFIG.report_output)
     parser.add_argument('--rescan',action='store_true')
-    args=parser.parse_args()
+    args=parser.parse_args(argv)
     from zoneinfo import ZoneInfo
     from anno_excel_export import write_workbook
     CONFIG.validate('analyze')

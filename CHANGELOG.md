@@ -7,9 +7,13 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Expose explicit settings-based services for all five generators; remove configuration reads on import and script subprocesses from shared execution while retaining direct CLI entry points.
+
 - Prepare shared non-interactive execution for all three game launchers, including validated demo plans, structured stage/completion callbacks and output results. Add `--non-interactive`; retain the transitional Python script backend and document remaining GUI/worker work.
 
 ### Deutsch
+
+- Dienste mit expliziter Konfiguration für alle fünf Generatoren ergänzt; Konfigurationszugriffe beim Import und Skript-Unterprozesse aus der gemeinsamen Ausführung entfernt. Direkte CLI-Einstiege bleiben erhalten.
 
 - Gemeinsame nicht interaktive Ausführung für alle drei Spielstarter vorbereitet: validierte Demo-Pläne, strukturierte Schritt-/Abschlussereignisse und Ausgabeergebnisse. `--non-interactive` ergänzt; vorläufigen Python-Skript-Backend und offene GUI-/Worker-Arbeiten dokumentiert.
 

@@ -106,9 +106,9 @@ Example using an existing external configuration:
 .\.venv\Scripts\python.exe launch.py --game anno1404 --action demo --config "D:/Anno/settings.json" --non-interactive --no-open
 ```
 
-Interface inspection found that generators currently load `CONFIG` and further game-specific modules at import time and use global arguments/environment. The shared service therefore still runs existing scripts through Python subprocesses as a transitional backend; this is not a packageable worker yet. Frozen executable mode is rejected before writes. The existing `output` lock remains and is now held across the entire demo job; the effective demo configuration is written only inside that lock without changing `settings.filename`.
+The five generators no longer load configuration at import time. Their `run(settings, rescan=False)` service receives settings explicitly; existing direct script calls remain available through `main`. The shared service loads a fresh generator module per action and calls that service without another Python subprocess. Log output is captured separately from events. No temporary demo configuration file is needed; `settings.filename` is preserved. The existing `output` lock still covers the entire demo job. Module-global processing contexts remain limited to one game process for now; the 1800 game-resource index is reset when configuration changes. This prepares a frozen build, but no such build has been created or verified yet.
 
-Direct generator services, JSON-lines transport with the exit-code contract, cooperative cancellation, reservations across separate output destinations, further progress events and the packaged worker remain open. GUI, LocalAppData management and automatic language detection are still planned. Because game modules share names, the source service must be used within a single game process; switching games will use a new worker.
+JSON-lines transport with the exit-code contract, cooperative cancellation, reservations across separate output destinations, further progress events and the packaged worker remain open. GUI, LocalAppData management and automatic language detection are still planned. Because game modules share names, the source service must be used within a single game process; switching games will use a new worker.
 
 ## Implementation sequence
 

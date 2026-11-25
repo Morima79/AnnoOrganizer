@@ -85,52 +85,82 @@ class ExecutionTests(unittest.TestCase):
             pass
 
     @unittest.skipUnless(os.name == 'nt', 'Windows execution backend')
-    def test_zero_exit_without_gallery_is_a_failure(self):
-        import io
+    def test_return_without_gallery_is_a_failure(self):
         settings = self.settings('anno1404')
         plan = execution.prepare_execution(settings, ROOT / 'anno1404', 'demo')
         events = []
-        with patch.object(execution.subprocess, 'Popen') as popen:
-            process = popen.return_value.__enter__.return_value
-            process.stdout = io.StringIO('Example output\n')
-            process.wait.return_value = 0
+        with patch.object(execution, 'load_generator'):
             with self.assertRaisesRegex(ValueError, 'Galerie nach Aktualisierung nicht gefunden'):
                 execution.execute_plan(plan, on_event=events.append)
         self.assertEqual(events[-1]['payload']['status'], 'failed')
         self.assertEqual(events[-1]['payload']['galleries'], [])
 
-    def test_frozen_backend_fails_before_writing(self):
-        settings = self.settings('anno1404')
-        plan = execution.prepare_execution(settings, ROOT / 'anno1404', 'demo')
-        with patch.object(sys, 'frozen', True, create=True), self.assertRaises(ValueError):
-            execution.execute_plan(plan)
-        self.assertFalse(settings.output.exists())
-
-    @unittest.skipUnless(os.name == 'nt', 'Windows execution backend')
-    def test_process_failure_does_not_accept_a_stale_gallery(self):
-        import io
+    @unittest.skipUnless(os.name == 'nt', 'Windows execution service')
+    def test_service_uses_explicit_settings_and_rescan_without_a_python_child(self):
         settings = self.settings('anno1404')
         plan = execution.prepare_execution(settings, ROOT / 'anno1404', 'demo', rescan=True)
         gallery = plan.settings.report_output / 'map-gallery.html'
+        events = []
+        output = []
+
+        def generate(config, *, rescan):
+            self.assertIs(config, plan.settings)
+            self.assertTrue(rescan)
+            print('Processing complete')
+            print('Final fragment', end='')
+            gallery.parent.mkdir(parents=True)
+            gallery.write_text('New gallery', encoding='utf-8')
+
+        with patch.object(execution, 'load_generator') as loader:
+            loader.return_value.run.side_effect = generate
+            result = execution.execute_plan(plan, on_event=events.append, on_output=output.append)
+        self.assertEqual(result.galleries, (gallery,))
+        self.assertEqual(events[-1]['payload']['status'], 'success')
+        self.assertEqual(output, ['Processing complete\n', 'Final fragment'])
+        self.assertFalse((plan.settings.output / 'demo-settings.json').exists())
+        self.assertEqual(result.logs[0].read_text(encoding='utf-8'),
+                         'Processing complete\nFinal fragment')
+
+    @unittest.skipUnless(os.name == 'nt', 'Windows execution service')
+    def test_generator_failure_does_not_accept_a_stale_gallery(self):
+        settings = self.settings('anno1404')
+        plan = execution.prepare_execution(settings, ROOT / 'anno1404', 'demo')
+        gallery = plan.settings.report_output / 'map-gallery.html'
         gallery.parent.mkdir(parents=True)
         gallery.write_text('Previous successful run', encoding='utf-8')
-        output = []
         events = []
-        with patch.object(execution.subprocess, 'Popen') as popen:
-            process = popen.return_value.__enter__.return_value
-            process.stdout = io.StringIO('Processing failed\n')
-            process.wait.return_value = 7
-            with self.assertRaisesRegex(ValueError, 'Aktualisierung fehlgeschlagen'):
-                execution.execute_plan(plan, on_output=output.append, on_event=events.append)
-        command = popen.call_args.args[0]
-        self.assertEqual(command[-1], '--rescan')
-        effective = plan.settings.output / 'demo-settings.json'
-        self.assertEqual(popen.call_args.kwargs['env']['ANNOTOOLS_SETTINGS'], str(effective))
-        self.assertEqual(output, ['Processing failed\n'])
+        with patch.object(execution, 'load_generator') as loader:
+            loader.return_value.run.side_effect = ValueError('Processing failed')
+            with self.assertRaisesRegex(ValueError, 'Processing failed'):
+                execution.execute_plan(plan, on_event=events.append)
         self.assertEqual(events[-1]['payload']['status'], 'failed')
         self.assertTrue(events[-1]['payload']['partial_output'])
         self.assertEqual(events[-1]['payload']['galleries'], [])
         self.assertEqual(gallery.read_text(encoding='utf-8'), 'Previous successful run')
+
+    def test_importing_all_generators_does_not_load_configuration(self):
+        program = """
+import importlib.util, os, sys
+from pathlib import Path
+from unittest.mock import patch
+project = Path(sys.argv[1])
+sys.path.insert(0, str(project / 'tools'))
+with patch('anno_settings.settings_for', side_effect=AssertionError('Configuration read on import')):
+    for name in ('analyze_saves.py', 'build_stamp_gallery.py'):
+        path = project / 'tools' / name
+        if not path.is_file():
+            continue
+        spec = importlib.util.spec_from_file_location('fixture', path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        assert module.CONFIG is None
+        assert callable(module.run)
+"""
+        for game in ('anno117', 'anno1800', 'anno1404'):
+            with self.subTest(game=game):
+                result = subprocess.run([sys.executable, '-c', program, str(ROOT / game)],
+                                        cwd=self.root, capture_output=True, timeout=20)
+                self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_explicit_non_interactive_request_is_required(self):
         for script in (ROOT / 'launch.py', ROOT / 'anno1404/launch.py'):

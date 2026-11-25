@@ -3,7 +3,7 @@ from pathlib import Path
 import sys
 from anno_settings import settings_for, protect_output
 from anno_gallery import render_gallery
-CONFIG = settings_for('anno117')
+CONFIG = None
 
 import base64,zlib,struct as st,json,math,hashlib,collections,html,re,datetime
 from urllib.parse import quote
@@ -13,12 +13,12 @@ from anno_file_formats import rda_index,read_asset
 from anno_stamp_requirements import requirements,asset_cdlc_sources
 
 HERE=Path(__file__).resolve().parent
-ROOT=CONFIG.output
+ROOT = None
 REGIONS={3225:'Latium',6626:'Albion',149678:'Aegyptus'}
-GAME=CONFIG.path('game_data')
-LIB=CONFIG.path('stamps')
-OUT=(CONFIG.stamp_output)/'library'
-CACHE=(CONFIG.report_output)/'stamp-gallery'
+GAME = None
+LIB = None
+OUT = None
+CACHE = None
 RENDER_VERSION=2
 
 def digest(path):
@@ -100,7 +100,30 @@ def safe(s):
     assert s and s not in ['.','..']
     return s
 
-def main():
+def configure(settings):
+    """Bind one explicit configuration within this game worker process."""
+    global CONFIG, ROOT, GAME, LIB, OUT, CACHE
+    if settings.game != 'anno117':
+        raise ValueError('Die Einstellungsdatei gehört nicht zu anno117.')
+    settings.validate('stamps')
+    CONFIG = settings
+    ROOT = settings.output
+    GAME = settings.path('game_data')
+    LIB = settings.path('stamps')
+    OUT = settings.stamp_output / 'library'
+    CACHE = settings.report_output / 'stamp-gallery'
+
+
+def run(settings, *, rescan=False):
+    """Generate outputs from explicit settings without parsing process arguments."""
+    if rescan:
+        raise ValueError('--rescan gilt für die Spielstandauswertung.')
+    main(settings=settings)
+    return settings.stamp_output / 'stamp-gallery.html'
+
+
+def main(*, settings=None):
+    configure(settings if settings is not None else settings_for('anno117'))
     CONFIG.validate('stamps')
     CACHE.mkdir(parents=True,exist_ok=True);OUT.mkdir(parents=True,exist_ok=True)
     inventoryfile=CACHE/'inventory.json'

@@ -19,16 +19,16 @@ from anno_map_variants import campaign_variants, latest_known_values
 from anno_save_summary import collect_statistics, variant_totals
 from anno_save_statistics import FileDBStatistics
 from functools import lru_cache
-CONFIG = settings_for('anno1800')
+CONFIG = None
 
 from anno_profile_playtime import profile_name, profile_playtime, ranking_html
 from zoneinfo import ZoneInfo
 import struct as st
 import zlib
 
-ACCOUNT = CONFIG.path('account')
+ACCOUNT = None
 HERE = Path(__file__).resolve().parent
-ARCHIVE = CONFIG.path('archive') or CONFIG.output/'unused-archive'
+ARCHIVE = None
 
 def members(path, wanted):
     with path.open('rb') as f:
@@ -228,7 +228,7 @@ def scan(cache_path, refresh=False):
 
 
 
-GAME = CONFIG.path('game_data')
+GAME = None
 
 def rda_index(path):
     with path.open('rb') as f:
@@ -374,7 +374,7 @@ DLC={410040:'Versunkene Schätze',410041:'Botanika',410042:'Die Passage',
      410059:'Paläste der Macht',410070:'Reiche Ernte',410071:'Land der Löwen',
      410084:'Reisezeit',410085:'Dächer der Stadt',24962:'Reich der Lüfte',4100010:'Die Anarchisten'}
 
-ZONE_NAME = CONFIG.zone
+ZONE_NAME = 'Europe/Zurich'
 STANDARD_REGIONS = (180023, 180025, 110934, 180045, 112132)
 MAP_SETTING_KEYS = ['SetupMapType', 'SetupStartSession', 'SetupStartSessionIslandSize',
                     'SetupStartSessionIslandDifficulty', 'SetupFertility', 'SetupRawMaterial']
@@ -692,8 +692,29 @@ def publish(stage, output, workbook):
         raise
 
 
-def main():
+def configure(settings):
+    """Bind one explicit configuration within this game worker process."""
+    global CONFIG, ACCOUNT, ARCHIVE, GAME, ZONE_NAME
+    if settings.game != 'anno1800':
+        raise ValueError('Die Einstellungsdatei gehört nicht zu anno1800.')
+    settings.validate('analyze')
+    CONFIG = settings
+    ACCOUNT = settings.path('account')
+    ARCHIVE = settings.path('archive') or settings.output / 'unused-archive'
+    GAME = settings.path('game_data')
+    ZONE_NAME = settings.zone
+    index_game.cache_clear()
+
+
+def run(settings, *, rescan=False):
+    """Generate outputs from explicit settings without parsing process arguments."""
+    main(['--rescan'] if rescan else [], settings=settings)
+    return settings.report_output / 'map-gallery.html'
+
+
+def main(argv=None, *, settings=None):
     global ACCOUNT, ARCHIVE, GAME
+    configure(settings if settings is not None else settings_for('anno1800'))
     import msvcrt
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--account', type=Path, default=ACCOUNT, help='Ordner des Spielkontos')
@@ -703,7 +724,7 @@ def main():
     parser.add_argument('--excel', type=Path, help='Excel-Ziel innerhalb des Ausgabeordners')
     parser.add_argument('--rescan', action='store_true', help='Zwischendaten ignorieren')
     parser.add_argument('--render-only', action='store_true', help='Beide Berichte aus vorhandenen Zwischendaten schreiben')
-    opts = parser.parse_args()
+    opts = parser.parse_args(argv)
     if opts.render_only and opts.rescan:
         parser.error('--render-only und --rescan sind Alternativen.')
     ACCOUNT, ARCHIVE, GAME = (path.resolve() for path in (opts.account, opts.archive, opts.game_data))

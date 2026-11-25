@@ -1,15 +1,12 @@
 """Prepare and execute explicit jobs without prompts or browser side effects.
 
-The script backend is transitional: generators still load settings at import time.
 This module must be used within one game process, like the standalone launchers.
 """
-from contextlib import contextmanager
+from contextlib import contextmanager, redirect_stdout, redirect_stderr
 from dataclasses import dataclass
 import importlib.util
 import json
-import os
 from pathlib import Path
-import subprocess
 import sys
 from uuid import uuid4
 
@@ -81,28 +78,59 @@ def updating(output):
             msvcrt.locking(lock.fileno(), msvcrt.LK_UNLCK, 1)
 
 
-def _run_task(plan, action, filename, on_output):
+def load_generator(project, action):
+    """Load a fresh generator; configuration is bound only by its run service."""
+    path = project / 'tools' / SCRIPTS[action]
+    spec = importlib.util.spec_from_file_location('anno_generator_' + action, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+class LogOutput:
+    """Persist text and forward complete lines without mixing event output."""
+    def __init__(self, log, callback):
+        self.log = log
+        self.callback = callback
+        self.pending = ''
+        self.stdout, self.stderr = sys.stdout, sys.stderr
+
+    def notify(self, text):
+        if self.callback is not None:
+            with redirect_stdout(self.stdout), redirect_stderr(self.stderr):
+                self.callback(text)
+
+    def write(self, text):
+        self.log.write(text)
+        self.log.flush()
+        self.pending += text
+        while '\n' in self.pending:
+            line, self.pending = self.pending.split('\n', 1)
+            self.notify(line + '\n')
+        return len(text)
+
+    def flush(self):
+        self.log.flush()
+
+    def finish(self):
+        if self.pending:
+            self.notify(self.pending)
+        self.pending = ''
+
+
+def _run_task(plan, action, on_output):
     settings = plan.settings
-    command = [sys.executable, str(plan.project / 'tools' / SCRIPTS[action])]
-    if plan.rescan and action == 'analyze':
-        command.append('--rescan')
-    env = dict(os.environ, ANNOTOOLS_SETTINGS=str(filename),
-               PYTHONIOENCODING='utf-8', PYTHONUTF8='1')
     logs = settings.log_output
     logs.mkdir(parents=True, exist_ok=True)
     logfile = logs / (action + '.log')
     with logfile.open('w', encoding='utf-8') as log:
-        with subprocess.Popen(command, cwd=plan.project, env=env, stdout=subprocess.PIPE,
-                              stderr=subprocess.STDOUT, text=True, encoding='utf-8',
-                              errors='replace', creationflags=subprocess.CREATE_NO_WINDOW) as process:
-            for line in process.stdout:
-                log.write(line)
-                log.flush()
-                if on_output is not None:
-                    on_output(line)
-            status = process.wait()
-    if status:
-        raise ValueError(f'Aktualisierung fehlgeschlagen. Protokoll: {logfile}')
+        stream = LogOutput(log, on_output)
+        try:
+            with redirect_stdout(stream), redirect_stderr(stream):
+                module = load_generator(plan.project, action)
+                module.run(settings, rescan=plan.rescan and action == 'analyze')
+        finally:
+            stream.finish()
     gallery = (settings.stamp_output / 'stamp-gallery.html' if action == 'stamps'
                else settings.report_output / 'map-gallery.html')
     if not gallery.is_file():
@@ -117,8 +145,6 @@ def execute_plan(plan, on_event=None, on_output=None):
     Exceptions propagate after a failed completion event; completed demo actions
     are reported as partial outputs. Cancellation is not implemented here yet.
     """
-    if getattr(sys, 'frozen', False):
-        raise ValueError('Der Skript-Backend unterstützt noch keine paketierte EXE.')
     settings = plan.settings
     run_id = str(uuid4())
     galleries = []
@@ -137,17 +163,12 @@ def execute_plan(plan, on_event=None, on_output=None):
         with updating(settings.output):
             for task in plan.tasks:
                 settings.validate(task)
-            filename = settings.filename
-            if plan.demo:
-                filename = settings.output / 'demo-settings.json'
-                filename.write_text(json.dumps(settings.data, ensure_ascii=False, indent=2)
-                                    + '\n', encoding='utf-8')
             (settings.output / '.annotools-game.json').write_text(
                 json.dumps({'game': settings.game}), encoding='utf-8')
             for task in plan.tasks:
                 logs.append(settings.log_output / (task + '.log'))
                 emit('stage', action=task, log=str(logs[-1]))
-                galleries.append(_run_task(plan, task, filename, on_output))
+                galleries.append(_run_task(plan, task, on_output))
     except (Exception, KeyboardInterrupt) as exc:
         emit('finished', status='cancelled' if isinstance(exc, KeyboardInterrupt) else 'failed',
              galleries=[str(p) for p in galleries], logs=[str(p) for p in logs],

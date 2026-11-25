@@ -16,7 +16,7 @@ from anno_gallery import render_gallery
 from anno_save_summary import collect_statistics, render_statistics, totals_html, variant_totals, label as summary_label
 from anno_save_statistics import Statistics1404
 from zoneinfo import ZoneInfo
-CONFIG = settings_for('anno1404')
+CONFIG = None
 
 import re
 import shutil
@@ -464,14 +464,30 @@ def publish(stage, output):
         raise
 
 
-def main():
+def configure(settings):
+    """Bind one explicit configuration within this game worker process."""
+    global CONFIG
+    if settings.game != 'anno1404':
+        raise ValueError('Die Einstellungsdatei gehört nicht zu anno1404.')
+    settings.validate('analyze')
+    CONFIG = settings
+
+
+def run(settings, *, rescan=False):
+    """Generate outputs from explicit settings without parsing process arguments."""
+    main(['--rescan'] if rescan else [], settings=settings)
+    return settings.report_output / 'map-gallery.html'
+
+
+def main(argv=None, *, settings=None):
+    configure(settings if settings is not None else settings_for('anno1404'))
     import msvcrt
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--save-folder', type=Path, action='append', help='Zusätzlicher Ordner mit Anno-1404-Saves')
     parser.add_argument('--output', type=Path, default=CONFIG.report_output)
     parser.add_argument('--rescan', action='store_true')
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     CONFIG.validate('analyze')
     protect_output(args.output, CONFIG.all_sources()+(args.save_folder or []))
     output = args.output.resolve()
