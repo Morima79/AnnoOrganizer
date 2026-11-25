@@ -52,5 +52,7 @@
   "log_empty": "Noch keine Protokolle vorhanden.",
   "destination": "Ausgabeziel: {path}",
   "use_preview": "Diese Datei am bisherigen Ort verwenden?\n\n{source}\n\nAufgelöste Ziele:\n{paths}",
-  "settings_error": "Die Einstellungen konnten nicht verwendet werden. Details stehen unter Protokolle."
+  "settings_error": "Die Einstellungen konnten nicht verwendet werden. Details stehen unter Protokolle.",
+  "portable_hint": "Portables Windows-Paket",
+  "about_portable_text": "Portables Windows-Paket.\nStand: {version}\n\nInoffizielles Projekt von Morima79, MIT-Lizenz.\nDie Nutzung erfolgt auf eigene Gefahr.\nQuelldateien werden ausschliesslich gelesen.\n\nKeine Python-Installation erforderlich."
 }

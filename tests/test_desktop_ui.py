@@ -178,6 +178,12 @@ class DesktopUITests(unittest.TestCase):
         self.assertFalse(self.app.client.running)
         self.assertTrue(self.errors)
 
+    def test_noninteractive_gui_smoke_covers_first_launch_and_worker(self):
+        from desktop.self_test import run
+        report = self.folder / 'gui-smoke.json'
+        self.assertEqual(run(report, self.folder / 'self-test-state'), 0)
+        self.assertEqual(json.loads(report.read_text(encoding='utf-8'))['status'], 'success')
+
 
 if __name__ == '__main__':
     unittest.main()

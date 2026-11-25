@@ -28,3 +28,19 @@ Vor dem Deployment prüft `node --test tests/pages_runtime.cjs` die Korrektur un
 ## Demo-Excel herunterladen
 
 Nach dem Export ausschliesslich der mitgelieferten Demo-Eingaben aller drei Spiele `python scripts/publish_demo_workbooks.py --reports-root local-data/statistics-demo` ausführen. Die Auswertung muss jeweils unter `<reports-root>/<spiel>/reports/<spiel>-map-seeds.xlsx` liegen. Das Skript prüft auf Rechnerpfade und erlaubt nur relative Links auf `map-images/*.png`. Es erstellt die drei freigegebenen Arbeitsmappen und ZIPs mit den verknüpften Bildern unter `site/downloads/`. Die ZIPs erhalten die relativen Bildlinks für die Offline-Nutzung. Persönliche Auswertungen niemals als Veröffentlichungseingaben verwenden. Startseite und beide README-Sprachen verlinken diese Momentaufnahmen; Pages veröffentlicht sie beim nächsten beauftragten Site-Push.
+
+## Portables Windows-x64-Paket
+
+Der vorhandene Release-Workflow baut zusätzlich `AnnoOrganizer-<Version>-windows-x64.zip` samt SHA-256-Datei unter Windows mit Python 3.11 und den fixierten Versionen aus `requirements-build.txt`. Vor der Veröffentlichung muss die entpackte EXE die 1404-Demo mit unbrauchbaren Python-Suchpfaden erfolgreich erzeugen. Danach übernimmt der bestehende Veröffentlichungsjob Quellcode- und Desktop-ZIP gemeinsam; ein manueller Workflow-Lauf bleibt ein Test-Artefakt ohne Release.
+
+Lokaler Build aus einem sauberen, committeten Stand (Versionsbezeichnung frei für einen lokalen Test wählen, keine bestehenden Release-Assets ersetzen):
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements-build.txt
+.\.venv\Scripts\python.exe scripts/build_desktop.py --version v0.1.13-desktop-preview --output dist
+.\.venv\Scripts\python.exe scripts/smoke_desktop.py --archive dist/AnnoOrganizer-v0.1.13-desktop-preview-windows-x64.zip
+```
+
+`--development` erlaubt ausdrücklich uncommittierte Änderungen und kennzeichnet das ZIP als `-dev`; solche Pakete nicht als exakten Release-Snapshot ausgeben. `--all-games` beim Smoke-Test erfordert vorhandene 117-/1800-Spielressourcen und prüft alle fünf Galerien. `--extract-to` behält Paket und Testausgaben in einem neuen oder leeren Verzeichnis. Die Prüfung manipuliert die Python-Suchpfade, ersetzt aber keine unabhängige Abnahme auf einer frischen Windows-Installation.
+
+Der Builder nimmt keine normalen lokalen Einstellungen, Caches oder Spielressourcenarchive auf. `BUILD.json` dokumentiert Commit, Laufzeitversionen und Ressourcen-Hashes. Drittanbieter-Hinweise enthalten Python einschliesslich seiner Bibliotheksnotizen, Pillow, XlsxWriter, tzdata und den PyInstaller-Bootloader samt Ausnahme für gebaute Anwendungen. Für Pflege und Grenzen siehe die offiziellen [PyInstaller-Laufzeithinweise](https://pyinstaller.org/en/stable/runtime-information.html) und [Hinweise zum fensterlosen Modus](https://pyinstaller.org/en/stable/common-issues-and-pitfalls.html). Binäridentität über verschiedene Python-Versionen und Windows-Toolchains wird nicht zugesagt. Das Paket ist unsigniert; Hinweise dazu stehen in den mitgelieferten DE/EN-READMEs. Signierung bleibt separat.

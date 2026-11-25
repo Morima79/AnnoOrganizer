@@ -52,5 +52,7 @@
   "log_empty": "No logs available yet.",
   "destination": "Output destination: {path}",
   "use_preview": "Use this file in place?\n\n{source}\n\nResolved destinations:\n{paths}",
-  "settings_error": "Could not use these settings. See Logs for details."
+  "settings_error": "Could not use these settings. See Logs for details.",
+  "portable_hint": "Portable Windows package",
+  "about_portable_text": "Portable Windows package.\nVersion: {version}\n\nUnofficial project by Morima79, MIT license.\nUse at your own risk.\nSource files are read only.\n\nNo Python installation required."
 }

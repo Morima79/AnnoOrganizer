@@ -64,7 +64,7 @@ The sample files total approximately **7.4 MB**. They are copies selected from t
 
 ## Desktop preview
 
-`Launch.cmd --gui` opens a German/English interface with game selection, path settings, configuration import, demo/export actions and cancellation. It currently requires Python including Tkinter; a portable executable package is not available yet. [Usage and current limitations](docs/desktop.md).
+`Launch.cmd --gui` opens a German/English interface with game selection, path settings, configuration import, demo/export actions and cancellation. Source startup requires Python including Tkinter. The added Windows build also creates a portable executable package with runtime and checksum; local builds are not published releases. [Usage and current limitations](docs/desktop.md).
 
 ## Command-line use
 

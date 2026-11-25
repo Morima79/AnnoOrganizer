@@ -24,9 +24,9 @@ class WorkerClient:
             raise ValueError('Ein Auftrag läuft bereits.')
         if game not in GAMES or action not in ('demo', 'analyze', 'stamps'):
             raise ValueError('Ungültiger Auftrag.')
-        if getattr(sys, 'frozen', False):
-            raise ValueError('Der paketierte Desktop-Worker ist noch nicht verfügbar.')
-        command = [sys.executable, str(ROOT / game / 'launch.py'), '--worker',
+        entry = ([sys.executable, '--worker', '--game', game] if getattr(sys, 'frozen', False)
+                 else [sys.executable, str(ROOT / game / 'launch.py'), '--worker'])
+        command = [*entry,
                    '--action', action, '--config', str(Path(config).resolve())]
         if rescan:
             command.append('--rescan')

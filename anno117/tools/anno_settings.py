@@ -4,6 +4,7 @@ import copy
 import ctypes
 import json
 import os
+import sys
 from zoneinfo import ZoneInfo
 from anno_installation import find_game_data, resolve_game_data
 
@@ -133,6 +134,9 @@ class Settings:
 
 def protect_output(output, sources):
     output = Path(output).resolve()
+    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+        if output.is_relative_to(Path(sys._MEIPASS).resolve()):
+            raise ValueError('Ausgaben dürfen nicht in das interne Programmverzeichnis geschrieben werden.')
     if output == PROJECT or PROJECT.is_relative_to(output):
         raise ValueError('Der Ausgabeordner darf nicht das Projekt oder dessen Oberordner sein.')
     for folder in [PROJECT / name for name in ('tools', 'tests', 'docs', '.venv')]:

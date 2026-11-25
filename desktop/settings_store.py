@@ -64,6 +64,18 @@ def read_json(path):
     return data, raw
 
 
+def relocated_data(settings):
+    """Resolve known path targets before moving a configuration to another folder."""
+    data = copy.deepcopy(settings.data)
+    for key in PATH_KEYS:
+        if data.get(key):
+            data[key] = str(settings.expand(data[key]))
+    data['output'] = str(settings.output)
+    if 'save_folders' in data:
+        data['save_folders'] = [str(path) for path in settings.saves()]
+    return data
+
+
 @contextmanager
 def edit_lock(path):
     """Serialize desktop saves; keep the lock file to avoid inode/handle races."""
@@ -87,6 +99,8 @@ def edit_lock(path):
 def atomic_save(path, data, expected):
     """Back up and replace JSON, detecting changes immediately before replacement."""
     path = Path(path).resolve()
+    if getattr(sys, 'frozen', False) and path.is_relative_to(Path(sys._MEIPASS).resolve()):
+        raise ValueError('Einstellungen dürfen nicht im internen Programmverzeichnis gespeichert werden.')
     path.parent.mkdir(parents=True, exist_ok=True)
     payload = (json.dumps(data, ensure_ascii=False, indent=2) + '\n').encode('utf-8')
     with edit_lock(path):
@@ -163,13 +177,7 @@ class ConfigDocument:
                                         and destination.samefile(self.path)):
             raise ValueError('Quelle und Importziel sind identisch. Bitte Datei verwenden wählen.')
         settings = self.view()
-        data = copy.deepcopy(self.data)
-        for key in PATH_KEYS:
-            if data.get(key):
-                data[key] = str(settings.expand(data[key]))
-        data['output'] = str(settings.output)
-        if 'save_folders' in data:
-            data['save_folders'] = [str(p) for p in settings.saves()]
+        data = relocated_data(settings)
         return ConfigDocument(self.game, destination, data)
 
     def save(self):
@@ -180,6 +188,8 @@ class ConfigDocument:
 class SettingsStore:
     def __init__(self, directory=None):
         self.directory = Path(directory) if directory is not None else local_app_data()
+        if getattr(sys, 'frozen', False) and self.directory.resolve().is_relative_to(Path(sys._MEIPASS).resolve()):
+            raise ValueError('GUI-Daten müssen ausserhalb des internen Programmverzeichnisses liegen.')
         self.preferences_path = self.directory / 'gui.json'
         self.preferences, self.original = ({}, None)
         if self.preferences_path.exists():
@@ -203,11 +213,10 @@ class SettingsStore:
         if game in self.preferences.get('configurations', {}):
             raise FileNotFoundError(path)
         data, _ = read_json(ROOT / game / 'settings.example.json')
-        example = ConfigDocument(game, ROOT / game / 'settings.example.json', data)
-        document = example.copy_to(path)
-        document.data['output'] = './local-data'
-        document.validate()
-        return document
+        example = game_api(game).Settings.from_data(game, ROOT / game / 'settings.example.json', data)
+        data = relocated_data(example)
+        data['output'] = './local-data'
+        return ConfigDocument(game, path, data)
 
     def select(self, document):
         previous = copy.deepcopy(self.preferences)

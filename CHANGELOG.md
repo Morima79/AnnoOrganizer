@@ -7,6 +7,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Build a portable Windows x64 GUI/worker package with pinned dependencies, licenses, source/resource manifests, SHA-256 checksums and extracted-EXE smoke tests; integrate it into the existing release workflow and protect internal resources against writes.
+
 - Reserve actual output/log/cache trees across desktop and CLI processes, recover crash-stale reservations, and stage stamp galleries/caches with publication rollback and retained recovery data if rollback is blocked.
 
 - Add a Tkinter desktop preview via `Launch.cmd --gui`, with saved/system DE/EN selection, game-specific settings/imports, temporary job configurations, responsive worker execution, cancellation, logs and output navigation. Verify worker completion against its exit code before enabling successful results.
@@ -20,6 +22,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 - Prepare shared non-interactive execution for all three game launchers, including validated demo plans, structured stage/completion callbacks and output results. Add `--non-interactive`; retain the transitional Python script backend and document remaining GUI/worker work.
 
 ### Deutsch
+
+- Portables Windows-x64-Paket für GUI und Worker mit fixierten Abhängigkeiten, Lizenzen, Quell-/Ressourcenmanifest, SHA-256-Prüfsummen und Tests der entpackten EXE ergänzt; in den vorhandenen Release-Workflow integriert und interne Ressourcen gegen Schreibzugriffe geschützt.
 
 - Tatsächliche Ausgabe-/Log-/Cacheziele über Desktop- und CLI-Prozesse reserviert, verwaiste Reservierungen nach Abstürzen freigegeben und Stempelgalerien/-Caches mit Rücknahme fehlgeschlagener Veröffentlichungen sowie erhaltenen Wiederherstellungsdaten abgesichert.
 

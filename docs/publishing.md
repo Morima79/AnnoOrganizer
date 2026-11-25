@@ -28,3 +28,19 @@ Before deployment, `node --test tests/pages_runtime.cjs` verifies the correction
 ## Demo Excel downloads
 
 After exporting only the bundled demo inputs for all three games, run `python scripts/publish_demo_workbooks.py --reports-root local-data/statistics-demo`. Each game must have its report in `<reports-root>/<game>/reports/<game>-map-seeds.xlsx`. The script checks for machine paths and only accepts relative `map-images/*.png` links, then writes the three approved workbooks and ZIPs with their referenced images to `site/downloads/`. ZIPs preserve the relative links for offline use. Personal reports must never be used as publishing inputs. The landing page and both README languages link these snapshots; Pages publishes them with the next authorised site push.
+
+## Portable Windows x64 package
+
+The existing release workflow additionally builds `AnnoOrganizer-<version>-windows-x64.zip` and its SHA-256 file on Windows using Python 3.11 and pinned versions from `requirements-build.txt`. Before publication, the extracted executable must generate the 1404 demo with unusable Python search paths. The existing publishing job then takes both source and desktop ZIPs; manual workflow runs remain test artifacts without a release.
+
+Local build from a clean committed state (choose a version label for local testing; never replace existing release assets):
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements-build.txt
+.\.venv\Scripts\python.exe scripts/build_desktop.py --version v0.1.13-desktop-preview --output dist
+.\.venv\Scripts\python.exe scripts/smoke_desktop.py --archive dist/AnnoOrganizer-v0.1.13-desktop-preview-windows-x64.zip
+```
+
+`--development` explicitly allows uncommitted changes and marks the ZIP `-dev`; do not present those packages as exact release snapshots. Smoke-test `--all-games` requires installed 117/1800 game resources and checks all five galleries. `--extract-to` retains the package and outputs in a new or empty directory. Altering Python search paths does not replace independent acceptance on a fresh Windows installation.
+
+The builder excludes normal local settings, caches and game resource archives. `BUILD.json` records the commit, runtime versions and resource hashes. Third-party notices include Python and its dependency notices, Pillow, XlsxWriter, tzdata and the PyInstaller bootloader with its built-application exception. For maintenance and constraints, see official [PyInstaller runtime information](https://pyinstaller.org/en/stable/runtime-information.html) and [windowed-mode guidance](https://pyinstaller.org/en/stable/common-issues-and-pitfalls.html). Binary identity across different Python versions and Windows toolchains is not promised. The package is unsigned; bundled DE/EN READMEs explain this. Signing remains separate.

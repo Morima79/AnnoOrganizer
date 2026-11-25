@@ -2,9 +2,15 @@
 
 [English](desktop.md) · [Deutsch](desktop.de.md) · [README](../README.md)
 
-The desktop preview configures and runs the existing Anno 117, 1800 and 1404 tools. It currently runs from source with Python 3.11 or later including Tkinter. No portable executable package is available yet. Existing console launchers and separately copied game folders remain functional.
+The desktop preview configures and runs the existing Anno 117, 1800 and 1404 tools. It can run as a portable Windows x64 package or from source with Python 3.11 or later including Tkinter. Existing console launchers and separately copied game folders remain functional.
 
-## Launch and first demo
+## Portable Windows package
+
+Extract the entire ZIP built by `scripts/build_desktop.py` and open **AnnoOrganizer.exe**. Keep `_internal/` beside it. Python and runtime packages are included; the target machine needs neither Python, pip nor an installer. The package targets Windows 10/11 x64. It is unsigned, so Windows may show a SmartScreen reputation warning. Check the source and SHA-256 checksum; signing is a separate step. No security barriers are bypassed and no automatic updates are installed.
+
+The executable uses the same worker through `--worker --game ...` and stores personal data outside internal resources. `BUILD.json` records the source commit, package version and resource hashes; `THIRD-PARTY-NOTICES.txt` and `licenses/` provide license texts. The [existing release workflow](publishing.md) now includes the Windows build for future publication. A local build is not a published release.
+
+## Source launch and first demo
 
 Run from the repository root:
 
@@ -56,6 +62,6 @@ Success is displayed only when the worker completion and process exit code agree
 
 ## Current limitations
 
-This is a source preview. Checks cover DE/EN, state transitions, configuration import and a complete Anno 1404 demo run. An executable package without Python, clean-Windows acceptance and GUI runs using Anno 117/1800 game resources remain outstanding. GUI, CLI and direct generator calls now reserve their actual output trees, including nested paths, logs and stamp caches, across processes. OS-owned locks release reservations after a process crash too. Stamp galleries and resource caches are generated in working copies and published only after successful processing. Cancellation before publication preserves existing contents; publication failure triggers rollback. If another application blocks rollback too, backup copies and `RECOVERY.json` are retained at the location reported in the log. Original saves and stamps remain read only. Overlapping stamp/cache destinations and links inside these output trees are rejected. Multiple demo actions do not form one transaction; actions completed before a later failure may remain published.
+This is a development build. The extracted executable was locally tested with all five demo galleries and installed 117/1800 game resources, from a different working directory with unusable Python search paths. DE/EN, state transitions, configuration import and a 1404 GUI demo were checked separately. Independent acceptance on a fresh Windows system without development tools remains outstanding; altered Python search paths do not fully replace that check. GUI, CLI and direct generator calls now reserve their actual output trees, including nested paths, logs and stamp caches, across processes. OS-owned locks release reservations after a process crash too. Stamp galleries and resource caches are generated in working copies and published only after successful processing. Cancellation before publication preserves existing contents; publication failure triggers rollback. If another application blocks rollback too, backup copies and `RECOVERY.json` are retained at the location reported in the log. Original saves and stamps remain read only. Overlapping stamp/cache destinations and links inside these output trees are rejected. Multiple demo actions do not form one transaction; actions completed before a later failure may remain published.
 
 Unofficial project by Morima79, unaffiliated with Ubisoft. Use at your own risk under the [MIT license](../LICENSE). Further architecture and acceptance details: [GUI proposal](desktop-gui.md).

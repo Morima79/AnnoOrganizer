@@ -1,0 +1,11 @@
+# Windows desktop build; runtime dependencies are pinned for the build pipeline.
+PyInstaller==6.22.0
+pyinstaller-hooks-contrib==2026.10
+altgraph==0.17.5
+packaging==26.4
+pefile==2024.8.26
+pywin32-ctypes==0.2.3
+setuptools==84.2.1
+Pillow==12.3.0
+XlsxWriter==3.3.3
+tzdata==2026.6

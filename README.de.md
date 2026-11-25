@@ -64,7 +64,7 @@ Die Beispiele umfassen zusammen rund **7,4 MB** und wurden aus den Dateien des P
 
 ## Desktop-Vorschau
 
-Mit `Launch.cmd --gui` öffnet sich eine deutsche oder englische Oberfläche mit Spielauswahl, Pfadverwaltung, Konfigurationsimport, Demo-/Exportaktionen und Abbruch. Sie benötigt derzeit weiterhin Python einschliesslich Tkinter; ein portables EXE-Paket ist noch nicht vorhanden. [Bedienung und aktuelle Grenzen](docs/desktop.de.md).
+Mit `Launch.cmd --gui` öffnet sich eine deutsche oder englische Oberfläche mit Spielauswahl, Pfadverwaltung, Konfigurationsimport, Demo-/Exportaktionen und Abbruch. Der Quellcode-Start benötigt Python einschliesslich Tkinter. Der ergänzte Windows-Build erstellt ausserdem ein portables EXE-Paket mit Laufzeit und Prüfsumme; lokale Builds sind noch keine veröffentlichten Releases. [Bedienung und aktuelle Grenzen](docs/desktop.de.md).
 
 ## Kommandozeile
 

@@ -2,9 +2,15 @@
 
 [English](desktop.md) · [Deutsch](desktop.de.md) · [README](../README.de.md)
 
-Die Desktop-Vorschau konfiguriert und startet die vorhandenen Werkzeuge für Anno 117, 1800 und 1404. Sie läuft derzeit aus dem Quellcode mit Python 3.11 oder neuer einschliesslich Tkinter. Ein portables EXE-Paket ist noch nicht vorhanden. Die bestehenden Konsolenstarter und einzeln kopierten Spielordner funktionieren weiterhin.
+Die Desktop-Vorschau konfiguriert und startet die vorhandenen Werkzeuge für Anno 117, 1800 und 1404. Sie lässt sich als portables Windows-x64-Paket oder aus dem Quellcode mit Python 3.11 oder neuer einschliesslich Tkinter starten. Die bestehenden Konsolenstarter und einzeln kopierten Spielordner funktionieren weiterhin.
 
-## Start und erste Demo
+## Portables Windows-Paket
+
+Das vollständige mit `scripts/build_desktop.py` gebaute ZIP entpacken und **AnnoOrganizer.exe** öffnen. `_internal/` bleibt neben der EXE. Python und Laufzeitpakete sind enthalten; auf dem Zielrechner werden weder Python noch pip oder ein Installer benötigt. Das Paket ist für Windows 10/11 x64 vorgesehen. Es ist nicht signiert; Windows kann eine SmartScreen-Reputationswarnung anzeigen. Herkunft und SHA-256-Prüfsumme prüfen; Signierung ist ein separater Schritt. Es werden keine Sicherheitsmechanismen umgangen oder automatischen Updates installiert.
+
+Die EXE benutzt denselben Worker mit `--worker --game ...` und speichert persönliche Daten ausserhalb ihrer internen Ressourcen. `BUILD.json` enthält Quellcommit, Paketversion und Ressourcen-Prüfsummen; `THIRD-PARTY-NOTICES.txt` und `licenses/` enthalten Lizenznachweise. Der [vorhandene Release-Workflow](publishing.de.md) ist für spätere Veröffentlichungen um den Windows-Build ergänzt. Ein lokaler Build ist noch kein veröffentlichtes Release.
+
+## Start aus dem Quellcode und erste Demo
 
 Im Hauptordner starten:
 
@@ -56,6 +62,6 @@ Erfolg wird erst angezeigt, wenn Worker-Abschluss und Prozess-Exitcode zusammenp
 
 ## Aktuelle Grenzen
 
-Die Oberfläche ist eine Quellcode-Vorschau. Geprüft sind insbesondere DE/EN, Zustandswechsel, Konfigurationsimport und ein vollständiger Anno-1404-Demolauf. Ein EXE-Paket ohne Python, eine Abnahme auf einem frischen Windows-System und GUI-Läufe mit Anno-117-/1800-Spielressourcen stehen noch aus. GUI, CLI und direkte Generatoraufrufe reservieren nun ihre tatsächlichen Ausgabeziele einschliesslich verschachtelter Ordner, Logs und Stempel-Caches prozessübergreifend. Betriebssystemsperren geben Reservierungen auch nach einem Prozessabsturz frei. Stempelgalerien und Ressourcen-Caches werden in Arbeitskopien erzeugt und erst nach erfolgreicher Verarbeitung veröffentlicht. Abbruch vorher erhält bestehende Inhalte; ein Veröffentlichungsfehler löst eine Wiederherstellung aus. Falls ein externes Programm auch diese blockiert, bleiben die Sicherungskopien samt `RECOVERY.json` am im Log genannten Ort erhalten. Originalspielstände und Stempel werden weiterhin nur gelesen. Überlappende Stempel-/Cacheziele und Verknüpfungen innerhalb dieser Ausgabebäume werden abgewiesen. Mehrere Demo-Aktionen bilden keine gemeinsame Transaktion; bereits abgeschlossene Aktionen können bei späterem Fehler bestehen bleiben.
+Die Oberfläche ist ein Entwicklungsstand. Lokal wurde die entpackte EXE mit allen fünf Demo-Galerien und den installierten 117-/1800-Spielressourcen geprüft; der Prozess lief aus einem anderen Arbeitsordner mit unbrauchbaren Python-Suchpfaden. DE/EN, Zustandswechsel, Konfigurationsimport und ein GUI-Demolauf für 1404 wurden separat geprüft. Eine unabhängige Abnahme auf einem frischen Windows-System ohne installierte Entwicklungswerkzeuge steht weiterhin aus; diese wird durch manipulierte Python-Suchpfade nicht vollständig ersetzt. GUI, CLI und direkte Generatoraufrufe reservieren nun ihre tatsächlichen Ausgabeziele einschliesslich verschachtelter Ordner, Logs und Stempel-Caches prozessübergreifend. Betriebssystemsperren geben Reservierungen auch nach einem Prozessabsturz frei. Stempelgalerien und Ressourcen-Caches werden in Arbeitskopien erzeugt und erst nach erfolgreicher Verarbeitung veröffentlicht. Abbruch vorher erhält bestehende Inhalte; ein Veröffentlichungsfehler löst eine Wiederherstellung aus. Falls ein externes Programm auch diese blockiert, bleiben die Sicherungskopien samt `RECOVERY.json` am im Log genannten Ort erhalten. Originalspielstände und Stempel werden weiterhin nur gelesen. Überlappende Stempel-/Cacheziele und Verknüpfungen innerhalb dieser Ausgabebäume werden abgewiesen. Mehrere Demo-Aktionen bilden keine gemeinsame Transaktion; bereits abgeschlossene Aktionen können bei späterem Fehler bestehen bleiben.
 
 Inoffizielles Projekt von Morima79, ohne Verbindung zu Ubisoft. Nutzung auf eigene Gefahr gemäss [MIT-Lizenz](../LICENSE). Weitere Architektur- und Abnahmepunkte: [GUI-Vorschlag](desktop-gui.de.md).

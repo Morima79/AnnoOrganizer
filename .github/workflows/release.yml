@@ -16,8 +16,36 @@ concurrency:
 jobs:
   tests:
     uses: ./.github/workflows/tests.yml
-  package:
+  desktop:
     needs: tests
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Install pinned desktop build dependencies
+        run: python -m pip install -r requirements-build.txt
+      - name: Build portable Windows ZIP from the tested commit
+        env:
+          RELEASE_VERSION: ${{ github.event_name == 'push' && github.ref_name || inputs.version }}
+        run: python scripts/build_desktop.py --version "$env:RELEASE_VERSION" --output dist
+      - name: Verify the extracted executable without Python paths
+        shell: pwsh
+        run: |
+          $desktopArchives = @(Get-ChildItem -LiteralPath dist -Filter '*-windows-x64.zip')
+          if ($desktopArchives.Count -ne 1) { throw 'Expected exactly one desktop archive' }
+          $desktopArchivePath = $desktopArchives[0].FullName
+          python scripts/smoke_desktop.py --archive "$desktopArchivePath"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: desktop-windows
+          path: dist/*
+          if-no-files-found: error
+  package:
+    needs: [tests, desktop]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -32,6 +60,10 @@ jobs:
         env:
           RELEASE_VERSION: ${{ github.event_name == 'push' && github.ref_name || inputs.version }}
         run: python scripts/build_release.py --version "$RELEASE_VERSION" --output dist
+      - uses: actions/download-artifact@v8
+        with:
+          name: desktop-windows
+          path: dist
       - name: Prepare release description from the changelog
         env:
           RELEASE_VERSION: ${{ github.event_name == 'push' && github.ref_name || inputs.version }}

@@ -2,7 +2,7 @@
 
 [English](desktop-gui.md) · [Deutsch](desktop-gui.de.md) · [Wishlist](wishlist.de.md)
 
-Status: Quellcode-Vorschau mit Oberfläche, Einstellungsverwaltung und Worker; noch kein portables EXE-Paket.
+Status: Oberfläche, Einstellungsverwaltung, Ausgabeschutz und portables Windows-x64-Paket implementiert; unabhängige Windows-Abnahme noch offen.
 
 ## Ziel
 
@@ -106,9 +106,9 @@ Beispiel für eine bereits vorhandene externe Konfiguration:
 .\.venv\Scripts\python.exe launch.py --game anno1404 --action demo --config "D:/Anno/settings.json" --non-interactive --no-open
 ```
 
-Die fünf Generatoren laden beim Import keine Konfiguration mehr. Ihr Dienst `run(settings, rescan=False)` erhält die Einstellungen ausdrücklich; die bisherigen direkten Skriptaufrufe bleiben über `main` erhalten. Der gemeinsame Dienst lädt pro Aktion ein frisches Generatormodul und ruft diesen Dienst ohne weiteren Python-Unterprozess auf. Logausgaben werden von Ereignissen getrennt erfasst. Es wird keine temporäre Demo-Konfigurationsdatei mehr benötigt; `settings.filename` bleibt erhalten. Die bisherige Sperre auf `output` gilt weiterhin über den gesamten Demo-Auftrag. Modulglobale Verarbeitungskontexte bleiben vorläufig auf einen Spielprozess begrenzt; der 1800-Spielressourcenindex wird beim Konfigurationswechsel zurückgesetzt. Ein eingefrorener Build ist damit vorbereitet, aber noch nicht erstellt oder geprüft.
+Die fünf Generatoren laden beim Import keine Konfiguration mehr. Ihr Dienst `run(settings, rescan=False)` erhält die Einstellungen ausdrücklich; die bisherigen direkten Skriptaufrufe bleiben über `main` erhalten. Der gemeinsame Dienst lädt pro Aktion ein frisches Generatormodul und ruft diesen Dienst ohne weiteren Python-Unterprozess auf. Logausgaben werden von Ereignissen getrennt erfasst. Es wird keine temporäre Demo-Konfigurationsdatei mehr benötigt; `settings.filename` bleibt erhalten. Die bisherige Sperre auf `output` gilt weiterhin über den gesamten Demo-Auftrag. Modulglobale Verarbeitungskontexte bleiben vorläufig auf einen Spielprozess begrenzt; der 1800-Spielressourcenindex wird beim Konfigurationswechsel zurückgesetzt. Der eingefrorene Build wurde inzwischen erstellt und separat geprüft.
 
-Ausgabesperren über getrennte Ziele und die Stempel-Veröffentlichung sind unten konkret umgesetzt. Weitere Fortschrittsereignisse und der paketierte Worker bleiben offen. Einstellungsverwaltung unter LocalAppData, GUI und automatische Spracherkennung sind als Quellcode-Vorschau implementiert. Der Quellcode-Dienst darf wegen der gleichnamigen Spielmodule nur innerhalb eines einzelnen Spielprozesses verwendet werden; für einen Spielwechsel ist künftig ein neuer Worker vorgesehen.
+Ausgabesperren über getrennte Ziele und die Stempel-Veröffentlichung sind unten konkret umgesetzt. Weitere detaillierte Fortschrittsereignisse bleiben optional; der paketierte Worker ist unten beschrieben. Einstellungsverwaltung unter LocalAppData, GUI und automatische Spracherkennung sind als Quellcode-Vorschau implementiert. Der Quellcode-Dienst darf wegen der gleichnamigen Spielmodule nur innerhalb eines einzelnen Spielprozesses verwendet werden; für einen Spielwechsel ist künftig ein neuer Worker vorgesehen.
 
 ## Implementierungsstand: Quellcode-Worker
 
@@ -122,7 +122,7 @@ stdout enthält ausschliesslich UTF-8-JSON-Zeilen im oben beschriebenen Ereignis
 
 Ein Abbruchauftrag auf stdin hat die Form `{"protocol_version":1,"run_id":"<run_id>","type":"cancel"}` mit abschliessendem Zeilenumbruch. Nur passende Version und Auftragskennung werden akzeptiert; EOF bedeutet keinen Abbruch. Ein Hintergrundleser setzt die Abbruchanforderung. Prüfungen erfolgen vor der Ausführung, zwischen Aktionen, zwischen eingelesenen Saves bzw. Kartenvarianten, zwischen Stempeln und vor der Veröffentlichung. Laufende Parser, Threadpool-Aufgaben und einzelne Schreib-/Veröffentlichungsoperationen dürfen fertiglaufen. Erfolgreich abgeschlossene Demo-Teilaktionen werden auch bei späterem Abbruch ausgewiesen. Stempelgeneratoren verwenden inzwischen die unten beschriebene Arbeitskopie und Wiederherstellung. Bereits veröffentlichte Demo-Teilaktionen bleiben bei späterem Abbruch bestehen. Die GUI muss bis zum Abschlussereignis weiter reagieren und auf die sicheren Grenzen warten.
 
-Ein echter Quellcode-Worker-Demolauf für 1404 sowie Protokollfehler und ein Abbruch über stdin werden automatisiert geprüft. Ein paketierter EXE-Worker und Laufzeiten mit den 117-/1800-Spielressourcen sind damit noch nicht nachgewiesen.
+Ein echter Quellcode-Worker-Demolauf für 1404 sowie Protokollfehler und ein Abbruch über stdin werden automatisiert geprüft. Der spätere Pakettest weist auch den EXE-Worker und alle fünf Demo-Galerien mit vorhandenen Spielressourcen nach.
 
 ## Implementierungsstand: Einstellungsverwaltung
 
@@ -136,11 +136,17 @@ Ein echter Quellcode-Worker-Demolauf für 1404 sowie Protokollfehler und ein Abb
 
 `desktop/worker_client.py` liest Worker-Ereignisse in einem Hintergrundthread und liefert sie per Queue an Tk. Erfolg wird erst nach konsistentem Abschlussereignis und Exitcode freigegeben. Abbruchanforderungen vor dem Worker-Start werden nach Empfang der Auftragskennung weitergeleitet. Pro Auftrag wird eine private temporäre Konfigurationskopie verwendet, damit Erzeugen keine persönliche Konfiguration speichert. Eingaben und ausgewählter Tab bleiben beim Sprachwechsel erhalten. Der Quellcode-Start, DE/EN und ein 1404-Demolauf wurden auch sichtbar geprüft; 860 × 720 Pixel bleiben mit scrollbaren Feldern nutzbar.
 
-Bedienung und konkrete Restgrenzen: [Desktop-Anleitung](desktop.de.md). Paketierung und die verbleibende Gesamtabnahme sind weiterhin offen; die Gesamtabnahme ist deshalb noch nicht vollständig.
+Bedienung und konkrete Restgrenzen: [Desktop-Anleitung](desktop.de.md). Die Paketierung ist unten beschrieben; die unabhängige Gesamtabnahme auf einem frischen Windows-System bleibt offen.
 
 ## Implementierungsstand: Ausgabeschutz
 
 `anno_output_lock.py` reserviert die vollständigen Schreibziele unter einer benutzerweiten Windows-Sperrverwaltung. Gleiche und verschachtelte Ziele kollidieren auch bei unterschiedlichen Konfigurationsdateien. Kurzpfade und Verzeichnisverknüpfungen werden vor dem Vergleich aufgelöst. Reservierungsdateien tragen eine gehaltene Betriebssystemsperre; nicht mehr gesperrte Einträge werden unter der Verwaltungssperre bereinigt. `anno_output_transaction.py` erzeugt Stempelgalerien und ihren Ressourcen-Cache in separaten Arbeitskopien, prüft externe Änderungen und veröffentlicht Ressourcen vor HTML. Fehlgeschlagene Veröffentlichungen werden zurückgerollt; blockierte Wiederherstellungen behalten Sicherungsdaten und einen lokalen Wiederherstellungsindex. Die Module werden wie die übrigen gemeinsamen Quellen in alle Spielordner synchronisiert.
+
+## Implementierungsstand: portables Paket
+
+`desktop_entry.py` startet die Oberfläche oder dieselbe EXE im Worker-Modus. Im fensterlosen Worker werden geerbte Windows-Pipehandles als UTF-8-Streams geöffnet. Spielspezifische Python-Module liegen als geprüfte Ressourcen vor, damit gleichnamige Module verschiedener Spiele nicht im eingefrorenen Importer kollidieren. `requirements-build.txt` fixiert Build- und Laufzeitversionen; `scripts/build_desktop.py` sammelt nur versionierte, zugelassene Inhalte und prüft Demo-Dateien gegen ihre Manifeste. Normale Builds verlangen einen sauberen Commit; explizite Entwicklungsbuilds tragen `-dev` und eine entsprechende Kennzeichnung in `BUILD.json`.
+
+Der onedir-/windowed-Build enthält Laufzeit, Ressourcen, Lizenztexte, Quellcommit und Eingabe-Prüfsummen. Interne Ressourcen sind als Schreibziele gesperrt. `scripts/smoke_desktop.py` prüft ZIP, SHA-256, entpackte Ressourcen und die EXE aus einem anderen Arbeitsordner ohne nutzbare Python-Suchpfade. Nach dem Lauf werden auch unveränderte Programmdateien geprüft. Lokal wurden alle fünf Demo-Galerien mit der EXE erzeugt; CI prüft 1404 ohne Spielinstallation. Der Release-Workflow wartet auf Windows-Build und Smoke-Test und hängt erst danach bei einem beauftragten Tag beide Pakete an das Release. Keine Veröffentlichung wurde durch die lokale Umsetzung ausgelöst.
 
 ## Umsetzungsschritte
 

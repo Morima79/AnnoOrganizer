@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 from queue import Empty
 import re
+import sys
 import tempfile
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
@@ -16,6 +17,8 @@ from desktop.worker_client import WorkerClient
 
 
 def source_version():
+    if getattr(sys, 'frozen', False):
+        return json.loads((Path(sys.executable).parent / 'BUILD.json').read_text(encoding='utf-8'))['version']
     text = (ROOT / 'CHANGELOG.md').read_text(encoding='utf-8')
     match = re.search(r'^## \[(v[^]]+)\]', text, re.MULTILINE)
     return (match.group(1) if match else 'development') + ' + desktop preview'
@@ -137,7 +140,8 @@ class DesktopApp:
             button.pack(fill='x', pady=(0, 10))
             self.controls.append(button)
         ttk.Button(navigation, text=self.t('about'), command=self.about).pack(fill='x', pady=(24, 8))
-        ttk.Label(navigation, text=self.t('preview_hint'), style='Muted.TLabel', wraplength=145).pack(fill='x')
+        ttk.Label(navigation, text=self.t('portable_hint' if getattr(sys, 'frozen', False) else 'preview_hint'),
+                  style='Muted.TLabel', wraplength=145).pack(fill='x')
         panel = ttk.Frame(body)
         panel.pack(side='left', fill='both', expand=True)
         panel.bind('<Configure>', lambda event: [label.configure(wraplength=max(200, event.width - 4))
@@ -536,7 +540,8 @@ class DesktopApp:
     def about(self):
         window = tk.Toplevel(self.root)
         window.title(self.t('about'))
-        ttk.Label(window, text=self.t('about_text', version=source_version()), padding=22).pack()
+        key = 'about_portable_text' if getattr(sys, 'frozen', False) else 'about_text'
+        ttk.Label(window, text=self.t(key, version=source_version()), padding=22).pack()
         ttk.Button(window, text=self.t('check_releases'), command=lambda: webbrowser.open(
             'https://github.com/Morima79/AnnoOrganizer/releases')).pack(pady=(0, 18))
 
