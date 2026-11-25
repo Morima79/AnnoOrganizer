@@ -61,6 +61,13 @@ class DesktopSettingsTests(unittest.TestCase):
             with self.subTest(key=key, value=value), self.assertRaises(ValueError):
                 ConfigDocument(doc.game, doc.path, data)
 
+    def test_import_cannot_replace_its_own_source(self):
+        doc = self.document()
+        before = doc.path.read_bytes()
+        with self.assertRaises(ValueError):
+            doc.copy_to(doc.path)
+        self.assertEqual(doc.path.read_bytes(), before)
+
     def test_windows_documents_and_unicode_paths_share_cli_resolution(self):
         doc = self.document()
         data = dict(doc.data, account='${DOCUMENTS}/Änno Spielstände')

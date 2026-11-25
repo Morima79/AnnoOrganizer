@@ -2,7 +2,7 @@
 
 [English](desktop-gui.md) · [Deutsch](desktop-gui.de.md) · [Wishlist](wishlist.de.md)
 
-Status: Vorschlag; gemeinsame CLI-Ausführung vorbereitet, GUI noch nicht implementiert.
+Status: Quellcode-Vorschau mit Oberfläche, Einstellungsverwaltung und Worker; noch kein portables EXE-Paket.
 
 ## Ziel
 
@@ -108,7 +108,7 @@ Beispiel für eine bereits vorhandene externe Konfiguration:
 
 Die fünf Generatoren laden beim Import keine Konfiguration mehr. Ihr Dienst `run(settings, rescan=False)` erhält die Einstellungen ausdrücklich; die bisherigen direkten Skriptaufrufe bleiben über `main` erhalten. Der gemeinsame Dienst lädt pro Aktion ein frisches Generatormodul und ruft diesen Dienst ohne weiteren Python-Unterprozess auf. Logausgaben werden von Ereignissen getrennt erfasst. Es wird keine temporäre Demo-Konfigurationsdatei mehr benötigt; `settings.filename` bleibt erhalten. Die bisherige Sperre auf `output` gilt weiterhin über den gesamten Demo-Auftrag. Modulglobale Verarbeitungskontexte bleiben vorläufig auf einen Spielprozess begrenzt; der 1800-Spielressourcenindex wird beim Konfigurationswechsel zurückgesetzt. Ein eingefrorener Build ist damit vorbereitet, aber noch nicht erstellt oder geprüft.
 
-Noch offen sind Sperren über getrennte Ausgabeziele, weitere Fortschrittsereignisse, vollständige Transaktionen für Stempelausgaben und der paketierte Worker. Die Einstellungsverwaltung unter LocalAppData ist implementiert; GUI und automatische Spracherkennung werden darauf aufgebaut. Der Quellcode-Dienst darf wegen der gleichnamigen Spielmodule nur innerhalb eines einzelnen Spielprozesses verwendet werden; für einen Spielwechsel ist künftig ein neuer Worker vorgesehen.
+Noch offen sind Sperren über getrennte Ausgabeziele, weitere Fortschrittsereignisse, vollständige Transaktionen für Stempelausgaben und der paketierte Worker. Einstellungsverwaltung unter LocalAppData, GUI und automatische Spracherkennung sind als Quellcode-Vorschau implementiert. Der Quellcode-Dienst darf wegen der gleichnamigen Spielmodule nur innerhalb eines einzelnen Spielprozesses verwendet werden; für einen Spielwechsel ist künftig ein neuer Worker vorgesehen.
 
 ## Implementierungsstand: Quellcode-Worker
 
@@ -129,6 +129,14 @@ Ein echter Quellcode-Worker-Demolauf für 1404 sowie Protokollfehler und ein Abb
 `desktop/settings_store.py` verwaltet pro Spiel eine Konfiguration unter dem tatsächlich von Windows gemeldeten LocalAppData-Ordner. Neue Konfigurationen werden zunächst nur im Speicher erstellt und zeigen auf die mitgelieferten Beispiele; erst Speichern legt Dateien an. Externe Dateien können am bisherigen Ort verwendet oder ausdrücklich kopiert werden. Beim Kopieren werden bekannte relative Pfade und implizite Ausgabeziele gegen den Quellordner aufgelöst; unbekannte Werte bleiben erhalten. Eine verschwundene externe Datei wird nicht stillschweigend neu angelegt.
 
 `Settings.from_data` stellt dieselbe Pfadauflösung für ungespeicherte Werte bereit. `anno_settings.py` wird jetzt ebenfalls aus `templates/` synchronisiert. Speichern prüft Schema, Pfadtypen und Überschneidungen mit Eingaben und Code; noch fehlende Spielinstallationen dürfen konfiguriert werden, die aktionsbezogene Vollprüfung bleibt vor der Verarbeitung. Änderungen verwenden eine Schreibsperre, eine Sicherung des bisherigen Inhalts und atomaren Dateiersatz. Seit dem Laden erkannte externe Änderungen führen zu einem Konflikt statt zum Überschreiben; gegen fremde Editoren ohne gemeinsame Sperre gibt es keine vollständige Transaktionsgarantie. GUI-Präferenzen und externe Dateiauswahl bleiben in `gui.json` erhalten.
+
+## Implementierungsstand: Oberfläche
+
+`launch.py --gui` öffnet die Tkinter/ttk-Oberfläche aus `desktop/app.py`; die reguläre CLI bleibt verfügbar. Spielnavigation, scrollbare Pfadfelder, Konfigurationsauswahl/-import/-speicherung, Demo-/Analyse-/Stempelaktionen, Ausgabeziele, Logs und Info sind eingebunden. Windows-Anzeigesprache und gespeicherte DE/EN-Auswahl werden über eigene, gleich aufgebaute Sprachressourcen unter `desktop/locales/` umgesetzt. Die GUI-Sprache verändert keine Galerie- oder Logsprache.
+
+`desktop/worker_client.py` liest Worker-Ereignisse in einem Hintergrundthread und liefert sie per Queue an Tk. Erfolg wird erst nach konsistentem Abschlussereignis und Exitcode freigegeben. Abbruchanforderungen vor dem Worker-Start werden nach Empfang der Auftragskennung weitergeleitet. Pro Auftrag wird eine private temporäre Konfigurationskopie verwendet, damit Erzeugen keine persönliche Konfiguration speichert. Eingaben und ausgewählter Tab bleiben beim Sprachwechsel erhalten. Der Quellcode-Start, DE/EN und ein 1404-Demolauf wurden auch sichtbar geprüft; 860 × 720 Pixel bleiben mit scrollbaren Feldern nutzbar.
+
+Bedienung und konkrete Restgrenzen: [Desktop-Anleitung](desktop.de.md). Paketierung, Ausgabesperren über getrennte Ziele und vollständige Stempeltransaktionen sind weiterhin offen; die Gesamtabnahme ist deshalb noch nicht vollständig.
 
 ## Umsetzungsschritte
 

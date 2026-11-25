@@ -2,7 +2,7 @@
 
 [English](desktop-gui.md) · [Deutsch](desktop-gui.de.md) · [Wishlist](wishlist.md)
 
-Status: Proposed; shared CLI execution prepared, GUI not implemented yet.
+Status: Source preview with interface, settings management and worker; no portable executable package yet.
 
 ## Goal
 
@@ -108,7 +108,7 @@ Example using an existing external configuration:
 
 The five generators no longer load configuration at import time. Their `run(settings, rescan=False)` service receives settings explicitly; existing direct script calls remain available through `main`. The shared service loads a fresh generator module per action and calls that service without another Python subprocess. Log output is captured separately from events. No temporary demo configuration file is needed; `settings.filename` is preserved. The existing `output` lock still covers the entire demo job. Module-global processing contexts remain limited to one game process for now; the 1800 game-resource index is reset when configuration changes. This prepares a frozen build, but no such build has been created or verified yet.
 
-Reservations across separate output destinations, further progress events, complete stamp-output transactions and the packaged worker remain open. LocalAppData settings management is implemented; the GUI and automatic language detection are built on top of it. Because game modules share names, the source service must be used within a single game process; switching games will use a new worker.
+Reservations across separate output destinations, further progress events, complete stamp-output transactions and the packaged worker remain open. LocalAppData settings management, GUI and automatic language detection are implemented as a source preview. Because game modules share names, the source service must be used within a single game process; switching games will use a new worker.
 
 ## Implementation status: source worker
 
@@ -129,6 +129,14 @@ Automated checks cover a real 1404 source-worker demo, protocol errors and cance
 `desktop/settings_store.py` manages one configuration per game beneath the actual LocalAppData directory reported by Windows. New configurations initially exist in memory only and reference bundled examples; saving creates files. External files can be used in place or explicitly copied. Copying resolves known relative paths and implicit output destinations against the source directory, preserving unknown values. A missing external file is never silently recreated.
 
 `Settings.from_data` provides the same path resolution for unsaved values. `anno_settings.py` is now also synchronized from `templates/`. Saving checks schema, path types and overlaps with inputs/code; missing installations may still be configured, with complete action-specific checks before processing. Changes use an edit lock, a backup of previous content and atomic replacement. Detected external edits since loading cause a conflict instead of an overwrite; editors that do not share the lock cannot be covered by a complete transaction guarantee. GUI preferences and external file selections persist in `gui.json`.
+
+## Implementation status: interface
+
+`launch.py --gui` opens the Tkinter/ttk interface in `desktop/app.py`; the regular CLI remains available. It includes game navigation, scrollable path fields, configuration selection/import/saving, demo/analysis/stamp actions, output destinations, logs and About. Windows display language and saved DE/EN choice use matching resources under `desktop/locales/`. GUI language does not change gallery or log language.
+
+`desktop/worker_client.py` reads worker events on a background thread and queues them for Tk. Success is enabled only after a consistent completion event and exit code. Cancellation requested before worker startup is forwarded after the job identifier arrives. Every job uses a private temporary configuration copy so Generate does not save a personal configuration. Inputs and selected tab survive language changes. Source startup, DE/EN and a 1404 demo were also inspected visibly; scrollable fields keep 860 × 720 pixels usable.
+
+Usage and remaining limitations: [desktop guide](desktop.md). Packaging, reservations across separate output destinations and complete stamp transactions remain open, so overall acceptance is not complete yet.
 
 ## Implementation sequence
 

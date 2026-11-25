@@ -158,6 +158,10 @@ class ConfigDocument:
 
     def copy_to(self, destination):
         """Rebase only known paths, including implicit output, before importing."""
+        destination = Path(destination).resolve()
+        if destination == self.path or (destination.exists() and self.path.exists()
+                                        and destination.samefile(self.path)):
+            raise ValueError('Quelle und Importziel sind identisch. Bitte Datei verwenden wählen.')
         settings = self.view()
         data = copy.deepcopy(self.data)
         for key in PATH_KEYS:
@@ -206,8 +210,13 @@ class SettingsStore:
         return document
 
     def select(self, document):
+        previous = copy.deepcopy(self.preferences)
         self.preferences.setdefault('configurations', {})[document.game] = str(document.path)
-        self.save_preferences()
+        try:
+            self.save_preferences()
+        except Exception:
+            self.preferences = previous
+            raise
 
     def save_preferences(self):
         self.original = atomic_save(self.preferences_path, self.preferences, self.original)

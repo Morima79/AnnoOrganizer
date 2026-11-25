@@ -75,3 +75,7 @@ Optional lassen sich die Ausgaben getrennt festlegen:
 ```
 
 `output` enthält dann nur die Spielkennung, Aktualisierungssperre und etwaige Demo-Ausgaben. Ohne die optionalen Schlüssel gelten weiterhin `reports`, `stamps` und `logs` unter `output`. Demoläufe ignorieren die getrennten Pfade und bleiben vollständig unter `<output>/demo/`. Eingabepfade und vorhandene Anpassungen bleiben erhalten.
+
+## Desktop-Vorschau
+
+Die optionale Oberfläche (`Launch.cmd --gui` im Hauptordner) verwaltet neue Einstellungen unter `%LOCALAPPDATA%/AnnoOrganizer/<spiel>/settings.json`. **Datei verwenden** öffnet eine bestehende Konfiguration am bisherigen Ort; **Kopie importieren** erhält ihre aufgelösten Pfadziele in einer separaten Kopie. Nur **Speichern** schreibt die persönlichen Einstellungen. **Erzeugen** verwendet eine vorübergehende Konfigurationskopie. Die Konsolenstarter behalten ihre bisherigen Standardorte. [Bedienung und Grenzen](desktop.de.md).

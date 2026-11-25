@@ -24,7 +24,18 @@ def main():
     parser.add_argument('--no-open', '--update-only', action='store_true')
     parser.add_argument('--rescan', action='store_true')
     parser.add_argument('--non-interactive', action='store_true')
+    parser.add_argument('--gui', action='store_true', help='Desktop-Oberfläche öffnen')
+    parser.add_argument('--gui-data-dir', type=Path, help='Alternativer Ordner für GUI-Einstellungen')
     args = parser.parse_args()
+    if args.gui:
+        if any((args.action, args.init_settings, args.check, args.no_open, args.rescan, args.non_interactive)):
+            parser.error('--gui erlaubt --game, --config und --gui-data-dir, aber keine Verarbeitungsoptionen.')
+        if args.config and not args.game:
+            parser.error('--gui mit --config braucht --game.')
+        from desktop.app import main as gui_main
+        return gui_main(directory=args.gui_data_dir, game=args.game or 'anno117', config=args.config)
+    if args.gui_data_dir:
+        parser.error('--gui-data-dir braucht --gui.')
     if args.non_interactive and (not args.game or not args.action or args.init_settings):
         parser.error('--non-interactive braucht --game und --action und erlaubt kein --init-settings.')
     if args.init_settings:

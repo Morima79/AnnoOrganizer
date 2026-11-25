@@ -62,6 +62,10 @@ The launcher creates a local Python environment, installs the required packages 
 
 The sample files total approximately **7.4 MB**. They are copies selected from the project owner's files. A demo run reads only the bundled examples and writes to `<configured output>/demo/`; it does not scan your personal game folders. See [117 examples](anno117/demo/README.md), [1800 examples](anno1800/demo/README.md), [1404 examples](anno1404/demo/README.md).
 
+## Desktop preview
+
+`Launch.cmd --gui` opens a German/English interface with game selection, path settings, configuration import, demo/export actions and cancellation. It currently requires Python including Tkinter; a portable executable package is not available yet. [Usage and current limitations](docs/desktop.md).
+
 ## Command-line use
 
 ```powershell

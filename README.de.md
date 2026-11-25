@@ -62,6 +62,10 @@ Der Starter erstellt die lokale Python-Umgebung, installiert beim ersten Start d
 
 Die Beispiele umfassen zusammen rund **7,4 MB** und wurden aus den Dateien des Projektinhabers kopiert. Ein Demo-Lauf liest nur diese Beispiele und schreibt nach `<eingestellte Ausgabe>/demo/`; persönliche Spielordner werden nicht ausgewertet. Details: [117](anno117/demo/README.de.md), [1800](anno1800/demo/README.de.md), [1404](anno1404/demo/README.de.md).
 
+## Desktop-Vorschau
+
+Mit `Launch.cmd --gui` öffnet sich eine deutsche oder englische Oberfläche mit Spielauswahl, Pfadverwaltung, Konfigurationsimport, Demo-/Exportaktionen und Abbruch. Sie benötigt derzeit weiterhin Python einschliesslich Tkinter; ein portables EXE-Paket ist noch nicht vorhanden. [Bedienung und aktuelle Grenzen](docs/desktop.de.md).
+
 ## Kommandozeile
 
 ```powershell
