@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" font-family="Segoe UI, Arial, sans-serif">
+<rect width="960" height="540" rx="13" fill="#20252d"/>
+<g fill="#dfb875"><path d="M24 24l15-8 15 8-15 8z M24 32l15 8 15-8v5l-15 8-15-8z"/><text x="69" y="36" font-size="22" font-weight="600">AnnoOrganizer</text></g>
+<g fill="#a5abb5" font-size="20"><text x="855" y="34">−</text><text x="890" y="34">□</text><text x="925" y="34">×</text></g>
+<path d="M20 54H940 M20 501H940 M231 69V486" stroke="#414750"/>
+<rect x="20" y="72" width="194" height="43" rx="5" fill="#3c424c"/>
+<g font-size="16" fill="#d1d5db"><text x="37" y="99" fill="#dfb875" font-weight="600">Anno 117</text><text x="37" y="144">Anno 1800</text><text x="37" y="189">Anno 1404</text><path d="M26 210H208" stroke="#414750"/><text x="37" y="243">⚙  Settings</text><text x="37" y="283">ⓘ  About</text></g>
+<text x="253" y="91" font-size="22" font-weight="600" fill="#f3f4f6">Anno 117: Pax Romana</text>
+<g font-size="13" fill="#b6bdc8"><text x="253" y="119">Savegame directory</text><text x="253" y="181">Stamp directory</text><text x="253" y="243">Output directory</text></g>
+<g fill="#181c22" stroke="#525965"><rect x="253" y="127" width="636" height="31" rx="4"/><rect x="253" y="189" width="636" height="31" rx="4"/><rect x="253" y="251" width="636" height="31" rx="4"/></g>
+<g fill="#e5e7eb" font-size="14"><text x="264" y="147">Documents\Anno 117\accounts\...</text><text x="264" y="209">Documents\Anno 117\stamps</text><text x="264" y="271">Documents\AnnoOrganizer\Anno117</text></g>
+<g fill="#414853"><rect x="898" y="127" width="38" height="31" rx="4"/><rect x="898" y="189" width="38" height="31" rx="4"/><rect x="898" y="251" width="38" height="31" rx="4"/></g>
+<g stroke="#e5e7eb" fill="none" stroke-width="1.5"><path d="M907 137h8l3 3h9v11h-20z M907 199h8l3 3h9v11h-20z M907 261h8l3 3h9v11h-20z"/></g>
+<path d="M253 296H936" stroke="#414750"/>
+<text x="253" y="319" fill="#e5e7eb" font-size="15" font-weight="600">Generate</text>
+<g fill="none" stroke="#dfb875" stroke-width="1.5"><rect x="253" y="331" width="15" height="15" rx="2"/><path d="M256 338l4 4 6-8"/><rect x="253" y="357" width="15" height="15" rx="2"/><path d="M256 364l4 4 6-8"/><rect x="595" y="331" width="15" height="15" rx="2"/><path d="M598 338l4 4 6-8"/><rect x="595" y="357" width="15" height="15" rx="2"/><path d="M598 364l4 4 6-8"/></g>
+<g fill="#e5e7eb" font-size="14"><text x="279" y="343">Interactive map gallery</text><text x="279" y="369">Interactive stamp gallery</text><text x="621" y="343">Blueprint images</text><text x="621" y="369">Excel map overview</text></g>
+<text x="253" y="402" fill="#b6bdc8" font-size="14">Language</text><rect x="336" y="383" width="125" height="28" rx="4" fill="#353b45"/><text x="347" y="402" fill="#f3f4f6" font-size="14">English</text><path d="M440 394l5 5 5-5" fill="none" stroke="#b6bdc8"/>
+<rect x="253" y="422" width="335" height="40" rx="5" fill="#cba56a"/><text x="420" y="447" text-anchor="middle" fill="#171b22" font-size="15" font-weight="600">▶  Generate galleries</text>
+<rect x="600" y="422" width="336" height="40" rx="5" fill="none" stroke="#525965"/><text x="768" y="447" text-anchor="middle" fill="#e5e7eb" font-size="15">Open generated galleries ↗</text>
+<circle cx="31" cy="520" r="6" fill="none" stroke="#86b99b"/><path d="M28 520l2 2 4-5" fill="none" stroke="#86b99b"/><text x="44" y="524" fill="#b6bdc8" font-size="12">Ready</text><text x="935" y="524" text-anchor="end" fill="#b6bdc8" font-size="12">AnnoOrganizer</text>
+</svg>
