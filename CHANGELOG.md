@@ -5,7 +5,11 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ## [Unreleased]
 
+## [v0.1.14] - 2026-11-26
+
 ### English
+
+- Add a prominent bilingual Windows package download with extraction/start instructions on the demo landing page.
 
 - Add a saved option to open newly generated galleries after a successful desktop run or batch.
 
@@ -46,6 +50,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 - Prepare shared non-interactive execution for all three game launchers, including validated demo plans, structured stage/completion callbacks and output results. Add `--non-interactive`; retain the transitional Python script backend and document remaining GUI/worker work.
 
 ### Deutsch
+
+- Gut sichtbaren Windows-Paketdownload mit Anleitung zum Entpacken und Starten auf der zweisprachigen Demo-Startseite ergänzt.
 
 - Gespeicherte Option zum automatischen Öffnen neu erzeugter Galerien nach erfolgreichem GUI-Lauf oder Gesamtlauf ergänzen.
 

@@ -277,7 +277,7 @@
   "demo.heading": "Entdecke deine Anno-Welten.",
   "demo.description": "Fünf interaktive Galerien mit den mitgelieferten Demo-Spielständen und Stempeln direkt ausprobieren – ohne Installation. Mit DE/EN kannst du jederzeit zwischen Deutsch und Englisch wechseln.",
   "demo.repository": "Repository und Anleitungen",
-  "demo.release": "Aktuelle Version herunterladen",
+  "demo.release": "Alle Downloads und Quellcode",
   "demo.galleries": "Demo-Galerien",
   "demo.anno117": "Drei Demo-Spielstände und fünf Stadt- und Landwirtschaftspläne, mit Filtern für Ceres und kosmetische DLCs.",
   "demo.anno1800": "Drei Demo-Spielstände und fünf Pläne aus vier Regionen, mit Filtern für Produktionstechnik, Rathäuser und Handelskammern.",
@@ -703,5 +703,11 @@
   "demo.excelMaps": "Excel mit Kartenbildern (ZIP)",
   "demo.excelNote": "Die Arbeitsmappen sind auf Deutsch. Für funktionierende Kartenlinks das ZIP vollständig entpacken und die Ordnerstruktur beibehalten.",
   "viewer.originalSize": "Originalgrösse",
-  "viewer.fit": "Einpassen"
+  "viewer.fit": "Einpassen",
+  "demo.downloadHeading": "AnnoOrganizer für Windows",
+  "demo.downloadDescription": "Erstelle deine eigenen Karten- und Stempelgalerien mit der deutschen oder englischen Oberfläche. Das portable Paket enthält alles Nötige – keine Python-Installation erforderlich.",
+  "demo.downloadWindows": "Windows-Paket herunterladen (ZIP)",
+  "demo.downloadDetails": "Version v0.1.14 · Details und Prüfsummen",
+  "demo.downloadInstructions": "Für Windows 10/11 (64 Bit). ZIP vollständig entpacken und AnnoOrganizer.exe starten. Beim ersten Start werden erkannte Spiele und Standardordner vorgeschlagen.",
+  "demo.downloadUnsigned": "Das Programm ist nicht digital signiert. Windows kann deshalb einen Sicherheitshinweis anzeigen."
 }

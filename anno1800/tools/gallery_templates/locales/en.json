@@ -277,7 +277,7 @@
   "demo.heading": "Explore your Anno worlds.",
   "demo.description": "Try five interactive galleries with bundled demo saves and stamps. No installation required. Use DE/EN to switch between German and English at any time.",
   "demo.repository": "Repository and documentation",
-  "demo.release": "Download latest release",
+  "demo.release": "All downloads and source code",
   "demo.galleries": "Demo galleries",
   "demo.anno117": "Three demo saves and five city and farming layouts, including Ceres and cosmetic DLC filters.",
   "demo.anno1800": "Three demo saves and five layouts across four regions, with production technology, town hall and trade union filters.",
@@ -703,5 +703,11 @@
   "demo.excelMaps": "Excel with map images (ZIP)",
   "demo.excelNote": "Workbooks are in German. Extract the complete ZIP and keep its folder structure to use the map links.",
   "viewer.originalSize": "Original size",
-  "viewer.fit": "Fit to window"
+  "viewer.fit": "Fit to window",
+  "demo.downloadHeading": "AnnoOrganizer for Windows",
+  "demo.downloadDescription": "Create your own map and stamp galleries with the German or English interface. The portable package includes everything needed – no Python installation required.",
+  "demo.downloadWindows": "Download Windows package (ZIP)",
+  "demo.downloadDetails": "Version v0.1.14 · Details and checksums",
+  "demo.downloadInstructions": "For Windows 10/11 (64-bit). Extract the complete ZIP and start AnnoOrganizer.exe. Detected games and standard folders are suggested on first launch.",
+  "demo.downloadUnsigned": "The application is not digitally signed. Windows may display a security notice."
 }

@@ -132,6 +132,18 @@ class GalleryLanguageTests(unittest.TestCase):
         self.assertEqual(sorted(links), ['anno117/maps/', 'anno117/stamps/', 'anno1404/maps/',
                                          'anno1800/maps/', 'anno1800/stamps/'])
 
+    def test_landing_download_targets_the_current_desktop_release(self):
+        text = (ROOT / 'site/index.html').read_text(encoding='utf-8')
+        changelog = (ROOT / 'CHANGELOG.md').read_text(encoding='utf-8')
+        version = re.search(r'^## \[(v[^]]+)\]', changelog, re.MULTILINE)[1]
+        release = 'https://github.com/Morima79/AnnoOrganizer/releases'
+        self.assertIn(f'href="{release}/download/{version}/AnnoOrganizer-{version}-windows-x64.zip"', text)
+        self.assertIn(f'href="{release}/tag/{version}"', text)
+        self.assertIn('aria-labelledby="download-heading"', text)
+        for language in ('de', 'en'):
+            self.assertIn(version, self.resources[language]['demo.downloadDetails'])
+            self.assertIn('AnnoOrganizer.exe', self.resources[language]['demo.downloadInstructions'])
+
     def test_renderer_preserves_domain_scripts_and_data_on_refresh(self):
         for game in ('anno117', 'anno1800', 'anno1404'):
             spec = importlib.util.spec_from_file_location('render_' + game, ROOT / game / 'tools/anno_gallery.py')
