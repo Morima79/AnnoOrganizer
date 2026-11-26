@@ -5,6 +5,14 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ## [Unreleased]
 
+### English
+
+- Avoid the artifact downloader's deprecated Node Buffer constructor by downloading the raw archive with digest validation and extracting the desktop ZIP/checksum pair with Python.
+
+### Deutsch
+
+- Den veralteten Node-Buffer-Konstruktor beim Artefaktdownload umgehen: das Archiv mit Digest-Prüfung unverändert herunterladen und das Desktop-ZIP samt Prüfsumme mit Python entpacken.
+
 ## [v0.1.16] - 2026-11-26
 
 ### English

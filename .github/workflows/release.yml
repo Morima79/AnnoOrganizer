@@ -63,7 +63,16 @@ jobs:
       - uses: actions/download-artifact@v8
         with:
           name: desktop-windows
-          path: dist
+          path: ${{ runner.temp }}/desktop-artifact
+          skip-decompress: true
+          digest-mismatch: error
+        env:
+          NODE_OPTIONS: --throw-deprecation
+      - name: Extract and verify the desktop release files
+        env:
+          ARTIFACT_DIRECTORY: ${{ runner.temp }}/desktop-artifact
+          RELEASE_VERSION: ${{ github.event_name == 'push' && github.ref_name || inputs.version }}
+        run: python scripts/extract_desktop_artifact.py --directory "$ARTIFACT_DIRECTORY" --version "$RELEASE_VERSION" --output dist
       - name: Prepare release description from the changelog
         env:
           RELEASE_VERSION: ${{ github.event_name == 'push' && github.ref_name || inputs.version }}
