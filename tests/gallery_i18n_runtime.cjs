@@ -37,12 +37,14 @@ function environment({stored = null, blocked = false, missingEnglish = false, ob
   const description = element({'data-i18n-content': 'demo.meta'});
   const de = element(), en = element();
   de.dataset.galleryLanguage = 'de'; en.dataset.galleryLanguage = 'en';
+  const viewerDe = element(), viewerEn = element();
+  viewerDe.dataset.galleryLanguage = 'de'; viewerEn.dataset.galleryLanguage = 'en';
   const events = [];
   const document = {documentElement: {lang: ''},
     getElementById(id) { assert.equal(id, 'gallery-language-resources'); return {textContent: JSON.stringify(messages)}; },
     querySelectorAll(selector) {
       return ({'[data-i18n]': [heading, option, population, unavailable, fertility117, difficulty1404, islands1800], '[data-i18n-placeholder]': [input],
-        '[data-i18n-alt]': [preview], '[data-i18n-content]': [description], '[data-gallery-language]': [de, en]})[selector] || [];
+        '[data-i18n-alt]': [preview], '[data-i18n-content]': [description], '[data-gallery-language]': [de, en, viewerDe, viewerEn]})[selector] || [];
     },
     dispatchEvent(event) { events.push(event); }};
   const storage = new Map(stored ? [['annoorganizer.gallery.language', stored]] : []);
@@ -51,8 +53,25 @@ function environment({stored = null, blocked = false, missingEnglish = false, ob
     setItem(key, value) { if (blocked) throw Error('Storage unavailable'); storage.set(key, value); }};
   const window = {};
   vm.runInNewContext(runtime, {document, window, localStorage, CustomEvent: class {constructor(type, init) { this.type = type; this.detail = init.detail; }}});
-  return {document, i18n: window.galleryI18n, heading, option, userName, input, preview, description, de, en, storage, events, population, unavailable, populationGroup, moneyGroup, fertility117, difficulty1404, islands1800};
+  return {document, i18n: window.galleryI18n, heading, option, userName, input, preview, description, de, en, viewerDe, viewerEn, storage, events, population, unavailable, populationGroup, moneyGroup, fertility117, difficulty1404, islands1800};
 }
+
+test('header and viewer language buttons mark the same active language', () => {
+  for (const settings of [{}, {stored: 'en'}, {blocked: true}]) {
+    const e = environment(settings);
+    const assertSelection = language => {
+      for (const [de, en] of [[e.de, e.en], [e.viewerDe, e.viewerEn]]) {
+        assert.equal(de.attributes['aria-pressed'], String(language === 'de'));
+        assert.equal(en.attributes['aria-pressed'], String(language === 'en'));
+      }
+    };
+    assertSelection(settings.stored || 'de');
+    e.viewerEn.listeners.click();
+    assertSelection('en');
+    e.de.listeners.click();
+    assertSelection('de');
+  }
+});
 
 test('game setting contexts preserve different original English meanings and input state', () => {
   const e = environment();

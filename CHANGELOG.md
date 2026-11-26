@@ -7,9 +7,13 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Preserve the active-language highlight in the enlarged map viewer for all three map galleries.
+
 - Avoid the artifact downloader's deprecated Node Buffer constructor by downloading the raw archive with digest validation and extracting the desktop ZIP/checksum pair with Python.
 
 ### Deutsch
+
+- Die aktive Sprache in der grossen Kartenansicht aller drei Kartengalerien sichtbar hervorheben.
 
 - Den veralteten Node-Buffer-Konstruktor beim Artefaktdownload umgehen: das Archiv mit Digest-Prüfung unverändert herunterladen und das Desktop-ZIP samt Prüfsumme mit Python entpacken.
 
