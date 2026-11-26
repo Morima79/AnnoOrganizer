@@ -324,3 +324,33 @@ Am 24. November 2026 mit Edge und dem Computer-Use-Skill geprüft:
 - Öffentliche Dokumentation soll leicht zugänglich bleiben. Veröffentlichungsdetails
   unter `docs/` pflegen und in den READMEs kurz verlinken. Hinweise auf eigene Gefahr,
   MIT-Lizenz, Morima79 und das Original-Repository erhalten.
+
+### Fester lokaler Release-Ordner
+
+- Auf dem Windows-Rechner des Projektinhabers liegt die jeweils aktuelle
+  veröffentlichte Windows-Version unter `D:/Workspace/Releases/AnnoOrganizer/`.
+  Die Desktop-Verknüpfung **ANNO - Organizer** zeigt ohne Zusatzargumente auf
+  `D:/Workspace/Releases/AnnoOrganizer/AnnoOrganizer.exe`; ihr Arbeitsverzeichnis
+  und Symbolpfad zeigen ebenfalls in diesen festen Programmordner. Den tatsächlichen,
+  gegebenenfalls umgeleiteten Desktop über Windows ermitteln. Diese lokale Einrichtung
+  ist keine öffentliche Programmeinstellung und gehört nicht in Standardkonfigurationen.
+- **Nach jedem beauftragten, erfolgreich abgeschlossenen Release diesen lokalen
+  Release-Ordner auf die gerade veröffentlichte Version aktualisieren.** Das ist Teil
+  des Release-Abschlusses auf diesem Rechner. GitHub Actions aktualisiert diesen
+  lokalen Ordner nicht selbst; keine automatische Hintergrundaktualisierung behaupten.
+- Das veröffentlichte Windows-ZIP samt SHA-256-Datei herunterladen. In einem eigenen
+  geprüften temporären Ordner ausserhalb OneDrive bereitstellen, Prüfsumme,
+  ZIP-Integrität, `BUILD.json` (Version, Commit, Ressourcen) und Offline-Anleitung
+  prüfen. Den vorhandenen portablen Smoke-Test mit isolierten Testdaten ausführen.
+- Erst das geprüfte vollständige Programmpaket in den festen Ordner übernehmen,
+  einschliesslich `_internal/`, Lizenz und Begleitdateien; keine alten und neuen
+  Paketdateien vermischen. Bei späteren Updates den bisherigen Programmstand bis zum
+  erfolgreichen Austausch als Rückfallmöglichkeit erhalten. Läuft die installierte
+  Anwendung noch oder sind Dateien gesperrt, den bisherigen Stand erhalten und um
+  Schliessen bitten; die Anwendung nicht ungefragt beenden.
+- Die Verknüpfung nach dem Austausch prüfen bzw. bei Bedarf erneuern. Version und
+  Commit am endgültigen Ort kontrollieren. Persönliche Einstellungen unter
+  `%LOCALAPPDATA%/AnnoOrganizer/`, externe Konfigurationen, Spielstände, Stempel und
+  Galerien erhalten. Keine lokalen Release-Pakete, Backups oder Verknüpfungen in Git
+  aufnehmen. Ist dieser Rechner bzw. Laufwerk `D:` nicht verfügbar, die ausstehende
+  lokale Aktualisierung ausdrücklich melden.
