@@ -44,15 +44,20 @@ The previews show all five bundled demo galleries in English; click an image for
 | Stamps | [<img src="anno117/docs/images/stamp-gallery-en.jpg" alt="Anno 117 demo stamp gallery with city layouts, Ceres filters and lavender expansion reserve" width="360">](anno117/docs/images/stamp-gallery-en.jpg) | [<img src="anno1800/docs/images/stamp-gallery-en.jpg" alt="Anno 1800 demo stamp gallery with tractor, silo, electricity, town hall and trade union filters" width="360">](anno1800/docs/images/stamp-gallery-en.jpg) | Not implemented |
 | Maps | [<img src="anno117/docs/images/map-gallery-en.jpg" alt="Anno 117 demo map gallery with population and residences" width="360">](anno117/docs/images/map-gallery-en.jpg) | [<img src="anno1800/docs/images/map-gallery-en.jpg" alt="Anno 1800 demo map gallery with population and residences" width="360">](anno1800/docs/images/map-gallery-en.jpg) | [<img src="anno1404/docs/images/map-gallery-en.jpg" alt="Anno 1404 demo map gallery with population and residences" width="360">](anno1404/docs/images/map-gallery-en.jpg) |
 
-## Quick start
+## Quick start: Windows app
 
-1. Install **Python 3.11 or later** if it is not already available.
-2. Download and extract this repository, then double-click **Launch.cmd**.
-3. Select an **Anno demo**. Steam/Ubisoft installations are detected automatically where possible. If detection fails, paste the game's installation path when asked. Anno 1404 does not require an installed game for its demo.
+1. Download the [Windows x64 package (ZIP)](https://github.com/Morima79/AnnoOrganizer/releases/download/v0.1.15/AnnoOrganizer-v0.1.15-windows-x64.zip) for **Windows 10/11 (64-bit)**.
+2. Extract the **entire ZIP** and open **AnnoOrganizer.exe**. Keep `_internal/` beside the executable. No Python installation or installer is needed.
+3. Select your game and check the detected installation and standard save/stamp folders. **Maps and Excel** is selected on first launch; press **Generate** to process your own saves. Choose **Stamp gallery** for 117/1800 stamps instead. Close an existing report in Excel before updating it.
+4. Open the result with **Open galleries**, or enable **Open galleries after generation**. The adjacent arrow opens one gallery at a time. Your checkbox choice is remembered.
 
-The launcher creates a local Python environment, installs the required packages on first use, and creates missing settings. An internet connection is needed for that initial package installation. No files need to be copied into the game. After processing, the resulting galleries open automatically.
+New settings are created automatically under `%LOCALAPPDATA%/AnnoOrganizer/<game>/settings.json`. Output goes to `Documents/AnnoOrganizer/Anno <number>/` under your actual Windows Documents folder, including redirection. Existing settings and output paths are preserved. German Windows display languages select German; all others select English. Your manual **DE/EN** selection is saved.
 
-**Only the game installation path may need checking.** Demo save and stamp paths are already configured. Both the installation directory and its `maindata` subdirectory are accepted. Existing personal settings are kept unchanged; the demo uses its own input files and output subdirectory.
+**Update all galleries** updates all usable games with one click. You do not need all three games: missing games or input folders are skipped and listed in the completion notice. Invalid settings or failed exports still report errors. The package is unsigned; Windows may display a security notice. Release details and SHA-256 checksums are available on the [version page](https://github.com/Morima79/AnnoOrganizer/releases/tag/v0.1.15).
+
+### Try the bundled demo
+
+Select **Bundled demo** explicitly, then press **Generate**. A startup notice identifies the demo and its separate output destination. The demo reads only bundled examples and does not update your personal galleries. Anno 117 and 1800 require installed game resources even for demos; the Anno 1404 demo requires no game installation.
 
 | Bundled examples | Saves | Stamps |
 |---|---:|---:|
@@ -62,9 +67,13 @@ The launcher creates a local Python environment, installs the required packages 
 
 The sample files total approximately **7.4 MB**. They are copies selected from the project owner's files. A demo run reads only the bundled examples and writes to `<configured output>/demo/`; it does not scan your personal game folders. See [117 examples](anno117/demo/README.md), [1800 examples](anno1800/demo/README.md), [1404 examples](anno1404/demo/README.md).
 
-## Desktop preview
+## Desktop interface
 
-`Launch.cmd --gui` opens a German/English interface with game selection, path settings, configuration import, demo/export actions and cancellation. Source startup requires Python including Tkinter. The added Windows build also creates a portable executable package with runtime and checksum; local builds are not published releases. [Usage and current limitations](docs/desktop.md).
+The Windows app provides game selection, editable paths, existing configuration selection/import, saved action choices, progress, cancellation and logs. **Generate** uses the displayed values without saving the personal settings file; use **Save** to retain edited paths. Settings stay outside the extracted application folder, so replacing the application folder preserves them. [Full guide and current limitations](docs/desktop.md).
+
+## Run from source
+
+For the source ZIP or a checkout, install **Python 3.11 or later**, including Tkinter. Double-click **Launch.cmd** for the console menu, or run `Launch.cmd --gui` for the desktop interface. The launcher prepares a local Python environment and installs dependencies on first use; that initial setup needs internet access. Console launchers retain their bundled demo defaults and `<game>/local-data/` output. Each game folder remains independently usable.
 
 ## Command-line use
 
@@ -85,6 +94,8 @@ py -3 -m venv .venv
 
 ## Options and settings
 
+The following options apply to the source launchers.
+
 - `--check`: check paths and Python dependencies without creating output.
 - `--non-interactive`: require explicit `--game` and `--action`, use an existing configuration, and disable prompts and automatic settings creation. Add `--no-open` to suppress the browser too.
 - `--no-open`: update without opening the browser.
@@ -93,7 +104,7 @@ py -3 -m venv .venv
 - `--init-settings`: create missing settings and keep existing settings unchanged.
 - `--help`: list command-line options.
 
-Missing settings are created automatically during a regular launch. Each game uses an English-keyed `settings.json` (schema version 1). Examples are provided as `settings.example.json`. `${DOCUMENTS}` resolves the actual Windows Documents folder, including OneDrive redirection; `${HOME}` resolves the user folder. Relative paths are resolved from the configuration file's directory.
+Missing console settings are created automatically during a regular launch. Each game uses an English-keyed `settings.json` (schema version 1). Examples are provided as `settings.example.json`. `${DOCUMENTS}` resolves the actual Windows Documents folder, including OneDrive redirection; `${HOME}` resolves the user folder. Relative paths are resolved from the configuration file's directory.
 
 **All five galleries include a DE/EN language switch**, including when opened directly offline. The browser remembers the selection when storage is available. Launcher menus and log messages remain German. Detailed documentation is currently available in German: [Settings](docs/settings.de.md), [Formats and limitations](docs/formats-and-limitations.de.md). See the individual guides for [Anno 117](anno117/README.md), [Anno 1800](anno1800/README.md) and [Anno 1404](anno1404/README.md).
 
@@ -112,7 +123,9 @@ anno1404/                 Independent Anno 1404 tools
   demo/                   Bundled sample saves, stamps and file manifests
   local-data/             Generated output, ignored by Git
 tests/                    Synthetic regression tests
-docs/                     Detailed documentation (German)
+desktop/                  Shared desktop interface and settings management
+packaging/                Windows package instructions
+docs/                     Detailed documentation (English/German)
 ```
 
 Generated galleries use `stamps/stamp-gallery.html` and `reports/map-gallery.html` beneath the configured output directory. Logs are stored in `logs/`. Stamp names and folders from the game library retain their original names. Existing output using older German filenames is preserved; new output uses the English paths.
@@ -125,7 +138,7 @@ Ideas for future extensions are recorded in the [wishlist](docs/wishlist.md).
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 ```
 
-The Windows GitHub Actions workflow runs synthetic tests without game data. Only the explicitly listed bundled demo saves and stamps belong in Git. Keep all other private settings, saves, stamps, generated galleries outside the approved `site/` snapshots, game resources, caches and backups excluded. `.gitignore` permits the designated demo paths and excludes private and generated data. Python packages are installed through pip. Game logos are included for identification. Game resource archives and dependency archives are not bundled.
+The Windows GitHub Actions workflow runs synthetic tests without game data. Only the explicitly listed bundled demo saves and stamps belong in Git. Keep all other private settings, saves, stamps, generated galleries outside the approved `site/` snapshots, game resources, caches and backups excluded. `.gitignore` permits the designated demo paths and excludes private and generated data. Source setup installs Python packages through pip; the Windows package includes its runtime dependencies. Game logos are included for identification. Game resource archives are not bundled.
 
 This is an unofficial project with no affiliation to Ubisoft. Maps and blueprints are reconstructions, not guarantees of placement, supply, range or in-game operation. The tool code is provided under the [MIT license](LICENSE).
 

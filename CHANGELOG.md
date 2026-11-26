@@ -5,6 +5,14 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ## [Unreleased]
 
+### English
+
+- Refresh bilingual README and package instructions for the published Windows app, detected first-run paths, real-data default action and optional automatic gallery opening.
+
+### Deutsch
+
+- Zweisprachige README- und Paketanleitungen für die veröffentlichte Windows-App, erkannte Erststartpfade, echte Eingaben als Standardaktion und optionales automatisches Öffnen aktualisieren.
+
 ## [v0.1.15] - 2026-11-26
 
 ### English

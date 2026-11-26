@@ -44,15 +44,20 @@ Die Vorschauen zeigen alle fünf mitgelieferten Demo-Galerien auf Deutsch; ein K
 | Stempel | [<img src="anno117/docs/images/stamp-gallery.jpg" alt="Anno-117-Demo mit Stadtbauplänen, Ceres-Filtern und Lavendel-Ausbaureserve" width="360">](anno117/docs/images/stamp-gallery.jpg) | [<img src="anno1800/docs/images/stamp-gallery.jpg" alt="Anno-1800-Demo mit Filtern für Traktoren, Silos, Strom, Rathaus und Handelskammer" width="360">](anno1800/docs/images/stamp-gallery.jpg) | Nicht implementiert |
 | Karten | [<img src="anno117/docs/images/map-gallery.jpg" alt="Anno 117 Demo-Kartengalerie mit Bevölkerung und Wohnhäusern" width="360">](anno117/docs/images/map-gallery.jpg) | [<img src="anno1800/docs/images/map-gallery.jpg" alt="Anno 1800 Demo-Kartengalerie mit Bevölkerung und Wohnhäusern" width="360">](anno1800/docs/images/map-gallery.jpg) | [<img src="anno1404/docs/images/map-gallery.jpg" alt="Anno 1404 Demo-Kartengalerie mit Bevölkerung und Wohnhäusern" width="360">](anno1404/docs/images/map-gallery.jpg) |
 
-## Schnellstart
+## Schnellstart: Windows-App
 
-1. **Python 3.11 oder neuer** installieren, falls es noch fehlt.
-2. Das Repository herunterladen, entpacken und **Launch.cmd** doppelklicken.
-3. Eine **Anno-Demo** wählen. Steam-/Ubisoft-Installationen werden nach Möglichkeit automatisch erkannt. Falls das nicht klappt, nur den Installationspfad eingeben. Für die Anno-1404-Demo ist keine Spielinstallation erforderlich.
+1. Das [Windows-x64-Paket (ZIP)](https://github.com/Morima79/AnnoOrganizer/releases/download/v0.1.15/AnnoOrganizer-v0.1.15-windows-x64.zip) für **Windows 10/11 (64 Bit)** herunterladen.
+2. Das **gesamte ZIP entpacken** und **AnnoOrganizer.exe** öffnen. `_internal/` muss neben der EXE bleiben. Python und ein Installer werden nicht benötigt.
+3. Spiel wählen und die erkannte Installation sowie die Standardordner für Spielstände/Stempel prüfen. Beim ersten Start ist **Karten und Excel** ausgewählt; **Erzeugen** wertet die eigenen Spielstände aus. Für Stempel bei 117/1800 stattdessen **Stempelgalerie** wählen. Eine bereits geöffnete Auswertung vor dem Aktualisieren in Excel schliessen.
+4. Das Ergebnis über **Galerien öffnen** aufrufen oder **Galerien nach dem Erzeugen öffnen** aktivieren. Der Pfeil daneben öffnet gezielt eine Galerie. Die Checkbox-Auswahl bleibt gespeichert.
 
-Der Starter erstellt die lokale Python-Umgebung, installiert beim ersten Start die benötigten Pakete und legt fehlende Einstellungen an. Für diese erste Paketinstallation wird eine Internetverbindung benötigt. Es muss nichts ins Spiel kopiert werden. Nach der Auswertung öffnen sich die Galerien automatisch.
+Neue Einstellungen entstehen automatisch unter `%LOCALAPPDATA%/AnnoOrganizer/<spiel>/settings.json`. Die Ausgaben liegen im tatsächlichen Windows-Dokumentenordner unter `AnnoOrganizer/Anno <Nummer>/`, auch bei umgeleiteten Dokumenten. Bestehende Einstellungen und Ausgabeziele bleiben erhalten. Bei deutscher Windows-Anzeigesprache startet die Oberfläche auf Deutsch, sonst auf Englisch. Die manuelle **DE/EN**-Auswahl wird gespeichert.
 
-**Allenfalls muss nur der Spielpfad geprüft oder eingegeben werden.** Die Pfade der Demo-Spielstände und -Stempel sind bereits eingerichtet. Sowohl der Installationsordner als auch dessen `maindata`-Unterordner werden akzeptiert. Vorhandene persönliche Einstellungen bleiben erhalten; die Demo verwendet getrennte Eingaben und einen eigenen Ausgabeunterordner.
+**Alle Galerien aktualisieren** verarbeitet die nutzbaren Spiele mit einem Klick. Dafür müssen nicht alle drei Spiele vorhanden sein: Fehlende Spiele oder Eingabeordner werden übersprungen und in der Abschlussmeldung genannt. Ungültige Einstellungen oder fehlgeschlagene Exporte bleiben Fehler. Das Paket ist nicht signiert; Windows kann einen Sicherheitshinweis anzeigen. Versionsdetails und SHA-256-Prüfsummen stehen auf der [Versionsseite](https://github.com/Morima79/AnnoOrganizer/releases/tag/v0.1.15).
+
+### Mitgelieferte Demo ausprobieren
+
+**Mitgelieferte Demo** ausdrücklich wählen und **Erzeugen** drücken. Beim Start nennt ein Hinweis die Demo und ihr getrenntes Ausgabeziel. Die Demo liest nur die mitgelieferten Beispiele und aktualisiert keine persönlichen Galerien. Anno 117 und 1800 benötigen auch für Demos die installierten Spielressourcen; die Anno-1404-Demo benötigt keine Spielinstallation.
 
 | Mitgelieferte Beispiele | Spielstände | Stempel |
 |---|---:|---:|
@@ -62,9 +67,13 @@ Der Starter erstellt die lokale Python-Umgebung, installiert beim ersten Start d
 
 Die Beispiele umfassen zusammen rund **7,4 MB** und wurden aus den Dateien des Projektinhabers kopiert. Ein Demo-Lauf liest nur diese Beispiele und schreibt nach `<eingestellte Ausgabe>/demo/`; persönliche Spielordner werden nicht ausgewertet. Details: [117](anno117/demo/README.de.md), [1800](anno1800/demo/README.de.md), [1404](anno1404/demo/README.de.md).
 
-## Desktop-Vorschau
+## Desktop-Oberfläche
 
-Mit `Launch.cmd --gui` öffnet sich eine deutsche oder englische Oberfläche mit Spielauswahl, Pfadverwaltung, Konfigurationsimport, Demo-/Exportaktionen und Abbruch. Der Quellcode-Start benötigt Python einschliesslich Tkinter. Der ergänzte Windows-Build erstellt ausserdem ein portables EXE-Paket mit Laufzeit und Prüfsumme; lokale Builds sind noch keine veröffentlichten Releases. [Bedienung und aktuelle Grenzen](docs/desktop.de.md).
+Die Windows-App bietet Spielauswahl, bearbeitbare Pfade, Auswahl/Import vorhandener Einstellungen, gespeicherte Aktionswahl, Fortschritt, Abbruch und Protokolle. **Erzeugen** verwendet die angezeigten Werte, ohne die persönliche Einstellungsdatei zu speichern; bearbeitete Pfade bleiben mit **Speichern** erhalten. Einstellungen liegen ausserhalb des entpackten Programmordners und bleiben beim Austausch des Programmordners bestehen. [Vollständige Anleitung und aktuelle Grenzen](docs/desktop.de.md).
+
+## Start aus dem Quellcode
+
+Für das Quellcode-ZIP oder einen Checkout **Python 3.11 oder neuer** einschliesslich Tkinter installieren. **Launch.cmd** öffnet das Konsolenmenü, `Launch.cmd --gui` die Desktop-Oberfläche. Der Starter richtet beim ersten Start eine lokale Python-Umgebung und die Abhängigkeiten ein; dafür wird eine Internetverbindung benötigt. Die Konsolenstarter behalten ihre mitgelieferten Demo-Voreinstellungen und `<spiel>/local-data/` als Ausgabeziel. Jeder Spielordner bleibt unabhängig nutzbar.
 
 ## Kommandozeile
 
@@ -85,6 +94,8 @@ py -3 -m venv .venv
 
 ## Optionen und Einstellungen
 
+Die folgenden Optionen gelten für die Quellcode-Starter.
+
 - `--check`: Pfade und Python-Pakete prüfen, ohne Ausgaben anzulegen.
 - `--non-interactive`: mit explizitem `--game` und `--action` ohne Abfragen oder automatische Einstellungsanlage starten; vorhandene Konfiguration verwenden. Mit `--no-open` auch den Browserstart unterdrücken.
 - `--no-open`: aktualisieren, ohne den Browser zu öffnen.
@@ -93,7 +104,7 @@ py -3 -m venv .venv
 - `--init-settings`: fehlende Einstellungen anlegen; vorhandene erhalten.
 - `--help`: alle Kommandozeilenoptionen anzeigen.
 
-Beim regulären Start werden fehlende Einstellungen automatisch angelegt. Jeder Spielordner besitzt eine eigene `settings.json` mit englischen Schlüsseln und Schemaversion 1. `settings.example.json` dient als Vorlage. `${DOCUMENTS}` berücksichtigt den tatsächlichen Windows-Dokumentenordner samt OneDrive-Umleitung; `${HOME}` verweist auf den Benutzerordner. Relative Pfade beziehen sich auf den Ordner der Konfigurationsdatei.
+Beim regulären Konsolenstart werden fehlende Einstellungen automatisch angelegt. Jeder Spielordner besitzt eine eigene `settings.json` mit englischen Schlüsseln und Schemaversion 1. `settings.example.json` dient als Vorlage. `${DOCUMENTS}` berücksichtigt den tatsächlichen Windows-Dokumentenordner samt OneDrive-Umleitung; `${HOME}` verweist auf den Benutzerordner. Relative Pfade beziehen sich auf den Ordner der Konfigurationsdatei.
 
 Die technische Benennung und der Code sind Englisch. **Alle fünf Galerien bieten einen DE/EN-Schalter**, auch beim direkten Offline-Öffnen. Die Auswahl wird nach Möglichkeit im Browser gespeichert. Startermenüs und Protokollmeldungen bleiben Deutsch. Ausführliche Anleitungen: [Einstellungen](docs/settings.de.md), [Formate und Grenzen](docs/formats-and-limitations.de.md). Einzelne Werkzeuge: [Anno 117](anno117/README.de.md), [Anno 1800](anno1800/README.de.md), [Anno 1404](anno1404/README.de.md).
 
@@ -112,7 +123,9 @@ anno1404/                 Eigenständig nutzbare Anno-1404-Werkzeuge
   demo/                   Beispiel-Saves, Stempel und Dateimanifeste
   local-data/             Erzeugte Ausgaben, von Git ausgeschlossen
 tests/                    Automatisierte Regressionstests
-docs/                     Ausführliche Dokumentation auf Deutsch
+desktop/                  Gemeinsame Oberfläche und Einstellungsverwaltung
+packaging/                Anleitungen für das Windows-Paket
+docs/                     Ausführliche Dokumentation auf Deutsch/Englisch
 ```
 
 Die Galerien liegen unter `stamps/stamp-gallery.html` und `reports/map-gallery.html` im eingestellten Ausgabeordner. Protokolle stehen unter `logs/`. Stempelnamen und Spielordner behalten ihre vorhandenen Bezeichnungen. Alte Ausgaben mit deutschen Dateinamen bleiben erhalten; neue Ausgaben verwenden die englischen Pfade.
@@ -125,7 +138,7 @@ Vorgemerkte Erweiterungen stehen in der [Wunschliste](docs/wishlist.de.md).
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 ```
 
-Der vorbereitete GitHub-Actions-Workflow testet unter Windows mit synthetischen Daten. Nur die ausdrücklich ausgewählten Demo-Saves und Demo-Stempel gehören ins Repository. Andere persönliche Einstellungen, Stempel, Spielstände, Galerien ausserhalb der freigegebenen `site/`-Momentaufnahmen, Spieldaten, Caches und Sicherungen bleiben ausgeschlossen. `.gitignore` berücksichtigt neue und bisherige lokale Dateinamen. Python-Abhängigkeiten werden über pip installiert. Die Spiel-Logos sind zur Kennzeichnung enthalten. Bibliotheks- und Spieldatenarchive werden nicht mitgeliefert.
+Der GitHub-Actions-Workflow testet unter Windows mit synthetischen Daten. Nur die ausdrücklich ausgewählten Demo-Saves und Demo-Stempel gehören ins Repository. Andere persönliche Einstellungen, Stempel, Spielstände, Galerien ausserhalb der freigegebenen `site/`-Momentaufnahmen, Spieldaten, Caches und Sicherungen bleiben ausgeschlossen. `.gitignore` berücksichtigt neue und bisherige lokale Dateinamen. Beim Quellcode-Start werden Python-Abhängigkeiten über pip installiert; das Windows-Paket enthält seine Laufzeitabhängigkeiten. Die Spiel-Logos sind zur Kennzeichnung enthalten. Spieldatenarchive werden nicht mitgeliefert.
 
 Inoffizielles Projekt ohne Verbindung zu Ubisoft. Die Ausgaben sind Rekonstruktionen und keine Zusage über Bauplatz, Versorgung, Reichweite oder Spielbetrieb. Der Werkzeugcode steht unter der [MIT-Lizenz](LICENSE).
 
