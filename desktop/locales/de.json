@@ -35,6 +35,7 @@
   "batch_running": "{current}/{total}: {game} – {action}",
   "batch_invalid": "Die gemeinsame Aktualisierung konnte nicht gestartet werden. Prüfe die Einstellungen aller drei Spiele:\n\n{details}",
   "cancel": "Abbrechen",
+  "auto_open_galleries": "Galerien nach dem Erzeugen öffnen",
   "open_galleries": "Galerien öffnen",
   "open_output": "Ausgabeordner",
   "logs": "Protokolle",

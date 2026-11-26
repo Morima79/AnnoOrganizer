@@ -149,6 +149,20 @@ class BatchUITests(unittest.TestCase):
         self.assertEqual(len(report['result']['jobs']), 5)
         self.error.assert_not_called()
 
+    def test_auto_open_waits_for_entire_batch_and_opens_all_generated_pages(self):
+        self.app.auto_open.set(True)
+        self.app.generate_all()
+        self.assertTrue(self.app.auto_open_checkbox.instate(['disabled']))
+        pages = []
+        with patch('desktop.app.webbrowser.open', return_value=True) as browser:
+            for number in range(5):
+                page = self.folder / ('gallery-' + str(number) + '.html')
+                page.write_text('gallery', encoding='utf-8')
+                pages.append(page)
+                self.finish(galleries=[str(page)])
+                self.assertEqual(browser.call_count, 0 if number < 4 else 5)
+            self.assertEqual([call.args[0] for call in browser.call_args_list], [page.resolve().as_uri() for page in pages])
+
     def test_preflight_failure_does_not_start_a_worker(self):
         self.app.fields['timezone'].set('invalid/timezone')
         self.app.generate_all()

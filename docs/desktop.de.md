@@ -38,6 +38,8 @@ Galeriebutton und Auswahlpfeil bilden ein gemeinsames Bedienelement mit einer de
 
 Die aufgeklappte Galerieauswahl verwendet dieselben dunklen Hintergrundfarben und hellen Texte wie die Oberfläche. Der hervorgehobene Eintrag ist goldgelb.
 
+Die Checkbox **Galerien nach dem Erzeugen öffnen** öffnet nach einem erfolgreichen Lauf die neu erzeugten Galerien im Standardbrowser, auch bei der Demo. Bei **Alle Galerien aktualisieren** werden die Galerien nach Abschluss des gesamten erfolgreichen Laufs geöffnet. Bei Fehlern, Abbruch oder beim Schliessen der GUI erfolgt kein automatisches Öffnen. Die Option ist zunächst ausgeschaltet und wird in `gui.json` für den nächsten Start gespeichert.
+
 ## Einstellungen bearbeiten und übernehmen
 
 **Alle Galerien aktualisieren** prüft mit einem Klick Anno 117, 1800 und 1404 und aktualisiert deren nutzbare Galerien: bis zu drei Kartengalerien und zwei Stempelgalerien. Die Aktion verwendet die normalen konfigurierten Eingaben und Ausgabeziele, unabhängig von der gerade ausgewählten Einzelaktion. Bereits geladene, ungespeicherte Eingaben werden übernommen; für noch nicht geöffnete Spiele werden deren gespeicherte Konfigurationen gelesen. Persönliche Einstellungsdateien werden dabei nicht gespeichert.

@@ -162,6 +162,37 @@ class DesktopUITests(unittest.TestCase):
         self.assertEqual(saved['actions'], {'anno1404': 'analyze', 'anno117': 'demo'})
         self.assertEqual(restarted.document.path.read_bytes(), self.original_configs['anno117'])
 
+    def test_auto_open_choice_is_optional_and_restored_after_restart(self):
+        from desktop.app import DesktopApp
+        self.assertFalse(self.app.auto_open.get())
+        self.app.auto_open_checkbox.invoke()
+        self.app.change_language('en')
+        self.assertTrue(self.app.auto_open.get())
+        second = tk.Tk()
+        second.withdraw()
+        self.addCleanup(second.destroy)
+        restarted = DesktopApp(second, directory=self.app.store.directory, game='anno1404')
+        self.assertTrue(restarted.auto_open.get())
+        restarted.auto_open_checkbox.invoke()
+        self.assertIs(restarted.store.preferences['auto_open_galleries'], False)
+        self.assertEqual(restarted.document.path.read_bytes(), self.original_configs['anno1404'])
+
+    def test_auto_open_only_opens_current_successful_results_once(self):
+        page = self.folder / 'new gallery.html'
+        page.write_text('gallery', encoding='utf-8')
+        self.app.auto_open.set(True)
+        with patch('desktop.app.webbrowser.open', return_value=True) as browser:
+            for status in ('failed', 'cancelled', 'success'):
+                self.app.client.events.put(dict(type='completed', payload=dict(
+                    status=status, galleries=[str(page), str(page)], logs=[], partial_output=False)))
+                self.app.poll()
+            browser.assert_called_once_with(page.resolve().as_uri())
+            self.app.auto_open.set(False)
+            self.app.client.events.put(dict(type='completed', payload=dict(
+                status='success', galleries=[str(page)], logs=[], partial_output=False)))
+            self.app.poll()
+            self.assertEqual(browser.call_count, 1)
+
     def test_invalid_saved_action_falls_back_to_analyze(self):
         for actions in ([], {'anno1404': 'stamps'}, {'anno1404': 'unknown'}):
             self.app.store.preferences['actions'] = actions

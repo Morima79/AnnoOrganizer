@@ -7,6 +7,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Add a saved option to open newly generated galleries after a successful desktop run or batch.
+
 - Update usable games even when others are absent, and report skipped games and completed galleries at the end. Show setup information when none are available; retain errors for invalid configurations and failed jobs.
 
 - Show a demo-only startup notice with the isolated destination and label demo processing explicitly in the desktop status.
@@ -44,6 +46,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 - Prepare shared non-interactive execution for all three game launchers, including validated demo plans, structured stage/completion callbacks and output results. Add `--non-interactive`; retain the transitional Python script backend and document remaining GUI/worker work.
 
 ### Deutsch
+
+- Gespeicherte Option zum automatischen Öffnen neu erzeugter Galerien nach erfolgreichem GUI-Lauf oder Gesamtlauf ergänzen.
 
 - Nutzbare Spiele auch bei fehlenden anderen Spielen aktualisieren und übersprungene Spiele sowie aktualisierte Galerien abschliessend melden. Bei keinem verfügbaren Spiel einen Einrichtungshinweis anzeigen; ungültige Konfigurationen und fehlgeschlagene Aufträge bleiben Fehler.
 

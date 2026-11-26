@@ -35,6 +35,7 @@
   "batch_running": "{current}/{total}: {game} – {action}",
   "batch_invalid": "Could not start the combined update. Check settings for all three games:\n\n{details}",
   "cancel": "Cancel",
+  "auto_open_galleries": "Open galleries after generation",
   "open_galleries": "Open galleries",
   "open_output": "Output folder",
   "logs": "Logs",

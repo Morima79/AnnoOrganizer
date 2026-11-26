@@ -54,6 +54,7 @@ class DesktopApp:
         self.closed = False
         self._poll_id = None
         self._gallery_refresh = 0
+        self.auto_open = tk.BooleanVar(root, self.store.preferences.get('auto_open_galleries') is True)
         self.action = tk.StringVar(root, self.saved_action(game))
         self.action.trace_add('write', lambda *_: self.refresh_destination())
         self.root.title('AnnoOrganizer')
@@ -114,6 +115,9 @@ class DesktopApp:
                   lightcolor=[('selected', '#cba56a'), ('!selected', '#3c424c')])
         style.configure('TRadiobutton', background='#20252d', foreground='#e5e7eb')
         style.map('TRadiobutton', background=[('disabled', '#20252d')],
+                  foreground=[('disabled', '#89919d')])
+        style.configure('TCheckbutton', background='#20252d', foreground='#e5e7eb')
+        style.map('TCheckbutton', background=[('active', '#20252d'), ('disabled', '#20252d')],
                   foreground=[('disabled', '#89919d')])
         style.configure('Horizontal.TProgressbar', troughcolor='#181c22', background='#cba56a')
         self.root.configure(background='#20252d')
@@ -236,6 +240,10 @@ class DesktopApp:
                 radio.state(['disabled'])
             else:
                 self.controls.append(radio)
+        self.auto_open_checkbox = ttk.Checkbutton(panel, text=self.t('auto_open_galleries'),
+                                                 variable=self.auto_open, command=self.choose_auto_open)
+        self.auto_open_checkbox.pack(anchor='w', pady=(8, 0))
+        self.controls.append(self.auto_open_checkbox)
         commands = ttk.Frame(panel)
         commands.pack(fill='x', pady=(14, 10))
         self.generate_button = ttk.Button(commands, text=self.t('generate'), style='Accent.TButton', command=self.generate)
@@ -462,6 +470,13 @@ class DesktopApp:
         except Exception as exc:
             self.error(exc)
         self.render()
+
+    def choose_auto_open(self):
+        self.store.preferences['auto_open_galleries'] = self.auto_open.get()
+        try:
+            self.store.save_preferences()
+        except Exception as exc:
+            self.error(exc)
 
     def saved_action(self, game):
         actions = self.store.preferences.get('actions', {})
@@ -783,6 +798,8 @@ class DesktopApp:
                     if self.last_result.get('skipped') and not self.closing:
                         self.status_label.configure(text=self.status_text())
                         self.notify_missing_games(self.last_result)
+                    if self.auto_open.get() and self.status == 'success' and not self.closing:
+                        self.open_gallery_paths(self.last_result.get('galleries', []))
                     if self.closing:
                         self.closing = False
                         self.close()
@@ -827,15 +844,20 @@ class DesktopApp:
             self.gallery_menu.add_command(label=label, command=lambda target=path: self.open_galleries(target))
 
     def open_galleries(self, selected=None):
-        for _, path in self.available_galleries():
-            if selected is None or path == selected:
-                try:
-                    if not webbrowser.open(path.as_uri()):
-                        raise OSError(self.t('browser_failed', path=path))
-                except OSError as exc:
-                    self.details = str(exc)
-                    messagebox.showerror(self.t('error'), self.t('browser_failed', path=path), parent=self.root)
-                    break
+        self.open_gallery_paths([path for _, path in self.available_galleries()
+                                 if selected is None or path == selected])
+
+    def open_gallery_paths(self, paths):
+        for path in dict.fromkeys(Path(value).resolve() for value in paths):
+            if not path.is_file():
+                continue
+            try:
+                if not webbrowser.open(path.as_uri()):
+                    raise OSError(self.t('browser_failed', path=path))
+            except OSError as exc:
+                self.details = str(exc)
+                messagebox.showerror(self.t('error'), self.t('browser_failed', path=path), parent=self.root)
+                break
 
     def open_output(self):
         try:

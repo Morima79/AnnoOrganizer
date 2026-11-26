@@ -38,6 +38,8 @@ The gallery button and selection arrow share one outline with a subtle inner div
 
 The expanded gallery selector uses the same dark background and light text as the interface. Its highlighted entry is gold.
 
+The **Open galleries after generation** checkbox opens newly generated galleries in the default browser after a successful run, including demos. For **Update all galleries**, pages open after the entire successful batch finishes. Failure, cancellation or closing the GUI prevents automatic opening. The option is initially disabled and is saved in `gui.json` for the next launch.
+
 ## Edit and reuse settings
 
 **Update all galleries** checks Anno 117, 1800 and 1404 with one click and updates their usable galleries: up to three map galleries and two stamp galleries. It uses the normal configured inputs and output destinations, independently of the selected individual action. Loaded unsaved drafts are included; saved configurations are read for games that have not been opened yet. Personal configuration files are not saved by this operation.
