@@ -242,7 +242,11 @@ class DesktopApp:
         self.gallery_menu_button.grid(row=0, column=2, sticky='nsew')
         self.gallery_menu_button.bind('<Map>', lambda _: self.size_gallery_arrow())
         self.gallery_menu_button.bind('<Configure>', lambda _: self.size_gallery_arrow())
-        self.gallery_menu = tk.Menu(self.gallery_menu_button, tearoff=False, postcommand=self.fill_gallery_menu)
+        self.gallery_menu = tk.Menu(self.gallery_menu_button, tearoff=False, postcommand=self.fill_gallery_menu,
+                                    background='#20252d', foreground='#e5e7eb',
+                                    activebackground='#cba56a', activeforeground='#171b22',
+                                    disabledforeground='#89919d', font=('Segoe UI', 10),
+                                    borderwidth=1, relief='solid')
         self.gallery_menu_button.configure(menu=self.gallery_menu)
         self.gallery_button = ttk.Button(gallery_group, text=self.t('open_galleries'),
                                          style='Gallery.TButton', command=self.open_galleries)

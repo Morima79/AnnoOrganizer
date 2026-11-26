@@ -32,6 +32,8 @@ The absolute output destination is displayed before starting. The window stays r
 
 The gallery button and selection arrow share one outline with a subtle inner divider. The left side opens all available galleries; the right side selects an individual gallery. The arrow area is compact with a centred arrow. If Windows cannot open a gallery in the default browser, the GUI shows its path for opening the file directly.
 
+The expanded gallery selector uses the same dark background and light text as the interface. Its highlighted entry is gold.
+
 ## Edit and reuse settings
 
 - **Use file**: Select an existing `settings.json` and review resolved destinations. The file stays in place; only **Save** modifies it. Relative paths remain relative to its directory.

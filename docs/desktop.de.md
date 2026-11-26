@@ -32,6 +32,8 @@ Das absolute Ausgabeziel steht vor dem Start unter den Eingaben. Während der Ve
 
 Galeriebutton und Auswahlpfeil bilden ein gemeinsames Bedienelement mit einer dezenten inneren Trennlinie. Links werden alle vorhandenen Galerien geöffnet, rechts lässt sich eine einzelne wählen. Der Pfeilbereich ist kompakt und der Pfeil darin zentriert. Kann Windows die Galerie nicht im Standardbrowser öffnen, zeigt die GUI den Dateipfad zum direkten Öffnen an.
 
+Die aufgeklappte Galerieauswahl verwendet dieselben dunklen Hintergrundfarben und hellen Texte wie die Oberfläche. Der hervorgehobene Eintrag ist goldgelb.
+
 ## Einstellungen bearbeiten und übernehmen
 
 - **Datei verwenden**: Eine bestehende `settings.json` auswählen und die aufgelösten Ziele prüfen. Die Datei bleibt am bisherigen Ort; erst **Speichern** ändert sie. Relative Pfade bleiben auf ihren Ordner bezogen.
