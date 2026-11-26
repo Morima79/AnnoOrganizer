@@ -10,9 +10,6 @@ import stat
 import tempfile
 
 
-WORKSPACE_TEMP = Path('D:/Workspace/Temp') if os.name == 'nt' else None
-
-
 class RecoveryError(OSError):
     """Publication left recovery files that must survive context cleanup."""
 
@@ -28,9 +25,11 @@ def outside_onedrive(path):
 
 def staging_directory(prefix='.annotools-stage-'):
     """Allocate an owned working directory outside synchronised output folders."""
-    candidates = [WORKSPACE_TEMP, Path(tempfile.gettempdir())]
+    configured = os.environ.get('ANNOORGANIZER_TEMP_DIR', '').strip()
+    candidates = [Path(os.path.expandvars(configured)).expanduser()] if configured else []
+    candidates.append(Path(tempfile.gettempdir()))
     for candidate in candidates:
-        if candidate is None or not candidate.is_dir() or not outside_onedrive(candidate):
+        if not candidate.is_absolute() or not candidate.is_dir() or not outside_onedrive(candidate):
             continue
         try:
             return Path(tempfile.mkdtemp(prefix=prefix, dir=candidate)).resolve()

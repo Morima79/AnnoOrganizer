@@ -95,7 +95,7 @@ class StampTransactionTests(unittest.TestCase):
         self.root = Path(self.temp.name)
         self.working = self.root / 'temporary'
         self.working.mkdir()
-        self.temp_patch = patch('anno_output_transaction.WORKSPACE_TEMP', self.working)
+        self.temp_patch = patch.dict(os.environ, {'ANNOORGANIZER_TEMP_DIR': str(self.working)})
         self.temp_patch.start()
         self.addCleanup(self.temp_patch.stop)
         self.settings = Settings.from_data('anno117', self.root / 'settings.json', dict(
@@ -246,16 +246,36 @@ class StampTransactionTests(unittest.TestCase):
 
 
 class TemporaryStorageTests(unittest.TestCase):
-    def test_missing_workspace_falls_back_to_user_temp(self):
+    def setUp(self):
+        environment = patch.dict(os.environ, {'ANNOORGANIZER_TEMP_DIR': ''})
+        environment.start()
+        self.addCleanup(environment.stop)
+
+    def test_default_uses_user_temp(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with patch('anno_output_transaction.tempfile.gettempdir', return_value=directory):
+                with temporary_directory('.anno-test-') as name:
+                    self.assertEqual(Path(name).parent, Path(directory).resolve())
+
+    def test_override_takes_precedence_over_user_temp(self):
+        with tempfile.TemporaryDirectory() as directory:
+            preferred = Path(directory) / 'custom-temp'
+            preferred.mkdir()
+            with patch.dict(os.environ, {'ANNOORGANIZER_TEMP_DIR': str(preferred)}), \
+                    patch('anno_output_transaction.tempfile.gettempdir', return_value=directory):
+                with temporary_directory('.anno-test-') as name:
+                    self.assertEqual(Path(name).parent, preferred.resolve())
+
+    def test_missing_override_falls_back_to_user_temp(self):
         with tempfile.TemporaryDirectory() as directory:
             base = Path(directory)
-            with patch('anno_output_transaction.WORKSPACE_TEMP', base / 'missing'), \
+            with patch.dict(os.environ, {'ANNOORGANIZER_TEMP_DIR': str(base / 'missing')}), \
                     patch('anno_output_transaction.tempfile.gettempdir', return_value=directory):
                 with temporary_directory('.anno-test-') as name:
                     self.assertEqual(Path(name).parent, base.resolve())
                 self.assertFalse(Path(name).exists())
 
-    def test_unwritable_workspace_falls_back_to_user_temp(self):
+    def test_unwritable_override_falls_back_to_user_temp(self):
         with tempfile.TemporaryDirectory() as directory:
             base = Path(directory)
             preferred = base / 'preferred'
@@ -263,19 +283,36 @@ class TemporaryStorageTests(unittest.TestCase):
             allocate = tempfile.mkdtemp
             def denied(*args, **kwargs):
                 if kwargs.get('dir') == preferred:
-                    raise PermissionError('workspace denied')
+                    raise PermissionError('custom temp denied')
                 return allocate(*args, **kwargs)
-            with patch('anno_output_transaction.WORKSPACE_TEMP', preferred), \
+            with patch.dict(os.environ, {'ANNOORGANIZER_TEMP_DIR': str(preferred)}), \
                     patch('anno_output_transaction.tempfile.gettempdir', return_value=directory), \
                     patch('anno_output_transaction.tempfile.mkdtemp', side_effect=denied):
                 with temporary_directory('.anno-test-') as name:
                     self.assertEqual(Path(name).parent, base.resolve())
 
+    def test_onedrive_override_falls_back_to_user_temp(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            cloud = base / 'cloud'
+            cloud.mkdir()
+            with patch.dict(os.environ, {'ANNOORGANIZER_TEMP_DIR': str(cloud), 'OneDrive': str(cloud)}), \
+                    patch('anno_output_transaction.tempfile.gettempdir', return_value=directory):
+                with temporary_directory('.anno-test-') as name:
+                    self.assertEqual(Path(name).parent, base.resolve())
+                self.assertFalse(list(cloud.iterdir()))
+
+    def test_relative_override_falls_back_to_user_temp(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with patch.dict(os.environ, {'ANNOORGANIZER_TEMP_DIR': '.'}), \
+                    patch('anno_output_transaction.tempfile.gettempdir', return_value=directory):
+                with temporary_directory('.anno-test-') as name:
+                    self.assertEqual(Path(name).parent, Path(directory).resolve())
+
     def test_onedrive_temp_is_rejected_without_creating_work_files(self):
         with tempfile.TemporaryDirectory() as directory:
             base = Path(directory)
-            with patch('anno_output_transaction.WORKSPACE_TEMP', None), \
-                    patch('anno_output_transaction.tempfile.gettempdir', return_value=directory), \
+            with patch('anno_output_transaction.tempfile.gettempdir', return_value=directory), \
                     patch.dict(os.environ, {'OneDrive': directory}):
                 with self.assertRaisesRegex(OSError, 'ausserhalb von OneDrive'):
                     staging_directory()
