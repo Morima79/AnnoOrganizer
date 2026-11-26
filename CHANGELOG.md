@@ -5,7 +5,11 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ## [Unreleased]
 
+## [v0.1.16] - 2026-11-26
+
 ### English
+
+- Refresh all five README gallery screenshots in German and English and normalize Windows temporary paths in output-protection regression tests.
 
 - Display the product name as ANNO - Organizer in the desktop, launchers, demo pages and package headings while retaining AnnoOrganizer technical paths and filenames.
 
@@ -16,6 +20,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 - Refresh bilingual README and package instructions for the published Windows app, detected first-run paths, real-data default action and optional automatic gallery opening.
 
 ### Deutsch
+
+- Alle fünf README-Galerieaufnahmen auf Deutsch und Englisch aktualisieren und temporäre Windows-Pfade in den Regressionstests für den Ausgabeschutz normalisieren.
 
 - Den Anzeigenamen ANNO - Organizer in Desktop-Oberfläche, Startern, Demo-Seiten und Paketüberschriften verwenden; technische Pfade und Dateinamen bleiben AnnoOrganizer.
 

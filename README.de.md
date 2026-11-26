@@ -19,7 +19,7 @@ Lokale Windows-Werkzeuge für **Anno 117: Pax Romana**, **Anno 1800** und **Anno
 
 ## Online-Demos und Releases
 
-[Alle fünf Galerien im Browser ausprobieren](https://morima79.github.io/AnnoOrganizer/) · [Windows-Paket herunterladen (ZIP)](https://github.com/Morima79/AnnoOrganizer/releases/download/v0.1.15/AnnoOrganizer-v0.1.15-windows-x64.zip) · [Alle Versionen und Quellcode](https://github.com/Morima79/AnnoOrganizer/releases/latest)
+[Alle fünf Galerien im Browser ausprobieren](https://morima79.github.io/AnnoOrganizer/) · [Windows-Paket herunterladen (ZIP)](https://github.com/Morima79/AnnoOrganizer/releases/download/v0.1.16/AnnoOrganizer-v0.1.16-windows-x64.zip) · [Alle Versionen und Quellcode](https://github.com/Morima79/AnnoOrganizer/releases/latest)
 
 | Spiel | Kartengalerie | Stempelgalerie |
 |---|---|---|
@@ -46,14 +46,14 @@ Die Vorschauen zeigen alle fünf mitgelieferten Demo-Galerien auf Deutsch; ein K
 
 ## Schnellstart: Windows-App
 
-1. Das [Windows-x64-Paket (ZIP)](https://github.com/Morima79/AnnoOrganizer/releases/download/v0.1.15/AnnoOrganizer-v0.1.15-windows-x64.zip) für **Windows 10/11 (64 Bit)** herunterladen.
+1. Das [Windows-x64-Paket (ZIP)](https://github.com/Morima79/AnnoOrganizer/releases/download/v0.1.16/AnnoOrganizer-v0.1.16-windows-x64.zip) für **Windows 10/11 (64 Bit)** herunterladen.
 2. Das **gesamte ZIP entpacken** und **AnnoOrganizer.exe** öffnen. `_internal/` muss neben der EXE bleiben. Python und ein Installer werden nicht benötigt.
 3. Spiel wählen und die erkannte Installation sowie die Standardordner für Spielstände/Stempel prüfen. Beim ersten Start ist **Karten und Excel** ausgewählt; **Erzeugen** wertet die eigenen Spielstände aus. Für Stempel bei 117/1800 stattdessen **Stempelgalerie** wählen. Eine bereits geöffnete Auswertung vor dem Aktualisieren in Excel schliessen.
 4. Das Ergebnis über **Galerien öffnen** aufrufen oder **Galerien nach dem Erzeugen öffnen** aktivieren. Der Pfeil daneben öffnet gezielt eine Galerie. Die Checkbox-Auswahl bleibt gespeichert.
 
 Neue Einstellungen entstehen automatisch unter `%LOCALAPPDATA%/AnnoOrganizer/<spiel>/settings.json`. Die Ausgaben liegen im tatsächlichen Windows-Dokumentenordner unter `AnnoOrganizer/Anno <Nummer>/`, auch bei umgeleiteten Dokumenten. Bestehende Einstellungen und Ausgabeziele bleiben erhalten. Bei deutscher Windows-Anzeigesprache startet die Oberfläche auf Deutsch, sonst auf Englisch. Die manuelle **DE/EN**-Auswahl wird gespeichert.
 
-**Alle Galerien aktualisieren** verarbeitet die nutzbaren Spiele mit einem Klick. Dafür müssen nicht alle drei Spiele vorhanden sein: Fehlende Spiele oder Eingabeordner werden übersprungen und in der Abschlussmeldung genannt. Ungültige Einstellungen oder fehlgeschlagene Exporte bleiben Fehler. Das Paket ist nicht signiert; Windows kann einen Sicherheitshinweis anzeigen. Versionsdetails und SHA-256-Prüfsummen stehen auf der [Versionsseite](https://github.com/Morima79/AnnoOrganizer/releases/tag/v0.1.15).
+**Alle Galerien aktualisieren** verarbeitet die nutzbaren Spiele mit einem Klick. Dafür müssen nicht alle drei Spiele vorhanden sein: Fehlende Spiele oder Eingabeordner werden übersprungen und in der Abschlussmeldung genannt. Ungültige Einstellungen oder fehlgeschlagene Exporte bleiben Fehler. Das Paket ist nicht signiert; Windows kann einen Sicherheitshinweis anzeigen. Versionsdetails und SHA-256-Prüfsummen stehen auf der [Versionsseite](https://github.com/Morima79/AnnoOrganizer/releases/tag/v0.1.16).
 
 ### Mitgelieferte Demo ausprobieren
 

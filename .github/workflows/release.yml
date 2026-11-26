@@ -80,5 +80,5 @@ jobs:
           RELEASE_VERSION: ${{ github.ref_name }}
         shell: bash
         run: |
-          gh release create "$RELEASE_VERSION" dist/* --verify-tag --draft --title "AnnoOrganizer $RELEASE_VERSION" --notes-file "$RUNNER_TEMP/release-notes.md"
+          gh release create "$RELEASE_VERSION" dist/* --verify-tag --draft --title "ANNO - Organizer $RELEASE_VERSION" --notes-file "$RUNNER_TEMP/release-notes.md"
           gh release edit "$RELEASE_VERSION" --draft=false

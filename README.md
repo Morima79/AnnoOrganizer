@@ -19,7 +19,7 @@ Local Windows tools for **Anno 117: Pax Romana**, **Anno 1800** and **Anno 1404*
 
 ## Online demos and releases
 
-[Try all five galleries in your browser](https://morima79.github.io/AnnoOrganizer/) · [Download the Windows package (ZIP)](https://github.com/Morima79/AnnoOrganizer/releases/download/v0.1.15/AnnoOrganizer-v0.1.15-windows-x64.zip) · [All releases and source code](https://github.com/Morima79/AnnoOrganizer/releases/latest)
+[Try all five galleries in your browser](https://morima79.github.io/AnnoOrganizer/) · [Download the Windows package (ZIP)](https://github.com/Morima79/AnnoOrganizer/releases/download/v0.1.16/AnnoOrganizer-v0.1.16-windows-x64.zip) · [All releases and source code](https://github.com/Morima79/AnnoOrganizer/releases/latest)
 
 | Game | Map gallery | Stamp gallery |
 |---|---|---|
@@ -46,14 +46,14 @@ The previews show all five bundled demo galleries in English; click an image for
 
 ## Quick start: Windows app
 
-1. Download the [Windows x64 package (ZIP)](https://github.com/Morima79/AnnoOrganizer/releases/download/v0.1.15/AnnoOrganizer-v0.1.15-windows-x64.zip) for **Windows 10/11 (64-bit)**.
+1. Download the [Windows x64 package (ZIP)](https://github.com/Morima79/AnnoOrganizer/releases/download/v0.1.16/AnnoOrganizer-v0.1.16-windows-x64.zip) for **Windows 10/11 (64-bit)**.
 2. Extract the **entire ZIP** and open **AnnoOrganizer.exe**. Keep `_internal/` beside the executable. No Python installation or installer is needed.
 3. Select your game and check the detected installation and standard save/stamp folders. **Maps and Excel** is selected on first launch; press **Generate** to process your own saves. Choose **Stamp gallery** for 117/1800 stamps instead. Close an existing report in Excel before updating it.
 4. Open the result with **Open galleries**, or enable **Open galleries after generation**. The adjacent arrow opens one gallery at a time. Your checkbox choice is remembered.
 
 New settings are created automatically under `%LOCALAPPDATA%/AnnoOrganizer/<game>/settings.json`. Output goes to `Documents/AnnoOrganizer/Anno <number>/` under your actual Windows Documents folder, including redirection. Existing settings and output paths are preserved. German Windows display languages select German; all others select English. Your manual **DE/EN** selection is saved.
 
-**Update all galleries** updates all usable games with one click. You do not need all three games: missing games or input folders are skipped and listed in the completion notice. Invalid settings or failed exports still report errors. The package is unsigned; Windows may display a security notice. Release details and SHA-256 checksums are available on the [version page](https://github.com/Morima79/AnnoOrganizer/releases/tag/v0.1.15).
+**Update all galleries** updates all usable games with one click. You do not need all three games: missing games or input folders are skipped and listed in the completion notice. Invalid settings or failed exports still report errors. The package is unsigned; Windows may display a security notice. Release details and SHA-256 checksums are available on the [version page](https://github.com/Morima79/AnnoOrganizer/releases/tag/v0.1.16).
 
 ### Try the bundled demo
 
