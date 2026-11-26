@@ -94,7 +94,7 @@ def run(report, directory, *, all_games=False, system_inputs=False, single_game=
             raise ValueError('Missing-game notice did not match available games')
         if len(demo_notices) != (0 if all_games else 1):
             raise ValueError('Demo notice was not limited to demo generation')
-        result = dict(status='success', language=app.language, galleries=app.last_result['galleries'],
+        result = dict(status='success', language=app.language, display_name=root.title(), galleries=app.last_result['galleries'],
                       inputs='system' if system_inputs else 'bundled', steps=steps,
                       skipped=app.last_result.get('skipped', []))
     except Exception as exc:

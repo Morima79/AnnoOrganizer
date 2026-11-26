@@ -6,6 +6,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'anno117/tools'))
@@ -29,6 +30,17 @@ class ConfigurationTests(unittest.TestCase):
 
     def save(self):
         self.config.write_text(json.dumps(self.data), encoding='utf-8')
+
+    def test_current_settings_environment_variable(self):
+        with patch.dict(os.environ, {'ANNOORGANIZER_SETTINGS': str(self.config)}):
+            self.assertEqual(Settings('anno117').filename, self.config)
+
+    def test_obsolete_settings_environment_variable_is_ignored(self):
+        alternate = self.root / 'alternate.json'
+        alternate.write_text(json.dumps(self.data), encoding='utf-8')
+        with patch.dict(os.environ, {'ANNOORGANIZER_SETTINGS': '', 'ANNO' + 'TOOLS_SETTINGS': str(alternate)}), \
+                patch('anno_settings.PROJECT', self.root):
+            self.assertEqual(Settings('anno117').filename, self.config)
 
     def test_relative_paths_use_configuration_directory(self):
         config = Settings('anno117', self.config).validate('stamps')
@@ -85,7 +97,7 @@ class ConfigurationTests(unittest.TestCase):
     def test_different_games_cannot_reuse_existing_output(self):
         output = self.root / 'outputs/anno117'
         output.mkdir(parents=True)
-        (output / '.annotools-game.json').write_text('{"game":"anno1800"}', encoding='utf-8')
+        (output / '.annoorganizer-game.json').write_text('{"game":"anno1800"}', encoding='utf-8')
         with self.assertRaises(ValueError):
             Settings('anno117', self.config).validate('stamps')
 

@@ -77,7 +77,7 @@ class StampTransactionTests(unittest.TestCase):
                 self.generate(staged)
             self.assertEqual((self.stamps / 'references/user.json').read_text(), 'keep reference')
             self.assertTrue(references.stat().st_file_attributes & 1)
-            self.assertFalse(list(self.settings.output.rglob('.annotools-stage-*')))
+            self.assertFalse(list(self.settings.output.rglob('.annoorganizer-stage-*')))
         finally:
             references.chmod(stat.S_IWRITE)
             self.cache.chmod(stat.S_IWRITE)
@@ -122,7 +122,7 @@ class StampTransactionTests(unittest.TestCase):
                 self.generate(staged)
                 raise ValueError('cancelled')
         self.assertEqual(files_in(self.settings.output), self.before)
-        self.assertFalse(list(self.settings.output.rglob('.annotools-stage-*')))
+        self.assertFalse(list(self.settings.output.rglob('.annoorganizer-stage-*')))
 
     def test_success_publishes_and_preserves_user_references(self):
         with stamp_transaction(self.settings, lambda: None) as staged:
@@ -171,6 +171,7 @@ class StampTransactionTests(unittest.TestCase):
     def test_staging_is_outside_outputs_and_cleaned_after_success(self):
         with stamp_transaction(self.settings, lambda: None) as staged:
             work = staged.stamp_output.parent
+            self.assertTrue(work.name.startswith('.annoorganizer-stage-'))
             self.assertTrue(work.is_relative_to(self.working))
             self.assertFalse(work.is_relative_to(self.settings.output))
             self.generate(staged)

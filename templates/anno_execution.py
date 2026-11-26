@@ -73,10 +73,10 @@ def prepare_execution(settings, project, action, rescan=False):
 
 @contextmanager
 def updating(output):
-    """Retain the legacy output-root lock alongside complete write reservations."""
+    """Reserve the output root alongside complete write reservations."""
     import msvcrt
     output.mkdir(parents=True, exist_ok=True)
-    with (output / '.annotools.lock').open('a+b') as lock:
+    with (output / '.annoorganizer.lock').open('a+b') as lock:
         lock.seek(0)
         lock.write(b'0')
         lock.flush()
@@ -179,7 +179,7 @@ def execute_plan(plan, on_event=None, on_output=None, *, cancel_requested=None, 
         with reserve_paths(output_paths(settings, plan.tasks)), updating(settings.output):
             for task in plan.tasks:
                 settings.validate(task)
-            (settings.output / '.annotools-game.json').write_text(
+            (settings.output / '.annoorganizer-game.json').write_text(
                 json.dumps({'game': settings.game}), encoding='utf-8')
             for task in plan.tasks:
                 checkpoint()

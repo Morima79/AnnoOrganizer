@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   const resources = JSON.parse(document.getElementById('gallery-language-resources').textContent);
-  const storageKey = 'annotools.gallery.language';
+  const storageKey = 'annoorganizer.gallery.language';
   let language = 'de';
   const namedParameters = new Set(['region', 'label']);
   const reverse = new Map(Object.entries(resources.de).filter(([, value]) => !value.includes('{')).map(([key, value]) => [value, key]));

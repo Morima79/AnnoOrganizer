@@ -23,7 +23,7 @@ def outside_onedrive(path):
         part.lower() == 'onedrive' or part.lower().startswith('onedrive - ') for part in path.parts)
 
 
-def staging_directory(prefix='.annotools-stage-'):
+def staging_directory(prefix='.annoorganizer-stage-'):
     """Allocate an owned working directory outside synchronised output folders."""
     configured = os.environ.get('ANNOORGANIZER_TEMP_DIR', '').strip()
     candidates = [Path(os.path.expandvars(configured)).expanduser()] if configured else []

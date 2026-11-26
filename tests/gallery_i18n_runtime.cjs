@@ -15,7 +15,7 @@ function element(attributes = {}, text = '') {
     addEventListener(event, handler) { this.listeners[event] = handler; }};
 }
 
-function environment({stored = null, blocked = false, missingEnglish = false} = {}) {
+function environment({stored = null, blocked = false, missingEnglish = false, obsoleteStored = null} = {}) {
   const messages = structuredClone(resources);
   if (missingEnglish) delete messages.en['stamp.download'];
   const heading = element({'data-i18n': 'stamp.heading'});
@@ -45,7 +45,8 @@ function environment({stored = null, blocked = false, missingEnglish = false} = 
         '[data-i18n-alt]': [preview], '[data-i18n-content]': [description], '[data-gallery-language]': [de, en]})[selector] || [];
     },
     dispatchEvent(event) { events.push(event); }};
-  const storage = new Map(stored ? [['annotools.gallery.language', stored]] : []);
+  const storage = new Map(stored ? [['annoorganizer.gallery.language', stored]] : []);
+  if (obsoleteStored) storage.set('anno' + 'tools.gallery.language', obsoleteStored);
   const localStorage = {getItem(key) { if (blocked) throw Error('Storage unavailable'); return storage.get(key) ?? null; },
     setItem(key, value) { if (blocked) throw Error('Storage unavailable'); storage.set(key, value); }};
   const window = {};
@@ -85,7 +86,7 @@ test('DE/EN switching preserves inputs, option values and identity text', () => 
   assert.equal(e.i18n.t('map.visible', {count: 1}), '1 variant visible');
   assert.equal(e.i18n.t('map.summary', {seeds: 1, variants: 2, saves: 1}), '1 seed · 2 map variants · 1 save');
   assert.equal(e.events[0].type, 'gallerylanguagechange');
-  assert.equal(e.storage.get('annotools.gallery.language'), 'en');
+  assert.equal(e.storage.get('annoorganizer.gallery.language'), 'en');
   e.de.listeners.click();
   assert.equal(e.option.textContent, 'Sandkasten');
   assert.equal(e.input.value, 'Lavendel');
@@ -138,4 +139,11 @@ test('statistics language switching preserves open and closed disclosure groups'
   assert.equal(e.unavailable.textContent, 'nicht verfügbar');
   assert.equal(e.populationGroup.open, false);
   assert.equal(e.moneyGroup.open, true);
+});
+
+test('obsolete language preference is not imported', () => {
+  const e = environment({obsoleteStored: 'en'});
+  assert.equal(e.i18n.language, 'de');
+  e.en.listeners.click();
+  assert.equal(e.storage.get('annoorganizer.gallery.language'), 'en');
 });

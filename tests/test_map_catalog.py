@@ -97,7 +97,7 @@ with tempfile.TemporaryDirectory() as directory:
     stage = Path(directory)
     config = stage/'settings.json'
     config.write_text((Path(game)/'settings.example.json').read_text(encoding='utf-8'), encoding='utf-8')
-    os.environ['ANNOTOOLS_SETTINGS'] = str(config)
+    os.environ['ANNOORGANIZER_SETTINGS'] = str(config)
     spec = importlib.util.spec_from_file_location('exporter', Path(game)/'tools/analyze_saves.py')
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)

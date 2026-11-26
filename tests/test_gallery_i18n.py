@@ -125,7 +125,7 @@ class GalleryLanguageTests(unittest.TestCase):
         self.assertEqual(text, sync.render_landing_page())
         self.assertIn('<html lang="de-CH">', text)
         self.assertIn('data-i18n-content="demo.meta"', text)
-        self.assertIn('annotools.gallery.language', text)
+        self.assertIn('annoorganizer.gallery.language', text)
         self.assertNotIn('Gallery text is currently German', text)
         self.assertNotIn('Die Galerien sind auf Deutsch', text)
         links = re.findall(r'href="(anno\d+/(?:maps|stamps)/)"', text)
@@ -170,7 +170,7 @@ with tempfile.TemporaryDirectory() as directory:
     stage = Path(directory)
     settings = json.loads((Path(game) / 'settings.example.json').read_text(encoding='utf-8'))
     (stage / 'settings.json').write_text(json.dumps(settings), encoding='utf-8')
-    os.environ['ANNOTOOLS_SETTINGS'] = str(stage / 'settings.json')
+    os.environ['ANNOORGANIZER_SETTINGS'] = str(stage / 'settings.json')
     spec.loader.exec_module(module)
     if kind == 'stamp':
         module.CONFIG = SimpleNamespace(stamp_output=stage)

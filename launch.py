@@ -53,7 +53,7 @@ def main():
         parser.error('--game und --action gemeinsam angeben.')
     game, action = args.game, args.action
     if not game:
-        print('AnnoOrganizer')
+        print('ANNO - Organizer')
         for index, (game, action) in enumerate(OPTIONS, 1):
             print(f'{index}: {game.replace("anno", "Anno ")} – {LABELS[action]}')
         try:

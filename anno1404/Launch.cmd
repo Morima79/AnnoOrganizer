@@ -29,6 +29,6 @@ exit /b %annoorganizer_exit%
 echo Please install Python 3.11 or newer, then open Launch.cmd again.
 goto failed
 :failed
-echo AnnoOrganizer could not start. Please check the message above.
+echo ANNO - Organizer could not start. Please check the message above.
 pause
 exit /b 1

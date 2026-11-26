@@ -68,7 +68,7 @@ Mit `--config "D:/Projekte/Anno 117/settings.json"` kann die persönliche Einste
 Optional lassen sich die Ausgaben getrennt festlegen:
 
 ```json
-"output": "./.annotools",
+"output": "./.annoorganizer",
 "report_output": "./Auswertung",
 "stamp_output": "./Stempel",
 "log_output": "./logs"

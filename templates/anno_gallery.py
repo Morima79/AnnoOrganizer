@@ -132,6 +132,11 @@ def render_gallery(page, game, kind):
         scripts += '\n<script id="gallery-map-viewer">' + (folder / 'map_viewer.js').read_text(encoding='utf-8') + '</script>'
     scripts += '\n<script id="gallery-stamp-viewer">' + (folder / 'stamp_viewer.js').read_text(encoding='utf-8') + '</script>'
     resources = _i18n.load_resources(folder / 'locales')
+    navigation = re.sub(
+        r'(<span\b[^>]*\bdata-i18n=["\']nav\.demos["\'][^>]*>).*?(</span>)',
+        lambda match: match[1] + escape(resources['de']['nav.demos']) + match[2],
+        navigation, flags=re.DOTALL)
+
     if kind == 'stamp':
         header += '\n' + stamp_totals(content, resources)
     language_switch = '<div class="gallery-language" role="group" aria-label="Sprache" data-i18n-aria-label="language.label"><button type="button" data-gallery-language="de" aria-pressed="true" lang="de">DE</button><button type="button" data-gallery-language="en" aria-pressed="false" lang="en">EN</button></div>'

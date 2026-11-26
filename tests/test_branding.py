@@ -26,14 +26,24 @@ class BrandingTests(unittest.TestCase):
             resources = json.loads((ROOT / 'templates/locales' / (language + '.json')).read_text(encoding='utf-8'))
             for key in ('nav.demos', 'demo.title', 'demo.meta', 'demo.eyebrow', 'demo.footer'):
                 with self.subTest(language=language, key=key):
-                    self.assertIn('AnnoOrganizer', resources[key])
+                    self.assertIn('ANNO - Organizer', resources[key])
         for page in (ROOT / 'site').rglob('index.html'):
             with self.subTest(page=page):
                 text = page.read_text(encoding='utf-8')
-                self.assertFalse('AnnoTools' in text, f'Obsolete project name in {page}')
-                self.assertIn('annotools.gallery.language', text)
+                self.assertNotIn('anno' + 'tools', text.lower(), f'Obsolete project name in {page}')
+                self.assertIn('annoorganizer.gallery.language', text)
+                self.assertIn('>ANNO - Organizer', text)
         landing = (ROOT / 'site/index.html').read_text(encoding='utf-8')
         self.assertIn('https://github.com/Morima79/AnnoOrganizer/releases/latest', landing)
+
+    def test_current_runtime_identifiers_have_no_obsolete_brand(self):
+        paths = list((ROOT / 'templates').rglob('*.py'))
+        paths += list((ROOT / 'templates').rglob('*.js'))
+        paths += list((ROOT / 'desktop').rglob('*.py'))
+        paths += list((ROOT / 'scripts').glob('*.py'))
+        for path in paths:
+            with self.subTest(path=path):
+                self.assertNotIn('anno' + 'tools', path.read_text(encoding='utf-8').lower())
 
     def assert_logo(self, page, game):
         parser = Images()

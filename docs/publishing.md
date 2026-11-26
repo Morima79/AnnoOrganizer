@@ -17,7 +17,7 @@ The repository is [Morima79/AnnoOrganizer](https://github.com/Morima79/AnnoOrgan
 
 Pages uses relative navigation and embedded CSS, JavaScript and language resources, so all five galleries work under the new repository path and when opened locally. The workflow obtains the deployment URL from GitHub Pages rather than hard-coding the repository name. Keep **Settings → Pages → Source → GitHub Actions** selected; pushing the updated `site/` to `main` publishes the renamed content. Check any manually configured repository homepage or external links separately; the old Pages URL may return 404 rather than redirect.
 
-Local compatibility identifiers (`ANNOTOOLS_SETTINGS`, `.annotools-game.json`, `.annotools.lock`, existing `.annotools/` output folders and `annotools.gallery.language`) remain unchanged. Existing configurations, output ownership checks, update locks and language preferences therefore continue to work. Renaming the local checkout directory is optional; adjust personal shortcuts separately if moving it.
+Runtime identifiers consistently use the current project name: `ANNOORGANIZER_SETTINGS`, `.annoorganizer-game.json`, `.annoorganizer.lock`, `.annoorganizer/` output folders and `annoorganizer.gallery.language`. Only these names are supported; there are no aliases or automatic imports for obsolete identifiers. Update local configurations and administrative filenames together before using the renamed tools. Browser language preferences start with the German default until selected again.
 
 ## Pages action Node.js warning
 

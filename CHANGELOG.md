@@ -7,11 +7,19 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Display the product name as ANNO - Organizer in the desktop, launchers, demo pages and package headings while retaining AnnoOrganizer technical paths and filenames.
+
+- Use AnnoOrganizer names for configuration variables, output markers, locks, temporary folders and gallery language storage without legacy aliases.
+
 - Stage map and stamp exports outside OneDrive, default to user temp with an optional local ANNOORGANIZER_TEMP_DIR override, and retain recovery data when cross-volume publication or rollback fails.
 
 - Refresh bilingual README and package instructions for the published Windows app, detected first-run paths, real-data default action and optional automatic gallery opening.
 
 ### Deutsch
+
+- Den Anzeigenamen ANNO - Organizer in Desktop-Oberfläche, Startern, Demo-Seiten und Paketüberschriften verwenden; technische Pfade und Dateinamen bleiben AnnoOrganizer.
+
+- Konfigurationsvariablen, Spielkennungen, Sperrdateien, temporäre Ordner und Sprachspeicher der Galerien durchgehend auf AnnoOrganizer umstellen, ohne veraltete Aliase.
 
 - Zwischenstände der Karten- und Stempelexporte ausserhalb von OneDrive erzeugen, standardmässig Benutzer-Temp mit einer optionalen lokalen ANNOORGANIZER_TEMP_DIR-Vorgabe verwenden und Rücksicherungen bei fehlgeschlagener laufwerksübergreifender Veröffentlichung erhalten.
 

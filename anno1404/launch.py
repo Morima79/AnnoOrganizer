@@ -23,7 +23,7 @@ LABELS = {'demo': 'Demo mit den mitgelieferten Beispielen', 'stamps': 'Stempelga
 
 def choose():
     options = ['demo', *SCRIPTS]
-    print('AnnoOrganizer – ' + GAME.replace('anno', 'Anno '))
+    print('ANNO - Organizer – ' + GAME.replace('anno', 'Anno '))
     for number, action in enumerate(options, 1):
         print(f'{number}: {LABELS[action]}')
     try:
@@ -83,7 +83,7 @@ def main():
         print(('Einstellungen angelegt: ' if created else 'Vorhandene Einstellungen bleiben erhalten: ') + str(args.config))
         return 0
     if os.name != 'nt':
-        raise ValueError('AnnoOrganizer unterstützt derzeit Windows.')
+        raise ValueError('ANNO - Organizer unterstützt derzeit Windows.')
     action = args.action or choose()
     if action != 'demo' and action not in SCRIPTS:
         parser.error('Anno 1404 bietet bisher nur die Karten-/Spielstandauswertung.')
@@ -130,4 +130,4 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         sys.exit('Abgebrochen.')
     except (ValueError, OSError, ImportError, EOFError) as exc:
-        sys.exit('AnnoOrganizer: ' + str(exc))
+        sys.exit('ANNO - Organizer: ' + str(exc))

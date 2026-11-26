@@ -17,7 +17,7 @@ Das Repository heisst [Morima79/AnnoOrganizer](https://github.com/Morima79/AnnoO
 
 Pages verwendet relative Navigation und eingebettete CSS-, JavaScript- und Sprachressourcen. Dadurch funktionieren alle fünf Galerien unter dem neuen Repository-Pfad und beim lokalen Öffnen. Der Workflow übernimmt die Deployment-URL von GitHub Pages, ohne den Repository-Namen fest vorzugeben. Unter **Settings → Pages → Source** weiterhin **GitHub Actions** verwenden; ein Push des aktualisierten `site/` auf `main` veröffentlicht die umbenannten Inhalte. Manuell gesetzte Repository-Homepage und externe Links separat prüfen; die alte Pages-URL kann statt einer Weiterleitung HTTP 404 liefern.
 
-Lokale Kompatibilitätskennungen (`ANNOTOOLS_SETTINGS`, `.annotools-game.json`, `.annotools.lock`, bestehende `.annotools/`-Ausgabeordner und `annotools.gallery.language`) bleiben unverändert. Vorhandene Konfigurationen, Spielkennungsprüfungen, Aktualisierungssperren und Sprachpräferenzen funktionieren dadurch weiter. Der lokale Repository-Ordner muss nicht umbenannt werden; persönliche Verknüpfungen bei einem Verschieben separat anpassen.
+Die Laufzeitkennungen verwenden durchgehend den aktuellen Projektnamen: `ANNOORGANIZER_SETTINGS`, `.annoorganizer-game.json`, `.annoorganizer.lock`, `.annoorganizer/`-Ausgabeordner und `annoorganizer.gallery.language`. Nur diese Namen werden unterstützt; es gibt keine Aliase oder automatischen Übernahmen veralteter Kennungen. Lokale Konfigurationen und Verwaltungsdateien vor der Nutzung gemeinsam umstellen. Die Sprachwahl im Browser beginnt wieder mit Deutsch, bis sie erneut ausgewählt wird.
 
 ## Node.js-Warnung der Pages-Action
 

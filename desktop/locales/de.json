@@ -1,5 +1,5 @@
 {
-  "app_title": "AnnoOrganizer",
+  "app_title": "ANNO - Organizer",
   "config": "Einstellungsdatei",
   "use_config": "Datei verwenden",
   "import_config": "Kopie importieren",
@@ -78,6 +78,6 @@
   "stamp_gallery": "Stempelgalerie",
   "demo_map_gallery": "Kartengalerie (Demo)",
   "demo_stamp_gallery": "Stempelgalerie (Demo)",
-  "already_running": "AnnoOrganizer ist mit diesem GUI-Datenordner bereits geöffnet. Verwende das vorhandene Fenster.",
+  "already_running": "ANNO - Organizer ist mit diesem GUI-Datenordner bereits geöffnet. Verwende das vorhandene Fenster.",
   "browser_failed": "Die Galerie konnte nicht im Standardbrowser geöffnet werden.\n\n{path}\n\nDie Datei lässt sich auch direkt im Explorer öffnen."
 }

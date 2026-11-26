@@ -111,6 +111,13 @@ class DesktopUITests(unittest.TestCase):
         self.notice = notice_patch.start()
         self.addCleanup(notice_patch.stop)
 
+    def test_display_name_uses_localized_product_title(self):
+        self.assertEqual(self.root.title(), 'ANNO - Organizer')
+        self.assertEqual(resources('de')['app_title'], 'ANNO - Organizer')
+        self.assertEqual(resources('en')['app_title'], 'ANNO - Organizer')
+        self.app.change_language('en')
+        self.assertEqual(self.root.title(), 'ANNO - Organizer')
+
     def test_language_switch_preserves_draft_and_selected_tab_and_persists(self):
         self.app.fields['output'].set(str(self.folder / 'Äusserer Ordner'))
         self.app.add_save_folder(str(self.folder / 'More Saves'))

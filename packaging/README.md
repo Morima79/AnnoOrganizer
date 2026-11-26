@@ -1,4 +1,4 @@
-# AnnoOrganizer for Windows x64
+# ANNO - Organizer for Windows x64
 
 [English](README.md) · [Deutsch](README.de.md)
 

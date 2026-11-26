@@ -37,7 +37,7 @@ class Settings:
         if game not in GAMES:
             raise ValueError('Unbekanntes Spiel: ' + str(game))
         self.game = game
-        selected = filename or os.environ.get('ANNOTOOLS_SETTINGS') or PROJECT / 'settings.json'
+        selected = filename or os.environ.get('ANNOORGANIZER_SETTINGS') or PROJECT / 'settings.json'
         self.filename = Path(selected).resolve()
         if not self.filename.is_file():
             raise ValueError('Einstellungen fehlen. settings.example.json als settings.json kopieren und Pfade anpassen.')
@@ -117,7 +117,7 @@ class Settings:
             marker = 'config.rda' if self.game == 'anno117' else 'data0.rda'
             if game is None or not (game / marker).is_file():
                 raise ValueError(f'{self.game}: game_data muss auf maindata mit {marker} zeigen.')
-        marker = self.output / '.annotools-game.json'
+        marker = self.output / '.annoorganizer-game.json'
         if marker.exists():
             data = json.loads(marker.read_text(encoding='utf-8'))
             if data.get('game') != self.game:

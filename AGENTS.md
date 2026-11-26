@@ -63,11 +63,11 @@ bestimmten Commit oder Release sind keine pauschale Freigabe für spätere Aufga
 - Die Werkzeuge liegen zentral in AnnoOrganizer. Die private Arbeitsstruktur des
   Projektinhabers liegt daneben in `../Anno 117 Pax Romana/`, `../Anno 1800/`
   und `../Anno 1404/`: `settings.json`, `Auswertung/`, `Stempel/` (117/1800),
-  `logs/` und `.annotools/`. Für private Aktualisierungen die jeweilige externe
+  `logs/` und `.annoorganizer/`. Für private Aktualisierungen die jeweilige externe
   Konfiguration verwenden. Diese Rechnerstruktur nicht in öffentliche Defaults
   oder fest codierte Benutzerpfade übernehmen.
 - Private Einstellungen verwenden getrennte `report_output`, `stamp_output` und
-  `log_output`; `output` kann auf `.annotools/` zeigen. Neue Standardinstallationen
+  `log_output`; `output` kann auf `.annoorganizer/` zeigen. Neue Standardinstallationen
   verwenden weiterhin `<spiel>/local-data/`. Demoläufe bleiben unter `<output>/demo/`.
 - Alte `LokaleDaten`- und `Stadtstempel`-Werkzeugstrukturen nicht neu anlegen.
   Verknüpfungen verwenden die zentralen Werkzeuge und die externe Konfiguration.

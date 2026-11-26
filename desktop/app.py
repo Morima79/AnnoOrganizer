@@ -57,7 +57,7 @@ class DesktopApp:
         self.auto_open = tk.BooleanVar(root, self.store.preferences.get('auto_open_galleries') is True)
         self.action = tk.StringVar(root, self.saved_action(game))
         self.action.trace_add('write', lambda *_: self.refresh_destination())
-        self.root.title('AnnoOrganizer')
+        self.root.title(self.t('app_title'))
         self.root.geometry('1080x820')
         self.root.minsize(860, 720)
         self.window_state = WindowState(self.root, self.store)
@@ -158,7 +158,7 @@ class DesktopApp:
         shell.pack(fill='both', expand=True)
         header = ttk.Frame(shell)
         header.pack(fill='x', pady=(0, 18))
-        ttk.Label(header, text='AnnoOrganizer', style='Title.TLabel').pack(side='left')
+        ttk.Label(header, text=self.t('app_title'), style='Title.TLabel').pack(side='left')
         self.language_buttons = {}
         for language in ('en', 'de'):
             button = ttk.Button(header, text=language.upper(), width=4,
@@ -993,11 +993,11 @@ def main(*, directory=None, game='anno117', config=None):
                 root.mainloop()
         except SettingsConflict:
             language = choose_language()
-            messagebox.showinfo('AnnoOrganizer', resources(language)['already_running'], parent=root)
+            messagebox.showinfo('ANNO - Organizer', resources(language)['already_running'], parent=root)
             root.destroy()
             return 1
     except Exception as exc:
-        messagebox.showerror('AnnoOrganizer', str(exc), parent=root)
+        messagebox.showerror('ANNO - Organizer', str(exc), parent=root)
         root.destroy()
         return 1
     return 0

@@ -36,7 +36,7 @@ def payload_files(root, tracked):
             continue
         if (path.is_absolute() or '..' in parts or path.name in ('settings.json', 'gui.json')
                 or (path.name.startswith('settings.') and path.name.endswith('.local.json'))
-                or any(p in ('local-data', '.venv', '__pycache__', 'logs', 'backups', '.annotools') for p in parts)
+                or any(p in ('local-data', '.venv', '__pycache__', 'logs', 'backups', '.annoorganizer') for p in parts)
                 or (path.suffix.lower() in ('.rda', '.db', '.log', '.zip', '.xlsx') )):
             raise ValueError('Private or generated build input: ' + name)
         source = root / name
@@ -70,7 +70,7 @@ def hidden_imports(root, names):
 
 
 def notices(destination):
-    lines = ['Third-party components', '', 'AnnoOrganizer: Morima79, MIT; see LICENSE.',
+    lines = ['Third-party components', '', 'ANNO - Organizer: Morima79, MIT; see LICENSE.',
              'Python ' + platform.python_version() + ': https://www.python.org/',
              'Tcl/Tk: https://www.tcl.tk/ (notices included in the Python distribution license)', '']
     for package in ('Pillow', 'XlsxWriter', 'tzdata', 'PyInstaller'):
