@@ -7,6 +7,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Update usable games even when others are absent, and report skipped games and completed galleries at the end. Show setup information when none are available; retain errors for invalid configurations and failed jobs.
+
 - Show a demo-only startup notice with the isolated destination and label demo processing explicitly in the desktop status.
 
 - Exclude Anno 1800 account metadata at every directory depth when analysing the standard parent accounts folder.
@@ -42,6 +44,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 - Prepare shared non-interactive execution for all three game launchers, including validated demo plans, structured stage/completion callbacks and output results. Add `--non-interactive`; retain the transitional Python script backend and document remaining GUI/worker work.
 
 ### Deutsch
+
+- Nutzbare Spiele auch bei fehlenden anderen Spielen aktualisieren und übersprungene Spiele sowie aktualisierte Galerien abschliessend melden. Bei keinem verfügbaren Spiel einen Einrichtungshinweis anzeigen; ungültige Konfigurationen und fehlgeschlagene Aufträge bleiben Fehler.
 
 - Nur beim Demo-Start einen Hinweis mit getrenntem Ausgabeziel anzeigen und die laufende Demo im GUI-Status eindeutig kennzeichnen.
 

@@ -490,6 +490,14 @@ class DesktopUITests(unittest.TestCase):
         self.assertEqual(run(report, self.folder / 'self-test-state'), 0)
         self.assertEqual(json.loads(report.read_text(encoding='utf-8'))['status'], 'success')
 
+    def test_single_game_smoke_updates_available_gallery_and_reports_missing_games(self):
+        from desktop.self_test import run
+        report = self.folder / 'single-game-smoke.json'
+        self.assertEqual(run(report, self.folder / 'single-game-state', single_game=True), 0)
+        result = json.loads(report.read_text(encoding='utf-8'))
+        self.assertEqual(len(result['galleries']), 1)
+        self.assertEqual({item['game'] for item in result['skipped']}, {'anno117', 'anno1800'})
+
 
 if __name__ == '__main__':
     unittest.main()

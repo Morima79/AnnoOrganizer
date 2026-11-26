@@ -66,12 +66,13 @@ def main(argv=None):
     parser.add_argument('--ui-smoke', type=Path, help=argparse.SUPPRESS)
     parser.add_argument('--ui-smoke-all', action='store_true', help=argparse.SUPPRESS)
     parser.add_argument('--ui-smoke-system', action='store_true', help=argparse.SUPPRESS)
+    parser.add_argument('--ui-smoke-single', action='store_true', help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
     if args.ui_smoke:
         from desktop.self_test import run
         return run(args.ui_smoke, args.gui_data_dir or args.ui_smoke.parent / 'gui-state',
-                   all_games=args.ui_smoke_all, system_inputs=args.ui_smoke_system)
-    if args.ui_smoke_all or args.ui_smoke_system:
+                   all_games=args.ui_smoke_all, system_inputs=args.ui_smoke_system, single_game=args.ui_smoke_single)
+    if args.ui_smoke_all or args.ui_smoke_system or args.ui_smoke_single:
         parser.error('GUI smoke options require --ui-smoke')
     from desktop.app import main as gui_main
     return gui_main(directory=args.gui_data_dir, game=args.game, config=args.config)

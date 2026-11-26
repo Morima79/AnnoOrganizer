@@ -608,7 +608,17 @@ class DesktopApp:
         try:
             if self.document is None:
                 raise ValueError(self.details or self.t('load_error'))
-            jobs = prepare_all(self.store, self.documents)
+            plan = prepare_all(self.store, self.documents)
+            jobs = plan.jobs
+            if not jobs:
+                self.last_result = dict(status='unavailable', galleries=[], logs=[], jobs=[],
+                                        skipped=list(plan.skipped), partial_output=False)
+                self.status, self.details = 'no_games', ''
+                self.record_result(game='all-games', action='all')
+                self.apply_busy()
+                self.status_label.configure(text=self.status_text())
+                self.notify_missing_games(self.last_result)
+                return
             runtime = self.store.directory / 'runs'
             runtime.mkdir(parents=True, exist_ok=True)
             self.snapshot = tempfile.TemporaryDirectory(prefix='all-', dir=runtime)
@@ -618,7 +628,7 @@ class DesktopApp:
                     document = job.document.copy_to(Path(self.snapshot.name) / job.game / 'settings.json')
                     document.save()
                     configs[job.game] = document.path
-            self.batch = dict(jobs=jobs, configs=configs, index=0, results=[])
+            self.batch = dict(jobs=jobs, configs=configs, index=0, results=[], skipped=list(plan.skipped))
             self.batch_cancelled = False
             self.last_result, self.details, self.stage_action = None, '', None
             self.active_logs = []
@@ -668,12 +678,22 @@ class DesktopApp:
         logs = list(dict.fromkeys(path for item in results for path in item['result'].get('logs', [])))
         messages = [item['game'] + ' / ' + item['action'] + ': ' + str(item['result'][key])
                     for item in results for key in ('message', 'diagnostics') if item['result'].get(key)]
-        self.last_result = dict(status=status, galleries=galleries, logs=logs, jobs=results,
+        self.last_result = dict(status=status, galleries=galleries, logs=logs, jobs=results, skipped=self.batch['skipped'],
             partial_output=status != 'success' and (bool(galleries) or any(
                 item['result'].get('partial_output') for item in results)), message='\n'.join(messages))
         self.batch = None
         self.record_result(game='all-games', action='all')
         return True
+
+    def notify_missing_games(self, result):
+        missing = '\n'.join('• ' + item['game'].replace('anno', 'Anno ') +
+                            (' – ' + self.t('analyze' if item['action'] == 'analyze' else 'stamp_action')
+                             if item.get('action') else '') + ': ' + self.t(item['reason'])
+                            for item in result['skipped'])
+        outcome = self.t('no_games' if result['status'] == 'unavailable' else result['status'])
+        completed = sum(item['result']['status'] == 'success' for item in result['jobs'])
+        messagebox.showinfo(self.t('update_all'), self.t('missing_games_summary', outcome=outcome,
+                            completed=completed, missing=missing), parent=self.root)
 
     def notify_demo(self, destination):
         messagebox.showinfo(self.t('demo_notice_title'), self.t('demo_notice', path=destination), parent=self.root)
@@ -760,6 +780,9 @@ class DesktopApp:
                     self.status = self.last_result['status']
                     self.cleanup_snapshot()
                     self.apply_busy()
+                    if self.last_result.get('skipped') and not self.closing:
+                        self.status_label.configure(text=self.status_text())
+                        self.notify_missing_games(self.last_result)
                     if self.closing:
                         self.closing = False
                         self.close()

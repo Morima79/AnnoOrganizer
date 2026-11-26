@@ -24,16 +24,25 @@ def seed_demo_settings(directory, games=GAMES):
         document.save()
 
 
-def run(report, directory, *, all_games=False, system_inputs=False):
+def run(report, directory, *, all_games=False, system_inputs=False, single_game=False):
     root = None
     result = dict(status='failed')
     try:
+        if single_game and system_inputs:
+            raise ValueError('Single-game fixtures cannot use personal system inputs')
         if system_inputs:
             if Path(directory).exists() and any(Path(directory).iterdir()):
                 raise ValueError('System first-run tests require a fresh GUI data directory')
             all_games = True
         else:
             seed_demo_settings(directory)
+            if single_game:
+                all_games = True
+                store = SettingsStore(directory)
+                for game in ('anno117', 'anno1800'):
+                    document = store.open_game(game)
+                    document.data['game_data'] = str((Path(directory) / ('not-installed-' + game)).resolve())
+                    document.save()
         root = tk.Tk()
         root.withdraw()
         app = DesktopApp(root, directory=directory, game='anno117' if system_inputs else 'anno1404')
@@ -47,6 +56,8 @@ def run(report, directory, *, all_games=False, system_inputs=False):
         app.error = lambda exc: errors.append(str(exc))
         demo_notices = []
         app.notify_demo = lambda destination: demo_notices.append(str(destination))
+        missing_notices = []
+        app.notify_missing_games = lambda result: missing_notices.append(result['skipped'])
         app.change_language('en')
         app.change_language('de')
         if errors:
@@ -76,12 +87,16 @@ def run(report, directory, *, all_games=False, system_inputs=False):
             steps.append(dict(status=app.status, galleries=len(app.last_result['galleries'])))
         if any(app.store.default_path(game).read_bytes() != original for game, original in originals.items()):
             raise ValueError('GUI smoke unexpectedly changed an input configuration')
-        if all_games and (len(app.last_result.get('jobs', [])) != 5 or len(app.last_result['galleries']) != 5):
-            raise ValueError('GUI batch did not complete all five galleries')
+        expected = 1 if single_game else 5
+        if all_games and (len(app.last_result.get('jobs', [])) != expected or len(app.last_result['galleries']) != expected):
+            raise ValueError('GUI batch did not complete all available galleries')
+        if len(missing_notices) != (1 if single_game else 0):
+            raise ValueError('Missing-game notice did not match available games')
         if len(demo_notices) != (0 if all_games else 1):
             raise ValueError('Demo notice was not limited to demo generation')
         result = dict(status='success', language=app.language, galleries=app.last_result['galleries'],
-                      inputs='system' if system_inputs else 'bundled', steps=steps)
+                      inputs='system' if system_inputs else 'bundled', steps=steps,
+                      skipped=app.last_result.get('skipped', []))
     except Exception as exc:
         result['message'] = str(exc)
     finally:
