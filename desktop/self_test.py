@@ -4,7 +4,7 @@ from pathlib import Path
 import tkinter as tk
 
 from desktop.app import DesktopApp
-from desktop.settings_store import ConfigDocument, GAMES, ROOT, SettingsStore, read_json
+from desktop.settings_store import ConfigDocument, GAMES, ROOT, SettingsStore, read_json, game_api, relocated_data
 
 
 def seed_demo_settings(directory, games=GAMES):
@@ -16,10 +16,11 @@ def seed_demo_settings(directory, games=GAMES):
             raise FileExistsError('Smoke tests require fresh configuration files: ' + str(path))
         source = ROOT / game / 'settings.example.json'
         data, _ = read_json(source)
-        document = ConfigDocument(game, source, data).copy_to(path)
-        document.data['output'] = str((store.directory / game / 'local-data').resolve())
+        data = relocated_data(game_api(game).Settings.from_data(game, source, data))
+        data['output'] = str((store.directory / game / 'local-data').resolve())
         for key in ('report_output', 'stamp_output', 'log_output'):
-            document.data.pop(key, None)
+            data.pop(key, None)
+        document = ConfigDocument(game, path, data)
         document.save()
 
 

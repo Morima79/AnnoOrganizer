@@ -21,6 +21,16 @@ from desktop.settings_store import SettingsStore, atomic_save
 
 
 class DesktopPackageTests(unittest.TestCase):
+    def test_frozen_demo_fixture_outputs_are_rebased_before_validation(self):
+        from desktop.self_test import seed_demo_settings
+        with tempfile.TemporaryDirectory() as directory:
+            with patch.object(sys, 'frozen', True, create=True), \
+                    patch.object(sys, '_MEIPASS', str(ROOT), create=True):
+                seed_demo_settings(Path(directory))
+                for game in ('anno117', 'anno1800', 'anno1404'):
+                    document = SettingsStore(Path(directory)).open_game(game)
+                    self.assertEqual(document.view().output, Path(directory).resolve() / game / 'local-data')
+
     def test_only_tracked_public_resources_are_selected(self):
         tracked = subprocess.check_output(['git', 'ls-files', '-z'], cwd=ROOT).decode().rstrip('\0').split('\0')
         names = payload_files(ROOT, tracked)
