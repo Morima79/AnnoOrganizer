@@ -7,11 +7,17 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Open demo galleries from the landing page in separate tabs, with bilingual accessible link descriptions.
+- Use the same sea colour inside and outside island areas in Anno 1404 maps; refresh cached maps, demo images and previews.
+
 - Preserve the active-language highlight in the enlarged map viewer for all three map galleries.
 
 - Avoid the artifact downloader's deprecated Node Buffer constructor by downloading the raw archive with digest validation and extracting the desktop ZIP/checksum pair with Python.
 
 ### Deutsch
+
+- Demo-Galerien von der Startseite in eigenen Tabs öffnen und dies in zweisprachigen zugänglichen Linkbeschreibungen ankündigen.
+- Innerhalb und ausserhalb der Inselbereiche in Anno-1404-Karten dieselbe Wasserfarbe verwenden; Karten-Caches, Demo-Bilder und Vorschauen erneuern.
 
 - Die aktive Sprache in der grossen Kartenansicht aller drei Kartengalerien sichtbar hervorheben.
 

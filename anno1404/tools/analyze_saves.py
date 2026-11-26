@@ -37,7 +37,8 @@ HERE = Path(__file__).resolve().parent
 HTML = 'map-gallery.html'
 XLSX = 'anno1404-map-seeds.xlsx'
 CACHE = '.anno-1404-cache.json'
-CACHE_VERSION = 2
+CACHE_VERSION = 3
+WATER_COLOR = (54, 109, 124)
 NEEDED = {'game2.xml', 'stats.xml', 'save.sww'}
 SETTINGS = {
     'RandomMap': 'Zufallskarte beim Start', 'WorldSize': 'Weltgrösse', 'IslandSize': 'Inselgrösse', 'IslandDifficulty': 'Inselschwierigkeit',
@@ -233,11 +234,11 @@ def draw_map(target, width, height, value):
     elevations = array('h', value.tobytes())
     if sys.byteorder != 'little':
         elevations.byteswap()
-    pixels = bytes(0 if h < -4096 else 1 if h <= 0 else
-                   2 if h < 340 else 3 if h < 1100 else 4 if h < 2500 else 5 if h < 4000 else 6
+    pixels = bytes(0 if h <= 0 else
+                   1 if h < 340 else 2 if h < 1100 else 3 if h < 2500 else 4 if h < 4000 else 5
                    for h in elevations)
     image = Image.frombytes('P', (width, height), pixels)
-    image.putpalette([26, 62, 82, 54, 109, 124, 203, 183, 129, 116, 151, 85,
+    image.putpalette([*WATER_COLOR, 203, 183, 129, 116, 151, 85,
                       85, 119, 66, 115, 113, 82, 161, 148, 113])
     image = image.convert('RGB')
     image.thumbnail((1000, 1000), Image.Resampling.LANCZOS)
@@ -248,7 +249,7 @@ def digest(value):
     return hashlib.sha256(json.dumps(value, ensure_ascii=False, sort_keys=True).encode()).hexdigest()
 
 
-def read_save(path, stage, output):
+def read_save(path, stage, output, *, redraw=False):
     files = read_archive(path)
     game = metadata_tree(files['game2.xml'])
     stats = metadata_tree(files['stats.xml'])
@@ -278,7 +279,7 @@ def read_save(path, stage, output):
     # Identical settings and island placements can span several editions and several campaigns.
     variant = digest([mode, seed, difference, scenario if mode != 0 else '', map_key, {k: v for k, v in settings.items() if k != 'RandomMap'}, sorted(computer_names)])
     image = f'map-images/{map_key[:24]}.png'
-    if not (output/image).is_file() and not (stage/image).is_file():
+    if not (stage/image).is_file() and (redraw or not (output/image).is_file()):
         draw_map(stage/image, width, height, elevations)
     return {
         'content': hashlib.sha256(files['save.sww']).hexdigest(),
@@ -298,7 +299,8 @@ def collect(sources, stage, output, refresh):
         cache = json.loads((output/CACHE).read_text(encoding='utf-8'))
     except (OSError, ValueError):
         cache = {}
-    old = cache.get('files', {}) if not refresh and cache.get('version') == CACHE_VERSION else {}
+    redraw = refresh or cache.get('version') != CACHE_VERSION
+    old = {} if redraw else cache.get('files', {})
     current = {}
     by_content = {}
     failures = []
@@ -311,7 +313,7 @@ def collect(sources, stage, output, refresh):
             fingerprint = [stat.st_mtime_ns, stat.st_size]
             item = old.get(str(path))
             if not item or item['fingerprint'] != fingerprint or not (output/item['data']['map']).is_file():
-                item = {'fingerprint': fingerprint, 'data': read_save(path, stage, output)}
+                item = {'fingerprint': fingerprint, 'data': read_save(path, stage, output, redraw=redraw)}
             current[str(path)] = item
             save = dict(item['data'], path=str(path), name=path.name, timestamp=stat.st_mtime)
             existing = by_content.get(save['content'])

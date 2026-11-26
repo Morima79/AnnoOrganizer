@@ -131,6 +131,11 @@ class GalleryLanguageTests(unittest.TestCase):
         links = re.findall(r'href="(anno\d+/(?:maps|stamps)/)"', text)
         self.assertEqual(sorted(links), ['anno117/maps/', 'anno117/stamps/', 'anno1404/maps/',
                                          'anno1800/maps/', 'anno1800/stamps/'])
+        for tag in re.findall(r'<a\b[^>]*>', text):
+            if re.search(r'href="anno\d+/(?:maps|stamps)/"', tag):
+                self.assertIn('target="_blank"', tag)
+                self.assertIn('rel="noopener"', tag)
+                self.assertRegex(tag, r'data-i18n-aria-label="demo\.(?:maps|stamps)NewTab"')
 
     def test_landing_download_targets_the_current_desktop_release(self):
         text = (ROOT / 'site/index.html').read_text(encoding='utf-8')
