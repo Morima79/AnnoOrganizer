@@ -26,7 +26,7 @@ def payload_files(root, tracked):
         parts = path.parts
         allowed = name in ('LICENSE', 'CHANGELOG.md', 'README.md', 'README.de.md')
         allowed |= len(parts) >= 2 and parts[0] == 'desktop' and path.suffix in ('.py', '.json')
-        allowed |= len(parts) >= 2 and parts[0] == 'docs' and path.suffix in ('.md', '.png', '.jpg', '.svg')
+        allowed |= len(parts) >= 2 and parts[0] == 'docs' and path.suffix in ('.md', '.html', '.png', '.jpg', '.svg')
         if parts and parts[0] in GAMES:
             allowed |= len(parts) >= 3 and parts[1] == 'tools' and path.suffix in ('.py', '.json', '.html', '.js', '.css')
             allowed |= len(parts) >= 3 and parts[1] == 'demo'

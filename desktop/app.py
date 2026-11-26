@@ -177,8 +177,10 @@ class DesktopApp:
                                 command=lambda value=game: self.switch_game(value))
             button.pack(fill='x', pady=(0, 10))
             self.controls.append(button)
+        self.guide_button = ttk.Button(navigation, text=self.t('user_guide'), command=self.open_guide)
+        self.guide_button.pack(fill='x', pady=(24, 8))
         about = ttk.Button(navigation, text=self.t('about'), command=self.about)
-        about.pack(fill='x', pady=(24, 8))
+        about.pack(fill='x', pady=(0, 8))
         self.controls.append(about)
         ttk.Label(navigation, text=self.t('portable_hint' if getattr(sys, 'frozen', False) else 'preview_hint'),
                   style='Muted.TLabel', wraplength=145).pack(fill='x')
@@ -896,6 +898,16 @@ class DesktopApp:
         text.insert('1.0', content.strip() or self.t('log_empty'))
         text.configure(state='disabled')
         self.show_child(window, 'logs')
+
+    def open_guide(self):
+        page = ROOT / 'docs/user-guide.html'
+        url = page.resolve().as_uri() if page.is_file() else 'https://morima79.github.io/AnnoOrganizer/guide/'
+        url += '?lang=' + self.language
+        try:
+            if not webbrowser.open(url):
+                raise OSError(self.t('guide_open_failed', url=url))
+        except Exception as exc:
+            self.error(exc)
 
     def about(self):
         window = self.new_child('about')

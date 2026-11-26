@@ -6,9 +6,13 @@ import re
 import shutil
 
 ROOT = Path(__file__).resolve().parents[1]
+guide_spec = importlib.util.spec_from_file_location('guide_renderer', ROOT / 'scripts/render_user_guide.py')
+guide_renderer = importlib.util.module_from_spec(guide_spec)
+guide_spec.loader.exec_module(guide_renderer)
+render_user_guide = guide_renderer.render_user_guide
 
 
-def render_landing_page():
+def render_page(name, extra=None):
     spec = importlib.util.spec_from_file_location('landing_i18n', ROOT / 'templates/anno_i18n.py')
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -18,8 +22,13 @@ def render_landing_page():
         'LANGUAGE_RUNTIME': (folder / 'gallery_i18n.js').read_text(encoding='utf-8'),
         'LANGUAGE_CSS': (folder / 'gallery_i18n.css').read_text(encoding='utf-8'),
     }
-    template = (folder / 'demo_index.html').read_text(encoding='utf-8')
+    values.update(extra or {})
+    template = (folder / name).read_text(encoding='utf-8')
     return re.sub(r'@@([A-Z_]+)@@', lambda match: values[match[1]], template)
+
+
+def render_landing_page():
+    return render_page('demo_index.html')
 
 
 def sync(check=False):
@@ -35,6 +44,14 @@ def sync(check=False):
                     shutil.copyfile(source, target)
     if check and (ROOT / 'site/index.html').read_text(encoding='utf-8') != render_landing_page():
         mismatches.append('site/index.html')
+    if check:
+        for target, online in ((ROOT / 'site/guide/index.html', True), (ROOT / 'docs/user-guide.html', False)):
+            if not target.is_file() or target.read_text(encoding='utf-8') != render_user_guide(render_page, online=online):
+                mismatches.append(str(target.relative_to(ROOT)))
+        for source in (ROOT / 'docs/images').glob('user-guide-117-*.jpg'):
+            target = ROOT / 'site/guide/images' / source.name
+            if not target.is_file() or target.read_bytes() != source.read_bytes():
+                mismatches.append(str(target.relative_to(ROOT)))
     if check and mismatches:
         raise ValueError('Gallery template copies differ: ' + ', '.join(mismatches))
     print('Gallery template copies verified.' if check else f'Synchronised {len(mismatches)} gallery files.')
@@ -50,6 +67,13 @@ if __name__ == '__main__':
     sync(args.check)
     if args.refresh_site:
         (ROOT / 'site/index.html').write_text(render_landing_page(), encoding='utf-8', newline='\n')
+        for target, online in ((ROOT / 'site/guide/index.html', True), (ROOT / 'docs/user-guide.html', False)):
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(render_user_guide(render_page, online=online), encoding='utf-8', newline='\n')
+        images = ROOT / 'site/guide/images'
+        images.mkdir(parents=True, exist_ok=True)
+        for source in (ROOT / 'docs/images').glob('user-guide-117-*.jpg'):
+            shutil.copyfile(source, images / source.name)
         for game in ('anno117', 'anno1800', 'anno1404'):
             spec = importlib.util.spec_from_file_location('gallery_' + game,
                                                           ROOT / game / 'tools/anno_gallery.py')

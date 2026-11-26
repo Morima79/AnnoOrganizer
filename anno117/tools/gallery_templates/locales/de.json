@@ -711,5 +711,10 @@
   "demo.downloadWindows": "Windows-Paket herunterladen (ZIP)",
   "demo.downloadDetails": "Version v0.1.16 · Details und Prüfsummen",
   "demo.downloadInstructions": "Für Windows 10/11 (64 Bit). ZIP vollständig entpacken und AnnoOrganizer.exe starten. Beim ersten Start werden erkannte Spiele und Standardordner vorgeschlagen.",
-  "demo.downloadUnsigned": "Das Programm ist nicht digital signiert. Windows kann deshalb einen Sicherheitshinweis anzeigen."
+  "demo.downloadUnsigned": "Das Programm ist nicht digital signiert. Windows kann deshalb einen Sicherheitshinweis anzeigen.",
+  "guide.title": "ANNO - Organizer · Erste Schritte",
+  "guide.heading": "Deine ersten Galerien.",
+  "guide.description": "Die bebilderte Einsteigeranleitung für ANNO - Organizer: mit Anno 117 zur ersten Karten- und Stempelgalerie.",
+  "guide.home": "Zur Startseite",
+  "demo.guide": "Bebilderte Anleitung"
 }

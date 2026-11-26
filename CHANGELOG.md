@@ -7,6 +7,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Replace the desktop guide with a compact illustrated beginner walkthrough using Anno 117, with matching German/English screenshots and a separate technical reference. Provide it as a bilingual HTML page linked from the demo home page and desktop app, including an offline copy in the Windows package.
+
 - Open demo galleries from the landing page in separate tabs, with bilingual accessible link descriptions.
 - Use the same sea colour inside and outside island areas in Anno 1404 maps; refresh cached maps, demo images and previews.
 
@@ -15,6 +17,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 - Avoid the artifact downloader's deprecated Node Buffer constructor by downloading the raw archive with digest validation and extracting the desktop ZIP/checksum pair with Python.
 
 ### Deutsch
+
+- Die Desktop-Anleitung durch einen kompakten bebilderten Einstieg mit Anno 117 ersetzen, mit passenden deutschen/englischen Screenshots und einer separaten technischen Referenz. Die zweisprachige HTML-Seite ist auf der Demo-Startseite und im Programm verlinkt und liegt dem Windows-Paket auch offline bei.
 
 - Demo-Galerien von der Startseite in eigenen Tabs öffnen und dies in zweisprachigen zugänglichen Linkbeschreibungen ankündigen.
 - Innerhalb und ausserhalb der Inselbereiche in Anno-1404-Karten dieselbe Wasserfarbe verwenden; Karten-Caches, Demo-Bilder und Vorschauen erneuern.

@@ -1,97 +1,59 @@
-# Desktop-Oberfläche
+# ANNO - Organizer: die ersten Schritte
 
-[English](desktop.md) · [Deutsch](desktop.de.md) · [README](../README.de.md)
+[English](desktop.md) · [Deutsch](desktop.de.md) · [Zur Übersicht](../README.de.md)
 
-Die Desktop-Oberfläche konfiguriert und startet die vorhandenen Werkzeuge für Anno 117, 1800 und 1404. Sie lässt sich als portables Windows-x64-Paket oder aus dem Quellcode mit Python 3.11 oder neuer einschliesslich Tkinter starten. Die bestehenden Konsolenstarter und einzeln kopierten Spielordner funktionieren weiterhin.
+**Von der ersten Demo zur eigenen Galerie – am Beispiel von Anno 117: Pax Romana.** Du brauchst Windows 10/11 (64 Bit) und eine installierte Ausgabe von Anno 117. Die Bilder zeigen Beispieldaten; deine Ordner können anders heissen. Ein Klick auf ein Bild öffnet es in voller Grösse.
 
-## Portables Windows-Paket
+## 1. Herunterladen und öffnen
 
-Das Windows-x64-ZIP von den [Releases](https://github.com/Morima79/AnnoOrganizer/releases/latest) herunterladen, vollständig entpacken und **AnnoOrganizer.exe** öffnen. `_internal/` bleibt neben der EXE. Python und Laufzeitpakete sind enthalten; auf dem Zielrechner werden weder Python noch pip oder ein Installer benötigt. Das Paket ist für Windows 10/11 x64 vorgesehen. Es ist nicht signiert; Windows kann eine SmartScreen-Reputationswarnung anzeigen. Herkunft und SHA-256-Prüfsumme prüfen; Signierung ist ein separater Schritt. Es werden keine Sicherheitsmechanismen umgangen oder automatischen Updates installiert.
+Auf der [Downloadseite](https://github.com/Morima79/AnnoOrganizer/releases/latest) die Datei mit **windows-x64.zip** im Namen herunterladen. Im Explorer mit der rechten Maustaste auf die ZIP-Datei klicken und **Alle extrahieren…** wählen. Im entpackten Ordner **AnnoOrganizer.exe** doppelt anklicken.
 
-Die EXE benutzt denselben Worker mit `--worker --game ...` und speichert persönliche Daten ausserhalb ihrer internen Ressourcen. `BUILD.json` enthält Quellcommit, Paketversion und Ressourcen-Prüfsummen; `THIRD-PARTY-NOTICES.txt` und `licenses/` enthalten Lizenznachweise. Das Windows-Paket wird seit v0.1.15 über den [vorhandenen Release-Workflow](publishing.de.md) veröffentlicht. Lokale Builds sind von den veröffentlichten Release-Dateien getrennt.
+Den vollständigen Programmordner zusammenlassen. Python oder eine weitere Installation brauchst du nicht. Über **DE** und **EN** oben rechts wählst du deine Sprache. Über **Anleitung** links im Programm öffnest du diese Hilfe jederzeit, auch ohne Internet.
 
-## Start aus dem Quellcode und Erstausführung
+## 2. Zuerst die Demo ausprobieren
 
-Im Hauptordner starten:
+Links **Anno 117** wählen, unten **Mitgelieferte Demo** anklicken und **Erzeugen** drücken. Den Demo-Hinweis mit **OK** bestätigen und warten, bis **Auswertung abgeschlossen** erscheint.
 
-```powershell
-.\Launch.cmd --gui
-```
+[<img src="images/user-guide-117-demo-de.jpg" alt="Anno 117 ist ausgewählt. Unten sind die Aktion Mitgelieferte Demo und die Schaltfläche Erzeugen zu sehen." width="800">](images/user-guide-117-demo-de.jpg)
 
-Der Starter richtet wie bisher die Python-Umgebung und benötigten Pakete ein. Mit einer bereits vorbereiteten Umgebung geht auch:
+Die Demo erstellt eine Karten- und eine Stempelgalerie aus den mitgelieferten Beispielen. Deine persönlichen Galerien bleiben dabei erhalten.
 
-```powershell
-.\.venv\Scripts\python.exe launch.py --gui
-```
+## 3. Die Galerie ansehen
 
-Beim ersten Öffnen eines Spiels erstellt die GUI automatisch dessen `settings.json`. Windows liefert den tatsächlichen, gegebenenfalls umgeleiteten Dokumente-Ordner; Steam-/Ubisoft-Registrierungen liefern nach Möglichkeit die 117-/1800-Spielinstallation. Die üblichen Spielstand- und Stempelordner unter Dokumente werden eingetragen. Für 1404 werden vorhandene `Savegames`-Ordner von Grundspiel und Venedig berücksichtigt. Neue Ausgaben liegen unter `Dokumente/AnnoOrganizer/Anno 117/`, `Anno 1800/` bzw. `Anno 1404/`, mit `reports/`, `stamps/` und `logs/` als Unterordnern. Eingabeordner werden nicht angelegt oder geändert.
+Nach Abschluss auf **Galerien öffnen** klicken. Die Ergebnisse öffnen sich im Browser. Mit dem kleinen **Pfeil daneben** lässt sich eine einzelne Galerie auswählen. Wenn du **Galerien nach dem Erzeugen öffnen** anhakst, geschieht das künftig automatisch nach einem erfolgreichen Durchlauf.
 
-Links das gewünschte Spiel wählen, die erkannten Pfade prüfen und **Erzeugen** drücken. Ohne gespeicherte Auswahl ist **Karten und Excel** aktiv. Fehlende Installationen oder Eingabeordner müssen in den Feldern ergänzt werden; die Meldung nennt den betroffenen Pfad. Bestehende Einstellungen und ausgewählte externe Dateien bleiben unverändert.
+[<img src="images/user-guide-117-result-de.jpg" alt="Der Durchlauf ist abgeschlossen. Rechts ist Galerien öffnen aktiv; links befindet sich die Option zum automatischen Öffnen." width="800">](images/user-guide-117-result-de.jpg)
 
-**Mitgelieferte Demo** ist als separate Aktion verfügbar und liest ausschliesslich die Beispiele. Beim Start erscheint nur für diese Aktion ein Hinweis mit dem Demo-Ausgabeordner und der Information, dass persönliche Galerien dabei nicht aktualisiert werden. Während des Laufs steht im Status ausdrücklich **Demo wird erstellt**. Normale Exporte und **Alle Galerien aktualisieren** zeigen diesen Hinweis nicht. Anno 117 und 1800 benötigen auch für Demos ihre Spielressourcen. Die Anno-1404-Demo benötigt keine Spielinstallation. Demo-Ausgaben bleiben unter `<output>/demo/`.
+In der Galerie kannst du suchen und filtern. Ein Klick auf eine Karte oder einen Bauplan öffnet die Grossansicht. **DE / EN** wechselt die Sprache.
 
-Das absolute Ausgabeziel steht vor dem Start unter den Eingaben. Während der Verarbeitung bleibt das Fenster reaktionsfähig; Eingaben, Spiel-/Sprachwechsel, Tabs und die übrigen Aktionsbuttons sind gesperrt. **Abbrechen** und das lesende Öffnen bereits vorhandener Galerien bleiben verfügbar. Die Galerien öffnen im Standardbrowser. Es werden keine privaten Daten hochgeladen.
+[<img src="images/user-guide-117-gallery-de.jpg" alt="Die Anno-117-Stempelgalerie mit Suchfeld, Filtern und drei Bauplan-Vorschauen." width="640">](images/user-guide-117-gallery-de.jpg)
 
-**Galerien öffnen** öffnet alle vorhandenen Karten- und Stempelgalerien dieses Spiels aus den aktuell angezeigten Ausgabezielen, einschliesslich der getrennten Demo-Ausgaben. Der kleine Pfeil daneben bietet die einzelne Auswahl. Vorhandene Seiten sind auch direkt nach einem Neustart und nach einem fehlgeschlagenen oder abgebrochenen Lauf erreichbar. Die Verfügbarkeit wird regelmässig geprüft; sie sagt nichts über den Erfolg des laufenden Auftrags aus.
+## 4. Deine eigenen Spielstände und Stempel verwenden
 
-Galeriebutton und Auswahlpfeil bilden ein gemeinsames Bedienelement mit einer dezenten inneren Trennlinie. Links werden alle vorhandenen Galerien geöffnet, rechts lässt sich eine einzelne wählen. Der Pfeilbereich ist kompakt und der Pfeil darin zentriert. Kann Windows die Galerie nicht im Standardbrowser öffnen, zeigt die GUI den Dateipfad zum direkten Öffnen an.
+Im Programm beim Tab **Eingaben** die erkannten Ordner prüfen. Über **Durchsuchen…** kannst du sie ändern:
 
-Die aufgeklappte Galerieauswahl verwendet dieselben dunklen Hintergrundfarben und hellen Texte wie die Oberfläche. Der hervorgehobene Eintrag ist goldgelb.
+- **Spielinstallation:** Falls sie fehlt, die Anno-117-Spielanwendung auswählen.
+- **Spielstand-/Account-Ordner:** Den Ordner mit deinen gespeicherten Partien wählen.
+- **Stempelordner:** Den Ordner mit deinen Stempeln wählen.
 
-Die Checkbox **Galerien nach dem Erzeugen öffnen** öffnet nach einem erfolgreichen Lauf die neu erzeugten Galerien im Standardbrowser, auch bei der Demo. Bei **Alle Galerien aktualisieren** werden die Galerien nach Abschluss des gesamten erfolgreichen Laufs geöffnet. Bei Fehlern, Abbruch oder beim Schliessen der GUI erfolgt kein automatisches Öffnen. Die Option ist zunächst ausgeschaltet und wird in `gui.json` für den nächsten Start gespeichert.
+[<img src="images/user-guide-117-inputs-de.jpg" alt="Die drei Anno-117-Eingaben: Spielinstallation, Spielstand-/Account-Ordner und Stempelordner, jeweils mit Durchsuchen-Schaltfläche." width="800">](images/user-guide-117-inputs-de.jpg)
 
-## Einstellungen bearbeiten und übernehmen
+Geänderte Ordner mit **Speichern** behalten. Dann unten **Karten und Excel** oder **Stempelgalerie** auswählen und **Erzeugen** drücken. Nach Abschluss wieder **Galerien öffnen** wählen.
 
-**Alle Galerien aktualisieren** prüft mit einem Klick Anno 117, 1800 und 1404 und aktualisiert deren nutzbare Galerien: bis zu drei Kartengalerien und zwei Stempelgalerien. Die Aktion verwendet die normalen konfigurierten Eingaben und Ausgabeziele, unabhängig von der gerade ausgewählten Einzelaktion. Bereits geladene, ungespeicherte Eingaben werden übernommen; für noch nicht geöffnete Spiele werden deren gespeicherte Konfigurationen gelesen. Persönliche Einstellungsdateien werden dabei nicht gespeichert.
+**Mitgelieferte Demo** ist nur zum Ausprobieren. Für deine eigenen Daten eine der beiden anderen Aktionen wählen. Spielstände und Stempel werden ausschliesslich gelesen.
 
-Vor dem ersten Auftrag prüft die GUI sämtliche benötigten Eingaben, Spielressourcen und Ausgabeziele. Nicht gefundene Installationen, fehlende 1404-Spielstandordner oder Spiele ohne Eingabeordner werden übersprungen. Fehlt bei 117/1800 nur der Spielstand- oder Stempelordner, kann die andere Galerie trotzdem aktualisiert werden. Am Ende nennt eine Meldung die erfolgreich aktualisierten Galerien und die nicht vorhandenen bzw. nicht eingerichteten Spiele oder einzelnen Galerien mit Grund. Bei keinem nutzbaren Spiel erscheint ein Einrichtungshinweis, ohne einen Worker zu starten. So lässt sich die Funktion auch mit nur einem Spiel verwenden.
+## Danach im Alltag
 
-Andere Konfigurationsfehler oder überlappende Ziele verhindern den Start und werden mit Spielkennung angezeigt. Die geplanten Aufträge laufen nacheinander; der Status nennt Nummer, Spiel und Aktion. Fehler oder **Abbrechen** stoppen die verbleibenden Aufträge. Bereits veröffentlichte Galerien bleiben erhalten; der Gesamtlauf ist keine gemeinsame Transaktion. Die Zusammenfassung mit Einzelresultaten und übersprungenen Spielen steht unter `<GUI-Datenordner>/logs/all-games-last-run.json`. Galerien lassen sich wie bisher beim jeweiligen Spiel öffnen.
+Nach einem neuen Spielstand oder Stempel auf **Alle Galerien aktualisieren** klicken. Das aktualisiert die eingerichteten Galerien; fehlende Spiele werden übersprungen. Mit **Abbrechen** kannst du einen laufenden Auftrag geordnet stoppen.
 
-Die Aktionen stehen in der Reihenfolge **Karten und Excel**, **Stempelgalerie**, **Mitgelieferte Demo**. Die zuletzt gewählte Aktion wird pro Spiel sofort in `gui.json` gespeichert und bei Spielwechsel sowie beim nächsten Start wieder ausgewählt. Dafür muss die persönliche Einstellungsdatei nicht gespeichert werden. Ohne gültige gespeicherte Auswahl ist **Karten und Excel** aktiv; bei Anno 1404 ist die Stempelgalerie nicht verfügbar.
+| Wenn etwas nicht klappt | Das hilft |
+|---|---|
+| Ein Ordner wird nicht gefunden | Bei **Eingaben** über **Durchsuchen…** den richtigen Ordner wählen und **Speichern** drücken. |
+| Eine Excel-Auswertung lässt sich nicht aktualisieren | Die bisherige Datei in Excel schliessen und erneut **Erzeugen** drücken. |
+| Es erscheint eine Fehlermeldung | **Protokolle** öffnen und die Meldung prüfen. Für eine Rückfrage den Meldungstext bereithalten. |
 
-- **Datei verwenden**: Eine bestehende `settings.json` auswählen und die aufgelösten Ziele prüfen. Die Datei bleibt am bisherigen Ort; erst **Speichern** ändert sie. Relative Pfade bleiben auf ihren Ordner bezogen.
-- **Kopie importieren**: Die Quelle auswählen und Importziel sowie aufgelöste Pfade prüfen. Die Kopie wird beim Bestätigen gespeichert. Bekannte relative Pfade und implizite Ausgabeziele werden so übernommen, dass sie auf dieselben Orte zeigen. Unbekannte Schlüssel bleiben erhalten. Die Quelle bleibt unverändert; Quelle und Ziel dürfen nicht dieselbe Datei sein. Eine bestehende Zieldatei wird nur nach zusätzlicher Bestätigung mit Sicherung ersetzt.
-- **Standarddatei**: Zur gespeicherten GUI-Konfiguration dieses Spiels zurückkehren oder eine fehlende Standarddatei mit automatisch erkannten Werten anlegen. Eine externe Dateiauswahl wird erst beim Speichern der gewählten Standarddatei ersetzt.
-- **Neu laden**: Die aktuelle Datei erneut lesen. Ungespeicherte Änderungen werden nur nach Bestätigung verworfen.
-- **Speichern**: Die angezeigten Werte in die unter **Einstellungsdatei** genannte Datei schreiben. Der bisherige Inhalt wird unter `backups/` neben der Datei gesichert. Wenn eine andere Anwendung die Datei seit dem Laden geändert hat, neu laden statt überschreiben.
+Anno 1800 wird auf dieselbe Weise bedient. Anno 1404 bietet eine Kartengalerie und benötigt dafür keine Spielinstallation; eine Stempelgalerie gibt es dort nicht.
 
-Die Tabs **Eingaben** und **Ausgaben und Zeitzone** enthalten die spielspezifischen Felder. Bei Anno 1404 hat jeder Spielstandordner ein eigenes einzeiliges Pfadfeld ohne Zeilenumbruch; **Ordner hinzufügen** und **Entfernen** verwalten mehrere Ordner. Leere optionale Ausgabeziele verwenden die bisherigen Standardunterordner. Auch bei kleinen Fenstern bleiben die Felder über die Scrollleisten erreichbar. Details zu Schlüsseln und Platzhaltern: [Einstellungen](settings.de.md).
+[Weitere Einstellungen und technische Details](desktop-reference.de.md) · [Einstellungen im Detail](settings.de.md)
 
-**Durchsuchen** öffnet den aufgelösten Pfad des jeweiligen Feldes. Relative Pfade beziehen sich auf die Einstellungsdatei; Platzhalter wie `${DOCUMENTS}` werden berücksichtigt. Bei noch nicht vorhandenen Zielen öffnet sich der nächste vorhandene Oberordner. Für die Spielinstallation werden EXE-Dateien angezeigt: Die Spiel-EXE auswählen, auch in einem `Bin`-Unterordner. Die GUI ermittelt und prüft den passenden `maindata`-Ordner und trägt ihn ein. Spiel- oder `maindata`-Ordner können weiterhin direkt eingegeben werden.
-
-**Zeitzone** steuert die Zeitangaben in Auswertungen und muss normalerweise nicht geändert werden. Für die Schweiz passt `Europe/Zurich`, inklusive Sommer-/Winterzeit. Andere IANA-Zeitzonen bleiben für andere Regionen oder bestehende Konfigurationen einstellbar. Die Anno-1404-Kartengalerie verwendet für Dateizeitstempel die lokale Windows-Zeit; die Statistik-Auswertung berücksichtigt die konfigurierte Zeitzone.
-
-**Erzeugen verwendet die angezeigten Werte, ohne die persönliche Einstellungsdatei zu speichern.** Jeder Auftrag bekommt eine vorübergehende Konfigurationskopie mit denselben aufgelösten Pfadzielen. Diese Kopie wird nach Prozessende entfernt. Demoläufe bleiben unter `<output>/demo/` und ignorieren getrennte persönliche Berichts-, Stempel- und Logziele.
-
-Neue GUI-Dateien werden unter `%LOCALAPPDATA%/AnnoOrganizer/<spiel>/settings.json` angelegt, neue Ausgaben unter dem ermittelten Dokumente-Ordner in `AnnoOrganizer/Anno <Nummer>/`. GUI-Präferenzen stehen daneben in `gui.json`. Updates überschreiben keine vorhandenen Einstellungen oder persönlichen Pfade. Die Konsolenstarter behalten ihre bisherigen Standardorte. Für einen ausdrücklich gewählten anderen GUI-Datenordner:
-
-```powershell
-.\Launch.cmd --gui --gui-data-dir "D:/AnnoOrganizer Data"
-```
-
-Pro GUI-Datenordner läuft nur eine Oberfläche gleichzeitig. Ein weiterer Start zeigt einen Hinweis, statt konkurrierende Einstellungen zu speichern. Die Betriebssystemsperre wird auch nach einem Prozessabsturz freigegeben. Unabhängige GUI-Datenordner bleiben möglich; die bestehenden Sperren schützen weiterhin gemeinsame Ausgabeziele.
-
-Eine externe Konfiguration lässt sich auch direkt öffnen:
-
-```powershell
-.\Launch.cmd --gui --game anno1404 --config "D:/Meine Annos/1404/settings.json"
-```
-
-## Sprache, Status und Abbruch
-
-Position, Grösse und Maximierungszustand von Hauptfenster, Info und Protokollen werden in `gui.json` gespeichert und beim nächsten Öffnen wiederhergestellt. Minimiert wird nicht wiederhergestellt; nach einem Monitorwechsel werden Fenster in einen erreichbaren Bildschirmbereich verschoben. Info und Protokolle gehören zum Hauptfenster und bleiben über ihm. Der gewählte Tab und die aktive Sprache sind goldgelb markiert; die Tab-Grösse bleibt beim Wechsel gleich.
-
-Beim ersten Start bestimmt die bevorzugte Windows-Anzeigesprache die Oberfläche: `de`, `de-DE`, `de-CH` oder `de-AT` ergeben Deutsch, alle anderen Sprachen und Erkennungsfehler Englisch. **DE/EN** kann ausserhalb laufender Aufträge umgeschaltet werden; die manuelle Auswahl wird gespeichert und hat künftig Vorrang. Eingaben, Spiel, Aktion und gewählter Tab bleiben beim Umschalten erhalten. Die Sprachwahl der HTML-Galerien bleibt unabhängig; Rohdaten, Pfade und Logs werden nicht übersetzt.
-
-Die Statusanzeige nennt den aktuellen Verarbeitungsschritt. Die bewegte Anzeige zeigt Aktivität und keinen geschätzten Prozentwert. **Abbrechen** fordert einen kooperativen Abbruch an. Ein laufender Parser oder eine Veröffentlichung darf bis zur nächsten sicheren Grenze fertiglaufen. Beim Schliessen während einer Verarbeitung fragt die GUI nach einem Abbruch. **Nein** lässt den Auftrag weiterlaufen; **Ja** fordert den Abbruch an und wartet vor dem Schliessen auf das Prozessende. Anschliessend werden ungespeicherte Einstellungen wie beim normalen Schliessen angeboten. Erzwungenes Beenden über den Task-Manager ist kein geordneter Abbruch.
-
-Erfolg wird erst angezeigt, wenn Worker-Abschluss und Prozess-Exitcode zusammenpassen. Bei Fehler oder Abbruch werden mögliche Teilergebnisse genannt. **Protokolle** zeigt Diagnosen und die Aktionslogs. **Info** zeigt den Entwicklungsstand, Lizenzhinweise und einen Link zu den GitHub-Releases; es erfolgt kein automatisches Update.
-
-Der letzte Auftrag jedes Spiels wird samt Fehlerdetails unter `<GUI-Datenordner>/logs/<spiel>-last-run.json` gespeichert. Dadurch bleiben auch Fehler vor dem Start eines Generatorlogs nach dem Schliessen lesbar. Diese Dateien können persönliche Pfade enthalten und bleiben lokal.
-
-## Aktuelle Grenzen
-
-Das veröffentlichte Paket bleibt unsigniert. Lokal wurde die entpackte EXE mit allen fünf Demo-Galerien und den installierten 117-/1800-Spielressourcen geprüft; der Prozess lief aus einem anderen Arbeitsordner mit unbrauchbaren Python-Suchpfaden. DE/EN, Zustandswechsel, Konfigurationsimport und ein GUI-Demolauf für 1404 wurden separat geprüft. Eine unabhängige Abnahme auf einem frischen Windows-System ohne installierte Entwicklungswerkzeuge steht weiterhin aus; diese wird durch manipulierte Python-Suchpfade nicht vollständig ersetzt. GUI, CLI und direkte Generatoraufrufe reservieren nun ihre tatsächlichen Ausgabeziele einschliesslich verschachtelter Ordner, Logs und Stempel-Caches prozessübergreifend. Betriebssystemsperren geben Reservierungen auch nach einem Prozessabsturz frei. Stempelgalerien und Ressourcen-Caches werden in Arbeitskopien erzeugt und erst nach erfolgreicher Verarbeitung veröffentlicht. Abbruch vorher erhält bestehende Inhalte; ein Veröffentlichungsfehler löst eine Wiederherstellung aus. Falls ein externes Programm auch diese blockiert, bleiben die Sicherungskopien samt `RECOVERY.json` am im Log genannten Ort erhalten. Originalspielstände und Stempel werden weiterhin nur gelesen. Überlappende Stempel-/Cacheziele und Verknüpfungen innerhalb dieser Ausgabebäume werden abgewiesen. Mehrere Demo-Aktionen bilden keine gemeinsame Transaktion; bereits abgeschlossene Aktionen können bei späterem Fehler bestehen bleiben.
-
-Inoffizielles Projekt von Morima79, ohne Verbindung zu Ubisoft. Nutzung auf eigene Gefahr gemäss [MIT-Lizenz](../LICENSE). Weitere Architektur- und Abnahmepunkte: [GUI-Vorschlag](desktop-gui.de.md).
+Inoffizielles Fan-Projekt von Morima79, ohne Verbindung zu Ubisoft. Nutzung auf eigene Gefahr gemäss [MIT-Lizenz](../LICENSE).

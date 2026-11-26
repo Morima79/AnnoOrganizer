@@ -92,9 +92,9 @@ class GalleryLanguageTests(unittest.TestCase):
         self.assertNotIn('/ data-i18n', page)
         self.assertEqual(page, i18n.bind_messages(page, self.resources, 'stamp'))
 
-    def test_all_six_demo_pages_embed_complete_resources_and_valid_bindings(self):
+    def test_all_public_demo_pages_embed_complete_resources_and_valid_bindings(self):
         pages = list((ROOT / 'site').rglob('index.html'))
-        self.assertEqual(len(pages), 6)
+        self.assertEqual(len(pages), 7)
         for page in pages:
             with self.subTest(page=page):
                 text = page.read_text(encoding='utf-8')
@@ -102,14 +102,15 @@ class GalleryLanguageTests(unittest.TestCase):
                 self.assertIsNotNone(resources)
                 self.assertEqual(json.loads(resources[1]), self.resources)
                 self.assertEqual(text.count('id="gallery-i18n"'), 1)
-                switches = 2 if page.parent != ROOT / 'site' else 1
+                switches = 2 if page.parent.name in ('maps', 'stamps') else 1
                 self.assertEqual(text.count('data-gallery-language="de"'), switches)
                 self.assertEqual(text.count('data-gallery-language="en"'), switches)
                 self.assertNotRegex(text, r'<script[^>]+src=')
                 self.assertIn('gallerylanguagechange', text)
                 parser = Bindings()
                 parser.feed(text)
-                self.assertGreater(len(parser.messages), 15 if page.parent == ROOT / 'site' else 30)
+                minimum = 4 if page.parent.name == 'guide' else 15 if page.parent == ROOT / 'site' else 30
+                self.assertGreater(len(parser.messages), minimum)
                 for key, params in parser.messages:
                     self.assertIn(key, self.resources['de'])
                     # Missing substitutions must be detected, rather than shown as braces.

@@ -6,6 +6,8 @@
 
 [English](README.md) · [Deutsch](README.de.md) · [Changelog](CHANGELOG.md)
 
+**Neu dabei? [Bebilderte Einsteigeranleitung für die Windows-App](https://morima79.github.io/AnnoOrganizer/guide/?lang=de)** – am Beispiel von Anno 117, ohne Kommandozeilenbefehle.
+
 Lokale Windows-Werkzeuge für **Anno 117: Pax Romana**, **Anno 1800** und **Anno 1404** einschliesslich Venedig und History Edition. Sie erstellen HTML-Galerien, Bauplan-PNGs, rekonstruierte Karten und Excel-Auswertungen aus deinen lokalen Dateien. Ein laufendes Spiel oder Codex wird nicht benötigt.
 
 | Funktion | Anno 117 | Anno 1800 | Anno 1404 |
@@ -69,7 +71,7 @@ Die Beispiele umfassen zusammen rund **7,4 MB** und wurden aus den Dateien des P
 
 ## Desktop-Oberfläche
 
-Die Windows-App bietet Spielauswahl, bearbeitbare Pfade, Auswahl/Import vorhandener Einstellungen, gespeicherte Aktionswahl, Fortschritt, Abbruch und Protokolle. **Erzeugen** verwendet die angezeigten Werte, ohne die persönliche Einstellungsdatei zu speichern; bearbeitete Pfade bleiben mit **Speichern** erhalten. Einstellungen liegen ausserhalb des entpackten Programmordners und bleiben beim Austausch des Programmordners bestehen. [Vollständige Anleitung und aktuelle Grenzen](docs/desktop.de.md).
+Die Windows-App bietet Spielauswahl, bearbeitbare Pfade, Auswahl/Import vorhandener Einstellungen, gespeicherte Aktionswahl, Fortschritt, Abbruch und Protokolle. **Erzeugen** verwendet die angezeigten Werte, ohne die persönliche Einstellungsdatei zu speichern; bearbeitete Pfade bleiben mit **Speichern** erhalten. Einstellungen liegen ausserhalb des entpackten Programmordners und bleiben beim Austausch des Programmordners bestehen. [Bebilderte Einsteigeranleitung](https://morima79.github.io/AnnoOrganizer/guide/?lang=de).
 
 ## Start aus dem Quellcode
 

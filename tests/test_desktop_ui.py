@@ -118,6 +118,27 @@ class DesktopUITests(unittest.TestCase):
         self.app.change_language('en')
         self.assertEqual(self.root.title(), 'ANNO - Organizer')
 
+    def test_guide_button_opens_bundled_html_in_the_selected_language(self):
+        self.assertEqual(self.app.guide_button.cget('text'), 'Anleitung')
+        page = self.folder / 'docs/user-guide.html'
+        page.parent.mkdir()
+        page.write_text('<html>Guide</html>', encoding='utf-8')
+        for language in ('de', 'en'):
+            self.app.change_language(language)
+            with patch('desktop.app.ROOT', self.folder), patch('desktop.app.webbrowser.open', return_value=True) as browser:
+                self.app.open_guide()
+                browser.assert_called_once_with(page.resolve().as_uri() + '?lang=' + language)
+        self.assertEqual(self.app.guide_button.cget('text'), 'User guide')
+
+    def test_guide_falls_back_to_the_website_and_reports_browser_failure(self):
+        url = 'https://morima79.github.io/AnnoOrganizer/guide/?lang=de'
+        with patch('desktop.app.ROOT', self.folder), patch('desktop.app.webbrowser.open', return_value=True) as browser:
+            self.app.open_guide()
+            browser.assert_called_once_with(url)
+        with patch('desktop.app.ROOT', self.folder), patch('desktop.app.webbrowser.open', return_value=False):
+            self.app.open_guide()
+        self.assertIn(url, self.errors[-1])
+
     def test_language_switch_preserves_draft_and_selected_tab_and_persists(self):
         self.app.fields['output'].set(str(self.folder / 'Äusserer Ordner'))
         self.app.add_save_folder(str(self.folder / 'More Saves'))
