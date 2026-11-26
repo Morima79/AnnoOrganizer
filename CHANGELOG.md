@@ -7,9 +7,13 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Stage map and stamp exports outside OneDrive, prefer an existing local workspace temp folder, and retain recovery data when cross-volume publication or rollback fails.
+
 - Refresh bilingual README and package instructions for the published Windows app, detected first-run paths, real-data default action and optional automatic gallery opening.
 
 ### Deutsch
+
+- Zwischenstände der Karten- und Stempelexporte ausserhalb von OneDrive erzeugen, einen vorhandenen lokalen Workspace-Tempordner bevorzugen und Rücksicherungen bei fehlgeschlagener laufwerksübergreifender Veröffentlichung erhalten.
 
 - Zweisprachige README- und Paketanleitungen für die veröffentlichte Windows-App, erkannte Erststartpfade, echte Eingaben als Standardaktion und optionales automatisches Öffnen aktualisieren.
 

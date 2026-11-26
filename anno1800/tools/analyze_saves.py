@@ -6,7 +6,6 @@ import os
 import shutil
 import subprocess
 import sys
-import tempfile
 from collections import Counter, defaultdict
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
@@ -15,6 +14,7 @@ import sys
 from anno_settings import settings_for, protect_output
 from anno_execution import checkpoint
 from anno_output_lock import reserve_paths
+from anno_output_transaction import temporary_directory, publish_files
 import anno_game_settings as game_labels
 from anno_map_catalog import render_card, render_catalog_page
 from anno_map_variants import campaign_variants, latest_known_values
@@ -667,36 +667,17 @@ def write_excel(rows, stage, workbook, output, updated_at, total_playtime, profi
 def publish(stage, output, workbook):
     checkpoint()
     workbook.parent.mkdir(parents=True, exist_ok=True)
-    images = output/'map-images'
+    images = output / 'map-images'
     images.mkdir(exist_ok=True)
     for name in ('map-gallery.html', 'anno-scan.json', 'anno-maps.jsonl'):
-        if (output/name).exists() and not (output/name).is_file():
+        if (output / name).exists() and not (output / name).is_file():
             raise ValueError(f'Ausgabeziel ist keine Datei: {output/name}')
-    reports = [(stage/'report.xlsx', workbook)]
-    reports.extend((stage/name, output/name)
-                   for name in ('map-gallery.html', 'anno-scan.json', 'anno-maps.jsonl', 'anno1800-statistics.json'))
-    backups = stage/'previous'
-    backups.mkdir()
-    for index, (_, target) in enumerate(reports):
-        if target.is_file():
-            shutil.copy2(target, backups/str(index))
-    for image in (stage/'map-images').glob('*.png'):
-        target = images/image.name
-        if not target.is_file() or image.read_bytes() != target.read_bytes():
-            os.replace(image, target)
-    published = []
-    try:
-        for index, (source, target) in enumerate(reports):
-            os.replace(source, target)
-            published.append((index, target))
-    except OSError:
-        for index, target in reversed(published):
-            backup = backups/str(index)
-            if backup.is_file():
-                os.replace(backup, target)
-            else:
-                target.unlink()
-        raise
+    pairs = [(image, images / image.name) for image in (stage / 'map-images').glob('*.png')
+             if not (images / image.name).is_file() or image.read_bytes() != (images / image.name).read_bytes()]
+    pairs.append((stage / 'report.xlsx', workbook))
+    pairs.extend((stage / name, output / name) for name in
+                 ('map-gallery.html', 'anno-scan.json', 'anno-maps.jsonl', 'anno1800-statistics.json'))
+    publish_files(pairs, stage / 'previous')
 
 
 def configure(settings):
@@ -776,7 +757,7 @@ def main(argv=None, *, settings=None):
                 rows = scan(scan_path, opts.rescan)
             groups = bucket(rows)
             maps = collect_maps(groups, old_maps)
-            with tempfile.TemporaryDirectory(prefix='.anno-export-', dir=output) as temp:
+            with temporary_directory(prefix='.anno-export-') as temp:
                 stage = Path(temp)
                 updated_at = datetime.now(zone)
                 profiles = profile_playtime(

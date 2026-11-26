@@ -76,3 +76,7 @@ Anno 1404 likewise restores search, edition, sorting and profile selection on it
 The shared `anno_map_variants.py` groups full campaign histories by player-facing map options, excluding patch drift. Each campaign appears in one variant only. Exports and the initial sort control use newest save first. Every map card, including 1404, has a native link to the shared `gallery-top` anchor outside collapsed groups.
 
 Game-specific setting labels are rendered by `anno_game_settings.py` from `game_settings.json` and explicit `gameSetting.*` locale bindings. They are excluded from generic text matching to avoid ambiguous translations such as Normal/Regular/Medium. [Setting sources and enum mappings](game-settings.md).
+
+## Temporary working files
+
+Map and stamp exports stage intermediate files outside OneDrive. On Windows, an existing writable `D:\Workspace\Temp` is preferred; otherwise the user temporary directory is used. Configured or recognisable OneDrive locations are rejected. Final galleries, caches and logs retain their configured destinations. Publication supports separate temporary/output volumes and restores existing files if copying fails. If restoration fails, the working directory and its rollback files are retained; the error names their location and `RECOVERY.json` records unresolved files when writable. Do not delete these recovery files before restoring the output.

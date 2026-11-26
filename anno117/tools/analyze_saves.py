@@ -14,6 +14,7 @@ import sys
 from anno_settings import settings_for, protect_output
 from anno_execution import checkpoint
 from anno_output_lock import reserve_paths
+from anno_output_transaction import temporary_directory, publish_files
 import anno_game_settings as game_labels
 from anno_map_catalog import render_card, render_catalog_page
 from anno_map_variants import campaign_variants, latest_known_values
@@ -24,7 +25,6 @@ CONFIG = None
 from anno_profile_playtime import profile_name, profile_playtime, ranking_html
 import struct
 import sys
-from tempfile import TemporaryDirectory
 
 from anno_file_formats import fields, members, rda_index, read_asset, val
 
@@ -401,30 +401,13 @@ def write_html(rows, total, stage, updated_at, total_playtime, profiles):
 
 def publish(stage, output):
     checkpoint()
-    pairs=[(stage/name,output/name) for name in
-           ('anno117-map-seeds.xlsx','map-gallery.html','anno117-scan.json','anno117-maps.json','anno117-statistics.json')]
-    old = {}
-    for i,(_, target) in enumerate(pairs):
-        if target.is_file():
-            backup=stage/f'backup-{i}'
-            backup.write_bytes(target.read_bytes())
-            old[target]=backup
-    images=output/'map-images'
+    images = output / 'map-images'
     images.mkdir(exist_ok=True)
-    for source in (stage/'map-images').glob('*.png'):
-        os.replace(source,images/source.name)
-    completed=[]
-    try:
-        for source,target in pairs:
-            os.replace(source,target)
-            completed.append(target)
-    except OSError:
-        for target in reversed(completed):
-            if target in old:
-                os.replace(old[target],target)
-            else:
-                target.unlink()
-        raise
+    pairs = [(source, images / source.name) for source in (stage / 'map-images').glob('*.png')]
+    pairs.extend((stage / name, output / name) for name in
+                 ('anno117-map-seeds.xlsx', 'map-gallery.html', 'anno117-scan.json',
+                  'anno117-maps.json', 'anno117-statistics.json'))
+    publish_files(pairs, stage / 'previous')
 
 
 def configure(settings):
@@ -468,7 +451,7 @@ def main(argv=None, *, settings=None):
             saves=scan(account,output/'anno117-scan.json',args.rescan)
             cache=output/'anno117-maps.json'
             maps=json.loads(cache.read_text(encoding='utf8')) if cache.is_file() and not args.rescan else {}
-            with TemporaryDirectory(prefix='.anno117-',dir=output) as temp:
+            with temporary_directory(prefix='.anno117-') as temp:
                 stage=Path(temp)
                 cards=stage/'map-images'
                 cards.mkdir()

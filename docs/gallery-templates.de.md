@@ -76,3 +76,7 @@ Anno 1404 stellt ebenso Suche, Edition, Sortierung und Profilwahl aus dem jeweil
 Das gemeinsame `anno_map_variants.py` gruppiert vollständige Partiehistorien nach verständlichen Kartenoptionen und vermeidet Aufteilungen durch Patch-Änderungen. Jede Partie erscheint in genau einer Variante. Export und vorausgewählte Sortierung zeigen den neuesten Save zuerst. Jede Kartenkachel, auch bei 1404, enthält ausserhalb geschlossener Gruppen einen normalen Link zum gemeinsamen Anker `gallery-top`.
 
 Spielbezogene Einstellungsbezeichnungen werden über `anno_game_settings.py`, `game_settings.json` und ausdrückliche `gameSetting.*`-Sprachbindungen erzeugt. Sie nehmen nicht an der allgemeinen Worterkennung teil, damit Normal/Regular/Medium nicht vermischt werden. [Quellen und Enum-Zuordnungen](game-settings.de.md).
+
+## Temporäre Arbeitsdateien
+
+Karten- und Stempelexporte erzeugen Zwischenstände ausserhalb von OneDrive. Unter Windows wird ein vorhandener beschreibbarer Ordner `D:\Workspace\Temp` bevorzugt, andernfalls der Benutzer-Tempordner. Konfigurierte oder erkennbare OneDrive-Pfade werden abgewiesen. Fertige Galerien, Caches und Protokolle behalten ihre konfigurierten Ziele. Veröffentlichung und Rücksicherung unterstützen unterschiedliche Laufwerke für temporäre Dateien und Ausgaben. Scheitert die Wiederherstellung, bleiben Arbeitsordner und Rücksicherungen erhalten; die Fehlermeldung nennt ihren Ort und `RECOVERY.json` verzeichnet offene Dateien, sofern sie geschrieben werden kann. Diese Rücksicherungen erst nach erfolgreicher Wiederherstellung entfernen.

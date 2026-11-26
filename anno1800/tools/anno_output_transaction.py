@@ -1,5 +1,6 @@
-"""Stage stamp outputs and roll back failed publication across output trees."""
+"""Stage gallery outputs outside OneDrive and retain failed-publication recovery."""
 from contextlib import contextmanager
+import errno
 import hashlib
 import json
 import os
@@ -7,6 +8,115 @@ from pathlib import Path
 import shutil
 import stat
 import tempfile
+
+
+WORKSPACE_TEMP = Path('D:/Workspace/Temp') if os.name == 'nt' else None
+
+
+class RecoveryError(OSError):
+    """Publication left recovery files that must survive context cleanup."""
+
+
+def outside_onedrive(path):
+    """Reject configured and recognisable OneDrive locations after resolution."""
+    path = Path(path).resolve()
+    roots = [Path(os.environ[key]).resolve() for key in
+             ('OneDrive', 'OneDriveConsumer', 'OneDriveCommercial') if os.environ.get(key)]
+    return not any(path.is_relative_to(root) for root in roots) and not any(
+        part.lower() == 'onedrive' or part.lower().startswith('onedrive - ') for part in path.parts)
+
+
+def staging_directory(prefix='.annotools-stage-'):
+    """Allocate an owned working directory outside synchronised output folders."""
+    candidates = [WORKSPACE_TEMP, Path(tempfile.gettempdir())]
+    for candidate in candidates:
+        if candidate is None or not candidate.is_dir() or not outside_onedrive(candidate):
+            continue
+        try:
+            return Path(tempfile.mkdtemp(prefix=prefix, dir=candidate)).resolve()
+        except OSError:
+            continue
+    raise OSError('Kein beschreibbarer temporärer Ordner ausserhalb von OneDrive verfügbar.')
+
+
+def cleanup_directory(root):
+    """Remove only an owned working tree, retrying copied read-only attributes."""
+    if root.is_symlink() or root.resolve() != root or getattr(root.lstat(), 'st_file_attributes', 0) & 0x400:
+        raise ValueError('Temporärer Ausgabeordner ist nicht mehr sicher erreichbar.')
+    def retry_readonly(function, path, exc_info):
+        if not isinstance(exc_info[1], PermissionError):
+            raise exc_info[1]
+        path = Path(path)
+        if path.is_symlink() or not path.resolve().is_relative_to(root):
+            raise ValueError('Arbeitskopie ist nicht mehr sicher erreichbar: ' + str(path))
+        path.chmod(path.stat().st_mode | stat.S_IWRITE)
+        function(path)
+    shutil.rmtree(root, onerror=retry_readonly)
+
+
+@contextmanager
+def temporary_directory(prefix):
+    """Retain rollback files if publication could not restore an output."""
+    root = staging_directory(prefix)
+    keep = False
+    try:
+        yield str(root)
+    except RecoveryError:
+        keep = True
+        raise
+    finally:
+        if not keep and not (root / 'RECOVERY.json').exists():
+            cleanup_directory(root)
+
+
+def replace_file(source, target):
+    """Support different temporary/output volumes without masking other errors."""
+    try:
+        os.replace(source, target)
+    except OSError as exc:
+        if exc.errno != errno.EXDEV:
+            raise
+        # The caller journals before copying so a partially written file rolls back.
+        shutil.copyfile(source, target)
+        Path(source).unlink()
+
+
+def restore_files(journal):
+    """Return unresolved rollback records; unchanged locked files need no restore."""
+    failures = []
+    for target, backup in reversed(journal):
+        try:
+            if backup is None:
+                target.unlink(missing_ok=True)
+            elif not target.is_file() or fingerprint(target) != fingerprint(backup):
+                replace_file(backup, target)
+        except OSError:
+            failures.append(dict(target=str(target), backup=str(backup) if backup else None))
+    return failures
+
+
+def publish_files(pairs, backup_root):
+    """Publish map files with recovery data kept outside the final output tree."""
+    backup_root.mkdir(parents=True)
+    journal = []
+    try:
+        for index, (source, target) in enumerate(pairs):
+            backup = backup_root / str(index) if target.is_file() else None
+            if backup is not None:
+                shutil.copy2(target, backup)
+            journal.append((target, backup))
+            replace_file(source, target)
+    except BaseException as original:
+        failures = restore_files(journal)
+        if failures:
+            manifest = backup_root.parent / 'RECOVERY.json'
+            try:
+                manifest.write_text(json.dumps(failures, indent=2), encoding='utf-8')
+            except OSError:
+                pass
+            raise RecoveryError('Wiederherstellung unvollständig. Sicherungsdaten bleiben erhalten: '
+                                + str(backup_root.parent)) from original
+        raise
 
 
 def fingerprint(path):
@@ -40,7 +150,8 @@ class StagedTree:
         self.target = Path(target).resolve()
         self.before = files_in(self.target)
         self.target.parent.mkdir(parents=True, exist_ok=True)
-        self.root = Path(tempfile.mkdtemp(prefix='.annotools-stage-', dir=self.target.parent)).resolve()
+        self.root = staging_directory()
+        self._owned_root = self.root
         self.stage = self.root / subfolder
         self.stage.mkdir(parents=True)
         self.keep = False
@@ -64,14 +175,9 @@ class StagedTree:
 
     def cleanup(self):
         if not self.keep:
-            if self.root.parent != self.target.parent or self.root.is_symlink():
+            if self.root != self._owned_root or self.root.is_symlink() or getattr(self.root.lstat(), 'st_file_attributes', 0) & 0x400:
                 raise ValueError('Temporärer Ausgabeordner ist nicht mehr sicher erreichbar.')
-            def retry_readonly(function, path, exc_info):
-                if not isinstance(exc_info[1], PermissionError):
-                    raise exc_info[1]
-                self.make_writable(path)
-                function(path)
-            shutil.rmtree(self.root, onerror=retry_readonly)
+            cleanup_directory(self.root)
 
 
 def publish(trees, checkpoint):
@@ -93,13 +199,14 @@ def publish(trees, checkpoint):
             if backup is not None:
                 backup.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(target, backup)
-            os.replace(tree.stage / name, target)
             journal.append((tree, target, backup))
+            replace_file(tree.stage / name, target)
         for tree, name in removals:
             target, backup = tree.target / name, tree.root / 'rollback' / name
             backup.parent.mkdir(parents=True, exist_ok=True)
-            os.replace(target, backup)
+            shutil.copy2(target, backup)
             journal.append((tree, target, backup))
+            target.unlink()
     except BaseException as original:
         failures = []
         recovery = []
@@ -108,7 +215,8 @@ def publish(trees, checkpoint):
                 if backup is None:
                     target.unlink(missing_ok=True)
                 else:
-                    os.replace(backup, target)
+                    if not target.is_file() or fingerprint(target) != fingerprint(backup):
+                        replace_file(backup, target)
             except OSError as exc:
                 tree.keep = True
                 failures.append(str(exc))

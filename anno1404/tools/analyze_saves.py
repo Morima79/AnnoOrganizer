@@ -13,6 +13,7 @@ import sys
 from anno_settings import settings_for, protect_output
 from anno_execution import checkpoint
 from anno_output_lock import reserve_paths
+from anno_output_transaction import temporary_directory, publish_files
 import anno_game_settings as game_labels
 from anno_gallery import render_gallery
 from anno_save_summary import collect_statistics, render_statistics, totals_html, variant_totals, label as summary_label
@@ -25,7 +26,6 @@ import shutil
 import struct
 import subprocess
 import sys
-from tempfile import TemporaryDirectory
 from urllib.parse import quote
 from xml.etree import ElementTree as ET
 from zipfile import ZipFile
@@ -444,28 +444,12 @@ def write_excel(stage, payload):
 
 def publish(stage, output):
     checkpoint()
-    image_dir = output/'map-images'
-    image_dir.mkdir(exist_ok=True)
-    targets = (XLSX, HTML, CACHE, 'anno1404-statistics.json')
-    backups = stage/'previous'
-    backups.mkdir()
-    for name in targets:
-        if (output/name).exists():
-            shutil.copy2(output/name, backups/name)
-    for image in (stage/'map-images').glob('*.png'):
-        os.replace(image, image_dir/image.name)
-    published = []
-    try:
-        for name in targets:
-            os.replace(stage/name, output/name)
-            published.append(name)
-    except OSError:
-        for name in reversed(published):
-            if (backups/name).is_file():
-                os.replace(backups/name, output/name)
-            else:
-                (output/name).unlink()
-        raise
+    images = output / 'map-images'
+    images.mkdir(exist_ok=True)
+    pairs = [(source, images / source.name) for source in (stage / 'map-images').glob('*.png')]
+    pairs.extend((stage / name, output / name) for name in
+                 (XLSX, HTML, CACHE, 'anno1404-statistics.json'))
+    publish_files(pairs, stage / 'previous')
 
 
 def configure(settings):
@@ -504,7 +488,7 @@ def main(argv=None, *, settings=None):
                 msvcrt.locking(lock.fileno(), msvcrt.LK_NBLCK, 1)
             except OSError as error:
                 raise ValueError('Die Auswertung läuft in diesem Ordner bereits.') from error
-            with TemporaryDirectory(prefix='.anno-1404-', dir=output) as temp:
+            with temporary_directory(prefix='.anno-1404-') as temp:
                 stage = Path(temp)
                 (stage/'map-images').mkdir()
                 saves, count = collect(sources, stage, output, args.rescan)

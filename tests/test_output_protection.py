@@ -1,5 +1,7 @@
 """Check process reservations and failure-safe stamp publication on real files."""
+import errno
 import json
+import shutil
 import os
 from pathlib import Path
 import subprocess
@@ -12,7 +14,8 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'anno117/tools'))
 from anno_output_lock import reserve_paths
-from anno_output_transaction import stamp_transaction, files_in, StagedTree
+from anno_output_transaction import (stamp_transaction, files_in, StagedTree,
+                                     staging_directory, temporary_directory, publish_files)
 from anno_settings import Settings
 
 
@@ -90,6 +93,11 @@ class StampTransactionTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
+        self.working = self.root / 'temporary'
+        self.working.mkdir()
+        self.temp_patch = patch('anno_output_transaction.WORKSPACE_TEMP', self.working)
+        self.temp_patch.start()
+        self.addCleanup(self.temp_patch.stop)
         self.settings = Settings.from_data('anno117', self.root / 'settings.json', dict(
             version=1, game='anno117', output='./output'))
         self.stamps = self.settings.stamp_output
@@ -154,10 +162,124 @@ class StampTransactionTests(unittest.TestCase):
             with self.assertRaisesRegex(OSError, 'Sicherungsdaten bleiben erhalten'):
                 with stamp_transaction(self.settings, lambda: None) as staged:
                     self.generate(staged)
-        manifests = list(self.settings.output.rglob('RECOVERY.json'))
+        manifests = list(self.working.rglob('RECOVERY.json'))
         self.assertEqual(len(manifests), 1)
         record = json.loads(manifests[0].read_text(encoding='utf-8'))[0]
         self.assertEqual(Path(record['backup']).read_text(), 'old inventory')
+        self.assertTrue(Path(record['backup']).is_relative_to(self.working))
+
+    def test_staging_is_outside_outputs_and_cleaned_after_success(self):
+        with stamp_transaction(self.settings, lambda: None) as staged:
+            work = staged.stamp_output.parent
+            self.assertTrue(work.is_relative_to(self.working))
+            self.assertFalse(work.is_relative_to(self.settings.output))
+            self.generate(staged)
+        self.assertFalse(work.exists())
+
+    def test_cross_volume_publication_and_removal(self):
+        obsolete = self.stamps / 'obsolete.txt'
+        obsolete.write_text('obsolete')
+        with patch('anno_output_transaction.os.replace', side_effect=OSError(errno.EXDEV, 'different volume')):
+            with stamp_transaction(self.settings, lambda: None) as staged:
+                self.generate(staged)
+                (staged.stamp_output / 'obsolete.txt').unlink()
+        self.assertFalse(obsolete.exists())
+        self.assertEqual((self.stamps / 'stamp-gallery.html').read_text(), 'new gallery')
+        self.assertFalse(list(self.working.iterdir()))
+
+    def test_partial_cross_volume_copy_rolls_back(self):
+        copy = shutil.copyfile
+        failed = False
+        def partial_copy(source, target, **kwargs):
+            nonlocal failed
+            if not failed and Path(target) == self.cache / 'inventory.json':
+                failed = True
+                Path(target).write_text('partial')
+                raise OSError('copy interrupted')
+            return copy(source, target, **kwargs)
+        with patch('anno_output_transaction.os.replace', side_effect=OSError(errno.EXDEV, 'different volume')), \
+                patch('anno_output_transaction.shutil.copyfile', side_effect=partial_copy):
+            with self.assertRaisesRegex(OSError, 'copy interrupted'):
+                with stamp_transaction(self.settings, lambda: None) as staged:
+                    self.generate(staged)
+        self.assertEqual(files_in(self.settings.output), self.before)
+        self.assertFalse(list(self.working.iterdir()))
+
+    def test_map_partial_copy_restores_old_output(self):
+        target = self.stamps / 'stamp-gallery.html'
+        copy = shutil.copyfile
+        with temporary_directory('.anno-map-') as name:
+            stage = Path(name)
+            source = stage / 'map.html'
+            source.write_text('new map')
+            def partial_copy(origin, destination, **kwargs):
+                if Path(origin) == source:
+                    Path(destination).write_text('partial map')
+                    raise OSError('map interrupted')
+                return copy(origin, destination, **kwargs)
+            with patch('anno_output_transaction.os.replace', side_effect=OSError(errno.EXDEV, 'different volume')), \
+                    patch('anno_output_transaction.shutil.copyfile', side_effect=partial_copy):
+                with self.assertRaisesRegex(OSError, 'map interrupted'):
+                    publish_files([(source, target)], stage / 'previous')
+            self.assertEqual(target.read_text(), 'old gallery')
+        self.assertFalse(stage.exists())
+
+    def test_map_failed_restore_keeps_backup_even_if_manifest_write_fails(self):
+        target = self.stamps / 'stamp-gallery.html'
+        with self.assertRaisesRegex(OSError, 'Sicherungsdaten bleiben erhalten'):
+            with temporary_directory('.anno-map-') as name:
+                stage = Path(name)
+                source = stage / 'map.html'
+                source.write_text('new map')
+                def fail_replace(origin, destination):
+                    Path(destination).write_text('partial map')
+                    raise PermissionError('locked output')
+                write = Path.write_text
+                def fail_manifest(path, *args, **kwargs):
+                    if path.name == 'RECOVERY.json':
+                        raise PermissionError('manifest blocked')
+                    return write(path, *args, **kwargs)
+                with patch('anno_output_transaction.os.replace', side_effect=fail_replace), \
+                        patch.object(Path, 'write_text', fail_manifest):
+                    publish_files([(source, target)], stage / 'previous')
+        self.assertEqual((stage / 'previous/0').read_text(), 'old gallery')
+
+
+class TemporaryStorageTests(unittest.TestCase):
+    def test_missing_workspace_falls_back_to_user_temp(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            with patch('anno_output_transaction.WORKSPACE_TEMP', base / 'missing'), \
+                    patch('anno_output_transaction.tempfile.gettempdir', return_value=directory):
+                with temporary_directory('.anno-test-') as name:
+                    self.assertEqual(Path(name).parent, base.resolve())
+                self.assertFalse(Path(name).exists())
+
+    def test_unwritable_workspace_falls_back_to_user_temp(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            preferred = base / 'preferred'
+            preferred.mkdir()
+            allocate = tempfile.mkdtemp
+            def denied(*args, **kwargs):
+                if kwargs.get('dir') == preferred:
+                    raise PermissionError('workspace denied')
+                return allocate(*args, **kwargs)
+            with patch('anno_output_transaction.WORKSPACE_TEMP', preferred), \
+                    patch('anno_output_transaction.tempfile.gettempdir', return_value=directory), \
+                    patch('anno_output_transaction.tempfile.mkdtemp', side_effect=denied):
+                with temporary_directory('.anno-test-') as name:
+                    self.assertEqual(Path(name).parent, base.resolve())
+
+    def test_onedrive_temp_is_rejected_without_creating_work_files(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            with patch('anno_output_transaction.WORKSPACE_TEMP', None), \
+                    patch('anno_output_transaction.tempfile.gettempdir', return_value=directory), \
+                    patch.dict(os.environ, {'OneDrive': directory}):
+                with self.assertRaisesRegex(OSError, 'ausserhalb von OneDrive'):
+                    staging_directory()
+            self.assertFalse(list(base.iterdir()))
 
 
 if __name__ == '__main__':
