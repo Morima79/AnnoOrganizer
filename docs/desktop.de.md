@@ -28,7 +28,7 @@ Beim ersten Öffnen eines Spiels erstellt die GUI automatisch dessen `settings.j
 
 Links das gewünschte Spiel wählen, die erkannten Pfade prüfen und **Erzeugen** drücken. Ohne gespeicherte Auswahl ist **Karten und Excel** aktiv. Fehlende Installationen oder Eingabeordner müssen in den Feldern ergänzt werden; die Meldung nennt den betroffenen Pfad. Bestehende Einstellungen und ausgewählte externe Dateien bleiben unverändert.
 
-**Mitgelieferte Demo** ist als separate Aktion verfügbar und liest ausschliesslich die Beispiele. Anno 117 und 1800 benötigen auch dafür ihre Spielressourcen. Die Anno-1404-Demo benötigt keine Spielinstallation. Demo-Ausgaben bleiben unter `<output>/demo/`.
+**Mitgelieferte Demo** ist als separate Aktion verfügbar und liest ausschliesslich die Beispiele. Beim Start erscheint nur für diese Aktion ein Hinweis mit dem Demo-Ausgabeordner und der Information, dass persönliche Galerien dabei nicht aktualisiert werden. Während des Laufs steht im Status ausdrücklich **Demo wird erstellt**. Normale Exporte und **Alle Galerien aktualisieren** zeigen diesen Hinweis nicht. Anno 117 und 1800 benötigen auch für Demos ihre Spielressourcen. Die Anno-1404-Demo benötigt keine Spielinstallation. Demo-Ausgaben bleiben unter `<output>/demo/`.
 
 Das absolute Ausgabeziel steht vor dem Start unter den Eingaben. Während der Verarbeitung bleibt das Fenster reaktionsfähig; Eingaben, Spiel-/Sprachwechsel, Tabs und die übrigen Aktionsbuttons sind gesperrt. **Abbrechen** und das lesende Öffnen bereits vorhandener Galerien bleiben verfügbar. Die Galerien öffnen im Standardbrowser. Es werden keine privaten Daten hochgeladen.
 

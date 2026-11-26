@@ -107,6 +107,9 @@ class DesktopUITests(unittest.TestCase):
             self.app = DesktopApp(self.root, directory=self.folder / 'gui', game='anno1404')
         self.errors = []
         self.app.error = lambda exc: self.errors.append(str(exc))
+        notice_patch = patch('desktop.app.messagebox.showinfo')
+        self.notice = notice_patch.start()
+        self.addCleanup(notice_patch.stop)
 
     def test_language_switch_preserves_draft_and_selected_tab_and_persists(self):
         self.app.fields['output'].set(str(self.folder / 'Äusserer Ordner'))
@@ -415,6 +418,9 @@ class DesktopUITests(unittest.TestCase):
     def test_demo_runs_without_writing_personal_config_and_restores_controls(self):
         self.app.action.set('demo')
         self.app.generate()
+        self.notice.assert_called_once()
+        self.assertIn(str(self.app.document.view().output / 'demo'), self.notice.call_args.args[1])
+        self.assertIn('Demo', self.app.status_text())
         self.assertTrue(self.app.generate_button.instate(['disabled']))
         self.assertEqual(self.app.document.path.read_bytes(), self.original_configs['anno1404'])
         deadline = time.monotonic() + 20
@@ -429,6 +435,17 @@ class DesktopUITests(unittest.TestCase):
         self.assertTrue(all(Path(p).is_file() for p in self.app.last_result['galleries']))
         self.assertFalse(list((self.app.store.directory / 'runs').glob('job-*')))
         self.assertEqual(self.errors, [])
+
+    def test_normal_generation_does_not_show_a_demo_notice(self):
+        def start(*args):
+            self.app.client.running = True
+        self.app.action.set('analyze')
+        with patch.object(self.app.client, 'start', side_effect=start):
+            self.app.generate()
+        self.notice.assert_not_called()
+        self.assertNotIn('Demo', self.app.status_text())
+        self.app.client.running = False
+        self.app.cleanup_snapshot()
 
     def test_cancel_waits_for_completion_before_restoring_controls(self):
         def start(*args):

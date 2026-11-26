@@ -394,7 +394,7 @@ class DesktopApp:
             return self.t('batch_running', current=self.batch['index'] + 1, total=len(self.batch['jobs']),
                           game=job.game.replace('anno', 'Anno '),
                           action=self.t('analyze' if job.action == 'analyze' else 'stamp_action'))
-        text = self.t(self.status)
+        text = self.t('demo_running' if self.status == 'running' and self.action.get() == 'demo' else self.status)
         if self.status == 'running' and self.stage_action:
             text += ' ' + self.t('stamp_action' if self.stage_action == 'stamps' else 'analyze')
         if self.last_result and self.last_result.get('partial_output'):
@@ -675,6 +675,9 @@ class DesktopApp:
         self.record_result(game='all-games', action='all')
         return True
 
+    def notify_demo(self, destination):
+        messagebox.showinfo(self.t('demo_notice_title'), self.t('demo_notice', path=destination), parent=self.root)
+
     def generate(self):
         if self.client.running or self.snapshot is not None:
             return
@@ -693,6 +696,10 @@ class DesktopApp:
             self.last_result, self.details, self.stage_action = None, '', None
             self.active_logs = []
             self.status = 'running'
+            if self.action.get() == 'demo':
+                self.apply_busy()
+                self.status_label.configure(text=self.status_text())
+                self.notify_demo(view.output / 'demo')
             self.client.start(self.game, self.action.get(), document.path)
             self.apply_busy()
             self.status_label.configure(text=self.status_text())

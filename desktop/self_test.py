@@ -45,6 +45,8 @@ def run(report, directory, *, all_games=False, system_inputs=False):
             raise ValueError(app.details)
         errors = []
         app.error = lambda exc: errors.append(str(exc))
+        demo_notices = []
+        app.notify_demo = lambda destination: demo_notices.append(str(destination))
         app.change_language('en')
         app.change_language('de')
         if errors:
@@ -76,6 +78,8 @@ def run(report, directory, *, all_games=False, system_inputs=False):
             raise ValueError('GUI smoke unexpectedly changed an input configuration')
         if all_games and (len(app.last_result.get('jobs', [])) != 5 or len(app.last_result['galleries']) != 5):
             raise ValueError('GUI batch did not complete all five galleries')
+        if len(demo_notices) != (0 if all_games else 1):
+            raise ValueError('Demo notice was not limited to demo generation')
         result = dict(status='success', language=app.language, galleries=app.last_result['galleries'],
                       inputs='system' if system_inputs else 'bundled', steps=steps)
     except Exception as exc:

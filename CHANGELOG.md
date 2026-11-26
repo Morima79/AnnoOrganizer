@@ -7,6 +7,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Show a demo-only startup notice with the isolated destination and label demo processing explicitly in the desktop status.
+
 - Exclude Anno 1800 account metadata at every directory depth when analysing the standard parent accounts folder.
 
 - Create first-run desktop settings from detected installations and standard user folders, default to map generation and place new outputs under Documents/AnnoOrganizer per game. Preserve existing settings and demo isolation. Make owned stamp working copies writable so copied Windows/OneDrive read-only directory attributes do not fail generation or cleanup.
@@ -40,6 +42,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 - Prepare shared non-interactive execution for all three game launchers, including validated demo plans, structured stage/completion callbacks and output results. Add `--non-interactive`; retain the transitional Python script backend and document remaining GUI/worker work.
 
 ### Deutsch
+
+- Nur beim Demo-Start einen Hinweis mit getrenntem Ausgabeziel anzeigen und die laufende Demo im GUI-Status eindeutig kennzeichnen.
 
 - Anno-1800-Kontometadaten beim Auswerten des Standard-`accounts`-Ordners in jeder Verzeichnistiefe von Spielständen unterschieden.
 

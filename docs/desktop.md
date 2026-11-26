@@ -28,7 +28,7 @@ Opening a game for the first time automatically creates its `settings.json`. Win
 
 Choose the desired game on the left, review detected paths and press **Generate**. **Maps and Excel** is selected without a saved choice. Missing installations or input folders must be supplied in the fields; the error identifies the affected path. Existing settings and selected external files remain unchanged.
 
-**Bundled demo** remains a separate action that reads bundled examples only. Anno 117 and 1800 require their game resources for demos too. The Anno 1404 demo requires no game installation. Demo outputs stay under `<output>/demo/`.
+**Bundled demo** remains a separate action that reads bundled examples only. Starting it shows a notice with the demo output folder and explains that personal galleries will not be updated. Status explicitly says **Generating demo** during the run. Normal exports and **Update all galleries** do not show this notice. Anno 117 and 1800 require their game resources for demos too. The Anno 1404 demo requires no game installation. Demo outputs stay under `<output>/demo/`.
 
 The absolute output destination is displayed before starting. The window stays responsive while processing; inputs, game/language selection, tabs and other action buttons are disabled. **Cancel** and read-only access to existing galleries remain available. Galleries open in the default browser. No private data is uploaded.
 

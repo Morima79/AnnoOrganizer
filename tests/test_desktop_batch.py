@@ -99,6 +99,10 @@ class BatchUITests(unittest.TestCase):
         self.app.poll()
 
     def test_five_workers_run_in_sequence_with_frozen_drafts_and_retained_settings(self):
+        self.app.action.set('demo')
+        notice_patch = patch('desktop.app.messagebox.showinfo')
+        notice = notice_patch.start()
+        self.addCleanup(notice_patch.stop)
         self.app.fields['report_output'].set(str(self.folder / 'unsaved-reports'))
         self.app.generate_all()
         self.assertEqual(len(self.started), 1)
@@ -114,7 +118,8 @@ class BatchUITests(unittest.TestCase):
             ('anno1800', 'stamps'), ('anno1404', 'analyze')])
         self.assertEqual(self.app.status, 'success')
         self.assertEqual(len(self.app.last_result['jobs']), 5)
-        self.assertEqual(self.app.action.get(), 'analyze')
+        self.assertEqual(self.app.action.get(), 'demo')
+        notice.assert_not_called()
         self.assertIsNone(self.app.snapshot)
         self.assertFalse(snapshot.exists())
         for game, doc in self.documents.items():
