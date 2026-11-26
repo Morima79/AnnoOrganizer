@@ -19,7 +19,7 @@ Lokale Windows-Werkzeuge für **Anno 117: Pax Romana**, **Anno 1800** und **Anno
 
 ## Online-Demos und Releases
 
-[Alle fünf Galerien im Browser ausprobieren](https://morima79.github.io/AnnoOrganizer/) · [Windows-Paket herunterladen (ZIP)](https://github.com/Morima79/AnnoOrganizer/releases/download/v0.1.14/AnnoOrganizer-v0.1.14-windows-x64.zip) · [Alle Versionen und Quellcode](https://github.com/Morima79/AnnoOrganizer/releases/latest)
+[Alle fünf Galerien im Browser ausprobieren](https://morima79.github.io/AnnoOrganizer/) · [Windows-Paket herunterladen (ZIP)](https://github.com/Morima79/AnnoOrganizer/releases/download/v0.1.15/AnnoOrganizer-v0.1.15-windows-x64.zip) · [Alle Versionen und Quellcode](https://github.com/Morima79/AnnoOrganizer/releases/latest)
 
 | Spiel | Kartengalerie | Stempelgalerie |
 |---|---|---|

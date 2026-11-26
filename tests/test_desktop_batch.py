@@ -129,7 +129,7 @@ class BatchUITests(unittest.TestCase):
         self.assertEqual(len(self.started), 1)
         snapshot = Path(self.app.snapshot.name)
         config = ConfigDocument.load('anno1404', snapshot / 'anno1404/settings.json')
-        self.assertEqual(config.view().report_output, self.folder / 'unsaved-reports')
+        self.assertEqual(config.view().report_output.resolve(), (self.folder / 'unsaved-reports').resolve())
         self.assertTrue(self.app.update_all_button.instate(['disabled']))
         for number in range(5):
             self.assertEqual(len(self.started), number + 1)

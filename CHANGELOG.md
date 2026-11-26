@@ -5,9 +5,11 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ## [Unreleased]
 
-## [v0.1.14] - 2026-11-26
+## [v0.1.15] - 2026-11-26
 
 ### English
+
+- Normalize Windows short and long paths in the desktop batch regression test. Release v0.1.14 was blocked by this CI assertion; its public tag is retained without published packages.
 
 - Add a prominent bilingual Windows package download with extraction/start instructions on the demo landing page.
 
@@ -50,6 +52,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 - Prepare shared non-interactive execution for all three game launchers, including validated demo plans, structured stage/completion callbacks and output results. Add `--non-interactive`; retain the transitional Python script backend and document remaining GUI/worker work.
 
 ### Deutsch
+
+- Kurze und lange Windows-Pfade im Desktop-Gesamtlauftest normalisieren. Diese CI-Prüfung verhinderte Release v0.1.14; der öffentliche Tag bleibt ohne veröffentlichte Pakete erhalten.
 
 - Gut sichtbaren Windows-Paketdownload mit Anleitung zum Entpacken und Starten auf der zweisprachigen Demo-Startseite ergänzt.
 
