@@ -51,7 +51,7 @@ class DesktopApp:
         self.closed = False
         self._poll_id = None
         self._gallery_refresh = 0
-        self.action = tk.StringVar(root, 'demo')
+        self.action = tk.StringVar(root, self.saved_action(game))
         self.action.trace_add('write', lambda *_: self.refresh_destination())
         self.root.title('AnnoOrganizer')
         self.root.geometry('1080x820')
@@ -223,9 +223,12 @@ class DesktopApp:
         self.wrap_labels.extend([hint, self.destination_label])
         actions = ttk.Frame(panel)
         actions.pack(fill='x')
-        for value, key in [('demo', 'demo'), ('analyze', 'analyze'), ('stamps', 'stamp_action')]:
-            radio = ttk.Radiobutton(actions, text=self.t(key), variable=self.action, value=value)
+        self.action_buttons = {}
+        for value, key in [('analyze', 'analyze'), ('stamps', 'stamp_action'), ('demo', 'demo')]:
+            radio = ttk.Radiobutton(actions, text=self.t(key), variable=self.action, value=value,
+                                    command=self.choose_action)
             radio.pack(side='left', padx=(0, 15))
+            self.action_buttons[value] = radio
             if value == 'stamps' and self.game == 'anno1404':
                 radio.state(['disabled'])
             else:
@@ -448,15 +451,35 @@ class DesktopApp:
             self.error(exc)
         self.render()
 
+    def saved_action(self, game):
+        actions = self.store.preferences.get('actions', {})
+        selected = actions.get(game) if isinstance(actions, dict) else None
+        allowed = ('analyze', 'demo') if game == 'anno1404' else ('analyze', 'stamps', 'demo')
+        return selected if selected in allowed else 'demo'
+
+    def remember_action(self):
+        if not isinstance(self.store.preferences.get('actions'), dict):
+            self.store.preferences['actions'] = {}
+        self.store.preferences['actions'][self.game] = self.action.get()
+
+    def choose_action(self):
+        if self.client.running or self.snapshot is not None:
+            return
+        self.remember_action()
+        try:
+            self.store.save_preferences()
+        except Exception as exc:
+            self.error(exc)
+
     def switch_game(self, game):
         if self.client.running or self.snapshot is not None:
             return
         self.collect()
+        self.remember_action()
         self.status, self.last_result, self.stage_action = 'ready', None, None
         self.active_logs = []
-        if game == 'anno1404' and self.action.get() == 'stamps':
-            self.action.set('demo')
         self._load(game)
+        self.action.set(self.saved_action(game))
         self.render()
 
     def dirty(self):
@@ -780,6 +803,7 @@ class DesktopApp:
 
     def finish_close(self):
         try:
+            self.remember_action()
             self.window_state.remember_all()
             self.store.save_preferences()
         except Exception as exc:

@@ -136,6 +136,30 @@ class DesktopUITests(unittest.TestCase):
         self.app.collect()
         self.assertEqual(self.app.document.data['save_folders'], [long_path])
 
+    def test_selected_action_is_saved_per_game_and_restored_after_restart(self):
+        from desktop.app import DesktopApp
+        self.app.action_buttons['analyze'].invoke()
+        self.app.switch_game('anno117')
+        self.app.action_buttons['stamps'].invoke()
+        self.app.switch_game('anno1404')
+        self.assertEqual(self.app.action.get(), 'analyze')
+        second = tk.Tk()
+        second.withdraw()
+        self.addCleanup(second.destroy)
+        restarted = DesktopApp(second, directory=self.app.store.directory, game='anno1404')
+        self.assertEqual(restarted.action.get(), 'analyze')
+        restarted.switch_game('anno117')
+        self.assertEqual(restarted.action.get(), 'stamps')
+        restarted.action_buttons['demo'].invoke()
+        saved = json.loads(restarted.store.preferences_path.read_text(encoding='utf-8'))
+        self.assertEqual(saved['actions'], {'anno1404': 'analyze', 'anno117': 'demo'})
+        self.assertFalse(restarted.document.path.exists())
+
+    def test_invalid_saved_action_falls_back_to_demo(self):
+        for actions in ([], {'anno1404': 'stamps'}, {'anno1404': 'unknown'}):
+            self.app.store.preferences['actions'] = actions
+            self.assertEqual(self.app.saved_action('anno1404'), 'demo')
+
     def test_selected_language_and_tabs_use_gold_without_padding_changes(self):
         from tkinter import ttk
         style = ttk.Style(self.root)

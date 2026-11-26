@@ -36,6 +36,8 @@ The expanded gallery selector uses the same dark background and light text as th
 
 ## Edit and reuse settings
 
+Actions appear in this order: **Maps and Excel**, **Stamp gallery**, **Bundled demo**. The last selected action is saved immediately per game in `gui.json` and restored when switching games or restarting. Saving the personal configuration is not required. Without a valid saved choice, the demo remains the default; Anno 1404 has no stamp gallery.
+
 - **Use file**: Select an existing `settings.json` and review resolved destinations. The file stays in place; only **Save** modifies it. Relative paths remain relative to its directory.
 - **Import copy**: Select the source and review the import destination and resolved paths. Confirming saves the copy. Known relative paths and implicit output defaults retain their original destinations. Unknown keys are preserved. The source remains unchanged; source and destination must be different files. Replacing an existing destination requires additional confirmation and creates a backup.
 - **Default file**: Return to this game's saved GUI configuration or load new defaults into memory. An external file selection is replaced only when the selected default file is saved.

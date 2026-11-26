@@ -36,6 +36,8 @@ Die aufgeklappte Galerieauswahl verwendet dieselben dunklen Hintergrundfarben un
 
 ## Einstellungen bearbeiten und übernehmen
 
+Die Aktionen stehen in der Reihenfolge **Karten und Excel**, **Stempelgalerie**, **Mitgelieferte Demo**. Die zuletzt gewählte Aktion wird pro Spiel sofort in `gui.json` gespeichert und bei Spielwechsel sowie beim nächsten Start wieder ausgewählt. Dafür muss die persönliche Einstellungsdatei nicht gespeichert werden. Ohne gültige gespeicherte Auswahl bleibt die Demo der Einstieg; bei Anno 1404 ist die Stempelgalerie nicht verfügbar.
+
 - **Datei verwenden**: Eine bestehende `settings.json` auswählen und die aufgelösten Ziele prüfen. Die Datei bleibt am bisherigen Ort; erst **Speichern** ändert sie. Relative Pfade bleiben auf ihren Ordner bezogen.
 - **Kopie importieren**: Die Quelle auswählen und Importziel sowie aufgelöste Pfade prüfen. Die Kopie wird beim Bestätigen gespeichert. Bekannte relative Pfade und implizite Ausgabeziele werden so übernommen, dass sie auf dieselben Orte zeigen. Unbekannte Schlüssel bleiben erhalten. Die Quelle bleibt unverändert; Quelle und Ziel dürfen nicht dieselbe Datei sein. Eine bestehende Zieldatei wird nur nach zusätzlicher Bestätigung mit Sicherung ersetzt.
 - **Standarddatei**: Zur gespeicherten GUI-Konfiguration dieses Spiels zurückkehren oder neue Standardwerte im Speicher laden. Eine externe Dateiauswahl wird erst beim Speichern der gewählten Standarddatei ersetzt.
