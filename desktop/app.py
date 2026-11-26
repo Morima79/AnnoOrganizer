@@ -14,6 +14,7 @@ from tkinter import filedialog, messagebox, ttk
 import webbrowser
 
 from desktop.language import choose_language, resources
+from desktop.batch import BatchError, prepare_all
 from desktop.settings_store import ConfigDocument, GAMES, ROOT, SettingsConflict, SettingsStore, gui_session, local_app_data
 from desktop.worker_client import WorkerClient
 from desktop.window_state import WindowState
@@ -47,6 +48,8 @@ class DesktopApp:
         self.last_result = None
         self.active_logs = []
         self.snapshot = None
+        self.batch = None
+        self.batch_cancelled = False
         self.closing = False
         self.closed = False
         self._poll_id = None
@@ -239,6 +242,9 @@ class DesktopApp:
         self.generate_button.pack(side='left', padx=(0, 8))
         self.cancel_button = ttk.Button(commands, text=self.t('cancel'), command=self.cancel)
         self.cancel_button.pack(side='left')
+        self.update_all_button = ttk.Button(commands, text=self.t('update_all'), command=self.generate_all)
+        self.update_all_button.pack(side='left', padx=(12, 0))
+        self.controls.append(self.update_all_button)
         gallery_group = tk.Frame(commands, background='#89919d', padx=1, pady=1)
         gallery_group.pack(side='right')
         self.gallery_menu_button = ttk.Menubutton(gallery_group, width=0, style='Gallery.TMenubutton')
@@ -383,6 +389,11 @@ class DesktopApp:
                       style='Muted.TLabel').grid(row=row * 2 + 2, column=0, sticky='w')
 
     def status_text(self):
+        if self.batch is not None and self.status == 'running':
+            job = self.batch['jobs'][self.batch['index']]
+            return self.t('batch_running', current=self.batch['index'] + 1, total=len(self.batch['jobs']),
+                          game=job.game.replace('anno', 'Anno '),
+                          action=self.t('analyze' if job.action == 'analyze' else 'stamp_action'))
         text = self.t(self.status)
         if self.status == 'running' and self.stage_action:
             text += ' ' + self.t('stamp_action' if self.stage_action == 'stamps' else 'analyze')
@@ -413,6 +424,7 @@ class DesktopApp:
     def error(self, exc):
         self.details = str(exc)
         messagebox.showerror(self.t('error'), self.t('conflict') if isinstance(exc, SettingsConflict)
+                             else self.t('batch_invalid', details=exc) if isinstance(exc, BatchError)
                              else self.t('settings_error'), parent=self.root)
 
     def browse(self, key):
@@ -589,6 +601,80 @@ class DesktopApp:
         except Exception as exc:
             self.error(exc)
 
+    def generate_all(self):
+        if self.client.running or self.snapshot is not None:
+            return
+        self.collect()
+        try:
+            if self.document is None:
+                raise ValueError(self.details or self.t('load_error'))
+            jobs = prepare_all(self.store, self.documents)
+            runtime = self.store.directory / 'runs'
+            runtime.mkdir(parents=True, exist_ok=True)
+            self.snapshot = tempfile.TemporaryDirectory(prefix='all-', dir=runtime)
+            configs = {}
+            for job in jobs:
+                if job.game not in configs:
+                    document = job.document.copy_to(Path(self.snapshot.name) / job.game / 'settings.json')
+                    document.save()
+                    configs[job.game] = document.path
+            self.batch = dict(jobs=jobs, configs=configs, index=0, results=[])
+            self.batch_cancelled = False
+            self.last_result, self.details, self.stage_action = None, '', None
+            self.active_logs = []
+            self.status = 'running'
+            self.start_batch_job()
+            self.apply_busy()
+            self.status_label.configure(text=self.status_text())
+        except Exception as exc:
+            self.batch = None
+            self.cleanup_snapshot()
+            self.last_result = dict(status='failed', galleries=[], logs=[], partial_output=False, message=str(exc))
+            self.status, self.details = 'failed', str(exc)
+            self.record_result(game='all-games', action='all')
+            self.apply_busy()
+            self.status_label.configure(text=self.status_text())
+            self.error(BatchError(str(exc)))
+
+    def start_batch_job(self):
+        job = self.batch['jobs'][self.batch['index']]
+        self.stage_action = None
+        self.client.start(job.game, job.action, self.batch['configs'][job.game])
+
+    def complete_job(self, result):
+        """Continue a successful queue or summarize its completed and partial outputs."""
+        if self.batch is None:
+            self.last_result = result
+            self.record_result()
+            return True
+        while True:
+            job = self.batch['jobs'][self.batch['index']]
+            self.batch['results'].append(dict(game=job.game, action=job.action, result=result))
+            self.record_result(game=job.game, action=job.action, result=result)
+            if result['status'] != 'success' or self.batch_cancelled or self.batch['index'] + 1 == len(self.batch['jobs']):
+                break
+            self.batch['index'] += 1
+            try:
+                self.start_batch_job()
+                self.status_label.configure(text=self.status_text())
+                return False
+            except Exception as exc:
+                result = dict(status='failed', galleries=[], logs=[], partial_output=False, message=str(exc))
+        status = result['status']
+        if self.batch_cancelled and status == 'success':
+            status = 'cancelled'
+        results = self.batch['results']
+        galleries = list(dict.fromkeys(path for item in results for path in item['result'].get('galleries', [])))
+        logs = list(dict.fromkeys(path for item in results for path in item['result'].get('logs', [])))
+        messages = [item['game'] + ' / ' + item['action'] + ': ' + str(item['result'][key])
+                    for item in results for key in ('message', 'diagnostics') if item['result'].get(key)]
+        self.last_result = dict(status=status, galleries=galleries, logs=logs, jobs=results,
+            partial_output=status != 'success' and (bool(galleries) or any(
+                item['result'].get('partial_output') for item in results)), message='\n'.join(messages))
+        self.batch = None
+        self.record_result(game='all-games', action='all')
+        return True
+
     def generate(self):
         if self.client.running or self.snapshot is not None:
             return
@@ -619,14 +705,14 @@ class DesktopApp:
             self.record_result()
             self.error(exc)
 
-    def record_result(self):
+    def record_result(self, *, game=None, action=None, result=None):
         """Retain the last job's diagnostics even after the GUI closes."""
         try:
             folder = self.store.directory / 'logs'
             folder.mkdir(parents=True, exist_ok=True)
-            (folder / (self.game + '-last-run.json')).write_text(json.dumps(dict(
-                updated_at=datetime.now(timezone.utc).isoformat(), action=self.action.get(),
-                result=self.last_result), ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+            (folder / ((game or self.game) + '-last-run.json')).write_text(json.dumps(dict(
+                updated_at=datetime.now(timezone.utc).isoformat(), action=action or self.action.get(),
+                result=result if result is not None else self.last_result), ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
         except OSError as exc:
             self.details += '\n' + str(exc)
 
@@ -639,6 +725,8 @@ class DesktopApp:
                 self.details += '\n' + str(exc)
 
     def cancel(self):
+        if self.batch is not None:
+            self.batch_cancelled = True
         self.client.cancel()
         self.status = 'cancelling'
         self.status_label.configure(text=self.status_text())
@@ -657,9 +745,9 @@ class DesktopApp:
                     if isinstance(logfile, str):
                         self.active_logs.append(logfile)
                 elif event['type'] == 'completed':
-                    self.last_result = event['payload']
+                    if not self.complete_job(event['payload']):
+                        continue
                     self.details = '\n'.join(str(self.last_result.get(key, '')) for key in ('message', 'diagnostics'))
-                    self.record_result()
                     self.status = self.last_result['status']
                     self.cleanup_snapshot()
                     self.apply_busy()
@@ -723,7 +811,9 @@ class DesktopApp:
             if self.document is None:
                 return
             view = self.document.view()
-            if self.last_result and self.last_result.get('galleries'):
+            if self.last_result and self.last_result.get('jobs'):
+                path = view.stamp_output if self.action.get() == 'stamps' else view.report_output
+            elif self.last_result and self.last_result.get('galleries'):
                 path = Path(self.last_result['galleries'][0]).parent
             else:
                 path = (view.output / 'demo' if self.action.get() == 'demo' else

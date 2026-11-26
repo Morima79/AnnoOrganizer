@@ -6,7 +6,7 @@ import tkinter as tk
 from desktop.app import DesktopApp
 
 
-def run(report, directory):
+def run(report, directory, *, all_games=False):
     root = None
     result = dict(status='failed')
     try:
@@ -21,7 +21,10 @@ def run(report, directory):
         app.change_language('de')
         if errors:
             raise ValueError('\n'.join(errors))
-        app.generate()
+        if all_games:
+            app.generate_all()
+        else:
+            app.generate()
         expired = []
         def observe():
             if app.snapshot is None:
@@ -33,13 +36,15 @@ def run(report, directory):
             app.client.cancel()
             root.quit()
         root.after(40, observe)
-        watchdog = root.after(60000, timeout)
+        watchdog = root.after(240000 if all_games else 60000, timeout)
         root.mainloop()
         root.after_cancel(watchdog)
         if expired or errors or app.status != 'success':
             raise ValueError('GUI smoke failed: ' + app.details + '\n'.join(errors))
         if app.document.path.exists():
             raise ValueError('GUI demo unexpectedly saved a personal configuration')
+        if all_games and (len(app.last_result.get('jobs', [])) != 5 or len(app.last_result['galleries']) != 5):
+            raise ValueError('GUI batch did not complete all five galleries')
         result = dict(status='success', language=app.language, galleries=app.last_result['galleries'])
     except Exception as exc:
         result['message'] = str(exc)

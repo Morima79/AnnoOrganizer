@@ -7,6 +7,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Add one-click updates for all five galleries across all three games, with complete preflight, snapshot configurations, sequential workers, cancellation, retained partial results and a combined job report.
+
 - Move the bundled demo action to the end and remember the selected action per game across switches and restarts.
 
 - Match the expanded gallery menu to the dark desktop interface with light text and gold highlighting.
@@ -34,6 +36,8 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 - Prepare shared non-interactive execution for all three game launchers, including validated demo plans, structured stage/completion callbacks and output results. Add `--non-interactive`; retain the transitional Python script backend and document remaining GUI/worker work.
 
 ### Deutsch
+
+- Aktualisierung aller fünf Galerien über alle drei Spiele mit einem Klick ergänzt: vollständige Vorprüfung, vorübergehende Konfigurationskopien, aufeinanderfolgende Worker, Abbruch, erhaltene Teilergebnisse und gemeinsamer Auftragsbericht.
 
 - Demo-Aktion ans Ende verschoben und gewählte Aktion pro Spiel über Spielwechsel und Neustarts hinweg gespeichert.
 

@@ -36,6 +36,10 @@ The expanded gallery selector uses the same dark background and light text as th
 
 ## Edit and reuse settings
 
+**Update all galleries** starts all three map galleries and both stamp galleries for Anno 117, 1800 and 1404 with one click. It uses the normal configured inputs and output destinations for all three games, independently of the selected individual action. Loaded unsaved drafts are included; saved configurations are read for games that have not been opened yet. Personal configuration files are not saved by this operation.
+
+Before the first job, the GUI checks every required input, game resource and output destination. Invalid configurations or overlapping destinations across games prevent the entire start and are listed with their game identifiers. After successful preflight, the five jobs run sequentially; status shows the job number, game and action. Failure or **Cancel** stops remaining jobs. Already published galleries are retained; the sequence is not one transaction. The summary with all individual results is stored in `<GUI data directory>/logs/all-games-last-run.json`. Galleries remain accessible through their respective game views.
+
 Actions appear in this order: **Maps and Excel**, **Stamp gallery**, **Bundled demo**. The last selected action is saved immediately per game in `gui.json` and restored when switching games or restarting. Saving the personal configuration is not required. Without a valid saved choice, the demo remains the default; Anno 1404 has no stamp gallery.
 
 - **Use file**: Select an existing `settings.json` and review resolved destinations. The file stays in place; only **Save** modifies it. Relative paths remain relative to its directory.

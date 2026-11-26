@@ -36,6 +36,10 @@ Die aufgeklappte Galerieauswahl verwendet dieselben dunklen Hintergrundfarben un
 
 ## Einstellungen bearbeiten und übernehmen
 
+**Alle Galerien aktualisieren** startet mit einem Klick die drei Kartengalerien und die beiden Stempelgalerien von Anno 117, 1800 und 1404. Die Aktion verwendet die normalen konfigurierten Eingaben und Ausgabeziele aller drei Spiele, unabhängig von der gerade ausgewählten Einzelaktion. Bereits geladene, ungespeicherte Eingaben werden übernommen; für noch nicht geöffnete Spiele werden deren gespeicherte Konfigurationen gelesen. Persönliche Einstellungsdateien werden dabei nicht gespeichert.
+
+Vor dem ersten Auftrag prüft die GUI sämtliche benötigten Eingaben, Spielressourcen und Ausgabeziele. Ungültige Konfigurationen oder überlappende Ziele verschiedener Spiele verhindern den gesamten Start und werden mit Spielkennung angezeigt. Nach erfolgreicher Prüfung laufen die fünf Aufträge nacheinander; der Status nennt Nummer, Spiel und Aktion. Fehler oder **Abbrechen** stoppen die verbleibenden Aufträge. Bereits veröffentlichte Galerien bleiben erhalten; der Gesamtlauf ist keine gemeinsame Transaktion. Die Zusammenfassung mit allen Einzelresultaten steht unter `<GUI-Datenordner>/logs/all-games-last-run.json`. Galerien lassen sich wie bisher beim jeweiligen Spiel öffnen.
+
 Die Aktionen stehen in der Reihenfolge **Karten und Excel**, **Stempelgalerie**, **Mitgelieferte Demo**. Die zuletzt gewählte Aktion wird pro Spiel sofort in `gui.json` gespeichert und bei Spielwechsel sowie beim nächsten Start wieder ausgewählt. Dafür muss die persönliche Einstellungsdatei nicht gespeichert werden. Ohne gültige gespeicherte Auswahl bleibt die Demo der Einstieg; bei Anno 1404 ist die Stempelgalerie nicht verfügbar.
 
 - **Datei verwenden**: Eine bestehende `settings.json` auswählen und die aufgelösten Ziele prüfen. Die Datei bleibt am bisherigen Ort; erst **Speichern** ändert sie. Relative Pfade bleiben auf ihren Ordner bezogen.
