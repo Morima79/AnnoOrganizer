@@ -114,7 +114,7 @@ class BatchUITests(unittest.TestCase):
             ('anno1800', 'stamps'), ('anno1404', 'analyze')])
         self.assertEqual(self.app.status, 'success')
         self.assertEqual(len(self.app.last_result['jobs']), 5)
-        self.assertEqual(self.app.action.get(), 'demo')
+        self.assertEqual(self.app.action.get(), 'analyze')
         self.assertIsNone(self.app.snapshot)
         self.assertFalse(snapshot.exists())
         for game, doc in self.documents.items():

@@ -15,7 +15,7 @@ Lokale Windows-Werkzeuge für **Anno 117: Pax Romana**, **Anno 1800** und **Anno
 | Stempelgalerie mit Bauplan-PNGs | Ja | Ja | Noch nicht implementiert |
 | Zusätzliche Stempelfilter | Ceres-Feldgrössen, kosmetische DLCs | DLCs, Traktoren, Silos, Strom, Rathaus, Handelskammer | — |
 
-**Quelldateien werden ausschliesslich gelesen.** Neue Ausgaben liegen standardmässig in `<spiel>/local-data/`. Der Ausgabeordner ist konfigurierbar. Jeder Anno-Ordner ist unabhängig nutzbar und enthält seinen eigenen Starter, Einstellungen, Abhängigkeiten, Anleitungen und Lizenz. Der Hauptstarter bietet zusätzlich ein gemeinsames Auswahlmenü.
+**Quelldateien werden ausschliesslich gelesen.** Konsolenausgaben liegen standardmässig in `<spiel>/local-data/`; neue Desktop-Konfigurationen verwenden `Dokumente/AnnoOrganizer/Anno <Nummer>/`. Der Ausgabeordner ist konfigurierbar. Jeder Anno-Ordner ist unabhängig nutzbar und enthält seinen eigenen Starter, Einstellungen, Abhängigkeiten, Anleitungen und Lizenz. Der Hauptstarter bietet zusätzlich ein gemeinsames Auswahlmenü.
 
 ## Online-Demos und Releases
 

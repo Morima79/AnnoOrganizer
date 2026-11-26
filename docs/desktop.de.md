@@ -10,7 +10,7 @@ Das vollständige mit `scripts/build_desktop.py` gebaute ZIP entpacken und **Ann
 
 Die EXE benutzt denselben Worker mit `--worker --game ...` und speichert persönliche Daten ausserhalb ihrer internen Ressourcen. `BUILD.json` enthält Quellcommit, Paketversion und Ressourcen-Prüfsummen; `THIRD-PARTY-NOTICES.txt` und `licenses/` enthalten Lizenznachweise. Der [vorhandene Release-Workflow](publishing.de.md) ist für spätere Veröffentlichungen um den Windows-Build ergänzt. Ein lokaler Build ist noch kein veröffentlichtes Release.
 
-## Start aus dem Quellcode und erste Demo
+## Start aus dem Quellcode und Erstausführung
 
 Im Hauptordner starten:
 
@@ -24,7 +24,11 @@ Der Starter richtet wie bisher die Python-Umgebung und benötigten Pakete ein. M
 .\.venv\Scripts\python.exe launch.py --gui
 ```
 
-Links ein Spiel wählen, **Mitgelieferte Demo** aktiviert lassen und **Erzeugen** drücken. Die Beispiele sind eingerichtet. Anno 117 und 1800 benötigen ihre Spielressourcen; eine leere Spielinstallation wird nach Möglichkeit automatisch erkannt. Andernfalls den Spielordner oder `maindata` auswählen. Die Anno-1404-Demo benötigt keine Spielinstallation. Demos lesen ausschliesslich die mitgelieferten Beispiele.
+Beim ersten Öffnen eines Spiels erstellt die GUI automatisch dessen `settings.json`. Windows liefert den tatsächlichen, gegebenenfalls umgeleiteten Dokumente-Ordner; Steam-/Ubisoft-Registrierungen liefern nach Möglichkeit die 117-/1800-Spielinstallation. Die üblichen Spielstand- und Stempelordner unter Dokumente werden eingetragen. Für 1404 werden vorhandene `Savegames`-Ordner von Grundspiel und Venedig berücksichtigt. Neue Ausgaben liegen unter `Dokumente/AnnoOrganizer/Anno 117/`, `Anno 1800/` bzw. `Anno 1404/`, mit `reports/`, `stamps/` und `logs/` als Unterordnern. Eingabeordner werden nicht angelegt oder geändert.
+
+Links das gewünschte Spiel wählen, die erkannten Pfade prüfen und **Erzeugen** drücken. Ohne gespeicherte Auswahl ist **Karten und Excel** aktiv. Fehlende Installationen oder Eingabeordner müssen in den Feldern ergänzt werden; die Meldung nennt den betroffenen Pfad. Bestehende Einstellungen und ausgewählte externe Dateien bleiben unverändert.
+
+**Mitgelieferte Demo** ist als separate Aktion verfügbar und liest ausschliesslich die Beispiele. Anno 117 und 1800 benötigen auch dafür ihre Spielressourcen. Die Anno-1404-Demo benötigt keine Spielinstallation. Demo-Ausgaben bleiben unter `<output>/demo/`.
 
 Das absolute Ausgabeziel steht vor dem Start unter den Eingaben. Während der Verarbeitung bleibt das Fenster reaktionsfähig; Eingaben, Spiel-/Sprachwechsel, Tabs und die übrigen Aktionsbuttons sind gesperrt. **Abbrechen** und das lesende Öffnen bereits vorhandener Galerien bleiben verfügbar. Die Galerien öffnen im Standardbrowser. Es werden keine privaten Daten hochgeladen.
 
@@ -40,11 +44,11 @@ Die aufgeklappte Galerieauswahl verwendet dieselben dunklen Hintergrundfarben un
 
 Vor dem ersten Auftrag prüft die GUI sämtliche benötigten Eingaben, Spielressourcen und Ausgabeziele. Ungültige Konfigurationen oder überlappende Ziele verschiedener Spiele verhindern den gesamten Start und werden mit Spielkennung angezeigt. Nach erfolgreicher Prüfung laufen die fünf Aufträge nacheinander; der Status nennt Nummer, Spiel und Aktion. Fehler oder **Abbrechen** stoppen die verbleibenden Aufträge. Bereits veröffentlichte Galerien bleiben erhalten; der Gesamtlauf ist keine gemeinsame Transaktion. Die Zusammenfassung mit allen Einzelresultaten steht unter `<GUI-Datenordner>/logs/all-games-last-run.json`. Galerien lassen sich wie bisher beim jeweiligen Spiel öffnen.
 
-Die Aktionen stehen in der Reihenfolge **Karten und Excel**, **Stempelgalerie**, **Mitgelieferte Demo**. Die zuletzt gewählte Aktion wird pro Spiel sofort in `gui.json` gespeichert und bei Spielwechsel sowie beim nächsten Start wieder ausgewählt. Dafür muss die persönliche Einstellungsdatei nicht gespeichert werden. Ohne gültige gespeicherte Auswahl bleibt die Demo der Einstieg; bei Anno 1404 ist die Stempelgalerie nicht verfügbar.
+Die Aktionen stehen in der Reihenfolge **Karten und Excel**, **Stempelgalerie**, **Mitgelieferte Demo**. Die zuletzt gewählte Aktion wird pro Spiel sofort in `gui.json` gespeichert und bei Spielwechsel sowie beim nächsten Start wieder ausgewählt. Dafür muss die persönliche Einstellungsdatei nicht gespeichert werden. Ohne gültige gespeicherte Auswahl ist **Karten und Excel** aktiv; bei Anno 1404 ist die Stempelgalerie nicht verfügbar.
 
 - **Datei verwenden**: Eine bestehende `settings.json` auswählen und die aufgelösten Ziele prüfen. Die Datei bleibt am bisherigen Ort; erst **Speichern** ändert sie. Relative Pfade bleiben auf ihren Ordner bezogen.
 - **Kopie importieren**: Die Quelle auswählen und Importziel sowie aufgelöste Pfade prüfen. Die Kopie wird beim Bestätigen gespeichert. Bekannte relative Pfade und implizite Ausgabeziele werden so übernommen, dass sie auf dieselben Orte zeigen. Unbekannte Schlüssel bleiben erhalten. Die Quelle bleibt unverändert; Quelle und Ziel dürfen nicht dieselbe Datei sein. Eine bestehende Zieldatei wird nur nach zusätzlicher Bestätigung mit Sicherung ersetzt.
-- **Standarddatei**: Zur gespeicherten GUI-Konfiguration dieses Spiels zurückkehren oder neue Standardwerte im Speicher laden. Eine externe Dateiauswahl wird erst beim Speichern der gewählten Standarddatei ersetzt.
+- **Standarddatei**: Zur gespeicherten GUI-Konfiguration dieses Spiels zurückkehren oder eine fehlende Standarddatei mit automatisch erkannten Werten anlegen. Eine externe Dateiauswahl wird erst beim Speichern der gewählten Standarddatei ersetzt.
 - **Neu laden**: Die aktuelle Datei erneut lesen. Ungespeicherte Änderungen werden nur nach Bestätigung verworfen.
 - **Speichern**: Die angezeigten Werte in die unter **Einstellungsdatei** genannte Datei schreiben. Der bisherige Inhalt wird unter `backups/` neben der Datei gesichert. Wenn eine andere Anwendung die Datei seit dem Laden geändert hat, neu laden statt überschreiben.
 
@@ -56,7 +60,7 @@ Die Tabs **Eingaben** und **Ausgaben und Zeitzone** enthalten die spielspezifisc
 
 **Erzeugen verwendet die angezeigten Werte, ohne die persönliche Einstellungsdatei zu speichern.** Jeder Auftrag bekommt eine vorübergehende Konfigurationskopie mit denselben aufgelösten Pfadzielen. Diese Kopie wird nach Prozessende entfernt. Demoläufe bleiben unter `<output>/demo/` und ignorieren getrennte persönliche Berichts-, Stempel- und Logziele.
 
-Neue GUI-Dateien liegen unter `%LOCALAPPDATA%/AnnoOrganizer/<spiel>/settings.json`, neue Ausgaben unter dessen `local-data/`. Der tatsächliche Windows-Ordner wird über das Betriebssystem ermittelt. GUI-Präferenzen stehen daneben in `gui.json`. Updates ändern diese Daten nicht. Die Konsolenstarter behalten ihre bisherigen Standardorte. Für einen ausdrücklich gewählten anderen GUI-Datenordner:
+Neue GUI-Dateien werden unter `%LOCALAPPDATA%/AnnoOrganizer/<spiel>/settings.json` angelegt, neue Ausgaben unter dem ermittelten Dokumente-Ordner in `AnnoOrganizer/Anno <Nummer>/`. GUI-Präferenzen stehen daneben in `gui.json`. Updates überschreiben keine vorhandenen Einstellungen oder persönlichen Pfade. Die Konsolenstarter behalten ihre bisherigen Standardorte. Für einen ausdrücklich gewählten anderen GUI-Datenordner:
 
 ```powershell
 .\Launch.cmd --gui --gui-data-dir "D:/AnnoOrganizer Data"

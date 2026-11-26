@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import shutil
+import stat
 import tempfile
 
 
@@ -46,15 +47,31 @@ class StagedTree:
         try:
             if self.target.exists():
                 shutil.copytree(self.target, self.stage, dirs_exist_ok=True)
+                # OneDrive and Windows directory metadata may copy read-only flags.
+                # Change attributes only inside our owned working copy.
+                for folder, directories, filenames in os.walk(self.stage):
+                    for path in [Path(folder), *(Path(folder) / name for name in filenames)]:
+                        self.make_writable(path)
         except BaseException:
             self.cleanup()
             raise
+
+    def make_writable(self, path):
+        path = Path(path)
+        if path.is_symlink() or not path.resolve().is_relative_to(self.root):
+            raise ValueError('Arbeitskopie ist nicht mehr sicher erreichbar: ' + str(path))
+        path.chmod(path.stat().st_mode | stat.S_IWRITE)
 
     def cleanup(self):
         if not self.keep:
             if self.root.parent != self.target.parent or self.root.is_symlink():
                 raise ValueError('Temporärer Ausgabeordner ist nicht mehr sicher erreichbar.')
-            shutil.rmtree(self.root)
+            def retry_readonly(function, path, exc_info):
+                if not isinstance(exc_info[1], PermissionError):
+                    raise exc_info[1]
+                self.make_writable(path)
+                function(path)
+            shutil.rmtree(self.root, onerror=retry_readonly)
 
 
 def publish(trees, checkpoint):

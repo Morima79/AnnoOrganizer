@@ -93,9 +93,13 @@ class WorkerClientTests(unittest.TestCase):
 class DesktopUITests(unittest.TestCase):
     def setUp(self):
         from desktop.app import DesktopApp
+        from desktop.self_test import seed_demo_settings
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.folder = Path(self.temp.name)
+        seed_demo_settings(self.folder / 'gui')
+        self.original_configs = {game: (self.folder / 'gui' / game / 'settings.json').read_bytes()
+                                 for game in ('anno117', 'anno1800', 'anno1404')}
         self.root = tk.Tk()
         self.root.withdraw()
         self.addCleanup(self.root.destroy)
@@ -113,7 +117,7 @@ class DesktopUITests(unittest.TestCase):
         self.assertTrue(any('More Saves' in field.get() for field in self.app.folder_fields))
         self.assertEqual(self.app.notebook.index('current'), 1)
         self.assertEqual(json.loads(self.app.store.preferences_path.read_text(encoding='utf-8'))['language'], 'en')
-        self.assertFalse(self.app.document.path.exists())
+        self.assertEqual(self.app.document.path.read_bytes(), self.original_configs['anno1404'])
         self.assertEqual(self.errors, [])
 
     def test_game_switch_preserves_unsaved_fields_and_rejects_1404_stamps(self):
@@ -121,7 +125,7 @@ class DesktopUITests(unittest.TestCase):
         self.app.switch_game('anno117')
         self.app.action.set('stamps')
         self.app.switch_game('anno1404')
-        self.assertEqual(self.app.action.get(), 'demo')
+        self.assertEqual(self.app.action.get(), 'analyze')
         self.assertEqual(self.app.fields['output'].get(), str(self.folder / 'Changed'))
 
     def test_1404_uses_single_line_fields_and_preserves_multiple_paths(self):
@@ -153,12 +157,12 @@ class DesktopUITests(unittest.TestCase):
         restarted.action_buttons['demo'].invoke()
         saved = json.loads(restarted.store.preferences_path.read_text(encoding='utf-8'))
         self.assertEqual(saved['actions'], {'anno1404': 'analyze', 'anno117': 'demo'})
-        self.assertFalse(restarted.document.path.exists())
+        self.assertEqual(restarted.document.path.read_bytes(), self.original_configs['anno117'])
 
-    def test_invalid_saved_action_falls_back_to_demo(self):
+    def test_invalid_saved_action_falls_back_to_analyze(self):
         for actions in ([], {'anno1404': 'stamps'}, {'anno1404': 'unknown'}):
             self.app.store.preferences['actions'] = actions
-            self.assertEqual(self.app.saved_action('anno1404'), 'demo')
+            self.assertEqual(self.app.saved_action('anno1404'), 'analyze')
 
     def test_selected_language_and_tabs_use_gold_without_padding_changes(self):
         from tkinter import ttk
@@ -409,9 +413,10 @@ class DesktopUITests(unittest.TestCase):
         self.assertEqual(self.errors, [])
 
     def test_demo_runs_without_writing_personal_config_and_restores_controls(self):
+        self.app.action.set('demo')
         self.app.generate()
         self.assertTrue(self.app.generate_button.instate(['disabled']))
-        self.assertFalse(self.app.document.path.exists())
+        self.assertEqual(self.app.document.path.read_bytes(), self.original_configs['anno1404'])
         deadline = time.monotonic() + 20
         while self.app.snapshot is not None and time.monotonic() < deadline:
             self.root.update()
@@ -420,7 +425,7 @@ class DesktopUITests(unittest.TestCase):
         self.assertEqual(self.app.status, 'success', self.app.details)
         self.assertTrue(self.app.gallery_button.instate(['!disabled']))
         self.assertTrue(self.app.generate_button.instate(['!disabled']))
-        self.assertFalse(self.app.document.path.exists())
+        self.assertEqual(self.app.document.path.read_bytes(), self.original_configs['anno1404'])
         self.assertTrue(all(Path(p).is_file() for p in self.app.last_result['galleries']))
         self.assertFalse(list((self.app.store.directory / 'runs').glob('job-*')))
         self.assertEqual(self.errors, [])
@@ -451,6 +456,15 @@ class DesktopUITests(unittest.TestCase):
         self.assertTrue(self.app.gallery_button.instate(['disabled']))
         self.assertIsNone(self.app.snapshot)
         self.assertFalse(self.app.client.running)
+        self.assertTrue(self.errors)
+
+    def test_missing_save_folder_is_reported_before_starting_a_worker(self):
+        self.app.folder_fields[0].set(str(self.folder / 'missing-saves'))
+        with patch.object(self.app.client, 'start') as start:
+            self.app.generate()
+        start.assert_not_called()
+        self.assertIsNone(self.app.snapshot)
+        self.assertEqual(self.app.status, 'failed')
         self.assertTrue(self.errors)
 
     def test_noninteractive_gui_smoke_covers_first_launch_and_worker(self):

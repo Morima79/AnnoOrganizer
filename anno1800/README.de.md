@@ -58,6 +58,8 @@ Stempelgalerie:
 
 `--check` prüft Pfade ohne neue Ausgaben. `--no-open` unterdrückt den Browserstart. `--config PFAD` wählt eine andere Einstellungsdatei. `--rescan` ignoriert den Metadaten-Zwischenspeicher der Spielstandauswertung. Die bestehende Excel-Arbeitsmappe vor dem Aktualisieren schliessen.
 
+Als Spielkonto kann auch der übergeordnete `accounts`-Ordner gewählt werden. `accountdata*.a7s` sind Kontometadaten und werden in allen Unterordnern von der Spielstandauswertung ausgeschlossen.
+
 Neue Ausgaben liegen standardmässig in `local-data/` neben dem Starter; übernommene Ausgabeordner bleiben erhalten. Die Galeriepfade sind `reports/map-gallery.html` und bei unterstützten Spielen `stamps/stamp-gallery.html`. Protokolle stehen unter `logs/` im Ausgabeordner. Stempelnamen, eigene Layouts und Quelldateien werden nicht umbenannt oder verändert.
 
 - [Einstellungen](docs/settings.de.md)

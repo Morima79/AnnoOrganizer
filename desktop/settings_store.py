@@ -221,11 +221,10 @@ class SettingsStore:
         # A missing explicitly selected external file must not be silently recreated.
         if game in self.preferences.get('configurations', {}):
             raise FileNotFoundError(path)
-        data, _ = read_json(ROOT / game / 'settings.example.json')
-        example = game_api(game).Settings.from_data(game, ROOT / game / 'settings.example.json', data)
-        data = relocated_data(example)
-        data['output'] = './local-data'
-        return ConfigDocument(game, path, data)
+        from desktop.first_run import system_settings
+        document = ConfigDocument(game, path, system_settings(game))
+        document.save()
+        return document
 
     def select(self, document):
         previous = copy.deepcopy(self.preferences)

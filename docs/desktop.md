@@ -10,7 +10,7 @@ Extract the entire ZIP built by `scripts/build_desktop.py` and open **AnnoOrgani
 
 The executable uses the same worker through `--worker --game ...` and stores personal data outside internal resources. `BUILD.json` records the source commit, package version and resource hashes; `THIRD-PARTY-NOTICES.txt` and `licenses/` provide license texts. The [existing release workflow](publishing.md) now includes the Windows build for future publication. A local build is not a published release.
 
-## Source launch and first demo
+## Source launch and first run
 
 Run from the repository root:
 
@@ -24,7 +24,11 @@ The launcher prepares the Python environment and required packages as before. Wi
 .\.venv\Scripts\python.exe launch.py --gui
 ```
 
-Choose a game on the left, leave **Bundled demo** selected and press **Generate**. Example inputs are already configured. Anno 117 and 1800 require their game resources; an empty installation field uses automatic detection where possible. Otherwise select the game folder or `maindata`. The Anno 1404 demo requires no game installation. Demos read bundled examples only.
+Opening a game for the first time automatically creates its `settings.json`. Windows supplies the actual Documents folder, including folder redirection; Steam/Ubisoft registrations supply the 117/1800 installation where available. Standard save and stamp folders under Documents are configured. For 1404, existing `Savegames` folders for the base game and Venice are included. New outputs go to `Documents/AnnoOrganizer/Anno 117/`, `Anno 1800/` or `Anno 1404/`, with `reports/`, `stamps/` and `logs/` subdirectories. Input folders are never created or modified.
+
+Choose the desired game on the left, review detected paths and press **Generate**. **Maps and Excel** is selected without a saved choice. Missing installations or input folders must be supplied in the fields; the error identifies the affected path. Existing settings and selected external files remain unchanged.
+
+**Bundled demo** remains a separate action that reads bundled examples only. Anno 117 and 1800 require their game resources for demos too. The Anno 1404 demo requires no game installation. Demo outputs stay under `<output>/demo/`.
 
 The absolute output destination is displayed before starting. The window stays responsive while processing; inputs, game/language selection, tabs and other action buttons are disabled. **Cancel** and read-only access to existing galleries remain available. Galleries open in the default browser. No private data is uploaded.
 
@@ -40,11 +44,11 @@ The expanded gallery selector uses the same dark background and light text as th
 
 Before the first job, the GUI checks every required input, game resource and output destination. Invalid configurations or overlapping destinations across games prevent the entire start and are listed with their game identifiers. After successful preflight, the five jobs run sequentially; status shows the job number, game and action. Failure or **Cancel** stops remaining jobs. Already published galleries are retained; the sequence is not one transaction. The summary with all individual results is stored in `<GUI data directory>/logs/all-games-last-run.json`. Galleries remain accessible through their respective game views.
 
-Actions appear in this order: **Maps and Excel**, **Stamp gallery**, **Bundled demo**. The last selected action is saved immediately per game in `gui.json` and restored when switching games or restarting. Saving the personal configuration is not required. Without a valid saved choice, the demo remains the default; Anno 1404 has no stamp gallery.
+Actions appear in this order: **Maps and Excel**, **Stamp gallery**, **Bundled demo**. The last selected action is saved immediately per game in `gui.json` and restored when switching games or restarting. Saving the personal configuration is not required. Without a valid saved choice, **Maps and Excel** is selected; Anno 1404 has no stamp gallery.
 
 - **Use file**: Select an existing `settings.json` and review resolved destinations. The file stays in place; only **Save** modifies it. Relative paths remain relative to its directory.
 - **Import copy**: Select the source and review the import destination and resolved paths. Confirming saves the copy. Known relative paths and implicit output defaults retain their original destinations. Unknown keys are preserved. The source remains unchanged; source and destination must be different files. Replacing an existing destination requires additional confirmation and creates a backup.
-- **Default file**: Return to this game's saved GUI configuration or load new defaults into memory. An external file selection is replaced only when the selected default file is saved.
+- **Default file**: Return to this game's saved GUI configuration or create a missing default file with automatically detected values. An external file selection is replaced only when the selected default file is saved.
 - **Reload**: Read the current file again. Discarding unsaved changes requires confirmation.
 - **Save**: Write displayed values to the file shown under **Settings file**. Previous content is backed up under `backups/` beside that file. If another application changed it since loading, reload instead of overwriting.
 
@@ -56,7 +60,7 @@ The **Inputs** and **Outputs and time zone** tabs contain game-specific fields. 
 
 **Generate uses displayed values without saving the personal configuration.** Each job receives a temporary configuration copy with the same resolved path destinations. That copy is removed after the process exits. Demo runs stay under `<output>/demo/` and ignore separate personal report, stamp and log destinations.
 
-New GUI files live under `%LOCALAPPDATA%/AnnoOrganizer/<game>/settings.json`, with new outputs in its `local-data/` directory. The actual Windows folder is resolved through the operating system. GUI preferences are stored in `gui.json` alongside game directories. Upgrades do not change these files. Console launchers retain their existing defaults. To explicitly choose another GUI data directory:
+New GUI files are created under `%LOCALAPPDATA%/AnnoOrganizer/<game>/settings.json`, with new outputs in `AnnoOrganizer/Anno <number>/` under the detected Documents folder. GUI preferences are stored in `gui.json` alongside game directories. Upgrades never overwrite existing settings or personal paths. Console launchers retain their existing defaults. To explicitly choose another GUI data directory:
 
 ```powershell
 .\Launch.cmd --gui --gui-data-dir "D:/AnnoOrganizer Data"

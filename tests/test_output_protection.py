@@ -3,6 +3,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import stat
 import sys
 import tempfile
 import unittest
@@ -11,7 +12,7 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'anno117/tools'))
 from anno_output_lock import reserve_paths
-from anno_output_transaction import stamp_transaction, files_in
+from anno_output_transaction import stamp_transaction, files_in, StagedTree
 from anno_settings import Settings
 
 
@@ -62,6 +63,29 @@ with reserve_paths([Path(sys.argv[3])], directory=Path(sys.argv[2])):
 
 
 class StampTransactionTests(unittest.TestCase):
+    @unittest.skipUnless(os.name == 'nt', 'Windows read-only directory attributes')
+    def test_copied_readonly_directories_publish_and_cleanup_without_changing_references(self):
+        references = self.stamps / 'references'
+        references.chmod(stat.S_IREAD)
+        self.cache.chmod(stat.S_IREAD)
+        try:
+            with stamp_transaction(self.settings, lambda: None) as staged:
+                self.assertFalse((staged.report_output / 'stamp-gallery').stat().st_file_attributes & 1)
+                self.generate(staged)
+            self.assertEqual((self.stamps / 'references/user.json').read_text(), 'keep reference')
+            self.assertTrue(references.stat().st_file_attributes & 1)
+            self.assertFalse(list(self.settings.output.rglob('.annotools-stage-*')))
+        finally:
+            references.chmod(stat.S_IWRITE)
+            self.cache.chmod(stat.S_IWRITE)
+
+    @unittest.skipUnless(os.name == 'nt', 'Windows read-only cleanup')
+    def test_cleanup_retries_readonly_working_directories(self):
+        tree = StagedTree(self.cache, 'reports/stamp-gallery')
+        tree.stage.chmod(stat.S_IREAD)
+        tree.cleanup()
+        self.assertFalse(tree.root.exists())
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)

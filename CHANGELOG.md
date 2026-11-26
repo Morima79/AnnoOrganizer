@@ -7,6 +7,10 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Exclude Anno 1800 account metadata at every directory depth when analysing the standard parent accounts folder.
+
+- Create first-run desktop settings from detected installations and standard user folders, default to map generation and place new outputs under Documents/AnnoOrganizer per game. Preserve existing settings and demo isolation. Make owned stamp working copies writable so copied Windows/OneDrive read-only directory attributes do not fail generation or cleanup.
+
 - Add one-click updates for all five galleries across all three games, with complete preflight, snapshot configurations, sequential workers, cancellation, retained partial results and a combined job report.
 
 - Move the bundled demo action to the end and remember the selected action per game across switches and restarts.
@@ -36,6 +40,10 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 - Prepare shared non-interactive execution for all three game launchers, including validated demo plans, structured stage/completion callbacks and output results. Add `--non-interactive`; retain the transitional Python script backend and document remaining GUI/worker work.
 
 ### Deutsch
+
+- Anno-1800-Kontometadaten beim Auswerten des Standard-`accounts`-Ordners in jeder Verzeichnistiefe von Spielständen unterschieden.
+
+- GUI-Ersteinstellungen aus erkannten Installationen und Standard-Benutzerordnern automatisch angelegt, Karten als Erstaktion gewählt und neue Ausgaben unter Dokumente/AnnoOrganizer pro Spiel abgelegt. Bestehende Einstellungen und getrennte Demos erhalten. Eigene Stempel-Arbeitskopien beschreibbar gemacht, damit kopierte Windows-/OneDrive-Schreibschutzattribute Verarbeitung und Bereinigung nicht verhindern.
 
 - Aktualisierung aller fünf Galerien über alle drei Spiele mit einem Klick ergänzt: vollständige Vorprüfung, vorübergehende Konfigurationskopien, aufeinanderfolgende Worker, Abbruch, erhaltene Teilergebnisse und gemeinsamer Auftragsbericht.
 

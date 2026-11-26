@@ -425,7 +425,7 @@ class DesktopApp:
         self.details = str(exc)
         messagebox.showerror(self.t('error'), self.t('conflict') if isinstance(exc, SettingsConflict)
                              else self.t('batch_invalid', details=exc) if isinstance(exc, BatchError)
-                             else self.t('settings_error'), parent=self.root)
+                             else self.t('settings_error', details=exc), parent=self.root)
 
     def browse(self, key):
         initial = self.browse_start(self.fields[key].get(), game=key == 'game_data')
@@ -467,7 +467,7 @@ class DesktopApp:
         actions = self.store.preferences.get('actions', {})
         selected = actions.get(game) if isinstance(actions, dict) else None
         allowed = ('analyze', 'demo') if game == 'anno1404' else ('analyze', 'stamps', 'demo')
-        return selected if selected in allowed else 'demo'
+        return selected if selected in allowed else 'analyze'
 
     def remember_action(self):
         if not isinstance(self.store.preferences.get('actions'), dict):
@@ -682,7 +682,9 @@ class DesktopApp:
         if self.document is None:
             return
         try:
-            self.document.validate()
+            view = self.document.validate()
+            if self.action.get() != 'demo':
+                view.validate(self.action.get())
             runtime = self.store.directory / 'runs'
             runtime.mkdir(parents=True, exist_ok=True)
             self.snapshot = tempfile.TemporaryDirectory(prefix='job-', dir=runtime)

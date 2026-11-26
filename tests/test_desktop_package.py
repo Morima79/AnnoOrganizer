@@ -67,13 +67,14 @@ class DesktopPackageTests(unittest.TestCase):
                     atomic_save(resources / 'private.json', {}, None)
             self.assertFalse(list(resources.iterdir()))
 
-    def test_frozen_first_run_can_read_templates_without_using_them_as_output(self):
+    def test_frozen_first_run_saves_settings_outside_resources_with_documents_output(self):
         with tempfile.TemporaryDirectory() as directory:
             with patch.object(sys, 'frozen', True, create=True), \
-                    patch.object(sys, '_MEIPASS', str(ROOT), create=True):
+                    patch.object(sys, '_MEIPASS', str(ROOT), create=True), \
+                    patch.object(game_api('anno1404'), 'documents_folder', return_value=Path(directory) / 'Documents'):
                 document = SettingsStore(Path(directory)).open_game('anno1404')
-                self.assertEqual(document.view().output, Path(directory).resolve() / 'anno1404/local-data')
-                self.assertFalse(document.path.exists())
+                self.assertEqual(document.view().output, Path(directory).resolve() / 'Documents/AnnoOrganizer/Anno 1404')
+                self.assertTrue(document.path.exists())
 
     def test_portable_entry_rejects_invalid_game_using_structured_events(self):
         result = subprocess.run([sys.executable, str(ROOT / 'desktop_entry.py'), '--worker',

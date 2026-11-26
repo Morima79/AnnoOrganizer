@@ -1,5 +1,6 @@
 """Preserve personal settings and path semantics through desktop editing/import."""
 import json
+from contextlib import ExitStack
 import os
 from pathlib import Path
 import sys
@@ -53,18 +54,63 @@ class DesktopSettingsTests(unittest.TestCase):
         self.assertEqual(source.path.read_bytes(), before)
         self.assertFalse(imported.path.exists())
 
-    def test_all_new_configs_are_read_only_until_saved_and_use_bundled_demos(self):
+    def test_first_launch_saves_system_paths_and_documents_outputs(self):
         store = SettingsStore(self.folder / 'appdata')
-        for game in ('anno117', 'anno1800', 'anno1404'):
-            doc = store.open_game(game)
-            view = doc.view()
-            self.assertEqual(view.output, (store.directory / game / 'local-data').resolve())
-            self.assertEqual(game_api(game).PROJECT, ROOT / game)
-            if game == 'anno1404':
-                self.assertEqual(view.saves(), [ROOT / game / 'demo/saves'])
-            else:
-                self.assertEqual(view.path('account'), ROOT / game / 'demo/saves')
-        self.assertFalse(store.directory.exists())
+        documents = self.folder / 'Redirected Documents'
+        (documents / 'Anno 1404/Savegames').mkdir(parents=True)
+        (documents / 'ANNO 1404 Venedig/Savegames').mkdir(parents=True)
+        with ExitStack() as stack:
+            for game in ('anno117', 'anno1800', 'anno1404'):
+                stack.enter_context(patch.object(game_api(game), 'documents_folder', return_value=documents))
+                stack.enter_context(patch.object(game_api(game), 'find_game_data', return_value=None))
+            for game in ('anno117', 'anno1800', 'anno1404'):
+                doc = store.open_game(game)
+                view = doc.view()
+                self.assertEqual(view.output, documents / 'AnnoOrganizer' / game.replace('anno', 'Anno '))
+                self.assertTrue(doc.path.is_file())
+                self.assertEqual(json.loads(doc.path.read_text(encoding='utf-8')), doc.data)
+                self.assertEqual(game_api(game).PROJECT, ROOT / game)
+                if game == 'anno1404':
+                    self.assertEqual(view.saves(), [documents / 'Anno 1404/Savegames',
+                                                    documents / 'ANNO 1404 Venedig/Savegames'])
+                else:
+                    name = 'Anno 117 - Pax Romana' if game == 'anno117' else 'Anno 1800'
+                    self.assertEqual(view.path('account'), documents / name / 'accounts')
+                    self.assertEqual(view.path('stamps'), documents / name / 'stamps')
+        self.assertFalse((documents / 'AnnoOrganizer').exists())
+
+    def test_existing_configuration_is_never_replaced_by_system_detection(self):
+        doc = self.document()
+        store = SettingsStore(self.folder / 'appdata')
+        store.select(doc)
+        before = doc.path.read_bytes()
+        with patch('desktop.first_run.system_settings', side_effect=AssertionError('Must not detect')):
+            loaded = store.open_game(doc.game)
+        self.assertEqual(loaded.data, doc.data)
+        self.assertEqual(doc.path.read_bytes(), before)
+
+    def test_first_run_detects_installation_and_existing_documents_name_variant(self):
+        documents = self.folder / 'Documents'
+        home = documents / 'Anno 117 Pax Romana'
+        home.mkdir(parents=True)
+        installation = self.folder / 'Games/Anno 117/maindata'
+        installation.mkdir(parents=True)
+        (installation / 'config.rda').write_bytes(b'fixture')
+        api = game_api('anno117')
+        with patch.object(api, 'documents_folder', return_value=documents), \
+                patch.object(api, 'find_game_data', return_value=installation):
+            document = SettingsStore(self.folder / 'gui').open_game('anno117')
+        self.assertEqual(document.view().path('game_data'), installation)
+        self.assertEqual(document.data['account'], str(home / 'accounts'))
+        self.assertFalse((home / 'accounts').exists())
+
+    def test_missing_standard_input_folders_are_not_created(self):
+        api = game_api('anno1404')
+        documents = self.folder / 'Documents'
+        with patch.object(api, 'documents_folder', return_value=documents):
+            document = SettingsStore(self.folder / 'gui').open_game('anno1404')
+        self.assertEqual(document.view().saves(), [documents / 'Anno 1404/Savegames'])
+        self.assertFalse(documents.exists())
 
     def test_validation_rejects_malformed_values_and_code_or_input_outputs(self):
         doc = self.document()

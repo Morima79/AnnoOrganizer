@@ -179,7 +179,7 @@ def scan(cache_path, refresh=False):
         if 'stamp' in row and 'play_ms' in row and 'signature' in row and 'campaign_id' in row
     }
     candidates = [(root,p) for root in (ACCOUNT,ARCHIVE) for p in root.rglob('*.a7s')
-                  if not (p.parent == ACCOUNT and p.name.lower().startswith('accountdata'))]
+                  if not p.name.lower().startswith('accountdata')]
 
     def one(item):
         root, path = item

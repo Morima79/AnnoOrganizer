@@ -15,7 +15,7 @@ Local Windows tools for **Anno 117: Pax Romana**, **Anno 1800** and **Anno 1404*
 | Stamp gallery and blueprint PNGs | Yes | Yes | Not implemented |
 | Additional stamp filters | Ceres field sizes, cosmetic DLCs | DLCs, tractors, silos, electricity, town halls, trade unions | — |
 
-**Source files are read only.** New output defaults to `<game>/local-data/`. The output directory is configurable. Each game folder is independently usable and includes its own launcher, configuration, dependencies, documentation and license. The root launcher provides an optional shared menu.
+**Source files are read only.** Console output defaults to `<game>/local-data/`; new desktop configurations use `Documents/AnnoOrganizer/Anno <number>/`. The output directory is configurable. Each game folder is independently usable and includes its own launcher, configuration, dependencies, documentation and license. The root launcher provides an optional shared menu.
 
 ## Online demos and releases
 

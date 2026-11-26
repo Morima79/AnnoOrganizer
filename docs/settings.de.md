@@ -11,7 +11,7 @@ JSON erlaubt keine Kommentare. Windows-Pfade lassen sich mit `/` schreiben; Back
 | `version` | Schema `1` mit englischen Schlüsseln |
 | `game` | Feste Spielkennung: `anno117`, `anno1800` oder `anno1404` |
 | `timezone` | IANA-Zeitzone für 117 und 1800, zum Beispiel `Europe/Zurich`; 1404 zeigt lokale Dateizeitstempel |
-| `output` | Ausgabeordner dieses Spiels; neue Voreinstellung `./local-data` |
+| `output` | Konsolen-Voreinstellung `./local-data`; neue GUI-Einstellungen verwenden `Dokumente/AnnoOrganizer/Anno <Nummer>/` |
 | `game_data` | `maindata` der Spielinstallation; für 117 und 1800 erforderlich |
 | `account` | Spielkonto oder übergeordneter `accounts`-Ordner bei 117 und 1800 |
 | `stamps` | Lokale Stempelbibliothek bei 117 und 1800 |
@@ -78,4 +78,6 @@ Optional lassen sich die Ausgaben getrennt festlegen:
 
 ## Desktop-Vorschau
 
-Die optionale Oberfläche (`Launch.cmd --gui` im Hauptordner) verwaltet neue Einstellungen unter `%LOCALAPPDATA%/AnnoOrganizer/<spiel>/settings.json`. **Datei verwenden** öffnet eine bestehende Konfiguration am bisherigen Ort; **Kopie importieren** erhält ihre aufgelösten Pfadziele in einer separaten Kopie. Nur **Speichern** schreibt die persönlichen Einstellungen. **Erzeugen** verwendet eine vorübergehende Konfigurationskopie. Die Konsolenstarter behalten ihre bisherigen Standardorte. [Bedienung und Grenzen](desktop.de.md).
+Beim ersten Öffnen eines Spiels erzeugt die GUI automatisch eine eigene Konfiguration mit erkannten Installationen, den üblichen Spielstand-/Stempelordnern und Ausgabezielen unter dem von Windows gemeldeten Dokumente-Ordner (`AnnoOrganizer/Anno 117/`, `Anno 1800/`, `Anno 1404/`). Die Erstaktion ist **Karten und Excel**. Vorhandene Konfigurationen werden erhalten. Die öffentlichen Beispielkonfigurationen und Konsolenstarter behalten ihren bisherigen Demo-Einstieg.
+
+Die optionale Oberfläche (`Launch.cmd --gui` im Hauptordner) verwaltet neue Einstellungen unter `%LOCALAPPDATA%/AnnoOrganizer/<spiel>/settings.json`. **Datei verwenden** öffnet eine bestehende Konfiguration am bisherigen Ort; **Kopie importieren** erhält ihre aufgelösten Pfadziele in einer separaten Kopie. Spätere Eingabeänderungen werden nur mit **Speichern** in die persönliche Datei übernommen. **Erzeugen** verwendet eine vorübergehende Konfigurationskopie. Die Konsolenstarter behalten ihre bisherigen Standardorte. [Bedienung und Grenzen](desktop.de.md).
