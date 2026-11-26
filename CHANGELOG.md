@@ -7,6 +7,12 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+### Deutsch
+
+## [v0.1.17] - 2026-11-26
+
+### English
+
 - Replace the desktop guide with a compact illustrated beginner walkthrough using Anno 117, with matching German/English screenshots and a separate technical reference. Provide it as a bilingual HTML page linked from the demo home page and desktop app, including an offline copy in the Windows package.
 
 - Open demo galleries from the landing page in separate tabs, with bilingual accessible link descriptions.
