@@ -26,6 +26,8 @@ Nach Abschluss auf **Galerien öffnen** klicken. Die Ergebnisse öffnen sich im 
 
 In der Galerie kannst du suchen und filtern. Ein Klick auf eine Karte oder einen Bauplan öffnet die Grossansicht. **DE / EN** wechselt die Sprache.
 
+**Excel-Bericht öffnen** bietet vorhandene Berichte des gewählten Spiels einschliesslich Demo-Berichten an und öffnet die gewählte Datei in der Windows-Standardanwendung. Das funktioniert auch nach einem Neustart und berücksichtigt separate Berichtsordner.
+
 [<img src="images/user-guide-117-gallery-de.jpg" alt="Die Anno-117-Stempelgalerie mit Suchfeld, Filtern und drei Bauplan-Vorschauen." width="640">](images/user-guide-117-gallery-de.jpg)
 
 ## 4. Deine eigenen Spielstände und Stempel verwenden
@@ -45,6 +47,8 @@ Geänderte Ordner mit **Speichern** behalten. Dann unten **Karten und Excel** od
 ## Danach im Alltag
 
 Nach einem neuen Spielstand oder Stempel auf **Alle Galerien aktualisieren** klicken. Das aktualisiert die eingerichteten Galerien; fehlende Spiele werden übersprungen. Mit **Abbrechen** kannst du einen laufenden Auftrag geordnet stoppen.
+
+**Protokolle** zeigt den letzten Lauf des gewählten Spiels auch nach einem Neustart an. Beim Spielwechsel aktualisiert sich ein offenes Protokollfenster. Gemeinsame Aktualisierungen behalten Karten- und Stempelprotokolle pro Spiel zusammen; für Spiele ohne Lauf erscheint ein Leerzustand.
 
 | Wenn etwas nicht klappt | Das hilft |
 |---|---|

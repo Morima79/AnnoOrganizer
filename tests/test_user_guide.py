@@ -45,7 +45,8 @@ class UserGuideTests(unittest.TestCase):
         self.assertIn('href="guide/"', (ROOT / 'site/index.html').read_text(encoding='utf-8'))
         guide_files = ['docs/user-guide.html', 'docs/desktop-reference.md', 'docs/desktop-reference.de.md']
         guide_files += [p.relative_to(ROOT).as_posix() for p in (ROOT / 'docs/images').glob('user-guide-117-*.jpg')]
-        required = ['desktop/app.py', 'desktop/locales/de.json', 'desktop/locales/en.json', 'LICENSE']
+        required = ['desktop/app.py', 'desktop/locales/de.json', 'desktop/locales/en.json',
+                    'desktop/assets/annoorganizer.ico', 'LICENSE']
         required += [game + '/tools/anno_worker.py' for game in ('anno117', 'anno1800', 'anno1404')]
         selected = payload_files(ROOT, required + guide_files)
         self.assertTrue(set(guide_files).issubset(selected))

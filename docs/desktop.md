@@ -26,6 +26,8 @@ When processing finishes, click **Open galleries**. Your results open in the bro
 
 Use search and filters in the gallery. Click a map or blueprint to open the enlarged view. **DE / EN** changes the language.
 
+**Open Excel report** offers existing reports for the selected game, including demo reports, and opens the selected file in your Windows default application. It also finds reports after restarting the app and respects separate report folders.
+
 [<img src="images/user-guide-117-gallery-en.jpg" alt="The Anno 117 stamp gallery with search, filters and three blueprint previews." width="640">](images/user-guide-117-gallery-en.jpg)
 
 ## 4. Use your own saves and stamps
@@ -45,6 +47,8 @@ Press **Save** to keep changed folders. Then choose **Maps and Excel** or **Stam
 ## Everyday use
 
 After saving a new game or stamp, click **Update all galleries**. This updates the configured galleries and skips missing games. Use **Cancel** to stop a running task cleanly.
+
+**Logs** shows the selected game's latest run, including after restarting the app. Switching games updates an open log window. Combined updates keep the map and stamp logs together for each game; games without a run show an empty state.
 
 | If something goes wrong | What to do |
 |---|---|

@@ -7,7 +7,11 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Add direct opening of regular and demo Excel reports from the desktop app. Restore logs per game after restart, update the log window on game changes, and retain both map and stamp logs from combined updates. Use one bundled application icon for the Windows executable and main window (issue #2).
+
 ### Deutsch
+
+- Reguläre und Demo-Excel-Berichte direkt aus der Desktop-App öffnen. Protokolle pro Spiel nach einem Neustart wieder anzeigen, beim Spielwechsel aktualisieren und Karten-/Stempelprotokolle gemeinsamer Aktualisierungen erhalten. Ein gemeinsames Anwendungssymbol für die Windows-EXE und das Hauptfenster verwenden (Issue #2).
 
 ## [v0.1.17] - 2026-11-26
 

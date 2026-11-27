@@ -25,7 +25,7 @@ def payload_files(root, tracked):
         path = Path(name)
         parts = path.parts
         allowed = name in ('LICENSE', 'CHANGELOG.md', 'README.md', 'README.de.md')
-        allowed |= len(parts) >= 2 and parts[0] == 'desktop' and path.suffix in ('.py', '.json')
+        allowed |= len(parts) >= 2 and parts[0] == 'desktop' and path.suffix in ('.py', '.json', '.ico')
         allowed |= len(parts) >= 2 and parts[0] == 'docs' and path.suffix in ('.md', '.html', '.png', '.jpg', '.svg')
         if parts and parts[0] in GAMES:
             allowed |= len(parts) >= 3 and parts[1] == 'tools' and path.suffix in ('.py', '.json', '.html', '.js', '.css')
@@ -49,7 +49,8 @@ def payload_files(root, tracked):
         approved.update(game + '/demo/' + name for name in ('manifest.json', 'README.md', 'README.de.md'))
         if any(name.startswith(game + '/demo/') and name not in approved for name in selected):
             raise ValueError('Unapproved demo input in desktop payload')
-    required = ['desktop/app.py', 'desktop/locales/de.json', 'desktop/locales/en.json', 'LICENSE']
+    required = ['desktop/app.py', 'desktop/locales/de.json', 'desktop/locales/en.json',
+                'desktop/assets/annoorganizer.ico', 'LICENSE']
     required += [game + '/tools/anno_worker.py' for game in GAMES]
     if any(name not in selected for name in required):
         raise ValueError('Desktop resources are incomplete')
@@ -67,6 +68,15 @@ def hidden_imports(root, names):
                 [node.module] if isinstance(node, ast.ImportFrom) and node.level == 0 and node.module else [])
             imports.update(module for module in modules if module.split('.')[0] not in local)
     return sorted(imports)
+
+
+def pyinstaller_command(source_root, work, payload):
+    """Use the runtime window icon for the executable's Windows resources too."""
+    return [sys.executable, '-m', 'PyInstaller', '--noconfirm', '--onedir', '--windowed',
+            '--name', 'AnnoOrganizer', '--icon', str(source_root / 'desktop/assets/annoorganizer.ico'),
+            '--distpath', str(work / 'dist'), '--workpath', str(work / 'build'), '--specpath', str(work),
+            '--add-data', str(payload) + os.pathsep + '.',
+            '--collect-all', 'PIL', '--collect-all', 'xlsxwriter', '--collect-all', 'tzdata']
 
 
 def notices(destination):
@@ -138,11 +148,7 @@ def build(version, output, development=False):
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(source_root / name, target)
             manifest[name] = hashlib.sha256(target.read_bytes()).hexdigest()
-        command = [sys.executable, '-m', 'PyInstaller', '--noconfirm', '--onedir', '--windowed',
-                   '--name', 'AnnoOrganizer', '--distpath', str(work / 'dist'),
-                   '--workpath', str(work / 'build'), '--specpath', str(work),
-                   '--add-data', str(payload) + os.pathsep + '.',
-                   '--collect-all', 'PIL', '--collect-all', 'xlsxwriter', '--collect-all', 'tzdata']
+        command = pyinstaller_command(source_root, work, payload)
         for module in hidden_imports(source_root, names):
             command += ['--hidden-import', module]
         command.append(str(source_root / 'desktop_entry.py'))

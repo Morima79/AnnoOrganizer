@@ -332,6 +332,71 @@ class DesktopUITests(unittest.TestCase):
         self.assertEqual(saved['result']['status'], 'failed')
         self.assertIsNone(self.app.snapshot)
 
+    def test_reports_resolve_separate_and_demo_destinations_and_open_with_windows(self):
+        self.assertTrue(self.app.report_button.instate(['disabled']))
+        for game in ('anno1404', 'anno117', 'anno1800'):
+            self.app.switch_game(game)
+            self.app.fields['report_output'].set(str(self.folder / game / 'Separate Reports'))
+            view = self.app.draft_view()
+            paths = [view.report_output / (game + '-map-seeds.xlsx'),
+                     view.output / 'demo/reports' / (game + '-map-seeds.xlsx')]
+            for path in paths:
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(b'workbook fixture')
+            self.app.refresh_galleries()
+            self.assertTrue(self.app.report_button.instate(['!disabled']))
+            self.assertEqual([path for _, path in self.app.available_reports()], paths)
+            self.app.fill_report_menu()
+            with patch('desktop.app.os.startfile') as start:
+                self.app.report_menu.invoke(0)
+                self.app.report_menu.invoke(1)
+            self.assertEqual([call.args[0] for call in start.call_args_list], paths)
+            with patch('desktop.app.os.startfile', side_effect=OSError('No file association')):
+                self.app.open_report(paths[0])
+            self.assertIn('No file association', self.errors)
+            self.assertTrue(self.app.save())
+            self.app.reload()
+            self.assertEqual([path for _, path in self.app.available_reports()], paths)
+            paths[0].unlink()
+            self.assertEqual([path for _, path in self.app.available_reports()], paths[1:])
+
+    def test_logs_follow_game_selection_in_open_window_and_survive_restart(self):
+        from desktop.app import DesktopApp
+        log = self.folder / 'demo.log'
+        log.write_text('1404 demo log', encoding='utf-8')
+        self.app.record_result(result=dict(status='failed', logs=[str(log)], message='1404 diagnostic'))
+        self.app.details = 'stale details'
+        self.app.show_logs()
+        self.assertIn('1404 demo log', self.app.log_text.get('1.0', 'end'))
+        self.app.switch_game('anno1800')
+        self.assertEqual(self.app.details, '')
+        self.assertEqual(self.app.log_text.get('1.0', 'end-1c'), self.app.t('log_empty'))
+        self.app.close_child('logs')
+        self.app.switch_game('anno1404')
+        self.app.show_logs()
+        self.assertIn('1404 diagnostic', self.app.log_text.get('1.0', 'end'))
+        second = tk.Tk()
+        second.withdraw()
+        self.addCleanup(second.destroy)
+        restarted = DesktopApp(second, directory=self.app.store.directory, game='anno1404')
+        restarted.show_logs()
+        self.assertIn('1404 demo log', restarted.log_text.get('1.0', 'end'))
+        log.unlink()
+        self.assertIn('1404 diagnostic', restarted.log_content())
+        record = self.app.store.directory / 'logs/anno1404-last-run.json'
+        record.write_text('{invalid', encoding='utf-8')
+        self.app.refresh_logs()
+        self.assertNotIn('1404 demo log', self.app.log_text.get('1.0', 'end'))
+
+    def test_main_window_uses_bundled_application_icon(self):
+        from desktop.app import DesktopApp
+        second = tk.Tk()
+        second.withdraw()
+        self.addCleanup(second.destroy)
+        with patch.object(second, 'iconbitmap', wraps=second.iconbitmap) as icon:
+            DesktopApp(second, directory=self.app.store.directory, game='anno1404')
+        icon.assert_called_once_with(default=str(ROOT / 'desktop/assets/annoorganizer.ico'))
+
     def test_browse_starts_at_resolved_draft_or_nearest_existing_parent(self):
         source = self.app.document.path.parent / 'Saved Games'
         source.mkdir(parents=True)

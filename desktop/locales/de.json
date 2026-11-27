@@ -81,5 +81,8 @@
   "already_running": "ANNO - Organizer ist mit diesem GUI-Datenordner bereits geöffnet. Verwende das vorhandene Fenster.",
   "browser_failed": "Die Galerie konnte nicht im Standardbrowser geöffnet werden.\n\n{path}\n\nDie Datei lässt sich auch direkt im Explorer öffnen.",
   "user_guide": "Anleitung",
-  "guide_open_failed": "Die Anleitung konnte nicht im Browser geöffnet werden. Öffne diese Adresse: {url}"
+  "guide_open_failed": "Die Anleitung konnte nicht im Browser geöffnet werden. Öffne diese Adresse: {url}",
+  "open_report": "Excel-Bericht öffnen",
+  "report": "Excel-Bericht",
+  "demo_report": "Excel-Bericht (Demo)"
 }

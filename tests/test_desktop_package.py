@@ -13,7 +13,7 @@ import zipfile
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 sys.path.insert(0, str(ROOT))
-from build_desktop import payload_files, hidden_imports
+from build_desktop import payload_files, hidden_imports, pyinstaller_command
 from smoke_desktop import extract
 from desktop.worker_client import WorkerClient
 from desktop.settings_store import game_api
@@ -33,12 +33,23 @@ class DesktopPackageTests(unittest.TestCase):
 
     def test_only_tracked_public_resources_are_selected(self):
         tracked = subprocess.check_output(['git', 'ls-files', '-z'], cwd=ROOT).decode().rstrip('\0').split('\0')
+        tracked = sorted(set(tracked) | {'desktop/assets/annoorganizer.ico'})
         names = payload_files(ROOT, tracked)
+        self.assertIn('desktop/assets/annoorganizer.ico', names)
         self.assertIn('anno1404/demo/manifest.json', names)
         self.assertIn('anno117/tools/anno_output_transaction.py', names)
         self.assertFalse(any('local-data' in name or name.endswith('/settings.json') for name in names))
         with self.assertRaisesRegex(ValueError, 'Private or generated'):
             payload_files(ROOT, [*tracked, 'anno117/tools/settings.json'])
+
+    def test_executable_and_runtime_share_a_multiresolution_icon(self):
+        from PIL import Image
+        command = pyinstaller_command(ROOT, Path('work'), Path('payload'))
+        icon = Path(command[command.index('--icon') + 1])
+        self.assertEqual(icon, ROOT / 'desktop/assets/annoorganizer.ico')
+        with Image.open(icon) as image:
+            self.assertEqual(image.format, 'ICO')
+            self.assertTrue({(16, 16), (32, 32), (48, 48), (256, 256)} <= image.ico.sizes())
 
     def test_colliding_game_modules_are_data_not_frozen_hidden_imports(self):
         imports = hidden_imports(ROOT, ['anno117/tools/analyze_saves.py',

@@ -58,6 +58,7 @@ class DesktopApp:
         self.action = tk.StringVar(root, self.saved_action(game))
         self.action.trace_add('write', lambda *_: self.refresh_destination())
         self.root.title(self.t('app_title'))
+        self.root.iconbitmap(default=str(ROOT / 'desktop/assets/annoorganizer.ico'))
         self.root.geometry('1080x820')
         self.root.minsize(860, 720)
         self.window_state = WindowState(self.root, self.store)
@@ -281,6 +282,13 @@ class DesktopApp:
         self.wrap_labels.append(self.status_label)
         logs = ttk.Button(footer, text=self.t('logs'), command=self.show_logs)
         logs.pack(side='left', pady=8)
+        self.report_button = ttk.Menubutton(footer, text=self.t('open_report'))
+        self.report_button.pack(side='left', padx=8, pady=8)
+        self.report_menu = tk.Menu(self.report_button, tearoff=False, postcommand=self.fill_report_menu,
+                                   background='#20252d', foreground='#e5e7eb',
+                                   activebackground='#cba56a', activeforeground='#171b22',
+                                   disabledforeground='#89919d', font=('Segoe UI', 10))
+        self.report_button.configure(menu=self.report_menu)
         output = ttk.Button(footer, text=self.t('open_output'), command=self.open_output)
         output.pack(side='right', pady=8)
         self.controls.extend([logs, output])
@@ -506,6 +514,7 @@ class DesktopApp:
         self.collect()
         self.remember_action()
         self.status, self.last_result, self.stage_action = 'ready', None, None
+        self.details = ''
         self.active_logs = []
         self._load(game)
         self.action.set(self.saved_action(game))
@@ -666,6 +675,7 @@ class DesktopApp:
     def start_batch_job(self):
         job = self.batch['jobs'][self.batch['index']]
         self.stage_action = None
+        self.active_logs = []
         self.client.start(job.game, job.action, self.batch['configs'][job.game])
 
     def complete_job(self, result):
@@ -677,7 +687,12 @@ class DesktopApp:
         while True:
             job = self.batch['jobs'][self.batch['index']]
             self.batch['results'].append(dict(game=job.game, action=job.action, result=result))
-            self.record_result(game=job.game, action=job.action, result=result)
+            game_results = [item for item in self.batch['results'] if item['game'] == job.game]
+            game_result = dict(result, diagnostics='', logs=list(dict.fromkeys(
+                path for item in game_results for path in item['result'].get('logs', []))),
+                message='\n'.join(item['action'] + ': ' + str(item['result'][key])
+                    for item in game_results for key in ('message', 'diagnostics') if item['result'].get(key)))
+            self.record_result(game=job.game, action=job.action, result=game_result)
             if result['status'] != 'success' or self.batch_cancelled or self.batch['index'] + 1 == len(self.batch['jobs']):
                 break
             self.batch['index'] += 1
@@ -812,6 +827,7 @@ class DesktopApp:
             pass
         if time.monotonic() >= self._gallery_refresh:
             self.refresh_galleries()
+            self.refresh_logs()
             self._gallery_refresh = time.monotonic() + 1
         self._poll_id = self.root.after(80, self.poll)
 
@@ -839,6 +855,38 @@ class DesktopApp:
         state = 'normal' if self.available_galleries() else 'disabled'
         self.gallery_button.configure(state=state)
         self.gallery_menu_button.configure(state=state)
+        self.report_button.configure(state='normal' if self.available_reports() else 'disabled')
+
+    def available_reports(self):
+        """Resolve regular and demo workbooks against the displayed configuration."""
+        if self.document is None:
+            return []
+        try:
+            view = self.draft_view()
+            filename = self.game + '-map-seeds.xlsx'
+            candidates = [(self.t('report'), view.report_output / filename),
+                          (self.t('demo_report'), view.output / 'demo/reports' / filename)]
+            reports, seen = [], set()
+            for label, path in candidates:
+                if path.is_file() and path not in seen:
+                    reports.append((label, path))
+                    seen.add(path)
+            return reports
+        except (ValueError, OSError, KeyError):
+            return []
+
+    def fill_report_menu(self):
+        self.report_menu.delete(0, 'end')
+        for label, path in self.available_reports():
+            self.report_menu.add_command(label=label, command=lambda target=path: self.open_report(target))
+
+    def open_report(self, path):
+        try:
+            if path not in [target for _, target in self.available_reports()]:
+                raise OSError(self.t('missing_output'))
+            os.startfile(path)
+        except OSError as exc:
+            self.error(exc)
 
     def fill_gallery_menu(self):
         self.gallery_menu.delete(0, 'end')
@@ -886,18 +934,50 @@ class DesktopApp:
         if window is None:
             return
         window.geometry('850x500')
-        text = tk.Text(window, wrap='word')
-        text.pack(fill='both', expand=True)
-        content = self.details
-        for path in (self.last_result or {}).get('logs', self.active_logs):
+        self.log_text = tk.Text(window, wrap='word')
+        self.log_text.pack(fill='both', expand=True)
+        self.refresh_logs()
+        self.show_child(window, 'logs')
+
+    def log_content(self):
+        """Read only the selected game's saved run or its current live log."""
+        content, result = '', {}
+        record = self.store.directory / 'logs' / (self.game + '-last-run.json')
+        try:
+            if record.is_file():
+                saved = json.loads(record.read_text(encoding='utf-8'))
+                result = saved['result']
+                if not isinstance(result, dict) or not isinstance(result.get('logs', []), list):
+                    raise ValueError('Invalid saved run')
+                content = str(saved.get('updated_at', ''))
+                content += '\n' + '\n'.join(str(result.get(key, '')) for key in ('message', 'diagnostics'))
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            content = str(exc)
+            result = {}
+        running_game = self.batch['jobs'][self.batch['index']].game if self.batch else self.game
+        paths = result.get('logs', [])
+        if (self.client.running or self.snapshot is not None) and running_game == self.game:
+            content, paths = '', self.active_logs
+        for path in paths:
+            if not isinstance(path, str):
+                continue
             try:
                 if Path(path).is_file():
                     content += '\n\n' + path + '\n' + Path(path).read_text(encoding='utf-8', errors='replace')[-100000:]
             except OSError as exc:
                 content += '\n' + str(exc)
-        text.insert('1.0', content.strip() or self.t('log_empty'))
-        text.configure(state='disabled')
-        self.show_child(window, 'logs')
+        return content.strip() or self.t('log_empty')
+
+    def refresh_logs(self):
+        window = self.child_windows.get('logs')
+        if window is None or not window.winfo_exists():
+            return
+        content = self.log_content()
+        if self.log_text.get('1.0', 'end-1c') != content:
+            self.log_text.configure(state='normal')
+            self.log_text.delete('1.0', 'end')
+            self.log_text.insert('1.0', content)
+            self.log_text.configure(state='disabled')
 
     def open_guide(self):
         page = ROOT / 'docs/user-guide.html'
@@ -949,6 +1029,7 @@ class DesktopApp:
             self.error(exc)
 
     def refresh_child_language(self):
+        self.refresh_logs()
         for key, window in self.child_windows.items():
             if window.winfo_exists():
                 window.title(self.t(key))

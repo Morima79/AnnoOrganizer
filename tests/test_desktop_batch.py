@@ -163,6 +163,25 @@ class BatchUITests(unittest.TestCase):
                 self.assertEqual(browser.call_count, 0 if number < 4 else 5)
             self.assertEqual([call.args[0] for call in browser.call_args_list], [page.resolve().as_uri() for page in pages])
 
+    def test_combined_update_keeps_each_games_map_and_stamp_logs(self):
+        self.app.generate_all()
+        for number in range(5):
+            game, action, _ = self.started[-1]
+            log = self.folder / (game + '-' + action + '.log')
+            log.write_text(game + '/' + action, encoding='utf-8')
+            self.app.client.running = False
+            self.app.client.events.put(dict(type='completed', payload=dict(
+                status='success', galleries=[], logs=[str(log)], partial_output=False)))
+            self.app.poll()
+        for game in ('anno117', 'anno1800', 'anno1404'):
+            self.app.switch_game(game)
+            content = self.app.log_content()
+            self.assertIn(game + '/analyze', content)
+            if game != 'anno1404':
+                self.assertIn(game + '/stamps', content)
+            for other in {'anno117', 'anno1800', 'anno1404'} - {game}:
+                self.assertNotIn(other, content)
+
     def test_preflight_failure_does_not_start_a_worker(self):
         self.app.fields['timezone'].set('invalid/timezone')
         self.app.generate_all()
