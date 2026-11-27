@@ -26,7 +26,7 @@ Nach Abschluss auf **Galerien öffnen** klicken. Die Ergebnisse öffnen sich im 
 
 In der Galerie kannst du suchen und filtern. Ein Klick auf eine Karte oder einen Bauplan öffnet die Grossansicht. **DE / EN** wechselt die Sprache.
 
-**Excel-Bericht öffnen** bietet vorhandene Berichte des gewählten Spiels einschliesslich Demo-Berichten an und öffnet die gewählte Datei in der Windows-Standardanwendung. Das funktioniert auch nach einem Neustart und berücksichtigt separate Berichtsordner.
+**Excel-Bericht öffnen** bietet vorhandene Berichte des gewählten Spiels einschliesslich Demo-Berichten an und öffnet die gewählte Datei in der Windows-Standardanwendung. Das funktioniert auch nach einem Neustart und berücksichtigt separate Berichtsordner. Ein einzelner vorhandener Bericht öffnet sich direkt; wenn regulärer und Demo-Bericht vorhanden sind, erscheint eine Auswahl.
 
 [<img src="images/user-guide-117-gallery-de.jpg" alt="Die Anno-117-Stempelgalerie mit Suchfeld, Filtern und drei Bauplan-Vorschauen." width="640">](images/user-guide-117-gallery-de.jpg)
 

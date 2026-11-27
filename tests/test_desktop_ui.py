@@ -334,16 +334,26 @@ class DesktopUITests(unittest.TestCase):
 
     def test_reports_resolve_separate_and_demo_destinations_and_open_with_windows(self):
         self.assertTrue(self.app.report_button.instate(['disabled']))
+        self.assertEqual(self.app.report_choice.winfo_manager(), '')
         for game in ('anno1404', 'anno117', 'anno1800'):
             self.app.switch_game(game)
             self.app.fields['report_output'].set(str(self.folder / game / 'Separate Reports'))
             view = self.app.draft_view()
             paths = [view.report_output / (game + '-map-seeds.xlsx'),
                      view.output / 'demo/reports' / (game + '-map-seeds.xlsx')]
-            for path in paths:
+            for number, path in enumerate(paths):
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_bytes(b'workbook fixture')
+                self.app.refresh_galleries()
+                if number == 0:
+                    self.assertEqual(self.app.report_button.winfo_manager(), 'grid')
+                    self.assertEqual(self.app.report_choice.winfo_manager(), '')
+                    with patch('desktop.app.os.startfile') as start:
+                        self.app.report_button.invoke()
+                    start.assert_called_once_with(path)
             self.app.refresh_galleries()
+            self.assertEqual(self.app.report_button.winfo_manager(), '')
+            self.assertEqual(self.app.report_choice.winfo_manager(), 'grid')
             self.assertTrue(self.app.report_button.instate(['!disabled']))
             self.assertEqual([path for _, path in self.app.available_reports()], paths)
             self.app.fill_report_menu()
@@ -359,6 +369,15 @@ class DesktopUITests(unittest.TestCase):
             self.assertEqual([path for _, path in self.app.available_reports()], paths)
             paths[0].unlink()
             self.assertEqual([path for _, path in self.app.available_reports()], paths[1:])
+            self.app.refresh_galleries()
+            self.assertEqual(self.app.report_button.winfo_manager(), 'grid')
+            self.assertEqual(self.app.report_choice.winfo_manager(), '')
+            with patch('desktop.app.os.startfile') as start:
+                self.app.report_button.invoke()
+            start.assert_called_once_with(paths[1])
+            paths[1].unlink()
+            self.app.report_button.invoke()
+            self.assertTrue(self.app.report_button.instate(['disabled']))
 
     def test_logs_follow_game_selection_in_open_window_and_survive_restart(self):
         from desktop.app import DesktopApp

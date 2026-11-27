@@ -26,7 +26,7 @@ When processing finishes, click **Open galleries**. Your results open in the bro
 
 Use search and filters in the gallery. Click a map or blueprint to open the enlarged view. **DE / EN** changes the language.
 
-**Open Excel report** offers existing reports for the selected game, including demo reports, and opens the selected file in your Windows default application. It also finds reports after restarting the app and respects separate report folders.
+**Open Excel report** offers existing reports for the selected game, including demo reports, and opens the selected file in your Windows default application. It also finds reports after restarting the app and respects separate report folders. A single available report opens directly; if both regular and demo reports exist, a menu offers the choice.
 
 [<img src="images/user-guide-117-gallery-en.jpg" alt="The Anno 117 stamp gallery with search, filters and three blueprint previews." width="640">](images/user-guide-117-gallery-en.jpg)
 

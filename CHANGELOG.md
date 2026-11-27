@@ -9,6 +9,16 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### Deutsch
 
+## [v0.1.19] - 2026-11-27
+
+### English
+
+- Open a single available desktop Excel report directly; show a regular/demo selection only when both exist.
+
+### Deutsch
+
+- Einen einzelnen vorhandenen Excel-Bericht direkt aus der Desktop-App öffnen; nur bei regulärem und Demo-Bericht eine Auswahl zeigen.
+
 ## [v0.1.18] - 2026-11-27
 
 ### English

@@ -282,13 +282,15 @@ class DesktopApp:
         self.wrap_labels.append(self.status_label)
         logs = ttk.Button(footer, text=self.t('logs'), command=self.show_logs)
         logs.pack(side='left', pady=8)
-        self.report_button = ttk.Menubutton(footer, text=self.t('open_report'))
-        self.report_button.pack(side='left', padx=8, pady=8)
-        self.report_menu = tk.Menu(self.report_button, tearoff=False, postcommand=self.fill_report_menu,
+        report_group = ttk.Frame(footer)
+        report_group.pack(side='left', padx=8, pady=8)
+        self.report_button = ttk.Button(report_group, text=self.t('open_report'), command=self.open_single_report)
+        self.report_choice = ttk.Menubutton(report_group, text=self.t('open_report'))
+        self.report_menu = tk.Menu(self.report_choice, tearoff=False, postcommand=self.fill_report_menu,
                                    background='#20252d', foreground='#e5e7eb',
                                    activebackground='#cba56a', activeforeground='#171b22',
                                    disabledforeground='#89919d', font=('Segoe UI', 10))
-        self.report_button.configure(menu=self.report_menu)
+        self.report_choice.configure(menu=self.report_menu)
         output = ttk.Button(footer, text=self.t('open_output'), command=self.open_output)
         output.pack(side='right', pady=8)
         self.controls.extend([logs, output])
@@ -855,7 +857,21 @@ class DesktopApp:
         state = 'normal' if self.available_galleries() else 'disabled'
         self.gallery_button.configure(state=state)
         self.gallery_menu_button.configure(state=state)
-        self.report_button.configure(state='normal' if self.available_reports() else 'disabled')
+        reports = self.available_reports()
+        self.report_button.configure(state='normal' if reports else 'disabled')
+        if len(reports) > 1:
+            self.report_button.grid_remove()
+            self.report_choice.grid(row=0, column=0)
+        else:
+            self.report_choice.grid_remove()
+            self.report_button.grid(row=0, column=0)
+
+    def open_single_report(self):
+        reports = self.available_reports()
+        if len(reports) == 1:
+            self.open_report(reports[0][1])
+        else:
+            self.refresh_galleries()
 
     def available_reports(self):
         """Resolve regular and demo workbooks against the displayed configuration."""

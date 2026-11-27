@@ -90,7 +90,7 @@ Success is displayed only when the worker completion and process exit code agree
 
 Each game's latest job and error details are saved to `<GUI data directory>/logs/<game>-last-run.json`. Errors that occur before generator logs start remain readable after closing the GUI. These files may contain personal paths and stay local.
 
-The log window follows the selected game and restores its saved diagnostics and log files after restart. Combined updates retain both map and stamp logs per game. **Open Excel report** offers regular and demo workbooks from the displayed configuration in the Windows default application, including after restart.
+The log window follows the selected game and restores its saved diagnostics and log files after restart. Combined updates retain both map and stamp logs per game. **Open Excel report** opens a single available workbook directly in the Windows default application, including after restart. A selection menu appears only when both regular and demo workbooks exist in the displayed configuration.
 
 ## Current limitations
 

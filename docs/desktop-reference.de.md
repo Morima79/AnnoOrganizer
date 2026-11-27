@@ -90,7 +90,7 @@ Erfolg wird erst angezeigt, wenn Worker-Abschluss und Prozess-Exitcode zusammenp
 
 Der letzte Auftrag jedes Spiels wird samt Fehlerdetails unter `<GUI-Datenordner>/logs/<spiel>-last-run.json` gespeichert. Dadurch bleiben auch Fehler vor dem Start eines Generatorlogs nach dem Schliessen lesbar. Diese Dateien können persönliche Pfade enthalten und bleiben lokal.
 
-Das Protokollfenster folgt dem gewählten Spiel und zeigt dessen gespeicherte Diagnosen und Logdateien nach einem Neustart wieder an. Gemeinsame Aktualisierungen behalten Karten- und Stempelprotokolle pro Spiel. **Excel-Bericht öffnen** bietet reguläre und Demo-Berichte aus der angezeigten Konfiguration in der Windows-Standardanwendung an, auch nach einem Neustart.
+Das Protokollfenster folgt dem gewählten Spiel und zeigt dessen gespeicherte Diagnosen und Logdateien nach einem Neustart wieder an. Gemeinsame Aktualisierungen behalten Karten- und Stempelprotokolle pro Spiel. **Excel-Bericht öffnen** öffnet einen einzelnen vorhandenen Bericht direkt in der Windows-Standardanwendung, auch nach einem Neustart. Nur wenn regulärer und Demo-Bericht in der angezeigten Konfiguration vorhanden sind, erscheint eine Auswahl.
 
 ## Aktuelle Grenzen
 
