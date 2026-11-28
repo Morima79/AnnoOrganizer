@@ -7,6 +7,12 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+### Deutsch
+
+## [v0.1.21] - 2026-11-28
+
+### English
+
 - Version Save Manager Windows ZIP/checksum filenames like the Organizer packages and publish only the two executable packages; retain GitHub-provided source downloads.
 - Remove the deferred Anno 1404 entry from the Save Manager game selector; an older saved selection falls back to a supported game while retaining account preferences.
 
