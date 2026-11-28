@@ -6,7 +6,9 @@
 
 [English](README.md) · [Deutsch](README.de.md)
 
-This folder is independently usable. It includes its own launcher, settings, dependencies and license and does not require the repository's main launcher or the other games. Source game files are read only. Menus and log messages remain German; HTML galleries provide a DE/EN switch.
+This folder is independently usable. It includes its own launcher, settings, dependencies and license and does not require the repository's main launcher or the other games. Analysis and gallery tools read source game files only. Menus and log messages remain German; HTML galleries provide a DE/EN switch.
+
+The separate [Save Manager](docs/save-manager.md) starts with `python tools/manage_saves.py --game anno1800`. It moves saves, renames complete profile folders and edits player names in selected saves or every save of a folder. Originals are backed up to ZIP first; nested profile folders are rejected.
 
 ## Preview
 

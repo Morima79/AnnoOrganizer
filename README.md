@@ -148,7 +148,7 @@ This is an unofficial project with no affiliation to Ubisoft. Maps and blueprint
 
 The map gallery shows each campaign’s latest save with population, wealth, balance, residences and ships. Statistic groups start collapsed; tiers, blueprints and other details appear only when opened. Previous save and playtime information is grouped under **Save details**. Values that cannot be read reliably show **not available**. Excel adds an **Aktuelle Spielstände** worksheet. [Data sources and limitations](docs/save-statistics.md).
 
-For Anno 117, a separate development [Save Manager](docs/save-manager.md) can copy or move saves, rename profile folders with verified backups, optionally change the praetor name in all three confirmed fields, and reject nested profile folders.
+For Anno 117 and Anno 1800, a separate development [Save Manager](docs/save-manager.md) can copy or move saves, rename profile folders with verified backups, change praetor/player names in selected saves or every save of a folder, and reject nested profile folders.
 
 ## Use and redistribution
 

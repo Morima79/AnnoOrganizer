@@ -1,4 +1,4 @@
-"""Standalone window for Anno 117 profile transfers and optional praetor edits."""
+"""Standalone save manager for Anno 117 and Anno 1800."""
 import argparse
 import json
 import os
@@ -9,8 +9,8 @@ import threading
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
-from anno_save_editor import (account_directory, inspect_save, praetor_name, transfer,
-                              temporary_root, validate_destination, validate_profile_name, validate_praetor)
+from anno_save_editor import (GAME_FORMATS, game_format, profile_saves, read_summary, account_directory, inspect_save, player_name, transfer,
+                              temporary_root, validate_destination, validate_profile_name, validate_player_name)
 from anno_settings import documents_folder
 from anno_save_ui import WindowState, apply_theme
 
@@ -29,26 +29,32 @@ def read_preferences(path):
         return {}
 
 
-def is_account_root(path):
-    return path.is_dir() and path.parent.name.casefold() == 'accounts' and (path / 'accountdata.a8s').is_file()
+def is_account_root(path, game='anno117'):
+    return game in GAME_FORMATS and path.is_dir() and path.parent.name.casefold() == 'accounts' and (path / game_format(game)['marker']).is_file()
 
 
-def initial_save_root(preferences_path):
+def initial_save_root(preferences_path, game='anno117'):
     """Prefer the remembered account, then discover accounts under redirected Documents."""
-    try:
-        data = json.loads(preferences_path.read_text(encoding='utf-8'))
-        remembered = Path(data['account_root']).resolve()
-        if is_account_root(remembered):
-            return remembered
-    except (OSError, ValueError, TypeError, KeyError):
-        pass
     documents = documents_folder()
-    roots = [documents / name / 'accounts' for name in
-             ('Anno 117 - Pax Romana', 'Anno 117 Pax Romana', 'Anno 117')]
+    if game not in GAME_FORMATS:
+        return documents
+    data = read_preferences(preferences_path)
+    roots_by_game = data.get('account_roots', {})
+    remembered_value = roots_by_game.get(game) if isinstance(roots_by_game, dict) else None
+    if remembered_value is None and game == 'anno117':
+        remembered_value = data.get('account_root')
+    if isinstance(remembered_value, str) and remembered_value:
+        try:
+            remembered = Path(remembered_value).resolve()
+            if is_account_root(remembered, game):
+                return remembered
+        except (OSError, ValueError):
+            pass
+    roots = [documents / name / 'accounts' for name in game_format(game)['documents']]
     accounts = set()
     for root in roots:
         try:
-            accounts.update(path.resolve() for path in root.iterdir() if is_account_root(path))
+            accounts.update(path.resolve() for path in root.iterdir() if is_account_root(path, game))
         except OSError:
             continue
     if len(accounts) == 1:
@@ -56,29 +62,29 @@ def initial_save_root(preferences_path):
     return next((root for root in roots if root.is_dir()), documents)
 
 
-def portable_smoke(sample):
+def portable_smoke(sample, game='anno117'):
     """Exercise the frozen core on isolated copies, without touching live accounts."""
     original = Path(sample).read_bytes()
-    with tempfile.TemporaryDirectory(prefix='anno117-portable-smoke-', dir=temporary_root()) as directory:
+    with tempfile.TemporaryDirectory(prefix='anno-portable-smoke-', dir=temporary_root()) as directory:
         root = Path(directory)
         account = root / 'accounts/smoke'
         account.mkdir(parents=True)
-        (account / 'accountdata.a8s').write_bytes(b'smoke marker')
+        (account / game_format(game)['marker']).write_bytes(b'smoke marker')
         profile = account / 'Old'
         profile.mkdir()
-        source = profile / 'Save.a8s'
+        source = profile / ('Save' + game_format(game)['extension'])
         source.write_bytes(original)
         transfer([source], account / 'New', root / 'backups', move=True,
-                 rename_folder=True, praetor='Portable Praetor')
-        moved = account / 'New/Save.a8s'
-        if source.exists() or praetor_name(moved.read_bytes()) != 'Portable Praetor':
+                 rename_folder=True, player='Portable Player', game=game)
+        moved = account / 'New' / ('Save' + game_format(game)['extension'])
+        if source.exists() or player_name(moved.read_bytes(), game) != 'Portable Player':
             raise RuntimeError('Portable profile rename failed.')
         transfer([moved], moved.parent, root / 'backups', edit_in_place=True,
-                 praetor='Portable Final')
-        if praetor_name(moved.read_bytes()) != 'Portable Final':
-            raise RuntimeError('Portable praetor edit failed.')
+                 player='Portable Final', game=game)
+        if player_name(moved.read_bytes(), game) != 'Portable Final':
+            raise RuntimeError('Portable player edit failed.')
         try:
-            transfer([moved], moved.parent / 'Nested', root / 'backups')
+            transfer([moved], moved.parent / 'Nested', root / 'backups', game=game)
         except ValueError:
             pass
         else:
@@ -88,7 +94,7 @@ def portable_smoke(sample):
 
 
 class SaveManager(tk.Tk):
-    def __init__(self, preferences_path=None):
+    def __init__(self, preferences_path=None, initial_game=None):
         super().__init__()
         self.title('Anno 117 – Spielstände verwalten')
         self.geometry('1080x820')
@@ -104,17 +110,19 @@ class SaveManager(tk.Tk):
         self.preferences_path = Path(preferences_path) if preferences_path is not None else local / 'save-manager.json'
         self.preferences = read_preferences(self.preferences_path)
         saved_game = self.preferences.get('selected_game')
-        self.game = saved_game if isinstance(saved_game, str) and saved_game in GAME_LABELS else 'anno117'
+        owner = Path(__file__).resolve().parents[1].name
+        default_game = owner if owner in GAME_FORMATS else 'anno117'
+        self.game = initial_game if initial_game in GAME_LABELS else (saved_game if isinstance(saved_game, str) and saved_game in GAME_LABELS else default_game)
         self.preferences['selected_game'] = self.game
         self.game_choice = tk.StringVar(value=GAME_LABELS[self.game])
-        self.save_root = initial_save_root(self.preferences_path)
+        self.save_root = initial_save_root(self.preferences_path, self.game)
         self.events = queue.Queue()
         self.busy = False
         self.destination = tk.StringVar()
         self.target_name = tk.StringVar()
         self.account_label = tk.StringVar(value='Startordner: ' + str(self.save_root))
-        self.change_praetor = tk.BooleanVar(value=False)
-        self.new_praetor = tk.StringVar()
+        self.change_player = tk.BooleanVar(value=False)
+        self.new_player = tk.StringVar()
         self.backup = tk.StringVar(value=str(Path(os.environ.get('LOCALAPPDATA', Path.home()))
                                            / 'AnnoOrganizer' / 'save-backups'))
         self.status = tk.StringVar(value='Saves oder einen Profilordner auswählen.')
@@ -137,13 +145,14 @@ class SaveManager(tk.Tk):
         self.controls = []
         self.button(buttons, 'Einzelne Saves auswählen …', self.select_files).pack(side='left')
         self.button(buttons, 'Ganzer Profilordner …', self.select_folder).pack(side='left', padx=8)
+        self.button(buttons, 'Alle Namen im Ordner …', self.select_name_folder).pack(side='right')
         self.selection_label = ttk.Label(body, text='Keine Quelle ausgewählt', wraplength=830)
         self.selection_label.pack(anchor='w', pady=8)
         table = ttk.Frame(body)
         table.pack(fill='both', expand=True)
-        self.tree = ttk.Treeview(table, columns=('praetor', 'profile', 'save'), height=7)
+        self.tree = ttk.Treeview(table, columns=('player', 'profile', 'save'), height=7)
         self.tree.heading('#0', text='Datei')
-        for key, label in [('praetor', 'Prätor'), ('profile', 'Speicherprofil'), ('save', 'Gespeicherter Name')]:
+        for key, label in [('player', 'Prätor'), ('profile', 'Speicherprofil'), ('save', 'Gespeicherter Name')]:
             self.tree.heading(key, text=label)
             self.tree.column(key, width=170)
         self.tree.column('#0', width=240)
@@ -167,17 +176,17 @@ class SaveManager(tk.Tk):
         self.target_name.trace_add('write', self.update_destination)
         row = ttk.Frame(body)
         row.pack(fill='x', pady=8)
-        toggle = ttk.Checkbutton(row, text='Prätornamen ändern', variable=self.change_praetor,
-                                 command=self.update_praetor_state)
+        self.player_toggle_text = tk.StringVar()
+        toggle = ttk.Checkbutton(row, textvariable=self.player_toggle_text, variable=self.change_player,
+                                 command=self.update_player_state)
         toggle.pack(side='left')
         self.controls.append(toggle)
-        self.praetor_entry = ttk.Entry(row, textvariable=self.new_praetor)
-        self.praetor_entry.pack(side='left', fill='x', expand=True, padx=(12, 0))
-        self.controls.append(self.praetor_entry)
-        self.update_praetor_state()
-        ttk.Label(body, text='Optional beim Übertragen oder mit «Nur Prätor ändern» am bisherigen Ort. '
-                  'Gilt für die ausgewählten Saves und daraus künftig erzeugte Spielstände.',
-                  wraplength=920, style='Muted.TLabel').pack(anchor='w')
+        self.player_entry = ttk.Entry(row, textvariable=self.new_player)
+        self.player_entry.pack(side='left', fill='x', expand=True, padx=(12, 0))
+        self.controls.append(self.player_entry)
+        self.update_player_state()
+        self.name_hint = tk.StringVar()
+        ttk.Label(body, textvariable=self.name_hint, wraplength=920, style='Muted.TLabel').pack(anchor='w')
         ttk.Label(body, text='Zielprofile liegen direkt im selben Konto. Unterordner in Profilen sind gesperrt. '
                   'Das Speicherprofil wird an den Zielordner angeglichen; Originale werden vorab als ZIP gesichert.',
                   wraplength=920).pack(anchor='w', pady=8)
@@ -186,7 +195,8 @@ class SaveManager(tk.Tk):
         self.button(actions, 'Kopieren', lambda: self.start(False)).pack(side='left')
         self.button(actions, 'Verschieben', lambda: self.start(True), style='Accent.TButton').pack(side='left', padx=8)
         self.button(actions, 'Profilordner umbenennen …', self.rename_folder).pack(side='left')
-        self.button(actions, 'Nur Prätor ändern', lambda: self.start(False, edit_in_place=True)).pack(side='right')
+        self.player_button = self.button(actions, 'Nur Namen ändern', lambda: self.start(False, edit_in_place=True))
+        self.player_button.pack(side='right')
         ttk.Label(body, textvariable=self.status, wraplength=920, style='Muted.TLabel').pack(anchor='w', pady=8)
         self.protocol('WM_DELETE_WINDOW', self.close)
         self.window_state = WindowState(self, self)
@@ -203,20 +213,25 @@ class SaveManager(tk.Tk):
     def update_destination(self, *_):
         self.destination.set('Ziel: ' + str(self.account / self.target_name.get()) if self.account else '')
 
-    def update_praetor_state(self):
-        self.praetor_entry.configure(state='normal' if self.change_praetor.get() and not self.busy
-                                     and self.game == 'anno117' else 'disabled')
+    def update_player_state(self):
+        self.player_entry.configure(state='normal' if self.change_player.get() and not self.busy
+                                     and self.game in GAME_FORMATS else 'disabled')
 
     def refresh_controls(self):
-        state = 'normal' if self.game == 'anno117' and not self.busy else 'disabled'
+        state = 'normal' if self.game in GAME_FORMATS and not self.busy else 'disabled'
         for control in self.controls:
             control.configure(state=state)
         self.game_combo.configure(state='disabled' if self.busy else 'readonly')
-        self.update_praetor_state()
+        self.update_player_state()
 
     def update_game_view(self):
         self.title(GAME_LABELS[self.game] + ' – Spielstände verwalten')
-        if self.game == 'anno117':
+        person = 'Prätor' if self.game == 'anno117' else 'Spielername'
+        self.tree.heading('player', text=person)
+        self.player_toggle_text.set('Prätornamen ändern' if self.game == 'anno117' else 'Spielernamen ändern')
+        self.player_button.configure(text='Nur Prätor ändern' if self.game == 'anno117' else 'Nur Spielername ändern')
+        self.name_hint.set('Optional beim Übertragen oder am bisherigen Ort ändern. Gilt für alle ausgewählten Saves und daraus künftig erzeugte Spielstände.')
+        if self.game in GAME_FORMATS:
             self.account_label.set('Startordner: ' + str(self.save_root))
             self.status.set('Saves oder einen Profilordner auswählen.')
         else:
@@ -231,6 +246,7 @@ class SaveManager(tk.Tk):
         if selected == self.game:
             return
         self.game = selected
+        self.save_root = initial_save_root(self.preferences_path, selected)
         self.preferences['selected_game'] = selected
         self.clear_selection()
         self.refresh_controls()
@@ -239,12 +255,17 @@ class SaveManager(tk.Tk):
 
     def dialog_root(self):
         if not self.save_root.is_dir():
-            self.save_root = initial_save_root(self.preferences_path)
+            self.save_root = initial_save_root(self.preferences_path, self.game)
         return str(self.save_root)
 
     def remember_account(self, account):
         self.save_root = account
-        self.preferences['account_root'] = str(account)
+        roots = self.preferences.setdefault('account_roots', {})
+        if not isinstance(roots, dict):
+            roots = self.preferences['account_roots'] = {}
+        roots[self.game] = str(account)
+        if self.game == 'anno117':
+            self.preferences['account_root'] = str(account)
         self.save_preferences()
 
     def save_preferences(self):
@@ -263,48 +284,64 @@ class SaveManager(tk.Tk):
         self.tree.delete(*self.tree.get_children())
         self.account_label.set('Startordner: ' + str(self.save_root))
         self.target_name.set('')
-        self.change_praetor.set(False)
-        self.new_praetor.set('')
-        self.update_praetor_state()
+        self.change_player.set(False)
+        self.new_player.set('')
+        self.update_player_state()
 
     def select_files(self):
-        if self.game != 'anno117' or self.busy:
+        if self.game not in GAME_FORMATS or self.busy:
             return
-        selected = filedialog.askopenfilenames(title='Anno-117-Saves auswählen', initialdir=self.dialog_root(),
-                                             filetypes=[('Anno 117', '*.a8s')])
+        selected = filedialog.askopenfilenames(title=game_format(self.game)['label'] + '-Saves auswählen', initialdir=self.dialog_root(),
+                                             filetypes=[(game_format(self.game)['label'], '*' + game_format(self.game)['extension'])])
         if selected:
             self.load([Path(p) for p in selected])
 
     def select_folder(self):
-        if self.game != 'anno117' or self.busy:
+        if self.game not in GAME_FORMATS or self.busy:
             return
         folder = filedialog.askdirectory(title='Einen Profilordner auswählen (nicht den Kontoordner)',
                                          initialdir=self.dialog_root())
         if folder:
             path = Path(folder)
-            self.load(sorted(p for p in path.iterdir() if p.suffix.casefold() == '.a8s'), path)
+            self.load(sorted(p for p in path.iterdir() if p.suffix.casefold() == game_format(self.game)['extension']), path)
+
+    def select_name_folder(self):
+        if self.game not in GAME_FORMATS or self.busy:
+            return
+        selected = filedialog.askdirectory(title='Profilordner für die Namensänderung aller Saves wählen',
+                                            initialdir=self.dialog_root())
+        if not selected:
+            return
+        try:
+            sources = profile_saves(selected, self.game)
+        except (OSError, ValueError) as exc:
+            messagebox.showerror('Profilordner nicht verwendbar', str(exc), parent=self)
+            return
+        self.load(sources)
+        if self.sources:
+            self.change_player.set(True)
+            self.update_player_state()
+            self.player_entry.focus_set()
+            self.player_entry.selection_range(0, tk.END)
+            action = self.player_button.cget('text')
+            self.status.set(f'Alle {len(self.sources)} Saves des Ordners ausgewählt. Neuen Namen eingeben und «{action}» ausführen.')
 
     def load(self, sources, folder=None):
-        if self.game != 'anno117' or self.busy:
+        if self.game not in GAME_FORMATS or self.busy:
             return
         self.clear_selection()
         try:
             if not sources:
-                raise ValueError('Keine .a8s-Saves gefunden.')
+                raise ValueError('Keine ' + game_format(self.game)['extension'] + '-Saves gefunden.')
             sources = [Path(p).resolve(strict=True) for p in sources]
-            account = account_directory(sources[0].parent)
-            validate_destination(sources, account / (sources[0].parent.name + ' - Neu'))
+            account = account_directory(sources[0].parent, self.game)
+            validate_destination(sources, account / (sources[0].parent.name + ' - Neu'), game=self.game)
             if folder is not None and set(sources[0].parent.iterdir()) != set(sources):
                 raise ValueError('Der Profilordner enthält weitere Dateien oder Unterordner. '
                                  'Unterordner werden nicht übernommen; bitte einzelne Saves direkt im Profil wählen.')
             labels = set()
             for i, source in enumerate(sources):
-                blob = source.read_bytes()
-                names = inspect_save(blob)
-                try:
-                    label = praetor_name(blob)
-                except ValueError:
-                    label = 'Nicht eindeutig zuordenbar'
+                names, label = read_summary(source, self.game)
                 labels.add(label)
                 self.tree.insert('', 'end', iid=str(i), text=source.name,
                                  values=(label, names['gamesetup.a7s'], names['meta.a7s']))
@@ -316,7 +353,7 @@ class SaveManager(tk.Tk):
             self.target_entry.focus_set()
             self.target_entry.selection_range(0, tk.END)
             if len(labels) == 1 and 'Nicht eindeutig zuordenbar' not in labels:
-                self.new_praetor.set(next(iter(labels)))
+                self.new_player.set(next(iter(labels)))
             self.status.set('Felder gelesen. Zielordner prüfen und Aktion auswählen.')
         except Exception as exc:
             self.selection_label.config(text='Auswahl konnte nicht geladen werden')
@@ -324,7 +361,7 @@ class SaveManager(tk.Tk):
             messagebox.showerror('Spielstand nicht unterstützt', str(exc), parent=self)
 
     def choose_destination(self):
-        if self.game != 'anno117' or self.busy:
+        if self.game not in GAME_FORMATS or self.busy:
             return
         if not self.account:
             messagebox.showinfo('Quelle wählen', 'Zuerst Saves oder einen Profilordner auswählen.', parent=self)
@@ -333,13 +370,13 @@ class SaveManager(tk.Tk):
         if selected:
             try:
                 destination = Path(selected).resolve(strict=True)
-                validate_destination(self.sources, destination)
+                validate_destination(self.sources, destination, game=self.game)
                 self.target_name.set(destination.name)
             except (ValueError, OSError) as exc:
                 messagebox.showerror('Ungültiges Ziel', str(exc), parent=self)
 
     def choose_backup(self):
-        if self.game != 'anno117' or self.busy:
+        if self.game not in GAME_FORMATS or self.busy:
             return
         selected = filedialog.askdirectory(title='Dauerhaften Sicherungsordner ausserhalb des Spielkontos wählen',
                                           initialdir=self.dialog_root())
@@ -347,7 +384,7 @@ class SaveManager(tk.Tk):
             self.backup.set(selected)
 
     def rename_folder(self):
-        if self.game != 'anno117' or self.busy:
+        if self.game not in GAME_FORMATS or self.busy:
             return
         if not self.folder:
             messagebox.showinfo('Profilordner wählen', 'Zuerst «Ganzer Profilordner» auswählen.', parent=self)
@@ -355,14 +392,14 @@ class SaveManager(tk.Tk):
         self.start(True, rename=True)
 
     def start(self, move, rename=False, edit_in_place=False):
-        if self.busy or not self.sources or self.game != 'anno117':
+        if self.busy or not self.sources or self.game not in GAME_FORMATS:
             return
         try:
-            praetor = validate_praetor(self.new_praetor.get()) if self.change_praetor.get() else None
-            if edit_in_place and praetor is None:
-                raise ValueError('«Prätornamen ändern» aktivieren und einen Namen eingeben.')
+            player = validate_player_name(self.new_player.get()) if self.change_player.get() else None
+            if edit_in_place and player is None:
+                raise ValueError('«Namen ändern» aktivieren und einen Namen eingeben.')
             destination = self.sources[0].parent if edit_in_place else self.account / validate_profile_name(self.target_name.get())
-            validate_destination(self.sources, destination, edit_in_place=edit_in_place)
+            validate_destination(self.sources, destination, edit_in_place=edit_in_place, game=self.game)
             if not self.backup.get().strip():
                 raise ValueError('Bitte einen Sicherungsordner angeben.')
             backup = Path(self.backup.get()).resolve()
@@ -375,9 +412,9 @@ class SaveManager(tk.Tk):
         except (ValueError, OSError) as exc:
             messagebox.showerror('Aktion nicht möglich', str(exc), parent=self)
             return
-        action = 'Prätor ändern' if edit_in_place else ('Profilordner umbenennen' if rename else ('Verschieben' if move else 'Kopieren'))
+        action = 'Namen ändern' if edit_in_place else ('Profilordner umbenennen' if rename else ('Verschieben' if move else 'Kopieren'))
         details = f'{len(self.sources)} Save(s) aus {self.sources[0].parent}\nZiel: {destination}'
-        details += '\nPrätor: ' + (praetor if praetor is not None else 'unverändert')
+        details += '\n' + ('Prätor' if self.game == 'anno117' else 'Spielername') + ': ' + (player if player is not None else 'unverändert')
         details += '\nSpeicherprofil: ' + destination.name
         details += f'\nSicherung: {backup}\n\nSpiel geschlossen? Aktion jetzt ausführen?'
         if not messagebox.askokcancel(action, details, parent=self):
@@ -389,7 +426,7 @@ class SaveManager(tk.Tk):
         def work():
             try:
                 result = transfer(sources, destination, backup, move=move, rename_folder=rename,
-                                  praetor=praetor, edit_in_place=edit_in_place)
+                                  player=player, edit_in_place=edit_in_place, game=self.game)
                 self.events.put((True, str(result)))
             except Exception as exc:
                 self.events.put((False, str(exc)))
@@ -431,15 +468,16 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--self-test', action='store_true')
     parser.add_argument('--sample-save', type=Path)
+    parser.add_argument('--game', choices=tuple(GAME_FORMATS))
     options = parser.parse_args()
     if options.self_test:
         with tempfile.TemporaryDirectory(prefix='anno117-gui-smoke-', dir=temporary_root()) as directory:
-            app = SaveManager(preferences_path=Path(directory) / 'save-manager.json')
+            app = SaveManager(preferences_path=Path(directory) / 'save-manager.json', initial_game=options.game)
             app.withdraw()
             app.update()
             app.destroy()
         if options.sample_save is not None:
-            portable_smoke(options.sample_save)
+            portable_smoke(options.sample_save, options.game or 'anno117')
     else:
-        app = SaveManager()
+        app = SaveManager(initial_game=options.game)
         app.mainloop()

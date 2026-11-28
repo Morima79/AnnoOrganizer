@@ -1,6 +1,7 @@
-"""Conservative Anno 117 save editing and backed-up profile transfers."""
+"""Conservative Anno 117/1800 save editing and backed-up profile transfers."""
 from datetime import datetime
 import hashlib
+from itertools import zip_longest
 import json
 import os
 from pathlib import Path
@@ -11,20 +12,49 @@ import uuid
 import zipfile
 import zlib
 
-from anno_file_formats import fields, inflate
+from anno_file_formats import fields, inflate, members
 
+GAME_FORMATS = {
+    'anno117': dict(extension='.a8s', marker='accountdata.a8s', label='Anno 117',
+                    documents=('Anno 117 - Pax Romana', 'Anno 117 Pax Romana', 'Anno 117')),
+    'anno1800': dict(extension='.a7s', marker='accountdata.a7s', label='Anno 1800',
+                     documents=('Anno 1800', 'Anno1800')),
+}
 PROFILE_PATHS = {
-    'header.a7s': ('CorporationProfile', 'SavegameProfileDisplayName'),
-    'gamesetup.a7s': ('GameSetupManager', 'SavegameProfileDisplayName'),
-    'meta.a7s': ('CorporationSaveGameName',),
+    'anno117': {
+        'header.a7s': ('CorporationProfile', 'SavegameProfileDisplayName'),
+        'gamesetup.a7s': ('GameSetupManager', 'SavegameProfileDisplayName'),
+        'meta.a7s': ('CorporationSaveGameName',),
+    },
+    'anno1800': {
+        'header.a7s': ('CorporationProfile', 'GameSetup', 'SavegameFolderW'),
+        'gamesetup.a7s': ('GameSetupManager', 'SavegameFolderW'),
+        'meta.a7s': ('CorporationSaveGameName',),
+    },
 }
 MEMBERS = ('meta.a7s', 'header.a7s', 'gamesetup.a7s', 'data.a7s')
-PRAETOR_PATHS = {
-    'header.a7s': ('CorporationProfile', 'SetupSlots', 'Slot', 'CompanyName'),
-    'gamesetup.a7s': ('GameSetupManager', 'SetupSlots', 'Slot', 'CompanyName'),
-    'data.a7s': ('MetaGameManager', 'MetaGameObjectManager', 'MetaObjectMap', '[]',
-                 'MetaParticipant', 'CustomCompanyName', '[]'),
+PLAYER_PATHS = {
+    'anno117': {
+        'header.a7s': ('CorporationProfile', 'SetupSlots', 'Slot', 'CompanyName'),
+        'gamesetup.a7s': ('GameSetupManager', 'SetupSlots', 'Slot', 'CompanyName'),
+        'data.a7s': ('MetaGameManager', 'MetaGameObjectManager', 'MetaObjectMap', '[]',
+                     'MetaParticipant', 'CustomCompanyName', '[]'),
+    },
+    'anno1800': {
+        'header.a7s': ('CorporationProfile', 'GameSetup', 'Peers', 'Peer', 'Values', 'Available',
+                       'ParticipantType', 'Values', 'Human', 'CompanyName'),
+        'gamesetup.a7s': ('GameSetupManager', 'Peers', 'Peer', 'Values', 'Available',
+                          'ParticipantType', 'Values', 'Human', 'CompanyName'),
+        'data.a7s': ('MetaGameManager', 'MetaGameObjectManager', 'MetaObjectMap', '[]',
+                     'MetaProfile', 'CustomCompanyName', '[]'),
+    },
 }
+
+
+def game_format(game):
+    if game not in GAME_FORMATS:
+        raise ValueError('Dieses Spiel wird noch nicht unterstützt.')
+    return GAME_FORMATS[game]
 
 
 def temporary_root():
@@ -76,11 +106,11 @@ def validate_name(name):
     return name
 
 
-def validate_praetor(name):
+def validate_player_name(name):
     """Keep punctuation allowed in player names, including the tested colon."""
     if (not name or name != name.strip() or any(ord(c) < 32 for c in name)
             or len(name.encode('utf-16-le')) > 240):
-        raise ValueError('Bitte einen Prätornamen ohne Rand-Leerzeichen oder Steuerzeichen angeben (höchstens 120 UTF-16-Zeichen).')
+        raise ValueError('Bitte einen Spielernamen ohne Rand-Leerzeichen oder Steuerzeichen angeben (höchstens 120 UTF-16-Zeichen).')
     return name
 
 
@@ -92,36 +122,51 @@ def validate_profile_name(name):
     return validate_name(name)
 
 
-def account_directory(profile):
+def account_directory(profile, game='anno117'):
     """Identify an account by its accountdata marker, then enforce one profile level."""
+    marker = game_format(game)['marker']
     profile = Path(profile).resolve()
     candidates = [p for p in profile.parents if p.parent.name.casefold() == 'accounts'
-                  and (p / 'accountdata.a8s').is_file()]
+                  and (p / marker).is_file()]
     if len(candidates) != 1:
-        raise ValueError('Anno-117-Konto nicht erkannt: Profil direkt unter accounts/<Konto> mit accountdata.a8s auswählen.')
+        raise ValueError(game_format(game)['label'] + '-Konto nicht erkannt: Profil direkt unter accounts/<Konto> mit ' + marker + ' auswählen.')
     account = candidates[0]
     if profile.parent != account:
         raise ValueError('Saves müssen direkt im Profilordner liegen. Unterordner innerhalb eines Profils sind nicht erlaubt.')
     return account
 
 
-def validate_destination(sources, destination, *, edit_in_place=False):
+def profile_saves(folder, game='anno117'):
+    """Collect all direct saves, refusing to silently omit nested profile folders."""
+    folder = Path(folder).resolve(strict=True)
+    account_directory(folder, game)
+    children = list(folder.iterdir())
+    if any(p.is_dir() for p in children):
+        raise ValueError('Der Profilordner enthält Unterordner. Bitte diese zuerst prüfen; Namen werden nur direkt im Profil geändert.')
+    saves = sorted(p for p in children if p.is_file() and p.suffix.casefold() == game_format(game)['extension']
+                   and not p.name.casefold().startswith('accountdata'))
+    if not saves:
+        raise ValueError('Keine passenden Spielstände direkt im Profilordner gefunden.')
+    return saves
+
+
+def validate_destination(sources, destination, *, edit_in_place=False, game='anno117'):
     """Reject nested, foreign-account and unresolved profile targets before any write."""
     sources = [Path(p).resolve(strict=True) for p in sources]
     if not sources or len(set(sources)) != len(sources):
         raise ValueError('Bitte unterschiedliche Saves auswählen.')
     parent = sources[0].parent
-    if any(p.parent != parent or not p.is_file() or p.suffix.lower() != '.a8s'
+    if any(p.parent != parent or not p.is_file() or p.suffix.lower() != game_format(game)['extension']
            or p.name.casefold().startswith('accountdata') for p in sources):
-        raise ValueError('Nur .a8s-Saves direkt aus einem Profilordner auswählen.')
-    account = account_directory(parent)
+        raise ValueError('Nur ' + game_format(game)['extension'] + '-Saves direkt aus einem Profilordner auswählen.')
+    account = account_directory(parent, game)
     destination = Path(destination).resolve()
     validate_profile_name(destination.name)
     if destination.parent != account:
         raise ValueError('Ziel muss ein direkter Profilordner desselben Kontos sein. Keine Unterordner in Profilen anlegen.')
     if edit_in_place:
         if destination != parent:
-            raise ValueError('Prätor ohne Verschieben nur im ursprünglichen Profilordner ändern.')
+            raise ValueError('Spielername ohne Verschieben nur im ursprünglichen Profilordner ändern.')
     elif destination == parent:
         raise ValueError('Für eine Übertragung einen anderen Profilordner wählen.')
     if destination.exists() and not destination.is_dir():
@@ -132,7 +177,7 @@ def validate_destination(sources, destination, *, edit_in_place=False):
 def archive_entries(blob):
     """Only accept the exact nonresident four-member save layout we can preserve."""
     if len(blob) < 792 or blob[:18] != b'Resource File V2.2':
-        raise ValueError('Kein unterstützter Anno-117-Spielstand (RDA V2.2).')
+        raise ValueError('Kein unterstützter Spielstand (RDA V2.2).')
     position = struct.unpack_from('<Q', blob, 784)[0]
     result, seen = [], set()
     end = 792
@@ -158,46 +203,141 @@ def archive_entries(blob):
     return result
 
 
-def inspect_save(blob):
+def inspect_save(blob, game='anno117'):
     """Read the three independent UTF-16 save names without guessing encodings."""
+    game_format(game)
+    parts = {name: inflate(payload) for name, _, payload in archive_entries(blob)
+             if name in PROFILE_PATHS[game]}
+    return _profile_names(parts, game)
+
+
+def _profile_names(parts, game):
+    paths = PROFILE_PATHS[game]
     result = {}
-    for name, _, payload in archive_entries(blob):
-        if name not in PROFILE_PATHS:
-            continue
-        hits = [bytes(value) for path, value in fields(inflate(payload))
-                if path == PROFILE_PATHS[name]]
+    for name in paths:
+        hits = [bytes(value) for path, value in fields(parts[name])
+                if path == paths[name]]
         if len(hits) != 1:
             raise ValueError('Namensfeld fehlt oder ist mehrdeutig: ' + name)
         result[name] = hits[0].decode('utf-16-le').rstrip('\0')
     return result
 
 
-def praetor_name(blob):
+def player_name(blob, game='anno117'):
     """Only accept a single consistent player slot; never guess among multiple players."""
+    game_format(game)
+    parts = {name: inflate(payload) for name, _, payload in archive_entries(blob)
+             if name in ('header.a7s', 'gamesetup.a7s')}
+    return _player_name(parts, game)
+
+
+def _player_name(parts, game):
+    paths = PLAYER_PATHS[game]
     names = []
-    for name, _, payload in archive_entries(blob):
-        if name not in ('header.a7s', 'gamesetup.a7s'):
-            continue
-        hits = [bytes(v).decode('utf-8').rstrip('\0') for p, v in fields(inflate(payload))
-                if p == PRAETOR_PATHS[name]]
+    for name in ('header.a7s', 'gamesetup.a7s'):
+        hits = [bytes(v).decode('utf-8').rstrip('\0') for p, v in fields(parts[name])
+                if p == paths[name]]
         if len(hits) != 1 or not hits[0]:
-            raise ValueError('Prätor nicht eindeutig erkennbar; mehrere Spieler oder unbekanntes Save-Format.')
+            raise ValueError('Spielername nicht eindeutig erkennbar; mehrere Spieler oder unbekanntes Save-Format.')
         names.append(hits[0])
     if len(names) != 2 or names[0] != names[1]:
-        raise ValueError('Prätornamen in header und gamesetup stimmen nicht überein.')
+        raise ValueError('Spielernamen in header und gamesetup stimmen nicht überein.')
     return names[0]
+
+
+def read_summary(path, game='anno117'):
+    """Read only metadata for the list, avoiding large world-data reads per save."""
+    game_format(game)
+    parts = dict(members(Path(path), set(PROFILE_PATHS[game])))
+    names = _profile_names(parts, game)
+    try:
+        player = _player_name(parts, game)
+    except ValueError:
+        player = 'Nicht eindeutig zuordenbar'
+    return names, player
+
+
+def _find_field(raw, path, expected_value):
+    hits = [(i, bytes(v)) for i, (p, v) in enumerate(fields(raw))
+            if p == path and (expected_value is None or v == expected_value)]
+    if len(hits) != 1:
+        raise ValueError('Namensfeld fehlt oder ist mehrdeutig: ' + '/'.join(path))
+    return hits[0]
+
+
+def _verify_fields(raw, edited, index, path, new):
+    """Compare fields as a stream so large world states need no object catalogue."""
+    for i, (before, after) in enumerate(zip_longest(fields(raw), fields(edited))):
+        expected = (path, new) if i == index else before
+        if after != expected:
+            raise ValueError('Andere FileDB-Felder wurden verändert.')
+
+
+def _patch_legacy_filedb(raw, path, text, encoding, expected_value):
+    """Replace one FileDB V1 value, retaining its dictionaries and all other bytes."""
+    if len(raw) < 4:
+        raise ValueError('Unvollständige FileDB-V1-Daten.')
+    end = struct.unpack_from('<I', raw, len(raw) - 4)[0]
+    if not 0 < end < len(raw) - 4:
+        raise ValueError('Ungültiges FileDB-V1-Verzeichnis.')
+    index, old = _find_field(raw, path, expected_value)
+    if old.decode(encoding).rstrip('\0') == text:
+        return raw
+    terminator = '\0'.encode(encoding)
+    new = text.encode(encoding) + (terminator if old.endswith(terminator) else b'')
+    position, ordinal = 0, 0
+    while position + 2 <= end:
+        code = struct.unpack_from('<H', raw, position)[0]
+        position += 2
+        if code & 0x8000:
+            length_start = position
+            size = 0
+            for shift in range(0, 35, 7):
+                if position >= end:
+                    raise ValueError('Unvollständige FileDB-V1-Länge.')
+                byte = raw[position]
+                position += 1
+                size |= (byte & 127) << shift
+                if not byte & 128:
+                    break
+            else:
+                raise ValueError('Ungültige FileDB-V1-Länge.')
+            if position + size > end:
+                raise ValueError('Unvollständiges FileDB-V1-Feld.')
+            if ordinal == index:
+                break
+            ordinal += 1
+            position += size
+    else:
+        raise ValueError('FileDB-V1-Feldposition nicht gefunden.')
+    if raw[position:position + size] != old:
+        raise ValueError('FileDB-V1-Feldprüfung fehlgeschlagen.')
+    encoded_length = bytearray()
+    remaining = len(new)
+    while remaining >= 128:
+        encoded_length.append((remaining & 127) | 128)
+        remaining >>= 7
+    encoded_length.append(remaining)
+    replacement = bytes(encoded_length) + new
+    old_segment = raw[length_start:position + size]
+    delta = len(replacement) - len(old_segment)
+    edited = bytearray(memoryview(raw)[:length_start])
+    edited.extend(replacement)
+    edited.extend(memoryview(raw)[position + size:])
+    struct.pack_into('<I', edited, len(edited) - 4, end + delta)
+    _verify_fields(raw, edited, index, path, new)
+    if (memoryview(edited)[:length_start] != memoryview(raw)[:length_start]
+            or memoryview(edited)[length_start + len(replacement):-4]
+            != memoryview(raw)[position + size:-4]):
+        raise ValueError('Unerwartete Änderung ausserhalb des FileDB-V1-Namensfeldes.')
+    return bytes(edited)
 
 
 def patch_filedb(raw, path, text, *, encoding='utf-16-le', expected_value=None):
     """Replace one exact field, preserving other bytes and updating dictionary offsets."""
     if len(raw) < 20 or struct.unpack_from('<I', raw, len(raw) - 4)[0] not in (0xfffffffd, 0xfffffffe):
-        raise ValueError('Nur FileDB V2 wird bearbeitet.')
-    before = [(p, bytes(v)) for p, v in fields(raw)]
-    hits = [(i, v) for i, (p, v) in enumerate(before) if p == path
-            and (expected_value is None or v == expected_value)]
-    if len(hits) != 1:
-        raise ValueError('Namensfeld fehlt oder ist mehrdeutig: ' + '/'.join(path))
-    index, old = hits[0]
+        return _patch_legacy_filedb(raw, path, text, encoding, expected_value)
+    index, old = _find_field(raw, path, expected_value)
     if old.decode(encoding).rstrip('\0') == text:
         return raw
     terminator = '\0'.encode(encoding)
@@ -222,45 +362,47 @@ def patch_filedb(raw, path, text, *, encoding='utf-16-le', expected_value=None):
         raise ValueError('FileDB-Feldprüfung fehlgeschlagen.')
     old_size, new_size = (len(old) + 7) & ~7, (len(new) + 7) & ~7
     delta = new_size - old_size
-    edited = bytearray(raw[:pos] + struct.pack('<I', len(new)) + raw[pos + 4:pos + 8]
-                       + new.ljust(new_size, b'\0') + raw[pos + 8 + old_size:])
+    edited = bytearray(memoryview(raw)[:pos])
+    edited.extend(struct.pack('<I', len(new)) + raw[pos + 4:pos + 8])
+    edited.extend(new.ljust(new_size, b'\0'))
+    edited.extend(memoryview(raw)[pos + 8 + old_size:])
     struct.pack_into('<II', edited, len(edited) - 16, tags + delta, attrs + delta)
-    expected = before.copy()
-    expected[index] = (path, new)
-    if [(p, bytes(v)) for p, v in fields(edited)] != expected:
-        raise ValueError('Andere FileDB-Felder wurden verändert.')
-    restored = bytearray(edited[:pos] + raw[pos:pos + 8 + old_size] + edited[pos + 8 + new_size:])
-    restored[-16:-8] = raw[-16:-8]
-    if restored != raw:
+    _verify_fields(raw, edited, index, path, new)
+    if (memoryview(edited)[:pos] != memoryview(raw)[:pos]
+            or memoryview(edited)[pos + 8 + new_size:-16] != memoryview(raw)[pos + 8 + old_size:-16]
+            or edited[-20:-16] != raw[-20:-16] or edited[-8:] != raw[-8:]):
         raise ValueError('Unerwartete Änderung ausserhalb des Namensfeldes.')
     return bytes(edited)
 
 
-def transform(blob, profile=None, overrides=None, *, praetor=None):
-    """Set both profile fields, or explicit independent names for isolated test copies."""
+def transform(blob, profile=None, overrides=None, *, player=None, game='anno117'):
+    """Set the selected game's profile fields and optionally its three player-name fields."""
+    game_format(game)
+    profile_paths = PROFILE_PATHS[game]
+    player_paths = PLAYER_PATHS[game]
     changes = {} if profile is None else {
         'header.a7s': validate_profile_name(profile), 'gamesetup.a7s': profile}
     for member, text in (overrides or {}).items():
-        if member not in PROFILE_PATHS:
+        if member not in profile_paths:
             raise ValueError('Unbekanntes Namensfeld.')
         changes[member] = validate_name(text)
-    old_praetor = None
-    if praetor is not None:
-        validate_praetor(praetor)
-        old_praetor = praetor_name(blob)
+    old_player = None
+    if player is not None:
+        validate_player_name(player)
+        old_player = player_name(blob, game)
     original = archive_entries(blob)
     output, positions = bytearray(blob[:792]), []
     for name, header, payload in original:
-        if name in changes or praetor is not None and name in PRAETOR_PATHS:
+        if name in changes or player is not None and name in player_paths:
             raw = bytes(inflate(payload))
-            edited = patch_filedb(raw, PROFILE_PATHS[name], changes[name]) if name in changes else raw
-            if praetor is not None and name in PRAETOR_PATHS:
+            edited = patch_filedb(raw, profile_paths[name], changes[name]) if name in changes else raw
+            if player is not None and name in player_paths:
                 encoding = 'utf-16-le' if name == 'data.a7s' else 'utf-8'
-                candidates = [bytes(v) for p, v in fields(edited) if p == PRAETOR_PATHS[name]
-                              and bytes(v) in (old_praetor.encode(encoding), (old_praetor + '\0').encode(encoding))]
+                candidates = [bytes(v) for p, v in fields(edited) if p == player_paths[name]
+                              and bytes(v) in (old_player.encode(encoding), (old_player + '\0').encode(encoding))]
                 if len(candidates) != 1:
-                    raise ValueError('Prätor im Spielzustand nicht eindeutig zuordenbar; keine Änderung ausgeführt.')
-                edited = patch_filedb(edited, PRAETOR_PATHS[name], praetor,
+                    raise ValueError('Spielername im Spielzustand nicht eindeutig zuordenbar; keine Änderung ausgeführt.')
+                edited = patch_filedb(edited, player_paths[name], player,
                                      encoding=encoding, expected_value=candidates[0])
             if edited != raw:
                 payload = zlib.compress(edited, 9) + zlib.compress(b'', 9) + struct.pack('<I', len(edited))
@@ -279,13 +421,13 @@ def transform(blob, profile=None, overrides=None, *, praetor=None):
     for (name, old_header, old), (_, new_header, new) in zip(original, archive_entries(result), strict=True):
         if old_header[:520] != new_header[:520] or old_header[544:] != new_header[544:]:
             raise ValueError('RDA-Metadaten wurden verändert.')
-        if name not in changes and not (praetor is not None and name in PRAETOR_PATHS) and new != old:
+        if name not in changes and not (player is not None and name in player_paths) and new != old:
             raise ValueError('Unbeteiligtes Save-Mitglied wurde verändert.')
-    names = inspect_save(result)
+    names = inspect_save(result, game)
     if any(names[key] != value for key, value in changes.items()):
         raise ValueError('Namensprüfung fehlgeschlagen.')
-    if praetor is not None and praetor_name(result) != praetor:
-        raise ValueError('Prätorprüfung fehlgeschlagen.')
+    if player is not None and player_name(result, game) != player:
+        raise ValueError('Prüfung des Spielernamens fehlgeschlagen.')
     return result
 
 
@@ -360,7 +502,7 @@ def _rename_profile(parent, destination, sources, staging, records, backup):
 
 
 def transfer(sources, destination, backup_root, *, move=False, rename_folder=False,
-             praetor=None, edit_in_place=False):
+             player=None, edit_in_place=False, game='anno117'):
     """Validate and stage every save before backup, exclusive publication and removal.
 
     Backups are intentional durable outputs, never deleted automatically. Existing
@@ -371,13 +513,13 @@ def transfer(sources, destination, backup_root, *, move=False, rename_folder=Fal
         raise ValueError('Verknüpfte Quelldateien werden nicht bearbeitet.')
     sources = [p.resolve(strict=True) for p in original_paths]
     destination, backup_root = Path(destination).resolve(), Path(backup_root).resolve()
-    account = validate_destination(sources, destination, edit_in_place=edit_in_place)
-    if edit_in_place and (move or rename_folder or praetor is None):
-        raise ValueError('Prätoränderung ohne Verschieben benötigt einen neuen Prätornamen.')
+    account = validate_destination(sources, destination, edit_in_place=edit_in_place, game=game)
+    if edit_in_place and (move or rename_folder or player is None):
+        raise ValueError('Namensänderung ohne Verschieben benötigt einen neuen Spielernamen.')
     parent = sources[0].parent
-    if any(p.parent != parent or p.suffix.lower() != '.a8s' or p.name.lower().startswith('accountdata')
+    if any(p.parent != parent or p.suffix.lower() != game_format(game)['extension'] or p.name.lower().startswith('accountdata')
            for p in sources):
-        raise ValueError('Nur .a8s-Saves aus einem Profilordner auswählen.')
+        raise ValueError('Nur ' + game_format(game)['extension'] + '-Saves aus einem Profilordner auswählen.')
     if rename_folder:
         if not move or destination.parent != parent.parent or destination.exists():
             raise ValueError('Ein neuer benachbarter Profilordner ist erforderlich.')
@@ -390,7 +532,7 @@ def transfer(sources, destination, backup_root, *, move=False, rename_folder=Fal
     if backup_root == account or account in backup_root.parents:
         raise ValueError('Die Sicherung muss ausserhalb des Spielkontos liegen.')
     records = []
-    with tempfile.TemporaryDirectory(prefix='anno117-transfer-', dir=temporary_root()) as staging:
+    with tempfile.TemporaryDirectory(prefix='anno-save-transfer-', dir=temporary_root()) as staging:
         staging = Path(staging)
         for i, source in enumerate(sources):
             stat = source.stat()
@@ -399,12 +541,12 @@ def transfer(sources, destination, backup_root, *, move=False, rename_folder=Fal
                           mtime_ns=stat.st_mtime_ns)
             if hasattr(stat, 'st_birthtime_ns'):
                 record['birthtime_ns'] = stat.st_birthtime_ns
-            edited = transform(original, destination.name, praetor=praetor)
+            edited = transform(original, destination.name, player=player, game=game)
             (staging / str(i)).write_bytes(edited)
             record['output_sha256'] = digest(edited)
             records.append(record)
         backup_root.mkdir(parents=True, exist_ok=True)
-        backup = backup_root / ('Anno117-' + datetime.now().strftime('%Y%m%d-%H%M%S-') + uuid.uuid4().hex[:8] + '.zip')
+        backup = backup_root / (game_format(game)['label'].replace(' ', '') + '-' + datetime.now().strftime('%Y%m%d-%H%M%S-') + uuid.uuid4().hex[:8] + '.zip')
         with zipfile.ZipFile(backup, 'x', zipfile.ZIP_STORED) as archive:
             for source, record in zip(sources, records, strict=True):
                 original = source.read_bytes()
@@ -412,8 +554,8 @@ def transfer(sources, destination, backup_root, *, move=False, rename_folder=Fal
                     raise ValueError('Quelldatei wurde während der Vorbereitung geändert.')
                 archive.writestr(source.name, original)
             archive.writestr('transfer-manifest.json', json.dumps(dict(destination=str(destination),
-                move=move, rename_folder=rename_folder, edit_in_place=edit_in_place,
-                praetor=praetor, files=records), ensure_ascii=False, indent=2))
+                game=game, move=move, rename_folder=rename_folder, edit_in_place=edit_in_place,
+                player=player, files=records), ensure_ascii=False, indent=2))
         with zipfile.ZipFile(backup) as archive:
             if archive.testzip() is not None or any(digest(archive.read(p.name)) != r['sha256']
                                                   for p, r in zip(sources, records, strict=True)):
@@ -425,7 +567,7 @@ def transfer(sources, destination, backup_root, *, move=False, rename_folder=Fal
         existed = destination.exists()
         try:
             destination.mkdir(parents=False, exist_ok=True)
-            validate_destination(sources, destination, edit_in_place=edit_in_place)
+            validate_destination(sources, destination, edit_in_place=edit_in_place, game=game)
             for i, (source, record) in enumerate(zip(sources, records, strict=True)):
                 if digest(source.read_bytes()) != record['sha256']:
                     raise ValueError('Quelldatei wurde zwischenzeitlich geändert.')
@@ -435,7 +577,7 @@ def transfer(sources, destination, backup_root, *, move=False, rename_folder=Fal
                     # permits recovery after interruption during an in-place write.
                     with target.open('r+b') as handle:
                         if digest(handle.read()) != record['sha256']:
-                            raise ValueError('Quelle wurde vor der Prätoränderung verändert.')
+                            raise ValueError('Quelle wurde vor der Namensänderung verändert.')
                         created.append(target)
                         handle.seek(0)
                         handle.write((staging / str(i)).read_bytes())

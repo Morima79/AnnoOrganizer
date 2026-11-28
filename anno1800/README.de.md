@@ -6,7 +6,9 @@
 
 [English](README.md) · [Deutsch](README.de.md)
 
-Dieser Ordner ist unabhängig nutzbar und enthält seinen eigenen Starter, Einstellungen, Abhängigkeiten und Lizenz. Die anderen Anno-Ordner und der Hauptstarter werden nicht benötigt. Quelldateien werden ausschliesslich gelesen. Die technische Benennung ist Englisch; Menüs und Protokollmeldungen bleiben Deutsch. Die HTML-Galerien bieten einen DE/EN-Schalter.
+Dieser Ordner ist unabhängig nutzbar und enthält seinen eigenen Starter, Einstellungen, Abhängigkeiten und Lizenz. Die anderen Anno-Ordner und der Hauptstarter werden nicht benötigt. Analyse- und Galeriewerkzeuge lesen Quelldateien ausschliesslich. Die technische Benennung ist Englisch; Menüs und Protokollmeldungen bleiben Deutsch. Die HTML-Galerien bieten einen DE/EN-Schalter.
+
+Der separate [Spielstand-Manager](docs/save-manager.de.md) startet mit `python tools/manage_saves.py --game anno1800`. Er verschiebt Saves, benennt ganze Profilordner um und ändert Spielernamen in einzelnen oder allen Saves eines Ordners. Vorher werden die Originale als ZIP gesichert; Profil-Unterordner werden abgelehnt.
 
 ## Vorschau
 

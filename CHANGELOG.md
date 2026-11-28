@@ -7,11 +7,17 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Enable Anno 1800 save transfers, profile renaming and player-name edits using its confirmed fields, including legacy FileDB V1 and current V2. Add name editing for every direct save in a profile folder for both games, separate remembered account roots, and canonical shared sources with independent game copies.
+- Document successful EXE and in-game Anno 1800 checks for individual transfers, profile renaming, individual player names and folder-wide name edits. Record player-name save suggestions and correct output folders, with original/control checksums unchanged.
+
 - Prepare a persistent game-selection ComboBox for Anno 117, 1800 and 1404. Clear pending selections on switching and keep unimplemented game operations disabled.
 
 - Add a separate experimental Anno 117 Save Manager for backed-up save transfers, profile-folder renaming, optional praetor changes in all three confirmed fields, and enforced direct account/profile paths that reject nested saves and destinations. Preserve all other game-state fields and reject ambiguous player mappings. Rename profile directories directly to preserve Windows/OneDrive read-only folder attributes; use the prefilled destination name without a second input dialog. Explain nested-profile rejection in plain language, reset praetor controls after success, and open file/folder dialogs at the remembered account root discovered through Windows Documents. Match the Organizer dark/gold appearance and icon, and retain reachable window bounds and maximised state without losing the remembered account root. Include a standalone Windows development builder and bilingual test instructions.
 
 ### Deutsch
+
+- Anno-1800-Saves anhand der ermittelten Felder übertragen, Profilordner umbenennen und Spielernamen ändern; FileDB V1 und V2 unterstützen. Für beide Spiele Namen in allen direkten Saves eines Profilordners ändern, Kontoordner getrennt merken und gemeinsame Quellen mit unabhängig nutzbaren Spielkopien pflegen.
+- Erfolgreiche EXE- und Anno-1800-Spieltests für einzelne Übertragungen, Profilumbenennung sowie einzelne und ordnerweite Spielernamenänderungen dokumentieren. Spielernamen als Speichervorschläge und korrekte Zielordner festhalten; Original und Kontrollkopie bleiben anhand ihrer Prüfsummen unverändert.
 
 - Dauerhaft gespeicherte Spielauswahl per ComboBox für Anno 117, 1800 und 1404 vorbereiten. Beim Wechsel ausstehende Auswahlen leeren und noch nicht umgesetzte Spielaktionen sperren.
 

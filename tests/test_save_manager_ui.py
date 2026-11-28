@@ -42,7 +42,7 @@ class SaveManagerUITests(unittest.TestCase):
     def test_selection_shows_praetor_and_rejects_nested_target_before_confirmation(self):
         self.app.load([self.source])
         self.assertEqual(self.app.account, self.root)
-        self.assertEqual(self.app.new_praetor.get(), 'Old Praetor')
+        self.assertEqual(self.app.new_player.get(), 'Old Praetor')
         self.assertEqual(tuple(self.app.tree.item('0', 'values')), ('Old Praetor', 'Old', 'Manual 8'))
         self.app.target_name.set('Other/Nested')
         with patch.object(ui.messagebox, 'showerror') as error, patch.object(ui.messagebox, 'askokcancel') as confirm:
@@ -55,22 +55,22 @@ class SaveManagerUITests(unittest.TestCase):
 
     def test_game_selector_clears_inputs_and_blocks_unimplemented_game_operations(self):
         self.assertEqual(tuple(self.app.game_combo.cget('values')), tuple(ui.GAME_LABELS.values()))
-        for game in ('anno1800', 'anno1404'):
+        for game in ('anno1404',):
             with self.subTest(game=game):
                 self.app.load([self.source])
-                self.app.change_praetor.set(True)
-                self.app.new_praetor.set('Pending edit')
+                self.app.change_player.set(True)
+                self.app.new_player.set('Pending edit')
                 self.app.game_choice.set(ui.GAME_LABELS[game])
                 self.app.on_game_changed()
                 self.assertEqual(self.app.game, game)
                 self.assertEqual(self.app.sources, [])
                 self.assertEqual(self.app.target_name.get(), '')
-                self.assertEqual(self.app.new_praetor.get(), '')
-                self.assertFalse(self.app.change_praetor.get())
+                self.assertEqual(self.app.new_player.get(), '')
+                self.assertFalse(self.app.change_player.get())
                 self.assertIn('noch nicht freigeschaltet', self.app.status.get())
                 self.assertEqual(str(self.app.game_combo.cget('state')), 'readonly')
                 self.assertTrue(all(str(control.cget('state')) == 'disabled' for control in self.app.controls))
-                with patch.object(ui, 'transfer') as transfer, patch.object(ui, 'inspect_save') as read, patch.object(ui.filedialog, 'askopenfilenames') as files:
+                with patch.object(ui, 'transfer') as transfer, patch.object(ui, 'read_summary') as read, patch.object(ui.filedialog, 'askopenfilenames') as files:
                     self.app.start(True)
                     self.app.load([self.source])
                     self.app.select_files()
@@ -83,21 +83,21 @@ class SaveManagerUITests(unittest.TestCase):
                 self.assertEqual(str(self.app.target_entry.cget('state')), 'normal')
 
     def test_selected_game_is_remembered_and_switching_is_blocked_while_busy(self):
-        self.app.game_choice.set(ui.GAME_LABELS['anno1800'])
+        self.app.game_choice.set(ui.GAME_LABELS['anno1404'])
         self.app.on_game_changed()
         self.app.busy = True
         self.app.refresh_controls()
         self.assertEqual(str(self.app.game_combo.cget('state')), 'disabled')
-        self.app.game_choice.set(ui.GAME_LABELS['anno1404'])
+        self.app.game_choice.set(ui.GAME_LABELS['anno117'])
         self.app.on_game_changed()
-        self.assertEqual(self.app.game, 'anno1800')
-        self.assertEqual(self.app.game_choice.get(), ui.GAME_LABELS['anno1800'])
+        self.assertEqual(self.app.game, 'anno1404')
+        self.assertEqual(self.app.game_choice.get(), ui.GAME_LABELS['anno1404'])
         self.app.busy = False
         preferences_path = self.app.preferences_path
         self.app.destroy()
         self.app = ui.SaveManager(preferences_path=preferences_path)
         self.app.withdraw()
-        self.assertEqual(self.app.game, 'anno1800')
+        self.assertEqual(self.app.game, 'anno1404')
         self.assertEqual(str(self.app.game_combo.cget('state')), 'readonly')
         self.assertEqual(str(self.app.target_entry.cget('state')), 'disabled')
 
@@ -111,6 +111,52 @@ class SaveManagerUITests(unittest.TestCase):
         self.assertEqual(style.lookup('TEntry', 'insertcolor'), '#ffffff')
         self.assertEqual((TOOLS / 'assets/annoorganizer.ico').read_bytes(),
                          (TOOLS.parents[1] / 'desktop/assets/annoorganizer.ico').read_bytes())
+
+    def test_1800_uses_its_own_account_root_and_file_filter(self):
+        self.app.load([self.source])
+        documents = Path(self.temp.name) / 'Documents'
+        other_root = account(documents / 'Anno 1800', 'anno1800')
+        source = other_root / 'Old/Save.a7s'
+        source.parent.mkdir()
+        source.write_bytes(save('anno1800'))
+        with patch.object(ui, 'documents_folder', return_value=documents):
+            self.app.game_choice.set(ui.GAME_LABELS['anno1800'])
+            self.app.on_game_changed()
+        self.assertEqual(self.app.save_root, other_root)
+        with patch.object(ui.filedialog, 'askopenfilenames', return_value=()) as chooser:
+            self.app.select_files()
+        self.assertEqual(chooser.call_args.kwargs['filetypes'], [('Anno 1800', '*.a7s')])
+        self.app.load([source])
+        self.assertEqual(self.app.player_toggle_text.get(), 'Spielernamen ändern')
+        self.app.game_choice.set(ui.GAME_LABELS['anno117'])
+        self.app.on_game_changed()
+        self.assertEqual(self.app.save_root, self.root)
+        self.app.game_choice.set(ui.GAME_LABELS['anno1800'])
+        self.app.on_game_changed()
+        self.assertEqual(self.app.save_root, other_root)
+
+    def test_bulk_name_action_selects_and_edits_every_direct_save_for_both_games(self):
+        for game in ('anno117', 'anno1800'):
+            with self.subTest(game=game):
+                root = account(Path(self.temp.name) / game, game)
+                folder = root / 'Names'
+                folder.mkdir()
+                extension = editor.game_format(game)['extension']
+                for name in ('One', 'Two'):
+                    (folder / (name + extension)).write_bytes(save(game))
+                self.app.game_choice.set(ui.GAME_LABELS[game])
+                self.app.on_game_changed()
+                with patch.object(ui.filedialog, 'askdirectory', return_value=str(folder)):
+                    self.app.select_name_folder()
+                self.assertEqual(len(self.app.sources), 2)
+                self.assertTrue(self.app.change_player.get())
+                self.app.new_player.set('All Players Renamed')
+                with patch.object(ui.messagebox, 'askokcancel', return_value=True), patch.object(ui.messagebox, 'showinfo'), patch.object(ui.messagebox, 'showerror') as error:
+                    self.app.start(False, edit_in_place=True)
+                    self.wait_done()
+                error.assert_not_called()
+                for source in folder.glob('*' + extension):
+                    self.assertEqual(editor.player_name(source.read_bytes(), game), 'All Players Renamed')
 
     def test_window_bounds_survive_restart_without_losing_account_preferences(self):
         self.app.deiconify()
@@ -158,18 +204,18 @@ class SaveManagerUITests(unittest.TestCase):
     def test_praetor_only_ignores_transfer_destination_and_retains_save(self):
         self.app.load([self.source])
         self.app.target_name.set('Ignored transfer destination')
-        self.app.change_praetor.set(True)
-        self.app.new_praetor.set('Prätor: Renamed')
+        self.app.change_player.set(True)
+        self.app.new_player.set('Prätor: Renamed')
         with patch.object(ui.messagebox, 'askokcancel', return_value=True), patch.object(ui.messagebox, 'showinfo'), patch.object(ui.messagebox, 'showerror') as error:
             self.app.start(False, edit_in_place=True)
             self.wait_done()
         error.assert_not_called()
-        self.assertEqual(editor.praetor_name(self.source.read_bytes()), 'Prätor: Renamed')
+        self.assertEqual(editor.player_name(self.source.read_bytes()), 'Prätor: Renamed')
         self.assertFalse((self.root / 'Ignored transfer destination').exists())
         self.assertEqual(self.app.sources, [])
-        self.assertEqual(self.app.new_praetor.get(), '')
-        self.assertFalse(self.app.change_praetor.get())
-        self.assertEqual(str(self.app.praetor_entry.cget('state')), 'disabled')
+        self.assertEqual(self.app.new_player.get(), '')
+        self.assertFalse(self.app.change_player.get())
+        self.assertEqual(str(self.app.player_entry.cget('state')), 'disabled')
         self.assertEqual(self.app.target_name.get(), '')
         self.assertEqual(self.app.save_root, self.root)
 

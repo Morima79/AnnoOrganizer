@@ -18,11 +18,31 @@ with patch.object(sys, 'path', [str(TOOLS), *sys.path]):
     spec.loader.exec_module(editor)
 
 
-def filedb_rows(rows):
+def filedb_rows(rows, version=2):
     tags = {part for path, value in rows for part in path[:-1]}
     attrs = {path[-1] for path, value in rows}
     tag_ids = {name: i + 2 for i, name in enumerate(sorted(tags))}
     attr_ids = {name: i + 0x8001 for i, name in enumerate(sorted(attrs))}
+    if version == 1:
+        def varint(value):
+            out = bytearray()
+            while value >= 128:
+                out.append((value & 127) | 128)
+                value >>= 7
+            return bytes(out + bytes([value]))
+        raw = bytearray()
+        for path, value in rows:
+            for part in path[:-1]:
+                raw += struct.pack('<H', tag_ids[part])
+            raw += struct.pack('<H', attr_ids[path[-1]]) + varint(len(value)) + value
+            raw += b'\0\0' * (len(path) - 1)
+        end = len(raw)
+        for lookup in (tag_ids, attr_ids):
+            raw += varint(len(lookup))
+            for name, code in lookup.items():
+                raw += name.encode() + b'\0' + struct.pack('<H', code)
+        raw += struct.pack('<I', end)
+        return zlib.compress(raw, 9) + zlib.compress(b'', 9) + struct.pack('<I', len(raw))
     raw = bytearray()
     for path, value in rows:
         for part in path[:-1]:
@@ -43,30 +63,30 @@ def filedb_rows(rows):
     return zlib.compress(raw, 9) + zlib.compress(b'', 9) + struct.pack('<I', len(raw))
 
 
-def account(root):
+def account(root, game='anno117'):
     result = root / 'accounts/account'
     result.mkdir(parents=True)
-    (result / 'accountdata.a8s').write_bytes(b'private account marker')
+    (result / editor.game_format(game)['marker']).write_bytes(b'private account marker')
     return result
 
 
-def save():
+def save(game='anno117', version=2):
     raw = bytearray(792)
     raw[:18] = b'Resource File V2.2'
     blocks = []
     payloads = []
     for member in editor.MEMBERS:
         rows = [(('Unrelated',), b'KEEP')]
-        if member in editor.PROFILE_PATHS:
+        if member in editor.PROFILE_PATHS[game]:
             text = 'Manual 8' if member == 'meta.a7s' else 'Old'
-            rows.append((editor.PROFILE_PATHS[member], (text + '\0').encode('utf-16-le')))
-        if member in editor.PRAETOR_PATHS:
+            rows.append((editor.PROFILE_PATHS[game][member], (text + '\0').encode('utf-16-le')))
+        if member in editor.PLAYER_PATHS[game]:
             encoding = 'utf-16-le' if member == 'data.a7s' else 'utf-8'
-            rows.append((editor.PRAETOR_PATHS[member], 'Old Praetor'.encode(encoding)))
+            rows.append((editor.PLAYER_PATHS[game][member], 'Old Praetor'.encode(encoding)))
             if member == 'data.a7s':
-                rows += [(editor.PRAETOR_PATHS[member], b'\1'), (editor.PRAETOR_PATHS[member], b''),
-                         (editor.PRAETOR_PATHS[member], b'\0')]
-        payloads.append(filedb_rows(rows))
+                rows += [(editor.PLAYER_PATHS[game][member], b'\1'), (editor.PLAYER_PATHS[game][member], b''),
+                         (editor.PLAYER_PATHS[game][member], b'\0')]
+        payloads.append(filedb_rows(rows, version))
     for name, payload in zip(editor.MEMBERS, payloads, strict=True):
         start = len(raw)
         raw += payload
@@ -140,28 +160,28 @@ class SaveEditorTests(unittest.TestCase):
         original = save()
         for text in ('A', 'Prätor: 長い名前 mit längerer Bezeichnung'):
             with self.subTest(text=text):
-                changed = editor.transform(original, praetor=text)
-                self.assertEqual(editor.praetor_name(changed), text)
+                changed = editor.transform(original, player=text)
+                self.assertEqual(editor.player_name(changed), text)
                 for (name, _, old), (_, _, new) in zip(editor.archive_entries(original), editor.archive_entries(changed), strict=True):
                     if name == 'meta.a7s':
                         self.assertEqual(old, new)
                         continue
                     before = [(p, bytes(v)) for p, v in editor.fields(editor.inflate(old))]
                     encoding = 'utf-16-le' if name == 'data.a7s' else 'utf-8'
-                    expected = [(p, text.encode(encoding) if p == editor.PRAETOR_PATHS[name]
+                    expected = [(p, text.encode(encoding) if p == editor.PLAYER_PATHS['anno117'][name]
                                  and v == 'Old Praetor'.encode(encoding) else v) for p, v in before]
                     self.assertEqual([(p, bytes(v)) for p, v in editor.fields(editor.inflate(new))], expected)
-                self.assertEqual(editor.transform(changed, praetor=text), changed)
+                self.assertEqual(editor.transform(changed, player=text), changed)
                 self.assertEqual(editor.inspect_save(changed), editor.inspect_save(original))
 
     def test_praetor_rejects_ambiguous_player_instead_of_guessing(self):
-        raw = bytes(editor.inflate(filedb_rows([(editor.PRAETOR_PATHS['data.a7s'], b'A\0'),
-                                              (editor.PRAETOR_PATHS['data.a7s'], b'A\0')])))
+        raw = bytes(editor.inflate(filedb_rows([(editor.PLAYER_PATHS['anno117']['data.a7s'], b'A\0'),
+                                              (editor.PLAYER_PATHS['anno117']['data.a7s'], b'A\0')])))
         with self.assertRaisesRegex(ValueError, 'mehrdeutig'):
-            editor.patch_filedb(raw, editor.PRAETOR_PATHS['data.a7s'], 'New', expected_value=b'A\0')
+            editor.patch_filedb(raw, editor.PLAYER_PATHS['anno117']['data.a7s'], 'New', expected_value=b'A\0')
         for text in ('', ' A', 'A\0B', 'A\nB'):
             with self.subTest(text=text), self.assertRaises(ValueError):
-                editor.validate_praetor(text)
+                editor.validate_player_name(text)
 
     def test_nested_and_foreign_profile_destinations_are_rejected(self):
         with tempfile.TemporaryDirectory(dir=editor.temporary_root()) as directory:
@@ -195,9 +215,9 @@ class SaveEditorTests(unittest.TestCase):
             for source in sources:
                 source.write_bytes(save())
             backup = editor.transfer(sources, folder, Path(directory) / 'backups',
-                                     praetor='New Praetor', edit_in_place=True)
+                                     player='New Praetor', edit_in_place=True)
             for source in sources:
-                self.assertEqual(editor.praetor_name(source.read_bytes()), 'New Praetor')
+                self.assertEqual(editor.player_name(source.read_bytes()), 'New Praetor')
             with zipfile.ZipFile(backup) as archive:
                 self.assertEqual(archive.read('One.a8s'), save())
             before = [source.read_bytes() for source in sources]
@@ -211,7 +231,7 @@ class SaveEditorTests(unittest.TestCase):
             with patch.object(editor, 'restore_times', fail_second):
                 with self.assertRaisesRegex(RuntimeError, 'Originale erhalten'):
                     editor.transfer(sources, folder, Path(directory) / 'backups',
-                                    praetor='Another Praetor', edit_in_place=True)
+                                    player='Another Praetor', edit_in_place=True)
             self.assertEqual([p.read_bytes() for p in sources], before)
             self.assertEqual({p.name for p in folder.iterdir()}, {'One.a8s', 'Two.a8s'})
 
@@ -231,7 +251,7 @@ class SaveEditorTests(unittest.TestCase):
     def test_each_field_is_independently_editable(self):
         original = save()
         old = editor.archive_entries(original)
-        for member in editor.PROFILE_PATHS:
+        for member in editor.PROFILE_PATHS['anno117']:
             with self.subTest(member=member):
                 changed = editor.transform(original, overrides={member: 'Distinct marker'})
                 self.assertEqual(editor.inspect_save(changed)[member], 'Distinct marker')
@@ -322,6 +342,114 @@ class SaveEditorTests(unittest.TestCase):
             editor.transfer([source], root / 'New', root.parent.parent / 'backups', move=True, rename_folder=True)
             self.assertFalse(old.exists())
             self.assertTrue((root / 'New/Save.a8s').is_file())
+
+
+class Anno1800SaveEditorTests(unittest.TestCase):
+    def test_legacy_v1_names_cross_varint_length_boundaries_without_changing_other_fields(self):
+        original = save('anno1800', version=1)
+        for profile, player in (('A', 'B'), ('P' * 70, 'Ö' * 80)):
+            changed = editor.transform(original, profile, player=player, game='anno1800')
+            self.assertEqual(editor.player_name(changed, 'anno1800'), player)
+            self.assertEqual(editor.inspect_save(changed, 'anno1800')['header.a7s'], profile)
+            for (member, _, old), (_, _, new) in zip(editor.archive_entries(original), editor.archive_entries(changed), strict=True):
+                if member == 'meta.a7s':
+                    self.assertEqual(old, new)
+                    continue
+                before = [(p, bytes(v)) for p, v in editor.fields(editor.inflate(old))]
+                expected = []
+                encoding = 'utf-16-le' if member == 'data.a7s' else 'utf-8'
+                for path, value in before:
+                    if path == editor.PROFILE_PATHS['anno1800'].get(member):
+                        value = (profile + '\0').encode('utf-16-le')
+                    elif path == editor.PLAYER_PATHS['anno1800'][member] and value == 'Old Praetor'.encode(encoding):
+                        value = player.encode(encoding)
+                    expected.append((path, value))
+                self.assertEqual([(p, bytes(v)) for p, v in editor.fields(editor.inflate(new))], expected)
+            self.assertEqual(editor.transform(changed, profile, player=player, game='anno1800'), changed)
+
+    def test_1800_profile_and_player_fields_preserve_unrelated_data(self):
+        original = save('anno1800')
+        for name in ('A', 'Längerer Spielername 漢字'):
+            edited = editor.transform(original, 'New Profile', player=name, game='anno1800')
+            self.assertEqual(editor.player_name(edited, 'anno1800'), name)
+            self.assertEqual(editor.inspect_save(edited, 'anno1800'),
+                             {'header.a7s': 'New Profile', 'gamesetup.a7s': 'New Profile', 'meta.a7s': 'Manual 8'})
+            for (member, _, before), (_, _, after) in zip(editor.archive_entries(original), editor.archive_entries(edited), strict=True):
+                if member == 'meta.a7s':
+                    self.assertEqual(before, after)
+                    continue
+                rows = [(p, bytes(v)) for p, v in editor.fields(editor.inflate(before))]
+                encoding = 'utf-16-le' if member == 'data.a7s' else 'utf-8'
+                expected = []
+                for path, value in rows:
+                    if path == editor.PROFILE_PATHS['anno1800'].get(member):
+                        value = 'New Profile\0'.encode('utf-16-le')
+                    elif path == editor.PLAYER_PATHS['anno1800'][member] and value == 'Old Praetor'.encode(encoding):
+                        value = name.encode(encoding)
+                    expected.append((path, value))
+                self.assertEqual([(p, bytes(v)) for p, v in editor.fields(editor.inflate(after))], expected)
+        profile_only = editor.transform(original, 'New', game='anno1800')
+        self.assertEqual(editor.archive_entries(profile_only)[3][2], editor.archive_entries(original)[3][2])
+        with self.assertRaises(ValueError):
+            editor.inspect_save(original, 'anno117')
+
+    def test_1800_move_rename_and_bulk_names_with_verified_backup(self):
+        with tempfile.TemporaryDirectory(dir=editor.temporary_root()) as directory:
+            root = account(Path(directory), 'anno1800')
+            folder = root / 'Old'
+            folder.mkdir()
+            for filename in ('One.a7s', 'Two.a7s'):
+                (folder / filename).write_bytes(save('anno1800'))
+            backup_root = Path(directory) / 'backups'
+            editor.transfer([folder / 'One.a7s'], root / 'Moved', backup_root, move=True, game='anno1800')
+            self.assertTrue((folder / 'Two.a7s').exists())
+            self.assertFalse((folder / 'One.a7s').exists())
+            editor.transfer([folder / 'Two.a7s'], root / 'Renamed', backup_root,
+                            move=True, rename_folder=True, game='anno1800')
+            self.assertFalse(folder.exists())
+            target = root / 'Renamed'
+            (target / 'Three.a7s').write_bytes(editor.transform(save('anno1800'), 'Renamed',
+                                                               player='Other old name', game='anno1800'))
+            extra = target / 'notes.txt'
+            extra.write_text('keep', encoding='utf-8')
+            sources = editor.profile_saves(target, 'anno1800')
+            before = {p.name: p.read_bytes() for p in sources}
+            backup = editor.transfer(sources, target, backup_root, player='Renamed Player',
+                                     edit_in_place=True, game='anno1800')
+            with zipfile.ZipFile(backup) as archive:
+                for source in sources:
+                    self.assertEqual(archive.read(source.name), before[source.name])
+            for source in sources:
+                self.assertEqual(editor.player_name(source.read_bytes(), 'anno1800'), 'Renamed Player')
+                self.assertEqual(editor.inspect_save(source.read_bytes(), 'anno1800')['header.a7s'], 'Renamed')
+            self.assertEqual(extra.read_text(encoding='utf-8'), 'keep')
+            (target / 'Nested').mkdir()
+            with self.assertRaisesRegex(ValueError, 'Unterordner'):
+                editor.profile_saves(target, 'anno1800')
+            with self.assertRaises(ValueError):
+                editor.transfer(sources, target / 'Nested', backup_root, game='anno1800')
+
+    def test_bulk_name_failure_restores_all_1800_saves(self):
+        with tempfile.TemporaryDirectory(dir=editor.temporary_root()) as directory:
+            root = account(Path(directory), 'anno1800')
+            folder = root / 'Old'
+            folder.mkdir()
+            sources = [folder / 'One.a7s', folder / 'Two.a7s']
+            for source in sources:
+                source.write_bytes(save('anno1800'))
+            restore = editor.restore_times
+            calls = []
+            def fail_second(path, record):
+                calls.append(path)
+                if len(calls) == 2:
+                    raise OSError('simulated second-file failure')
+                restore(path, record)
+            with patch.object(editor, 'restore_times', fail_second):
+                with self.assertRaisesRegex(RuntimeError, 'Originale erhalten'):
+                    editor.transfer(sources, folder, Path(directory) / 'backups', player='New Player',
+                                    edit_in_place=True, game='anno1800')
+            for source in sources:
+                self.assertEqual(source.read_bytes(), save('anno1800'))
 
 
 if __name__ == '__main__':
