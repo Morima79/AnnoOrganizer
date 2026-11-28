@@ -7,6 +7,13 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+### Deutsch
+
+## [v0.1.23] - 2026-11-28
+
+### English
+
+- Refresh the five public demo galleries, offline map workbook downloads and DE/EN gallery screenshots.
 - Zoom Enbesa around its islands and trim empty sea from the Arctic's left and bottom edges, preserving a margin around all terrain and identifying cropped views in the image footer.
 - Reduce the opacity of black Anno 1800 island shadows while preserving terrain colours and coast placement.
 - Use runtime DDS terrain graphics for all Anno 117 islands, removing the vertical streaks in the Latium continental island. Match island brightness and saturation in all three Anno 117 regions, with gentler brightening of dark terrain. Crop Aegyptus to its terrain boundaries, removing excess water above and to the right and enlarging the view. Cache all processed island images locally and refresh them when game resources change. Soften overlapping Aegyptus terrain edges while preserving coastlines.
@@ -15,6 +22,7 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### Deutsch
 
+- Die fünf öffentlichen Demo-Galerien, Offline-Kartenarbeitsmappen und DE/EN-Galerie-Screenshots aktualisieren.
 - Enbesa näher um die Inseln einrahmen und leeres Wasser in der Arktis links und unten entfernen; Abstand zu allen Geländeflächen erhalten und Ausschnitte in der Bildfusszeile kennzeichnen.
 - Deckkraft der schwarzen Anno-1800-Inselschatten reduzieren; Geländefarben und Küstenpositionen erhalten.
 - Für alle Anno-117-Inseln Laufzeit-DDS verwenden und damit vertikale Striemen der Latium-Kontinentalinsel entfernen. Helligkeit und Sättigung in allen drei Anno-117-Regionen angleichen und dunkles Gelände dezenter aufhellen. Aegyptus bis zu den Geländekanten beschneiden: überschüssiges Wasser oben und rechts entfernen und die Ansicht vergrössern. Alle aufbereiteten Inselbilder lokal zwischenspeichern und bei geänderten Spieldaten erneuern. Überlappende Geländeränder in Aegyptus bei erhaltenen Küstenlinien glätten.

@@ -709,7 +709,7 @@
   "demo.downloadHeading": "ANNO - Organizer for Windows",
   "demo.downloadDescription": "Create your own map and stamp galleries with the German or English interface. The portable package includes everything needed – no Python installation required.",
   "demo.downloadWindows": "Download Windows package (ZIP)",
-  "demo.downloadDetails": "Version v0.1.22 · Details and checksums",
+  "demo.downloadDetails": "Version v0.1.23 · Details and checksums",
   "demo.downloadInstructions": "For Windows 10/11 (64-bit). Extract the complete ZIP and start AnnoOrganizer.exe. Detected games and standard folders are suggested on first launch.",
   "demo.downloadUnsigned": "The application is not digitally signed. Windows may display a security notice.",
   "guide.title": "ANNO - Organizer · Getting started",
