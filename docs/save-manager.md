@@ -4,7 +4,7 @@ Standalone Windows application for Anno 117 and Anno 1800 save transfers, comple
 
 ## Game selector
 
-Download the complete Windows package: [AnnoSaveManager.zip](https://github.com/Morima79/AnnoOrganizer/releases/latest/download/AnnoSaveManager.zip) · [SHA-256](https://github.com/Morima79/AnnoOrganizer/releases/latest/download/AnnoSaveManager.sha256). Extract the ZIP before opening `AnnoSaveManager.exe`.
+Download the complete Windows package and its SHA-256 checksum from the [latest release](https://github.com/Morima79/AnnoOrganizer/releases/latest). New packages use the name `AnnoSaveManager-<version>-windows-x64.zip`. Extract the ZIP before opening `AnnoSaveManager.exe`.
 
 The top ComboBox switches between Anno 117 and Anno 1800. Labels use “Prätor” or “Spielername” accordingly. Account roots are remembered separately per game. Switching clears pending save selections and inputs and is disabled while processing.
 

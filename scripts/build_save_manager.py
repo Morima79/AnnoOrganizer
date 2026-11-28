@@ -20,7 +20,7 @@ from build_desktop import notices
 def archive_name(version=None):
     if version is not None and not re.fullmatch(r'v\d+\.\d+\.\d+(?:-[A-Za-z0-9.-]+)?', version):
         raise ValueError('Use a semantic version starting with v')
-    return 'AnnoSaveManager.zip' if version else 'AnnoSaveManager-dev-windows-x64.zip'
+    return f'AnnoSaveManager-{version}-windows-x64.zip' if version else 'AnnoSaveManager-dev-windows-x64.zip'
 
 
 def build(output, version=None):
@@ -80,6 +80,6 @@ def build(output, version=None):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, default=ROOT / 'dist/save-manager-dev')
-    parser.add_argument('--version', help='Build a clean committed release as AnnoSaveManager.zip')
+    parser.add_argument('--version', help='Build a clean committed release with the version in its ZIP filename')
     options = parser.parse_args()
     build(options.output, options.version)

@@ -64,8 +64,8 @@ jobs:
         with:
           name: save-manager-windows
           path: |
-            dist/AnnoSaveManager.zip
-            dist/AnnoSaveManager.sha256
+            dist/AnnoSaveManager-*-windows-x64.zip
+            dist/AnnoSaveManager-*-windows-x64.sha256
           if-no-files-found: error
   package:
     needs: [tests, desktop, save-manager]
@@ -79,10 +79,6 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-      - name: Build ZIP and checksum from the tested commit
-        env:
-          RELEASE_VERSION: ${{ github.event_name == 'push' && github.ref_name || inputs.version }}
-        run: python scripts/build_release.py --version "$RELEASE_VERSION" --output dist
       - uses: actions/download-artifact@v8
         with:
           name: desktop-windows
@@ -125,5 +121,5 @@ jobs:
           RELEASE_VERSION: ${{ github.ref_name }}
         shell: bash
         run: |
-          gh release create "$RELEASE_VERSION" dist/* --verify-tag --draft --title "ANNO - Organizer $RELEASE_VERSION" --notes-file "$RUNNER_TEMP/release-notes.md"
+          gh release create "$RELEASE_VERSION" dist/*-windows-x64.zip dist/*-windows-x64.sha256 --verify-tag --draft --title "ANNO - Organizer $RELEASE_VERSION" --notes-file "$RUNNER_TEMP/release-notes.md"
           gh release edit "$RELEASE_VERSION" --draft=false

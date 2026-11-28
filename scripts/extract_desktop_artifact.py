@@ -1,4 +1,4 @@
-"""Extract the two verified desktop release files from a raw Actions artifact."""
+"""Extract one verified Windows package and checksum from a raw Actions artifact."""
 import argparse
 import hashlib
 from pathlib import Path
@@ -7,7 +7,7 @@ import zipfile
 
 
 def extract_desktop_artifact(directory, version, output, package='desktop'):
-    """Accept only the expected desktop ZIP and its matching checksum file."""
+    """Accept only the selected version's Windows ZIP and matching checksum file."""
     if not re.fullmatch(r'v[0-9]+[.][0-9]+[.][0-9]+(?:-[A-Za-z0-9.-]+)?', version):
         raise ValueError('Use a version such as v0.1.16')
     downloads = list(Path(directory).iterdir())
@@ -15,7 +15,8 @@ def extract_desktop_artifact(directory, version, output, package='desktop'):
         raise ValueError('Expected exactly one downloaded artifact archive')
     if package not in ('desktop', 'save-manager'):
         raise ValueError('Unknown release package')
-    archive_name = 'AnnoSaveManager.zip' if package == 'save-manager' else f'AnnoOrganizer-{version}-windows-x64.zip'
+    application = 'AnnoSaveManager' if package == 'save-manager' else 'AnnoOrganizer'
+    archive_name = f'{application}-{version}-windows-x64.zip'
     checksum_name = str(Path(archive_name).with_suffix('.sha256'))
     with zipfile.ZipFile(downloads[0]) as artifact:
         if sorted(artifact.namelist()) != sorted((archive_name, checksum_name)):
