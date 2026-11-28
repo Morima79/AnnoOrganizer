@@ -14,6 +14,8 @@ Neue Einstellungen entstehen unter `%LOCALAPPDATA%/AnnoOrganizer/<spiel>/setting
 
 Bei deutscher Windows-Anzeigesprache startet die Oberfläche auf Deutsch, sonst auf Englisch. Eine gespeicherte DE/EN-Auswahl hat Vorrang. Galerien nach einem erfolgreichen Lauf öffnen; Fehler stehen unter **Protokolle**. Ein Abbruch wartet auf die nächste sichere Grenze.
 
+**ANNO - Save Manager** ist ein separater Download im [aktuellen Release](https://github.com/Morima79/AnnoOrganizer/releases/latest). Er kopiert/verschiebt Saves von Anno 117 und 1800, benennt Profilordner um und ändert Prätor-/Spielernamen, jeweils mit geprüfter Sicherung. Sein vollständiges ZIP entpacken und `AnnoSaveManager.exe` starten; die Oberfläche ist auf Deutsch.
+
 Dieses Paket ist nicht signiert. Windows kann eine SmartScreen-Reputationswarnung anzeigen. Herkunft und veröffentlichte SHA-256-Prüfsumme prüfen; Signierung wird separat bewertet. Es werden keine automatischen Updates installiert.
 
 [Bebilderte Einsteigeranleitung](_internal/docs/user-guide.html?lang=de) · [MIT-Lizenz](LICENSE) · [Drittanbieter-Hinweise](THIRD-PARTY-NOTICES.txt)

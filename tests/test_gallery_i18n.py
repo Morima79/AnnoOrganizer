@@ -144,11 +144,26 @@ class GalleryLanguageTests(unittest.TestCase):
         version = re.search(r'^## \[(v[^]]+)\]', changelog, re.MULTILINE)[1]
         release = 'https://github.com/Morima79/AnnoOrganizer/releases'
         self.assertIn(f'href="{release}/download/{version}/AnnoOrganizer-{version}-windows-x64.zip"', text)
+        self.assertIn(f'href="{release}/download/{version}/AnnoSaveManager-{version}-windows-x64.zip"', text)
         self.assertIn(f'href="{release}/tag/{version}"', text)
         self.assertIn('aria-labelledby="download-heading"', text)
+        self.assertIn('aria-labelledby="save-manager-heading"', text)
         for language in ('de', 'en'):
             self.assertIn(version, self.resources[language]['demo.downloadDetails'])
             self.assertIn('AnnoOrganizer.exe', self.resources[language]['demo.downloadInstructions'])
+            self.assertIn('AnnoSaveManager.exe', self.resources[language]['demo.saveManagerInstructions'])
+
+    def test_readmes_link_to_the_current_supported_save_manager_package(self):
+        version = re.search(r'^## \[(v[^]]+)\]', (ROOT / 'CHANGELOG.md').read_text(encoding='utf-8'), re.MULTILINE)[1]
+        release = 'https://github.com/Morima79/AnnoOrganizer/releases/download/' + version
+        for folder in ('', 'anno117', 'anno1800'):
+            for suffix in ('', '.de'):
+                with self.subTest(folder=folder, language=suffix):
+                    text = (ROOT / folder / ('README' + suffix + '.md')).read_text(encoding='utf-8')
+                    self.assertIn('ANNO - Save Manager', text)
+                    self.assertIn(f'{release}/AnnoSaveManager-{version}-windows-x64.zip', text)
+                    if not folder:
+                        self.assertIn(f'{release}/AnnoOrganizer-{version}-windows-x64.zip', text)
 
     def test_renderer_preserves_domain_scripts_and_data_on_refresh(self):
         for game in ('anno117', 'anno1800', 'anno1404'):

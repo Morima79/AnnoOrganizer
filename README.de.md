@@ -16,12 +16,13 @@ Lokale Windows-Werkzeuge für **Anno 117: Pax Romana**, **Anno 1800** und **Anno
 | Kartengalerie und Excel-Ausgabe | Ja | Ja | Ja |
 | Stempelgalerie mit Bauplan-PNGs | Ja | Ja | Noch nicht implementiert |
 | Zusätzliche Stempelfilter | Ceres-Feldgrössen, kosmetische DLCs | DLCs, Traktoren, Silos, Strom, Rathaus, Handelskammer | — |
+| Saves verschieben, Profile und Spielernamen ändern (Save Manager) | Ja | Ja | — |
 
-**Analyse- und Galeriewerkzeuge lesen Quelldateien ausschliesslich.** Konsolenausgaben liegen standardmässig in `<spiel>/local-data/`; neue Desktop-Konfigurationen verwenden `Dokumente/AnnoOrganizer/Anno <Nummer>/`. Der Ausgabeordner ist konfigurierbar. Jeder Anno-Ordner ist unabhängig nutzbar und enthält seinen eigenen Starter, Einstellungen, Abhängigkeiten, Anleitungen und Lizenz. Der Hauptstarter bietet zusätzlich ein gemeinsames Auswahlmenü. Der separate experimentelle [Spielstand-Manager](docs/save-manager.de.md) bearbeitet ausgewählte Saves nur bei ausdrücklich bestätigter Aktion.
+**Analyse- und Galeriewerkzeuge lesen Quelldateien ausschliesslich.** Konsolenausgaben liegen standardmässig in `<spiel>/local-data/`; neue Desktop-Konfigurationen verwenden `Dokumente/AnnoOrganizer/Anno <Nummer>/`. Der Ausgabeordner ist konfigurierbar. Jeder Anno-Ordner ist unabhängig nutzbar und enthält seinen eigenen Starter, Einstellungen, Abhängigkeiten, Anleitungen und Lizenz. Der Hauptstarter bietet zusätzlich ein gemeinsames Auswahlmenü. Der separate experimentelle [ANNO - Save Manager](docs/save-manager.de.md) bearbeitet ausgewählte Saves nur bei ausdrücklich bestätigter Aktion.
 
 ## Online-Demos und Releases
 
-[Alle fünf Galerien im Browser ausprobieren](https://morima79.github.io/AnnoOrganizer/) · [Windows-Paket herunterladen (ZIP)](https://github.com/Morima79/AnnoOrganizer/releases/download/v0.1.16/AnnoOrganizer-v0.1.16-windows-x64.zip) · [Alle Versionen und Quellcode](https://github.com/Morima79/AnnoOrganizer/releases/latest)
+[Alle fünf Galerien im Browser ausprobieren](https://morima79.github.io/AnnoOrganizer/) · [Windows-Paket herunterladen (ZIP)](https://github.com/Morima79/AnnoOrganizer/releases/download/v0.1.21/AnnoOrganizer-v0.1.21-windows-x64.zip) · [Alle Versionen und Quellcode](https://github.com/Morima79/AnnoOrganizer/releases/latest)
 
 | Spiel | Kartengalerie | Stempelgalerie |
 |---|---|---|
@@ -48,14 +49,14 @@ Die Vorschauen zeigen alle fünf mitgelieferten Demo-Galerien auf Deutsch; ein K
 
 ## Schnellstart: Windows-App
 
-1. Das [Windows-x64-Paket (ZIP)](https://github.com/Morima79/AnnoOrganizer/releases/download/v0.1.16/AnnoOrganizer-v0.1.16-windows-x64.zip) für **Windows 10/11 (64 Bit)** herunterladen.
+1. Das [Windows-x64-Paket (ZIP)](https://github.com/Morima79/AnnoOrganizer/releases/download/v0.1.21/AnnoOrganizer-v0.1.21-windows-x64.zip) für **Windows 10/11 (64 Bit)** herunterladen.
 2. Das **gesamte ZIP entpacken** und **AnnoOrganizer.exe** öffnen. `_internal/` muss neben der EXE bleiben. Python und ein Installer werden nicht benötigt.
 3. Spiel wählen und die erkannte Installation sowie die Standardordner für Spielstände/Stempel prüfen. Beim ersten Start ist **Karten und Excel** ausgewählt; **Erzeugen** wertet die eigenen Spielstände aus. Für Stempel bei 117/1800 stattdessen **Stempelgalerie** wählen. Eine bereits geöffnete Auswertung vor dem Aktualisieren in Excel schliessen.
 4. Das Ergebnis über **Galerien öffnen** aufrufen oder **Galerien nach dem Erzeugen öffnen** aktivieren. Der Pfeil daneben öffnet gezielt eine Galerie. Die Checkbox-Auswahl bleibt gespeichert.
 
 Neue Einstellungen entstehen automatisch unter `%LOCALAPPDATA%/AnnoOrganizer/<spiel>/settings.json`. Die Ausgaben liegen im tatsächlichen Windows-Dokumentenordner unter `AnnoOrganizer/Anno <Nummer>/`, auch bei umgeleiteten Dokumenten. Bestehende Einstellungen und Ausgabeziele bleiben erhalten. Bei deutscher Windows-Anzeigesprache startet die Oberfläche auf Deutsch, sonst auf Englisch. Die manuelle **DE/EN**-Auswahl wird gespeichert.
 
-**Alle Galerien aktualisieren** verarbeitet die nutzbaren Spiele mit einem Klick. Dafür müssen nicht alle drei Spiele vorhanden sein: Fehlende Spiele oder Eingabeordner werden übersprungen und in der Abschlussmeldung genannt. Ungültige Einstellungen oder fehlgeschlagene Exporte bleiben Fehler. Das Paket ist nicht signiert; Windows kann einen Sicherheitshinweis anzeigen. Versionsdetails und SHA-256-Prüfsummen stehen auf der [Versionsseite](https://github.com/Morima79/AnnoOrganizer/releases/tag/v0.1.16).
+**Alle Galerien aktualisieren** verarbeitet die nutzbaren Spiele mit einem Klick. Dafür müssen nicht alle drei Spiele vorhanden sein: Fehlende Spiele oder Eingabeordner werden übersprungen und in der Abschlussmeldung genannt. Ungültige Einstellungen oder fehlgeschlagene Exporte bleiben Fehler. Das Paket ist nicht signiert; Windows kann einen Sicherheitshinweis anzeigen. Versionsdetails und SHA-256-Prüfsummen stehen auf der [Versionsseite](https://github.com/Morima79/AnnoOrganizer/releases/tag/v0.1.21).
 
 ### Mitgelieferte Demo ausprobieren
 
@@ -72,6 +73,12 @@ Die Beispiele umfassen zusammen rund **7,4 MB** und wurden aus den Dateien des P
 ## Desktop-Oberfläche
 
 Die Windows-App bietet Spielauswahl, bearbeitbare Pfade, Auswahl/Import vorhandener Einstellungen, gespeicherte Aktionswahl, Fortschritt, Abbruch und Protokolle. **Erzeugen** verwendet die angezeigten Werte, ohne die persönliche Einstellungsdatei zu speichern; bearbeitete Pfade bleiben mit **Speichern** erhalten. Einstellungen liegen ausserhalb des entpackten Programmordners und bleiben beim Austausch des Programmordners bestehen. [Bebilderte Einsteigeranleitung](https://morima79.github.io/AnnoOrganizer/guide/?lang=de).
+
+## ANNO - Save Manager
+
+Das eigenständige [Windows-Paket herunterladen (ZIP)](https://github.com/Morima79/AnnoOrganizer/releases/download/v0.1.21/AnnoSaveManager-v0.1.21-windows-x64.zip) und vollständig entpacken, dann **AnnoSaveManager.exe** starten. Python wird nicht benötigt; die Oberfläche ist auf Deutsch.
+
+Für **Anno 117 und Anno 1800**: einzelne Saves kopieren oder verschieben, ganze Profilordner umbenennen und Prätor-/Spielernamen in einzelnen oder allen Saves eines Ordners ändern. Vor Änderungen entstehen geprüfte ZIP-Sicherungen; bei laufendem Spiel wird die Bearbeitung gesperrt. [Anleitung und geprüfte Save-Felder](docs/save-manager.de.md).
 
 ## Start aus dem Quellcode
 
@@ -147,8 +154,6 @@ Inoffizielles Projekt ohne Verbindung zu Ubisoft. Die Ausgaben sind Rekonstrukti
 ## Aktuelle Spielstand-Kennzahlen
 
 Die Kartengalerie zeigt pro Partie den neuesten Save mit Bevölkerung, Vermögen, Bilanz, Wohnhäusern und Schiffen. Jede Kennzahlengruppe bleibt zunächst geschlossen; Stufen, Baupläne und weitere Details erscheinen erst beim Anklicken. Frühere Save- und Spielzeitangaben stehen unter **Save-Details**. Nicht zuverlässig auslesbare Werte werden als **nicht verfügbar** angezeigt. Excel erhält das zusätzliche Blatt **Aktuelle Spielstände**. [Datenquellen und Grenzen](docs/save-statistics.de.md).
-
-Für Anno 117 und Anno 1800 gibt es einen separaten [Spielstand-Manager als Testversion](docs/save-manager.de.md): Saves kopieren oder verschieben, Profilordner mit geprüfter Sicherung umbenennen, Prätor-/Spielernamen in einzelnen oder allen Saves eines Ordners ändern und verschachtelte Profilordner verhindern.
 
 ## Nutzung und Weiterveröffentlichung
 

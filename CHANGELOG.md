@@ -7,7 +7,11 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Add clear Windows downloads and guides for ANNO - Save Manager to the main/game READMEs and bilingual demo landing page; refresh outdated Organizer download links.
+
 ### Deutsch
+
+- Windows-Downloads und Anleitungen für ANNO - Save Manager in Haupt-/Spiel-READMEs und zweisprachiger Demo-Startseite hervorheben; veraltete Organizer-Downloadlinks aktualisieren.
 
 ## [v0.1.21] - 2026-11-28
 

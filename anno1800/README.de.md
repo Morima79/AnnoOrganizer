@@ -8,7 +8,7 @@
 
 Dieser Ordner ist unabhängig nutzbar und enthält seinen eigenen Starter, Einstellungen, Abhängigkeiten und Lizenz. Die anderen Anno-Ordner und der Hauptstarter werden nicht benötigt. Analyse- und Galeriewerkzeuge lesen Quelldateien ausschliesslich. Die technische Benennung ist Englisch; Menüs und Protokollmeldungen bleiben Deutsch. Die HTML-Galerien bieten einen DE/EN-Schalter.
 
-Der separate [Spielstand-Manager](docs/save-manager.de.md) startet mit `python tools/manage_saves.py --game anno1800`. Er verschiebt Saves, benennt ganze Profilordner um und ändert Spielernamen in einzelnen oder allen Saves eines Ordners. Vorher werden die Originale als ZIP gesichert; Profil-Unterordner werden abgelehnt.
+Der separate **ANNO - Save Manager** ist als [eigenständiges Windows-Paket (ZIP)](https://github.com/Morima79/AnnoOrganizer/releases/download/v0.1.21/AnnoSaveManager-v0.1.21-windows-x64.zip) verfügbar: vollständig entpacken und `AnnoSaveManager.exe` starten; Python wird dafür nicht benötigt. Er unterstützt Anno 117 und 1800: Saves kopieren oder verschieben, ganze Profilordner umbenennen sowie Prätor-/Spielernamen in einzelnen oder allen Saves eines Ordners ändern. Vor Änderungen entstehen geprüfte ZIP-Sicherungen; bei laufendem Spiel wird die Bearbeitung gesperrt. [Anleitung](docs/save-manager.de.md). Aus dem Quellcode: `python tools/manage_saves.py --game anno1800`.
 
 ## Vorschau
 

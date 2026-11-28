@@ -716,5 +716,11 @@
   "guide.heading": "Deine ersten Galerien.",
   "guide.description": "Die bebilderte Einsteigeranleitung für ANNO - Organizer: mit Anno 117 zur ersten Karten- und Stempelgalerie.",
   "guide.home": "Zur Startseite",
-  "demo.guide": "Bebilderte Anleitung"
+  "demo.guide": "Bebilderte Anleitung",
+  "demo.saveManagerHeading": "ANNO - Save Manager für Windows",
+  "demo.saveManagerDescription": "Kopiere oder verschiebe einzelne Saves, benenne ganze Profilordner um und ändere Prätor-/Spielernamen in einzelnen oder allen Saves eines Ordners – für Anno 117 und Anno 1800.",
+  "demo.saveManagerDownload": "Save Manager herunterladen (ZIP)",
+  "demo.saveManagerInstructions": "Für Windows 10/11 (64 Bit). ZIP vollständig entpacken und AnnoSaveManager.exe starten. Python wird nicht benötigt; die Oberfläche ist auf Deutsch.",
+  "demo.saveManagerProtection": "Vor Änderungen werden geprüfte ZIP-Sicherungen erstellt. Eine Bearbeitung bei laufendem Spiel wird gesperrt.",
+  "demo.saveManagerGuide": "Anleitung:"
 }

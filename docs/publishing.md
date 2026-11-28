@@ -45,7 +45,7 @@ Local build from a clean committed state (choose a version label for local testi
 
 The builder excludes normal local settings, caches and game resource archives. `BUILD.json` records the commit, runtime versions and resource hashes. Third-party notices include Python and its dependency notices, Pillow, XlsxWriter, tzdata and the PyInstaller bootloader with its built-application exception. For maintenance and constraints, see official [PyInstaller runtime information](https://pyinstaller.org/en/stable/runtime-information.html) and [windowed-mode guidance](https://pyinstaller.org/en/stable/common-issues-and-pitfalls.html). Binary identity across different Python versions and Windows toolchains is not promised. The package is unsigned; bundled DE/EN READMEs explain this. Signing remains separate.
 
-The demo landing page links directly to the published Windows ZIP and its versioned release page. When releasing a new desktop version, update those URLs and the `demo.downloadDetails` text in the shared template/locales together, then refresh `site/`. Publish the version tag through the existing release workflow and verify the asset before announcing the download.
+The demo landing page links directly to the published Windows ZIP and its versioned release page. When releasing a new desktop version, update both application download URLs in the shared landing-page template and the main/game READMEs, plus `demo.downloadDetails` in the shared locales, then refresh `site/`. Publish the version tag through the existing release workflow and verify the asset before announcing the download.
 
 ## Artifact download Node.js warning
 

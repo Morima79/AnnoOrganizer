@@ -45,7 +45,7 @@ Lokaler Build aus einem sauberen, committeten Stand (Versionsbezeichnung frei f�
 
 Der Builder nimmt keine normalen lokalen Einstellungen, Caches oder Spielressourcenarchive auf. `BUILD.json` dokumentiert Commit, Laufzeitversionen und Ressourcen-Hashes. Drittanbieter-Hinweise enthalten Python einschliesslich seiner Bibliotheksnotizen, Pillow, XlsxWriter, tzdata und den PyInstaller-Bootloader samt Ausnahme für gebaute Anwendungen. Für Pflege und Grenzen siehe die offiziellen [PyInstaller-Laufzeithinweise](https://pyinstaller.org/en/stable/runtime-information.html) und [Hinweise zum fensterlosen Modus](https://pyinstaller.org/en/stable/common-issues-and-pitfalls.html). Binäridentität über verschiedene Python-Versionen und Windows-Toolchains wird nicht zugesagt. Das Paket ist unsigniert; Hinweise dazu stehen in den mitgelieferten DE/EN-READMEs. Signierung bleibt separat.
 
-Die Demo-Startseite verlinkt das veröffentlichte Windows-ZIP und dessen Versionsseite direkt. Bei einer neuen Desktop-Version diese URLs und `demo.downloadDetails` in der gemeinsamen Vorlage bzw. den Sprachressourcen gemeinsam anpassen und `site/` aktualisieren. Den Versionstag über den vorhandenen Release-Workflow veröffentlichen und das Asset vor der Download-Ankündigung prüfen.
+Die Demo-Startseite verlinkt das veröffentlichte Windows-ZIP und dessen Versionsseite direkt. Bei einer neuen Desktop-Version die Download-URLs beider Programme in der gemeinsamen Startseitenvorlage und den Haupt-/Spiel-READMEs sowie `demo.downloadDetails` in den Sprachressourcen gemeinsam anpassen und `site/` aktualisieren. Den Versionstag über den vorhandenen Release-Workflow veröffentlichen und das Asset vor der Download-Ankündigung prüfen.
 
 ## Node.js-Warnung beim Artefaktdownload
 
