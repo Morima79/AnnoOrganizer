@@ -427,6 +427,22 @@ def time_values(saves, seed_times, zone):
     }
 
 
+MAP_RENDER_VERSION = '3'
+
+
+def reduce_island_shadow(image):
+    """Reduce translucent black map shadows while preserving terrain pixels."""
+    from PIL import ImageChops
+    red, green, blue, alpha = image.split()
+    maximum = ImageChops.lighter(ImageChops.lighter(red, green), blue)
+    black = maximum.point(lambda value: 255 if value == 0 else 0)
+    translucent = alpha.point(lambda value: 255 if value < 255 else 0)
+    shadow = ImageChops.multiply(alpha, ImageChops.multiply(black, translucent))
+    result = image.copy()
+    result.putalpha(ImageChops.subtract(alpha, shadow.point(lambda value: round(value * 0.75))))
+    return result
+
+
 def island_image_bounds(position, rotation, map_size, active_rect, image_size):
     """Place a padded, two-pixels-per-tile graphic relative to the map origin."""
     x, y = position
@@ -439,6 +455,24 @@ def island_image_bounds(position, rotation, map_size, active_rect, image_size):
         map_width, map_height = map_height, map_width
         width, height = height, width
     return x + center_x - width / 2, y + center_y - height / 2, width, height
+
+
+def island_map_view(guid, size, terrain_bounds):
+    """Trim open sea with a 64-tile margin, preserving all known terrain."""
+    width, height = size
+    full = (0, 0, width, height)
+    if guid not in (112132, 180045) or not terrain_bounds:
+        return full
+    left = max(0, min(box[0] for box in terrain_bounds) - 64)
+    bottom = max(0, min(box[1] for box in terrain_bounds) - 64)
+    # The Arctic mainland retains its original top and right map edges.
+    right, top = width, height
+    if guid == 112132:
+        right = min(width, max(box[2] for box in terrain_bounds) + 64)
+        top = min(height, max(box[3] for box in terrain_bounds) + 64)
+    if right <= left or top <= bottom:
+        return full
+    return left, bottom, right, top
 
 
 def render_catalog(rows, groups, maps, stage, updated_at, total_playtime, profile_totals, statistics=None):
@@ -474,8 +508,10 @@ def render_catalog(rows, groups, maps, stage, updated_at, total_playtime, profil
         map_size = st.unpack('<ii', metadata[('MapSize',)])
         active_rect = st.unpack('<4i', metadata[('ActiveMapRect',)])
         img=Image.open(BytesIO(read_asset(idx[n]))).convert('RGBA')
+        img=reduce_island_shadow(img)
         image_size = img.size
-        img = img.resize((max(1,round(img.width*.225)),max(1,round(img.height*.225))),Image.Resampling.LANCZOS)
+        # Retain enough detail for the tighter regional views.
+        img = img.resize((max(1,round(img.width*.3)),max(1,round(img.height*.3))),Image.Resampling.LANCZOS)
         return img, map_size, active_rect, image_size
 
     @lru_cache(maxsize=None)
@@ -489,8 +525,18 @@ def render_catalog(rows, groups, maps, stage, updated_at, total_playtime, profil
         if not ils: return None
         geometry=(s['guid'],tuple(s['size']),tuple(sorted((e['file'],tuple(e['pos']),e.get('rotation',0)) for e in ils)))
         if geometry in pictures: return pictures[geometry]
-        scale=830/max(s['size'])
-        w,h=(round(x*scale) for x in s['size'])
+        graphics = [(element, tile(element['file'])) for element in ils]
+        terrain_bounds = []
+        if all(graphic is not None for _, graphic in graphics):
+            for element, (_, map_size, rect, _) in graphics:
+                terrain_size = (2*(rect[2]-rect[0]), 2*(rect[3]-rect[1]))
+                x, y, width, height = island_image_bounds(
+                    element['pos'], element.get('rotation', 0), map_size, rect, terrain_size)
+                terrain_bounds.append((x, y, x+width, y+height))
+        view_left, view_bottom, view_right, view_top = island_map_view(s['guid'], s['size'], terrain_bounds)
+        view_size = (view_right-view_left, view_top-view_bottom)
+        scale=830/max(view_size)
+        w,h=(round(x*scale) for x in view_size)
         canvas=Image.new('RGBA',(w+60,h+116),'#0b202c')
         draw=ImageDraw.Draw(canvas)
         draw.rectangle((30,62,w+29,h+61),fill='#123a4c',outline='#426579')
@@ -499,13 +545,14 @@ def render_catalog(rows, groups, maps, stage, updated_at, total_playtime, profil
             draw.line((x,63,x,h+60),fill='#204759')
             draw.line((31,y,w+28,y),fill='#204759')
         missing=[]
-        for e in ils:
+        layer = Image.new('RGBA', (w, h))
+        layer_draw = ImageDraw.Draw(layer)
+        for e, graphic in graphics:
             x,y=e['pos']
-            cx,cy=30+round(x*scale),62+round(h-y*scale)
-            graphic=tile(e['file'])
+            cx,cy=round((x-view_left)*scale),round(h-(y-view_bottom)*scale)
             if graphic is None:
                 missing.append(Path(e['file']).stem)
-                draw.ellipse((cx-5,cy-5,cx+5,cy+5),outline='#ffcb84',width=2)
+                layer_draw.ellipse((cx-5,cy-5,cx+5,cy+5),outline='#ffcb84',width=2)
                 continue
             im, map_size, active_rect, image_size = graphic
             angle=e.get('rotation',0)%4
@@ -514,14 +561,19 @@ def render_catalog(rows, groups, maps, stage, updated_at, total_playtime, profil
                 e['pos'], angle, map_size, active_rect, image_size)
             width,height=(max(1,round(a*scale)) for a in (world_width,world_height))
             im=im.resize((width,height),Image.Resampling.LANCZOS)
-            canvas.alpha_composite(im,(30+round(left*scale),62+round(h-(bottom+world_height)*scale)))
+            layer.alpha_composite(im,(round((left-view_left)*scale),round(h-(bottom+world_height-view_bottom)*scale)))
+        canvas.alpha_composite(layer, (30, 62))
         region=REGIONS.get(s['guid'],f"Szenario / Region {s['guid']}")
         draw.text((30,15),region,font=font('segoeuib',28),fill='#ecf5f8')
-        subtitle=f"{len(ils)} Inseln  ·  {s['size'][0]} × {s['size'][1]}"
+        dimensions = f'{view_size[0]:g} × {view_size[1]:g}'
+        if (view_left, view_bottom, view_right, view_top) != (0, 0, *s['size']):
+            dimensions = f'Ausschnitt: {dimensions}'
+        subtitle=f"{len(ils)} Inseln  ·  {dimensions}"
         if missing: subtitle+=f"  ·  {len(missing)} ohne Grafik"
         draw.text((30,h+77),subtitle,
                   font=font('segoeui',15),fill='#aac5d3')
-        fn=f"Seed-{seed}_{i:03d}_{s['guid']}_{hashlib.sha256(repr(geometry).encode()).hexdigest()[:8]}.png"
+        digest = hashlib.sha256(repr((MAP_RENDER_VERSION, geometry)).encode()).hexdigest()[:8]
+        fn=f"Seed-{seed}_{i:03d}_{s['guid']}_{digest}.png"
         canvas.convert('RGB').save(base/fn)
         pictures[geometry]=(fn,region,len(ils),missing)
         return pictures[geometry]
