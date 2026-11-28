@@ -6,14 +6,16 @@ import re
 import zipfile
 
 
-def extract_desktop_artifact(directory, version, output):
+def extract_desktop_artifact(directory, version, output, package='desktop'):
     """Accept only the expected desktop ZIP and its matching checksum file."""
     if not re.fullmatch(r'v[0-9]+[.][0-9]+[.][0-9]+(?:-[A-Za-z0-9.-]+)?', version):
         raise ValueError('Use a version such as v0.1.16')
     downloads = list(Path(directory).iterdir())
     if len(downloads) != 1 or not downloads[0].is_file():
         raise ValueError('Expected exactly one downloaded artifact archive')
-    archive_name = f'AnnoOrganizer-{version}-windows-x64.zip'
+    if package not in ('desktop', 'save-manager'):
+        raise ValueError('Unknown release package')
+    archive_name = 'AnnoSaveManager.zip' if package == 'save-manager' else f'AnnoOrganizer-{version}-windows-x64.zip'
     checksum_name = str(Path(archive_name).with_suffix('.sha256'))
     with zipfile.ZipFile(downloads[0]) as artifact:
         if sorted(artifact.namelist()) != sorted((archive_name, checksum_name)):
@@ -38,5 +40,6 @@ if __name__ == '__main__':
     parser.add_argument('--directory', required=True, type=Path)
     parser.add_argument('--version', required=True)
     parser.add_argument('--output', required=True, type=Path)
+    parser.add_argument('--package', choices=('desktop', 'save-manager'), default='desktop')
     args = parser.parse_args()
-    extract_desktop_artifact(args.directory, args.version, args.output)
+    extract_desktop_artifact(args.directory, args.version, args.output, args.package)

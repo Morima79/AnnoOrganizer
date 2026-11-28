@@ -1,8 +1,9 @@
-"""Build the standalone development save manager using disposable local storage."""
+"""Build the standalone Windows save manager using disposable local storage."""
 import argparse
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import shutil
 import subprocess
@@ -16,14 +17,23 @@ from anno_save_editor import temporary_root
 from build_desktop import notices
 
 
-def build(output):
+def archive_name(version=None):
+    if version is not None and not re.fullmatch(r'v\d+\.\d+\.\d+(?:-[A-Za-z0-9.-]+)?', version):
+        raise ValueError('Use a semantic version starting with v')
+    return 'AnnoSaveManager.zip' if version else 'AnnoSaveManager-dev-windows-x64.zip'
+
+
+def build(output, version=None):
     if os.name != 'nt':
         raise ValueError('Build the Windows application on Windows.')
+    filename = archive_name(version)
+    if version and subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT).strip():
+        raise ValueError('Commit changes before building a save-manager release.')
     subprocess.run([sys.executable, str(ROOT / 'scripts/sync_save_manager.py'), '--check'],
                    cwd=ROOT, check=True)
     output = output.resolve()
     application = output / 'AnnoSaveManager'
-    archive_path = output / 'AnnoSaveManager-dev-windows-x64.zip'
+    archive_path = output / filename
     if application.exists() or archive_path.exists():
         raise ValueError('Choose a new output directory; existing builds are preserved.')
     with tempfile.TemporaryDirectory(prefix='anno-save-build-', dir=temporary_root()) as directory:
@@ -45,8 +55,8 @@ def build(output):
         inputs = ['anno117/tools/' + name for name in ('manage_saves.py', 'anno_save_editor.py',
                   'anno_file_formats.py', 'anno_settings.py', 'anno_installation.py', 'anno_save_ui.py')]
         inputs.append('anno117/tools/assets/annoorganizer.ico')
-        (built / 'BUILD.json').write_text(json.dumps(dict(development=True, python=sys.version,
-            base_commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
+        (built / 'BUILD.json').write_text(json.dumps(dict(development=version is None, version=version, python=sys.version,
+            commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
             inputs={name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest() for name in inputs}),
             indent=2), encoding='utf-8')
         for game, sample in (('anno117', 'Demo-03/demo-03.a8s'), ('anno1800', 'Demo-01/demo-01.a7s')):
@@ -70,4 +80,6 @@ def build(output):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, default=ROOT / 'dist/save-manager-dev')
-    build(parser.parse_args().output)
+    parser.add_argument('--version', help='Build a clean committed release as AnnoSaveManager.zip')
+    options = parser.parse_args()
+    build(options.output, options.version)

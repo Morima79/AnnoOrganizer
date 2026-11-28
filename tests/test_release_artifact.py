@@ -108,3 +108,31 @@ class ReleaseArtifactTests(unittest.TestCase):
         self.assertIn('python scripts/extract_desktop_artifact.py', workflow)
         self.assertNotRegex(workflow, r'NODE_NO_WARNINGS|--no-warnings|--no-deprecation')
         self.assertIn("if: github.event_name == 'push'", workflow)
+
+    def test_save_manager_pair_is_verified_without_replacing_desktop_files(self):
+        name = 'AnnoSaveManager.zip'
+        checksum = 'AnnoSaveManager.sha256'
+        content = b'save-manager package'
+        entries = {name: content, checksum: (hashlib.sha256(content).hexdigest() + '  ' + name + '\n').encode()}
+        self.write_artifact(entries)
+        self.output.mkdir()
+        desktop = self.output / self.name
+        desktop.write_bytes(b'keep desktop')
+        extract_desktop_artifact(self.download, self.version, self.output, 'save-manager')
+        self.assertEqual((self.output / name).read_bytes(), content)
+        self.assertEqual(desktop.read_bytes(), b'keep desktop')
+        entries[checksum] = b'wrong digest'
+        self.write_artifact(entries)
+        with self.assertRaisesRegex(ValueError, 'checksum mismatch'):
+            extract_desktop_artifact(self.download, self.version, self.root / 'bad', 'save-manager')
+        self.assertFalse((self.root / 'bad').exists())
+
+    def test_save_manager_workflow_builds_and_publishes_a_verified_pair(self):
+        workflow = (ROOT / '.github/workflows/release.yml').read_text(encoding='utf-8')
+        self.assertIn('needs: [tests, desktop, save-manager]', workflow)
+        self.assertIn('python scripts/build_save_manager.py --version', workflow)
+        self.assertIn('dist/AnnoSaveManager.zip', workflow)
+        self.assertIn('dist/AnnoSaveManager.sha256', workflow)
+        self.assertIn('--package save-manager', workflow)
+        self.assertEqual(workflow.count('skip-decompress: true'), 2)
+        self.assertEqual(workflow.count('digest-mismatch: error'), 2)
