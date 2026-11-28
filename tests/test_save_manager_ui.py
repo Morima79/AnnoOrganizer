@@ -12,6 +12,7 @@ from test_save_editor import account, editor, save
 
 TOOLS = Path(__file__).resolve().parents[1] / 'anno117/tools'
 with patch.object(sys, 'path', [str(TOOLS), *sys.path]):
+    from anno_save_language import choose_language, error_text, MESSAGES
     spec = importlib.util.spec_from_file_location('save_manager_ui_fixture', TOOLS / 'manage_saves.py')
     ui = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(ui)
@@ -19,6 +20,9 @@ with patch.object(sys, 'path', [str(TOOLS), *sys.path]):
 
 class SaveManagerUITests(unittest.TestCase):
     def setUp(self):
+        language_check = patch.object(ui, 'choose_language', side_effect=lambda saved=None: choose_language(saved, 'de-DE'))
+        language_check.start()
+        self.addCleanup(language_check.stop)
         process_check = patch.object(ui, 'ensure_game_closed')
         process_check.start()
         self.addCleanup(process_check.stop)
@@ -41,6 +45,97 @@ class SaveManagerUITests(unittest.TestCase):
             self.app.update()
             time.sleep(.01)
         self.assertFalse(self.app.busy)
+
+    def test_language_switch_preserves_selection_inputs_and_window_then_survives_restart(self):
+        self.app.load([self.source], self.source.parent)
+        self.app.target_name.set('Mein Profil - Neu')
+        self.app.change_player.set(True)
+        self.app.update_player_state()
+        self.app.new_player.set('Prätor: unverändert')
+        self.app.tree.selection_set('0')
+        self.app.update_idletasks()
+        geometry = self.app.geometry()
+        values = tuple(self.app.tree.item('0', 'values'))
+        for language in ('en', 'de', 'en'):
+            self.app.language_buttons[language].invoke()
+            self.assertEqual(self.app.language, language)
+            self.assertEqual(self.app.sources, [self.source])
+            self.assertEqual(self.app.folder, self.source.parent)
+            self.assertEqual(self.app.account, self.root)
+            self.assertEqual(self.app.target_name.get(), 'Mein Profil - Neu')
+            self.assertEqual(self.app.new_player.get(), 'Prätor: unverändert')
+            self.assertTrue(self.app.change_player.get())
+            self.assertEqual(tuple(self.app.tree.item('0', 'values')), values)
+            self.assertEqual(self.app.tree.selection(), ('0',))
+            self.assertEqual(self.app.geometry(), geometry)
+        self.assertEqual(self.app.tree.heading('profile', 'text'), 'Save profile')
+        self.assertEqual(self.app.player_button.cget('text'), 'Change praetor only')
+        self.assertIn('Fields read', self.app.status.get())
+        path = self.app.preferences_path
+        self.app.destroy()
+        self.app = ui.SaveManager(preferences_path=path)
+        self.app.withdraw()
+        self.assertEqual(self.app.language, 'en')
+        self.assertEqual(self.app.save_root, self.root)
+        self.assertEqual(self.app.language_buttons['en'].cget('style'), 'LanguageSelected.TButton')
+        self.app.game_choice.set(ui.GAME_LABELS['anno1800'])
+        self.app.on_game_changed()
+        self.assertEqual(self.app.player_button.cget('text'), 'Change player name only')
+        self.assertEqual(self.app.tree.heading('player', 'text'), 'Player name')
+
+    def test_english_validation_confirmation_and_failure_preserve_user_paths(self):
+        self.app.load([self.source])
+        self.app.change_language('en')
+        self.app.target_name.set('Mein Profil/Unterordner')
+        with patch.object(ui.messagebox, 'showerror') as error:
+            self.app.start(False)
+        self.assertEqual(error.call_args.args[0], 'Action cannot be performed')
+        self.assertIn('subfolders are not allowed', error.call_args.args[1])
+        self.app.target_name.set('Ziel: Neu')
+        # Use a valid user-entered German profile name in the confirmation.
+        self.app.target_name.set('Mein Profil - Neu')
+        with patch.object(ui.messagebox, 'askokcancel', return_value=False) as confirm:
+            self.app.start(False)
+        self.assertEqual(confirm.call_args.args[0], 'Copy')
+        self.assertIn(str(self.root / 'Mein Profil - Neu'), confirm.call_args.args[1])
+        self.assertIn('Praetor: unchanged', confirm.call_args.args[1])
+        self.app.set_message(self.app.status, 'failed_status', result='Sicherungsprüfung fehlgeschlagen.')
+        self.assertEqual(self.app.status.get(), 'Cancelled: Backup verification failed.')
+        self.app.change_language('de')
+        self.assertEqual(self.app.status.get(), 'Abgebrochen: Sicherungsprüfung fehlgeschlagen.')
+
+    def test_language_switch_is_blocked_while_editing_and_completion_is_localized(self):
+        self.app.load([self.source])
+        self.app.change_language('en')
+        self.app.busy = True
+        self.app.refresh_controls()
+        self.app.change_language('de')
+        self.assertEqual(self.app.language, 'en')
+        self.assertEqual(str(self.app.language_buttons['de'].cget('state')), 'disabled')
+        self.app.events.put((True, str(Path(self.temp.name) / 'Sicherung.zip')))
+        self.app.after_cancel(self.app.poll_after)
+        with patch.object(ui.messagebox, 'showinfo') as info:
+            self.app.poll()
+        self.assertEqual(info.call_args.args[0], 'Completed')
+        self.assertIn('Sicherung.zip', info.call_args.args[1])
+        self.assertEqual(self.app.sources, [])
+        self.assertEqual(self.app.target_name.get(), '')
+        self.assertIn('Action completed', self.app.selection.get())
+        self.assertEqual(str(self.app.language_buttons['de'].cget('state')), 'normal')
+
+    def test_language_defaults_and_error_templates_do_not_translate_names(self):
+        self.assertEqual(choose_language(None, 'de-CH'), 'de')
+        self.assertEqual(choose_language(None, 'en-US'), 'en')
+        self.assertEqual(choose_language('de', 'en-US'), 'de')
+        self.assertEqual(choose_language('en', 'de-DE'), 'en')
+        self.assertEqual(choose_language('invalid', 'fr-CH'), 'en')
+        self.assertEqual(choose_language(['de'], 'de-DE'), 'de')
+        for key, (german, english) in MESSAGES.items():
+            from string import Formatter
+            fields = lambda value: {name for _, name, _, _ in Formatter().parse(value) if name is not None}
+            self.assertEqual(fields(german), fields(english), key)
+        source = 'Abgebrochen; Originale erhalten. Sicherung: D:/Prätor Neu/Mein Profil.zip. Zieldatei existiert bereits; nichts wurde überschrieben.'
+        self.assertEqual(error_text('en', source), 'Cancelled; originals preserved. Backup: D:/Prätor Neu/Mein Profil.zip. A destination file already exists; nothing was overwritten.')
 
     def test_running_game_message_preserves_selection_and_never_starts_editing(self):
         self.app.load([self.source])

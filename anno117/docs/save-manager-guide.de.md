@@ -2,7 +2,7 @@
 
 [English](save-manager-guide.md) · [Deutsch](save-manager-guide.de.md) · [Zur Übersicht](../README.de.md)
 
-**Spielstände verschieben, Profilordner umbenennen und Prätor-/Spielernamen ändern – für Anno 117 und Anno 1800.** Die Bilder zeigen isolierte Beispieldaten. Deine Ordner und Namen können anders aussehen. Ein Klick auf ein Bild öffnet es in voller Grösse. Die Programmoberfläche ist Deutsch; diese Anleitung gibt es auf Deutsch und Englisch.
+**Spielstände verschieben, Profilordner umbenennen und Prätor-/Spielernamen ändern – für Anno 117 und Anno 1800.** Die Bilder zeigen isolierte Beispieldaten. Deine Ordner und Namen können anders aussehen. Ein Klick auf ein Bild öffnet es in voller Grösse. Der Entwicklungsstand bietet oben rechts **DE / EN** mit gespeicherter Sprachwahl. Die Bilder und Schaltflächennamen dieser Anleitung zeigen **DE**; wähle diese Sprache zum Nachvollziehen. Pakete bis v0.1.21 haben noch die deutsche Oberfläche.
 
 ## 1. Herunterladen und vorbereiten
 

@@ -66,7 +66,7 @@ def build(output, version=None):
         copy_user_guide(built)
         notices(built / 'licenses')
         inputs = ['anno117/tools/' + name for name in ('manage_saves.py', 'anno_save_editor.py',
-                  'anno_file_formats.py', 'anno_settings.py', 'anno_installation.py', 'anno_save_ui.py')]
+                  'anno_file_formats.py', 'anno_settings.py', 'anno_installation.py', 'anno_save_ui.py', 'anno_save_language.py')]
         inputs.append('anno117/tools/assets/annoorganizer.ico')
         (built / 'BUILD.json').write_text(json.dumps(dict(development=version is None, version=version, python=sys.version,
             commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),

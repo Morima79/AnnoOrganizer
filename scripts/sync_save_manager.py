@@ -4,7 +4,7 @@ from pathlib import Path
 import shutil
 
 ROOT = Path(__file__).resolve().parents[1]
-MODULES = ('anno_save_editor.py', 'anno_save_ui.py', 'manage_saves.py')
+MODULES = ('anno_save_editor.py', 'anno_save_ui.py', 'anno_save_language.py', 'manage_saves.py')
 
 
 def sync(check=False):

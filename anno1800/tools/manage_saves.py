@@ -13,6 +13,7 @@ from anno_save_editor import (GAME_FORMATS, ensure_game_closed, game_format, pro
                               temporary_root, validate_destination, validate_profile_name, validate_player_name)
 from anno_settings import documents_folder
 from anno_save_ui import WindowState, apply_theme
+from anno_save_language import choose_language, error_text, text
 
 GAME_LABELS = {
     'anno117': 'Anno 117: Pax Romana',
@@ -103,11 +104,15 @@ class SaveManager(tk.Tk):
         if os.name == 'nt' and icon.is_file():
             self.iconbitmap(default=str(icon))
         self.sources = []
+        self.ambiguous_rows = set()
         self.folder = None
         self.account = None
         local = Path(os.environ.get('LOCALAPPDATA', Path.home())) / 'AnnoOrganizer'
         self.preferences_path = Path(preferences_path) if preferences_path is not None else local / 'save-manager.json'
         self.preferences = read_preferences(self.preferences_path)
+        self.language = choose_language(self.preferences.get('language'))
+        self.text_controls = []
+        self.variable_messages = {}
         saved_game = self.preferences.get('selected_game')
         owner = Path(__file__).resolve().parents[1].name
         default_game = owner if owner in GAME_FORMATS else 'anno117'
@@ -119,38 +124,47 @@ class SaveManager(tk.Tk):
         self.busy = False
         self.destination = tk.StringVar()
         self.target_name = tk.StringVar()
-        self.account_label = tk.StringVar(value='Startordner: ' + str(self.save_root))
+        self.account_label = tk.StringVar()
         self.change_player = tk.BooleanVar(value=False)
         self.new_player = tk.StringVar()
         self.backup = tk.StringVar(value=str(Path(os.environ.get('LOCALAPPDATA', Path.home()))
                                            / 'AnnoOrganizer' / 'save-backups'))
-        self.status = tk.StringVar(value='Saves oder einen Profilordner auswählen.')
+        self.status = tk.StringVar()
+        self.set_message(self.status, 'ready')
         body = ttk.Frame(self, padding=16)
         body.pack(fill='both', expand=True)
         header = ttk.Frame(body)
         header.pack(fill='x')
-        ttk.Label(header, text='Spielstände verwalten', style='Title.TLabel').pack(side='left')
+        self.label(header, 'title', style='Title.TLabel').pack(side='left')
         chooser = ttk.Frame(header)
         chooser.pack(side='right')
-        ttk.Label(chooser, text='Spiel:').pack(side='left', padx=(12, 6))
+        self.language_buttons = {}
+        for language in ('en', 'de'):
+            button = ttk.Button(chooser, text=language.upper(), width=4,
+                                command=lambda value=language: self.change_language(value))
+            button.pack(side='right', padx=(6, 0))
+            self.language_buttons[language] = button
+        self.label(chooser, 'game').pack(side='left', padx=(12, 6))
         self.game_combo = ttk.Combobox(chooser, textvariable=self.game_choice,
                                        values=tuple(GAME_LABELS.values()), state='readonly', width=27)
         self.game_combo.pack(side='left')
         self.game_combo.bind('<<ComboboxSelected>>', self.on_game_changed)
-        ttk.Label(body, text='Spiel vor Änderungen schliessen. Cloud-Synchronisierung kann alte Profile wiederherstellen.',
+        self.label(body, 'warning',
                   wraplength=920, style='Muted.TLabel').pack(anchor='w', pady=(6, 12))
         buttons = ttk.Frame(body)
         buttons.pack(fill='x')
         self.controls = []
-        self.button(buttons, 'Einzelne Saves auswählen …', self.select_files).pack(side='left')
-        self.button(buttons, 'Ganzer Profilordner …', self.select_folder).pack(side='left', padx=8)
-        self.button(buttons, 'Alle Namen im Ordner …', self.select_name_folder).pack(side='right')
-        self.selection_label = ttk.Label(body, text='Keine Quelle ausgewählt', wraplength=830)
+        self.button(buttons, 'select_files', self.select_files).pack(side='left')
+        self.button(buttons, 'select_folder', self.select_folder).pack(side='left', padx=8)
+        self.button(buttons, 'select_names', self.select_name_folder).pack(side='right')
+        self.selection = tk.StringVar()
+        self.set_message(self.selection, 'no_source')
+        self.selection_label = ttk.Label(body, textvariable=self.selection, wraplength=920)
         self.selection_label.pack(anchor='w', pady=8)
         table = ttk.Frame(body)
         table.pack(fill='both', expand=True)
         self.tree = ttk.Treeview(table, columns=('player', 'profile', 'save'), height=7)
-        self.tree.heading('#0', text='Datei')
+        self.tree.heading('#0', text=self.t('file'))
         for key, label in [('player', 'Prätor'), ('profile', 'Speicherprofil'), ('save', 'Gespeicherter Name')]:
             self.tree.heading(key, text=label)
             self.tree.column(key, width=170)
@@ -160,11 +174,11 @@ class SaveManager(tk.Tk):
         self.tree.pack(side='left', fill='both', expand=True)
         scroll.pack(side='right', fill='y')
         ttk.Label(body, textvariable=self.account_label, wraplength=920, style='Muted.TLabel').pack(anchor='w', pady=(10, 2))
-        for label, variable, callback in [('Ziel-Profilname', self.target_name, self.choose_destination),
-                                           ('Sicherungsordner', self.backup, self.choose_backup)]:
+        for label, variable, callback in [('target_name', self.target_name, self.choose_destination),
+                                           ('backup_folder', self.backup, self.choose_backup)]:
             row = ttk.Frame(body)
             row.pack(fill='x', pady=(10, 0))
-            ttk.Label(row, text=label, width=19).pack(side='left')
+            self.label(row, label, width=23).pack(side='left')
             entry = ttk.Entry(row, textvariable=variable)
             if variable is self.target_name:
                 self.target_entry = entry
@@ -186,15 +200,14 @@ class SaveManager(tk.Tk):
         self.update_player_state()
         self.name_hint = tk.StringVar()
         ttk.Label(body, textvariable=self.name_hint, wraplength=920, style='Muted.TLabel').pack(anchor='w')
-        ttk.Label(body, text='Zielprofile liegen direkt im selben Konto. Unterordner in Profilen sind gesperrt. '
-                  'Das Speicherprofil wird an den Zielordner angeglichen; Originale werden vorab als ZIP gesichert.',
+        self.label(body, 'structure_hint',
                   wraplength=920).pack(anchor='w', pady=8)
         actions = ttk.Frame(body)
         actions.pack(fill='x', pady=8)
-        self.button(actions, 'Kopieren', lambda: self.start(False)).pack(side='left')
-        self.button(actions, 'Verschieben', lambda: self.start(True), style='Accent.TButton').pack(side='left', padx=8)
-        self.button(actions, 'Profilordner umbenennen …', self.rename_folder).pack(side='left')
-        self.player_button = self.button(actions, 'Nur Namen ändern', lambda: self.start(False, edit_in_place=True))
+        self.button(actions, 'copy', lambda: self.start(False)).pack(side='left')
+        self.button(actions, 'move', lambda: self.start(True), style='Accent.TButton').pack(side='left', padx=8)
+        self.button(actions, 'rename', self.rename_folder).pack(side='left')
+        self.player_button = self.button(actions, 'names_action', lambda: self.start(False, edit_in_place=True))
         self.player_button.pack(side='right')
         ttk.Label(body, textvariable=self.status, wraplength=920, style='Muted.TLabel').pack(anchor='w', pady=8)
         self.protocol('WM_DELETE_WINDOW', self.close)
@@ -205,12 +218,63 @@ class SaveManager(tk.Tk):
         self.poll_after = self.after(150, self.poll)
 
     def button(self, parent, text, command, **options):
-        button = ttk.Button(parent, text=text, command=command, **options)
+        button = ttk.Button(parent, text=self.t(text) if text != '…' else text, command=command, **options)
+        if text != '…':
+            self.text_controls.append((button, text))
         self.controls.append(button)
         return button
 
+    def t(self, key, **values):
+        return text(self.language, key, **values)
+
+    def label(self, parent, key, **options):
+        label = ttk.Label(parent, text=self.t(key), **options)
+        self.text_controls.append((label, key))
+        return label
+
+    def set_message(self, variable, key, **values):
+        self.variable_messages[str(variable)] = (variable, key, values)
+        self.render_message(variable, key, values)
+
+    def render_message(self, variable, key, values):
+        if key == 'failed_status':
+            values = dict(values, result=error_text(self.language, values['result']))
+        if key == 'all_selected':
+            values = dict(values, action=self.t('only_praetor' if self.game == 'anno117' else 'only_player'))
+        variable.set(self.t(key, **values))
+
+    def change_language(self, language):
+        if language not in ('de', 'en') or self.busy:
+            return
+        self.language = language
+        self.preferences['language'] = language
+        self.refresh_text()
+        self.save_preferences()
+
+    def refresh_text(self):
+        for control, key in self.text_controls:
+            control.configure(text=self.t(key))
+        for variable, key, values in self.variable_messages.values():
+            self.render_message(variable, key, values)
+        for language, button in self.language_buttons.items():
+            button.configure(style='LanguageSelected.TButton' if language == self.language else 'TButton')
+        self.title(GAME_LABELS[self.game] + ' – ' + self.t('title'))
+        for column, key in (('#0', 'file'), ('player', 'praetor' if self.game == 'anno117' else 'player'),
+                            ('profile', 'profile'), ('save', 'saved_name')):
+            self.tree.heading(column, text=self.t(key))
+        self.player_toggle_text.set(self.t('change_praetor' if self.game == 'anno117' else 'change_player'))
+        self.player_button.configure(text=self.t('only_praetor' if self.game == 'anno117' else 'only_player'))
+        self.name_hint.set(self.t('name_hint'))
+        self.account_label.set(self.t('account' if self.account else 'start_folder', path=self.account or self.save_root))
+        self.update_destination()
+        for row in self.tree.get_children():
+            values = list(self.tree.item(row, 'values'))
+            if row in self.ambiguous_rows:
+                values[0] = self.t('ambiguous')
+                self.tree.item(row, values=values)
+
     def update_destination(self, *_):
-        self.destination.set('Ziel: ' + str(self.account / self.target_name.get()) if self.account else '')
+        self.destination.set(self.t('destination', path=self.account / self.target_name.get()) if self.account else '')
 
     def update_player_state(self):
         self.player_entry.configure(state='normal' if self.change_player.get() and not self.busy
@@ -221,21 +285,13 @@ class SaveManager(tk.Tk):
         for control in self.controls:
             control.configure(state=state)
         self.game_combo.configure(state='disabled' if self.busy else 'readonly')
+        for button in self.language_buttons.values():
+            button.configure(state='disabled' if self.busy else 'normal')
         self.update_player_state()
 
     def update_game_view(self):
-        self.title(GAME_LABELS[self.game] + ' – Spielstände verwalten')
-        person = 'Prätor' if self.game == 'anno117' else 'Spielername'
-        self.tree.heading('player', text=person)
-        self.player_toggle_text.set('Prätornamen ändern' if self.game == 'anno117' else 'Spielernamen ändern')
-        self.player_button.configure(text='Nur Prätor ändern' if self.game == 'anno117' else 'Nur Spielername ändern')
-        self.name_hint.set('Optional beim Übertragen oder am bisherigen Ort ändern. Gilt für alle ausgewählten Saves und daraus künftig erzeugte Spielstände.')
-        if self.game in GAME_FORMATS:
-            self.account_label.set('Startordner: ' + str(self.save_root))
-            self.status.set('Saves oder einen Profilordner auswählen.')
-        else:
-            self.account_label.set('Spielauswahl vorbereitet: ' + GAME_LABELS[self.game])
-            self.status.set('Für ' + GAME_LABELS[self.game] + ' sind Lesen und Bearbeiten von Spielständen noch nicht freigeschaltet.')
+        self.set_message(self.status, 'ready')
+        self.refresh_text()
 
     def on_game_changed(self, _event=None):
         selected = next((key for key, label in GAME_LABELS.items() if label == self.game_choice.get()), self.game)
@@ -280,8 +336,10 @@ class SaveManager(tk.Tk):
 
     def clear_selection(self):
         self.sources, self.folder, self.account = [], None, None
+        self.ambiguous_rows.clear()
         self.tree.delete(*self.tree.get_children())
-        self.account_label.set('Startordner: ' + str(self.save_root))
+        self.account_label.set(self.t('start_folder', path=self.save_root))
+        self.set_message(self.selection, 'no_source')
         self.target_name.set('')
         self.change_player.set(False)
         self.new_player.set('')
@@ -290,7 +348,7 @@ class SaveManager(tk.Tk):
     def select_files(self):
         if self.game not in GAME_FORMATS or self.busy:
             return
-        selected = filedialog.askopenfilenames(title=game_format(self.game)['label'] + '-Saves auswählen', initialdir=self.dialog_root(),
+        selected = filedialog.askopenfilenames(title=self.t('files_title', game=game_format(self.game)['label']), initialdir=self.dialog_root(),
                                              filetypes=[(game_format(self.game)['label'], '*' + game_format(self.game)['extension'])])
         if selected:
             self.load([Path(p) for p in selected])
@@ -298,7 +356,7 @@ class SaveManager(tk.Tk):
     def select_folder(self):
         if self.game not in GAME_FORMATS or self.busy:
             return
-        folder = filedialog.askdirectory(title='Einen Profilordner auswählen (nicht den Kontoordner)',
+        folder = filedialog.askdirectory(title=self.t('folder_title'),
                                          initialdir=self.dialog_root())
         if folder:
             path = Path(folder)
@@ -307,14 +365,14 @@ class SaveManager(tk.Tk):
     def select_name_folder(self):
         if self.game not in GAME_FORMATS or self.busy:
             return
-        selected = filedialog.askdirectory(title='Profilordner für die Namensänderung aller Saves wählen',
+        selected = filedialog.askdirectory(title=self.t('names_title'),
                                             initialdir=self.dialog_root())
         if not selected:
             return
         try:
             sources = profile_saves(selected, self.game)
         except (OSError, ValueError) as exc:
-            messagebox.showerror('Profilordner nicht verwendbar', str(exc), parent=self)
+            messagebox.showerror(self.t('folder_error'), error_text(self.language, str(exc)), parent=self)
             return
         self.load(sources)
         if self.sources:
@@ -322,8 +380,7 @@ class SaveManager(tk.Tk):
             self.update_player_state()
             self.player_entry.focus_set()
             self.player_entry.selection_range(0, tk.END)
-            action = self.player_button.cget('text')
-            self.status.set(f'Alle {len(self.sources)} Saves des Ordners ausgewählt. Neuen Namen eingeben und «{action}» ausführen.')
+            self.set_message(self.status, 'all_selected', count=len(self.sources))
 
     def load(self, sources, folder=None):
         if self.game not in GAME_FORMATS or self.busy:
@@ -342,42 +399,45 @@ class SaveManager(tk.Tk):
             for i, source in enumerate(sources):
                 names, label = read_summary(source, self.game)
                 labels.add(label)
+                if label == 'Nicht eindeutig zuordenbar':
+                    self.ambiguous_rows.add(str(i))
                 self.tree.insert('', 'end', iid=str(i), text=source.name,
-                                 values=(label, names['gamesetup.a7s'], names['meta.a7s']))
+                                 values=(self.t('ambiguous') if str(i) in self.ambiguous_rows else label,
+                                         names['gamesetup.a7s'], names['meta.a7s']))
             self.sources, self.folder, self.account = sources, folder, account
             self.remember_account(account)
-            self.account_label.set('Spielkonto: ' + str(account))
-            self.selection_label.config(text=f'{len(sources)} Save(s) · {sources[0].parent}')
-            self.target_name.set(sources[0].parent.name + ' - Neu')
+            self.account_label.set(self.t('account', path=account))
+            self.set_message(self.selection, 'selection', count=len(sources), path=sources[0].parent)
+            self.target_name.set(sources[0].parent.name + self.t('new_suffix'))
             self.target_entry.focus_set()
             self.target_entry.selection_range(0, tk.END)
             if len(labels) == 1 and 'Nicht eindeutig zuordenbar' not in labels:
                 self.new_player.set(next(iter(labels)))
-            self.status.set('Felder gelesen. Zielordner prüfen und Aktion auswählen.')
+            self.set_message(self.status, 'loaded')
         except Exception as exc:
-            self.selection_label.config(text='Auswahl konnte nicht geladen werden')
+            self.set_message(self.selection, 'load_failed')
             self.tree.delete(*self.tree.get_children())
-            messagebox.showerror('Spielstand nicht unterstützt', str(exc), parent=self)
+            messagebox.showerror(self.t('unsupported'), error_text(self.language, str(exc)), parent=self)
 
     def choose_destination(self):
         if self.game not in GAME_FORMATS or self.busy:
             return
         if not self.account:
-            messagebox.showinfo('Quelle wählen', 'Zuerst Saves oder einen Profilordner auswählen.', parent=self)
+            messagebox.showinfo(self.t('choose_source'), self.t('source_first'), parent=self)
             return
-        selected = filedialog.askdirectory(title='Direkten Ziel-Profilordner wählen', initialdir=self.dialog_root())
+        selected = filedialog.askdirectory(title=self.t('target_title'), initialdir=self.dialog_root())
         if selected:
             try:
                 destination = Path(selected).resolve(strict=True)
                 validate_destination(self.sources, destination, game=self.game)
                 self.target_name.set(destination.name)
             except (ValueError, OSError) as exc:
-                messagebox.showerror('Ungültiges Ziel', str(exc), parent=self)
+                messagebox.showerror(self.t('invalid_target'), error_text(self.language, str(exc)), parent=self)
 
     def choose_backup(self):
         if self.game not in GAME_FORMATS or self.busy:
             return
-        selected = filedialog.askdirectory(title='Dauerhaften Sicherungsordner ausserhalb des Spielkontos wählen',
+        selected = filedialog.askdirectory(title=self.t('backup_title'),
                                           initialdir=self.dialog_root())
         if selected:
             self.backup.set(selected)
@@ -386,7 +446,7 @@ class SaveManager(tk.Tk):
         if self.game not in GAME_FORMATS or self.busy:
             return
         if not self.folder:
-            messagebox.showinfo('Profilordner wählen', 'Zuerst «Ganzer Profilordner» auswählen.', parent=self)
+            messagebox.showinfo(self.t('choose_profile'), self.t('profile_first'), parent=self)
             return
         self.start(True, rename=True)
 
@@ -410,18 +470,18 @@ class SaveManager(tk.Tk):
             if not edit_in_place and any((destination / p.name).exists() for p in self.sources):
                 raise ValueError('Eine Zieldatei existiert bereits. Bitte ein anderes Profil wählen.')
         except (ValueError, OSError) as exc:
-            messagebox.showerror('Aktion nicht möglich', str(exc), parent=self)
+            messagebox.showerror(self.t('action_error'), error_text(self.language, str(exc)), parent=self)
             return
-        action = 'Namen ändern' if edit_in_place else ('Profilordner umbenennen' if rename else ('Verschieben' if move else 'Kopieren'))
-        details = f'{len(self.sources)} Save(s) aus {self.sources[0].parent}\nZiel: {destination}'
-        details += '\n' + ('Prätor' if self.game == 'anno117' else 'Spielername') + ': ' + (player if player is not None else 'unverändert')
-        details += '\nSpeicherprofil: ' + destination.name
-        details += f'\nSicherung: {backup}\n\nSpiel geschlossen? Aktion jetzt ausführen?'
+        action = self.t('names_action' if edit_in_place else ('rename_action' if rename else ('move' if move else 'copy')))
+        details = self.t('confirmation', count=len(self.sources), source=self.sources[0].parent, destination=destination,
+                         person=self.t('praetor' if self.game == 'anno117' else 'player'),
+                         player=player if player is not None else self.t('unchanged'),
+                         profile=destination.name, backup=backup)
         if not messagebox.askokcancel(action, details, parent=self):
             return
         self.busy = True
         self.refresh_controls()
-        self.status.set('Saves prüfen, sichern und bearbeiten …')
+        self.set_message(self.status, 'working')
         sources = self.sources.copy()
         def work():
             try:
@@ -440,13 +500,13 @@ class SaveManager(tk.Tk):
         else:
             self.busy = False
             self.refresh_controls()
-            self.status.set(('Fertig. Sicherung: ' if success else 'Abgebrochen: ') + result)
+            self.set_message(self.status, 'done_status' if success else 'failed_status', result=result)
             if success:
                 self.clear_selection()
-                self.selection_label.config(text='Aktion abgeschlossen · für weitere Aktionen Quelle erneut auswählen')
-                messagebox.showinfo('Abgeschlossen', 'Saves geprüft und übertragen.\nSicherung: ' + result, parent=self)
+                self.set_message(self.selection, 'completed_selection')
+                messagebox.showinfo(self.t('completed'), self.t('completed_message', result=result), parent=self)
             else:
-                messagebox.showerror('Aktion abgebrochen', result, parent=self)
+                messagebox.showerror(self.t('cancelled'), error_text(self.language, result), parent=self)
         self.poll_after = self.after(150, self.poll)
 
     def destroy(self):
@@ -459,7 +519,7 @@ class SaveManager(tk.Tk):
 
     def close(self):
         if self.busy:
-            messagebox.showinfo('Bearbeitung läuft', 'Bitte warten, bis die Übertragung abgeschlossen ist.', parent=self)
+            messagebox.showinfo(self.t('busy'), self.t('please_wait'), parent=self)
         else:
             self.destroy()
 

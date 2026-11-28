@@ -2,7 +2,7 @@
 
 [English](save-manager-guide.md) · [Deutsch](save-manager-guide.de.md) · [Overview](../README.md)
 
-**Move saves, rename profile folders and change praetor/player names in Anno 117 and Anno 1800.** The screenshots show isolated sample data. Your folders and names may differ. Click an image to open it at full size. The application interface is German; this guide is available in English and German.
+**Move saves, rename profile folders and change praetor/player names in Anno 117 and Anno 1800.** The screenshots show isolated sample data. Your folders and names may differ. Click an image to open it at full size. The development version provides **DE / EN** at the top right and remembers your choice. Screenshots and button labels in this guide use **DE**; select that language to follow along. Packages through v0.1.21 still have the German interface.
 
 ## 1. Download and prepare
 

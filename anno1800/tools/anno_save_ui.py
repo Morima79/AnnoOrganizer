@@ -128,6 +128,10 @@ def apply_theme(root):
                     font=('Segoe UI', 10, 'bold'))
     style.map('Accent.TButton', background=[('disabled', '#3c424c'), ('active', '#dfb875')],
               foreground=[('disabled', '#89919d')])
+    style.configure('LanguageSelected.TButton', background='#cba56a', foreground='#171b22',
+                    font=('Segoe UI', 10, 'bold'))
+    style.map('LanguageSelected.TButton', background=[('active', '#dfb875')],
+              foreground=[('disabled', '#89919d')])
     style.configure('TEntry', fieldbackground='#181c22', foreground='#e5e7eb',
                     insertcolor='#ffffff', insertwidth=2, padding=5)
     style.map('TEntry', fieldbackground=[('disabled', '#20252d')],

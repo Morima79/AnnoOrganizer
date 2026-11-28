@@ -4,6 +4,10 @@
 
 Eigenständige Windows-Anwendung für Anno 117 und Anno 1800 zum Kopieren und Verschieben einzelner Spielstände, Umbenennen vollständiger Profilordner und optionalen Ändern des Prätor- oder Spielernamens. Anno-117-Saves verwenden `.a8s`, Anno-1800-Saves `.a7s`. Python und eine Spielinstallation sind zum Starten der EXE nicht erforderlich. Den vollständigen Programmordner einschliesslich `_internal/` behalten. Dieses Werkzeug gehört zu [AnnoOrganizer von Morima79](https://github.com/Morima79/AnnoOrganizer), MIT-Lizenz; Verwendung auf eigene Gefahr.
 
+## Sprache
+
+Der Entwicklungsstand bietet oben rechts **DE / EN** wie der Organizer. Beim ersten Start bestimmt die Windows-Anzeigesprache die Auswahl (Deutsch bei deutscher Anzeigesprache, sonst Englisch). Die gespeicherte Sprachwahl hat danach Vorrang. Beschriftungen, Auswahldialoge, Bestätigungen und Anwendungsmeldungen wechseln gemeinsam; eigene Namen, Pfade und gelesene Save-Werte bleiben erhalten. Die Umschaltung erhält Auswahl und Eingaben und ist während einer Bearbeitung gesperrt. Windows-eigene Dateidialog-Schaltflächen und Systemfehler folgen weiterhin der Windows-Sprache. Die veröffentlichten Pakete bis v0.1.21 haben noch die deutsche Oberfläche.
+
 ## Spielauswahl
 
 Vollständiges Windows-Paket und SHA-256-Prüfsumme im [aktuellen Release](https://github.com/Morima79/AnnoOrganizer/releases/latest) herunterladen. Neue Pakete heissen `AnnoSaveManager-<Version>-windows-x64.zip`. Das ZIP vor dem Start von `AnnoSaveManager.exe` entpacken.
