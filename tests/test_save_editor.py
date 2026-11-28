@@ -104,6 +104,12 @@ def save(game='anno117', version=2):
 
 
 class SaveEditorTests(unittest.TestCase):
+    def test_creation_time_uses_windows_legacy_ctime_only_when_birthtime_is_missing(self):
+        from types import SimpleNamespace
+        self.assertEqual(editor.creation_time_ns(SimpleNamespace(st_birthtime_ns=123, st_ctime_ns=456)), 123)
+        legacy = SimpleNamespace(st_ctime_ns=456)
+        self.assertEqual(editor.creation_time_ns(legacy), 456 if os.name == 'nt' else None)
+
     def setUp(self):
         process_check = patch.object(editor, 'running_process_names', return_value=set())
         process_check.start()
@@ -285,7 +291,7 @@ class SaveEditorTests(unittest.TestCase):
             target = root / 'New/Save.a8s'
             self.assertEqual(target.stat().st_mtime_ns, stat.st_mtime_ns)
             if os.name == 'nt':
-                self.assertEqual(target.stat().st_birthtime_ns, stat.st_birthtime_ns)
+                self.assertEqual(editor.creation_time_ns(target.stat()), editor.creation_time_ns(stat))
             with zipfile.ZipFile(backup) as archive:
                 self.assertEqual(archive.read('Save.a8s'), save())
             self.assertEqual(editor.inspect_save(target.read_bytes())['header.a7s'], 'New')

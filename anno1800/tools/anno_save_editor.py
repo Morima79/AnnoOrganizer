@@ -487,6 +487,13 @@ def transform(blob, profile=None, overrides=None, *, player=None, game='anno117'
     return result
 
 
+def creation_time_ns(stat):
+    """Python 3.11 exposes Windows creation time through st_ctime_ns."""
+    if hasattr(stat, 'st_birthtime_ns'):
+        return stat.st_birthtime_ns
+    return stat.st_ctime_ns if os.name == 'nt' else None
+
+
 def restore_times(path, record):
     """Preserve modification and creation times so the game retains save chronology."""
     os.utime(path, ns=(record['atime_ns'], record['mtime_ns']))
@@ -596,8 +603,9 @@ def transfer(sources, destination, backup_root, *, move=False, rename_folder=Fal
             original = source.read_bytes()
             record = dict(source=str(source), sha256=digest(original), atime_ns=stat.st_atime_ns,
                           mtime_ns=stat.st_mtime_ns)
-            if hasattr(stat, 'st_birthtime_ns'):
-                record['birthtime_ns'] = stat.st_birthtime_ns
+            birthtime = creation_time_ns(stat)
+            if birthtime is not None:
+                record['birthtime_ns'] = birthtime
             edited = transform(original, destination.name, player=player, game=game)
             (staging / str(i)).write_bytes(edited)
             record['output_sha256'] = digest(edited)
