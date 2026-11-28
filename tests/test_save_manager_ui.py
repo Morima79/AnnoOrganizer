@@ -19,6 +19,9 @@ with patch.object(sys, 'path', [str(TOOLS), *sys.path]):
 
 class SaveManagerUITests(unittest.TestCase):
     def setUp(self):
+        process_check = patch.object(ui, 'ensure_game_closed')
+        process_check.start()
+        self.addCleanup(process_check.stop)
         self.temp = tempfile.TemporaryDirectory(dir=editor.temporary_root())
         self.root = account(Path(self.temp.name))
         self.source = self.root / 'Old/Save.a8s'
@@ -37,6 +40,20 @@ class SaveManagerUITests(unittest.TestCase):
         while self.app.busy and time.monotonic() < deadline:
             self.app.update()
             time.sleep(.01)
+        self.assertFalse(self.app.busy)
+
+    def test_running_game_message_preserves_selection_and_never_starts_editing(self):
+        self.app.load([self.source])
+        with patch.object(ui, 'ensure_game_closed', side_effect=ValueError('Anno 117 läuft noch. Bitte das Spiel vollständig schliessen.')), \
+                patch.object(ui.messagebox, 'showerror') as error, \
+                patch.object(ui.messagebox, 'askokcancel') as confirm, \
+                patch.object(ui, 'transfer') as transfer:
+            self.app.start(True)
+        error.assert_called_once()
+        self.assertIn('läuft noch', error.call_args.args[1])
+        confirm.assert_not_called()
+        transfer.assert_not_called()
+        self.assertEqual(self.app.sources, [self.source])
         self.assertFalse(self.app.busy)
 
     def test_selection_shows_praetor_and_rejects_nested_target_before_confirmation(self):

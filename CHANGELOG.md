@@ -7,6 +7,7 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Block Save Manager edits while the selected Anno game is running, with a clear message and a second process check before writing.
 - Enable Anno 1800 save transfers, profile renaming and player-name edits using its confirmed fields, including legacy FileDB V1 and current V2. Add name editing for every direct save in a profile folder for both games, separate remembered account roots, and canonical shared sources with independent game copies.
 - Document successful EXE and in-game Anno 1800 checks for individual transfers, profile renaming, individual player names and folder-wide name edits. Record player-name save suggestions and correct output folders, with original/control checksums unchanged.
 
@@ -16,6 +17,7 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### Deutsch
 
+- Bearbeitung im Spielstand-Manager bei laufendem ausgewähltem Anno-Spiel mit verständlicher Meldung sperren und unmittelbar vor dem Schreiben nochmals prüfen.
 - Anno-1800-Saves anhand der ermittelten Felder übertragen, Profilordner umbenennen und Spielernamen ändern; FileDB V1 und V2 unterstützen. Für beide Spiele Namen in allen direkten Saves eines Profilordners ändern, Kontoordner getrennt merken und gemeinsame Quellen mit unabhängig nutzbaren Spielkopien pflegen.
 - Erfolgreiche EXE- und Anno-1800-Spieltests für einzelne Übertragungen, Profilumbenennung sowie einzelne und ordnerweite Spielernamenänderungen dokumentieren. Spielernamen als Speichervorschläge und korrekte Zielordner festhalten; Original und Kontrollkopie bleiben anhand ihrer Prüfsummen unverändert.
 

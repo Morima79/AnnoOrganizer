@@ -18,6 +18,10 @@ The top ComboBox switches between Anno 117 and Anno 1800. Labels use “Prätor�
 
 Disposable editing and build files stay outside configured OneDrive roots. Backups are durable outputs and are never deleted automatically. This development version accepts FileDB V1 and V2 inside the known four-member RDA V2.2 layout (`meta.a7s`, `header.a7s`, `gamesetup.a7s`, `data.a7s`) and rejects other layouts. Without a praetor change, `data.a7s` remains byte-identical. With a praetor change, only the uniquely matched `CustomCompanyName` is replaced there; other data fields are preserved. `accountdata.a8s` or `accountdata.a7s` is used only as an account marker and is never modified. In-place editing writes verified files directly; after a process or power interruption, restore originals from the ZIP backup if necessary.
 
+## Running-game check
+
+Before copying, moving, profile renaming or name edits, the tool checks whether the selected game is still running. If so, it stops the action with an explanatory message, retaining the selection and inputs. Close the game, let cloud synchronisation finish, then retry the same action. It checks again immediately before writing. Editing is also blocked if Windows cannot provide the process list. This check does not prevent starting the game during editing and does not detect active cloud synchronisation.
+
 ## Change names in every save of a profile folder
 
 1. Select the game and click **Alle Namen im Ordner …**.

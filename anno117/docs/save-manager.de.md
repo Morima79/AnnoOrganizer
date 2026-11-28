@@ -18,6 +18,10 @@ Die ComboBox oben schaltet zwischen Anno 117 und Anno 1800. Die Oberfläche verw
 
 Temporäre Bearbeitungs- und Build-Dateien liegen ausserhalb der konfigurierten OneDrive-Ordner. Sicherungen sind dauerhafte Ausgaben und werden nicht automatisch gelöscht. Die Testversion unterstützt FileDB V1 und V2 innerhalb der bekannten RDA-V2.2-Struktur mit den vier Mitgliedern `meta.a7s`, `header.a7s`, `gamesetup.a7s`, `data.a7s`; andere Strukturen werden abgelehnt. Ohne Prätoränderung bleibt `data.a7s` bytegleich. Bei einer Prätoränderung wird dort genau der eindeutig zugeordnete `CustomCompanyName` ersetzt; alle anderen Datenfelder bleiben erhalten. `accountdata.a8s` bzw. `accountdata.a7s` wird ausschliesslich als Erkennungsmerkmal verwendet und nicht verändert. Bei Bearbeitung am bisherigen Ort werden die geprüften Dateien direkt geschrieben; nach einem Prozess- oder Stromausfall gegebenenfalls die Originale aus der ZIP-Sicherung wiederherstellen.
 
+## Prüfung auf ein laufendes Spiel
+
+Vor Kopieren, Verschieben, Profilumbenennung und Namensänderungen prüft das Werkzeug, ob das ausgewählte Spiel noch läuft. In diesem Fall wird die Aktion mit einer verständlichen Meldung abgebrochen; Auswahl und Eingaben bleiben erhalten. Nach dem Schliessen des Spiels und Abschluss der Cloud-Synchronisierung dieselbe Aktion erneut ausführen. Auch unmittelbar vor dem Schreiben wird nochmals geprüft. Kann Windows die Prozessliste nicht liefern, wird die Bearbeitung ebenfalls abgelehnt. Diese Prüfung sperrt den Spielstart während einer Bearbeitung nicht und erkennt keine laufende Cloud-Synchronisierung.
+
 ## Namen aller Saves eines Profilordners ändern
 
 1. Oben das Spiel wählen und **Alle Namen im Ordner …** anklicken.

@@ -51,6 +51,62 @@ PLAYER_PATHS = {
 }
 
 
+def running_process_names():
+    """Read Windows executable names without opening a console or processes."""
+    if os.name != 'nt':
+        raise OSError('Die Spielprüfung ist nur unter Windows verfügbar.')
+    import ctypes
+    from ctypes import wintypes
+
+    class ProcessEntry(ctypes.Structure):
+        _fields_ = [('size', wintypes.DWORD), ('usage', wintypes.DWORD),
+                    ('pid', wintypes.DWORD), ('heap', ctypes.c_size_t),
+                    ('module', wintypes.DWORD), ('threads', wintypes.DWORD),
+                    ('parent', wintypes.DWORD), ('priority', wintypes.LONG),
+                    ('flags', wintypes.DWORD), ('exe', wintypes.WCHAR * 260)]
+
+    kernel = ctypes.WinDLL('kernel32', use_last_error=True)
+    kernel.CreateToolhelp32Snapshot.argtypes = [wintypes.DWORD, wintypes.DWORD]
+    kernel.CreateToolhelp32Snapshot.restype = wintypes.HANDLE
+    kernel.Process32FirstW.argtypes = [wintypes.HANDLE, ctypes.POINTER(ProcessEntry)]
+    kernel.Process32FirstW.restype = wintypes.BOOL
+    kernel.Process32NextW.argtypes = kernel.Process32FirstW.argtypes
+    kernel.Process32NextW.restype = wintypes.BOOL
+    kernel.CloseHandle.argtypes = [wintypes.HANDLE]
+    kernel.CloseHandle.restype = wintypes.BOOL
+    snapshot = kernel.CreateToolhelp32Snapshot(2, 0)
+    if snapshot == ctypes.c_void_p(-1).value:
+        raise ctypes.WinError(ctypes.get_last_error())
+    try:
+        entry = ProcessEntry()
+        entry.size = ctypes.sizeof(entry)
+        if not kernel.Process32FirstW(snapshot, ctypes.byref(entry)):
+            raise ctypes.WinError(ctypes.get_last_error())
+        names = {entry.exe.casefold()}
+        while kernel.Process32NextW(snapshot, ctypes.byref(entry)):
+            names.add(entry.exe.casefold())
+        if ctypes.get_last_error() != 18:  # ERROR_NO_MORE_FILES
+            raise ctypes.WinError(ctypes.get_last_error())
+        return names
+    finally:
+        kernel.CloseHandle(snapshot)
+
+
+def ensure_game_closed(game):
+    """Block editing when the selected game runs or process detection fails."""
+    game_format(game)
+    try:
+        names = running_process_names()
+    except OSError as exc:
+        raise ValueError('Es konnte nicht geprüft werden, ob das Spiel läuft. '
+                         'Bitte die Aktion erneut versuchen. Es wurden keine Saves bearbeitet.') from exc
+    executable = {'anno117': 'anno117.exe', 'anno1800': 'anno1800.exe'}[game]
+    if executable in {name.casefold() for name in names}:
+        raise ValueError(game_format(game)['label'] + ' läuft noch. Bitte das Spiel vollständig schliessen '
+                         'und die Cloud-Synchronisierung abwarten. Danach die Aktion erneut ausführen. '
+                         'Es wurden keine Saves bearbeitet.')
+
+
 def game_format(game):
     if game not in GAME_FORMATS:
         raise ValueError('Dieses Spiel wird noch nicht unterstützt.')
@@ -508,6 +564,7 @@ def transfer(sources, destination, backup_root, *, move=False, rename_folder=Fal
     Backups are intentional durable outputs, never deleted automatically. Existing
     destinations are never overwritten; source originals are removed only for moves.
     """
+    ensure_game_closed(game)
     original_paths = [Path(p).absolute() for p in sources]
     if any(p.is_symlink() or getattr(p, 'is_junction', lambda: False)() for p in original_paths):
         raise ValueError('Verknüpfte Quelldateien werden nicht bearbeitet.')
@@ -560,6 +617,7 @@ def transfer(sources, destination, backup_root, *, move=False, rename_folder=Fal
             if archive.testzip() is not None or any(digest(archive.read(p.name)) != r['sha256']
                                                   for p, r in zip(sources, records, strict=True)):
                 raise ValueError('Sicherungsprüfung fehlgeschlagen.')
+        ensure_game_closed(game)
         if rename_folder:
             _rename_profile(parent, destination, sources, staging, records, backup)
             return backup

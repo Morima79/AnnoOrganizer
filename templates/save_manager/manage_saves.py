@@ -9,7 +9,7 @@ import threading
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
-from anno_save_editor import (GAME_FORMATS, game_format, profile_saves, read_summary, account_directory, inspect_save, player_name, transfer,
+from anno_save_editor import (GAME_FORMATS, ensure_game_closed, game_format, profile_saves, read_summary, account_directory, inspect_save, player_name, transfer,
                               temporary_root, validate_destination, validate_profile_name, validate_player_name)
 from anno_settings import documents_folder
 from anno_save_ui import WindowState, apply_theme
@@ -395,6 +395,7 @@ class SaveManager(tk.Tk):
         if self.busy or not self.sources or self.game not in GAME_FORMATS:
             return
         try:
+            ensure_game_closed(self.game)
             player = validate_player_name(self.new_player.get()) if self.change_player.get() else None
             if edit_in_place and player is None:
                 raise ValueError('«Namen ändern» aktivieren und einen Namen eingeben.')

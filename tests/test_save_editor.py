@@ -104,6 +104,11 @@ def save(game='anno117', version=2):
 
 
 class SaveEditorTests(unittest.TestCase):
+    def setUp(self):
+        process_check = patch.object(editor, 'running_process_names', return_value=set())
+        process_check.start()
+        self.addCleanup(process_check.stop)
+
     @unittest.skipUnless(os.name == 'nt', 'Windows directory attributes')
     def test_folder_rename_preserves_readonly_attribute_without_removing_directory(self):
         import ctypes
@@ -345,6 +350,11 @@ class SaveEditorTests(unittest.TestCase):
 
 
 class Anno1800SaveEditorTests(unittest.TestCase):
+    def setUp(self):
+        process_check = patch.object(editor, 'running_process_names', return_value=set())
+        process_check.start()
+        self.addCleanup(process_check.stop)
+
     def test_legacy_v1_names_cross_varint_length_boundaries_without_changing_other_fields(self):
         original = save('anno1800', version=1)
         for profile, player in (('A', 'B'), ('P' * 70, 'Ö' * 80)):
@@ -450,6 +460,55 @@ class Anno1800SaveEditorTests(unittest.TestCase):
                                     edit_in_place=True, game='anno1800')
             for source in sources:
                 self.assertEqual(source.read_bytes(), save('anno1800'))
+
+
+class RunningGameTests(unittest.TestCase):
+    def test_selected_game_only_and_detection_failure(self):
+        with patch.object(editor, 'running_process_names', return_value={'Anno1800.EXE', 'UbisoftConnect.exe'}):
+            editor.ensure_game_closed('anno117')
+            with self.assertRaisesRegex(ValueError, 'Anno 1800 läuft noch'):
+                editor.ensure_game_closed('anno1800')
+        with patch.object(editor, 'running_process_names', return_value={'Anno117.exe'}):
+            with self.assertRaisesRegex(ValueError, 'Anno 117 läuft noch'):
+                editor.ensure_game_closed('anno117')
+        with patch.object(editor, 'running_process_names', side_effect=OSError('snapshot failed')):
+            with self.assertRaisesRegex(ValueError, 'nicht geprüft'):
+                editor.ensure_game_closed('anno117')
+
+    def test_running_game_blocks_before_backup_or_destination_writes(self):
+        for game in ('anno117', 'anno1800'):
+            with self.subTest(game=game), tempfile.TemporaryDirectory(dir=editor.temporary_root()) as directory:
+                root = account(Path(directory), game)
+                source = root / ('Old/Save' + editor.game_format(game)['extension'])
+                source.parent.mkdir()
+                original = save(game)
+                source.write_bytes(original)
+                backup = Path(directory) / 'backups'
+                for snapshots in ([{game + '.exe'}], [set(), {game + '.exe'}]):
+                    with patch.object(editor, 'running_process_names', side_effect=snapshots):
+                        with self.assertRaisesRegex(ValueError, 'läuft noch'):
+                            editor.transfer([source], root / 'New', backup, move=True, game=game)
+                    self.assertEqual(source.read_bytes(), original)
+                    self.assertFalse((root / 'New').exists())
+                self.assertEqual(len(list(backup.glob('*.zip'))), 1)
+
+    @unittest.skipUnless(os.name == 'nt', 'Windows process snapshot')
+    def test_windows_snapshot_detects_a_named_process(self):
+        import shutil
+        import subprocess
+        with tempfile.TemporaryDirectory(dir=editor.temporary_root()) as directory:
+            executable = Path(directory) / 'Anno117.exe'
+            shutil.copyfile(Path(os.environ['SystemRoot']) / 'System32/cmd.exe', executable)
+            process = subprocess.Popen([str(executable), '/d', '/q', '/k'], stdin=subprocess.PIPE,
+                                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                                       creationflags=subprocess.CREATE_NO_WINDOW)
+            try:
+                self.assertIn('anno117.exe', editor.running_process_names())
+                with self.assertRaisesRegex(ValueError, 'läuft noch'):
+                    editor.ensure_game_closed('anno117')
+            finally:
+                process.terminate()
+                process.communicate(timeout=10)
 
 
 if __name__ == '__main__':
