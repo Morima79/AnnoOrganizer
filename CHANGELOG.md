@@ -7,11 +7,13 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Use runtime DDS terrain graphics for all Anno 117 islands, removing the vertical streaks in the Latium continental island. Match island brightness and saturation in all three Anno 117 regions, with gentler brightening of dark terrain. Crop Aegyptus to its terrain boundaries, removing excess water above and to the right and enlarging the view. Cache all processed island images locally and refresh them when game resources change. Soften overlapping Aegyptus terrain edges while preserving coastlines.
 - Fix Anno 1800 map placement and scale using saved island origins and terrain metadata, including Crown Falls and Manola in the upper right corner.
 - Add a Save Manager Guide button that opens the bundled offline manual in the selected DE/EN language, with the same online fallback as the Organizer.
 
 ### Deutsch
 
+- Für alle Anno-117-Inseln Laufzeit-DDS verwenden und damit vertikale Striemen der Latium-Kontinentalinsel entfernen. Helligkeit und Sättigung in allen drei Anno-117-Regionen angleichen und dunkles Gelände dezenter aufhellen. Aegyptus bis zu den Geländekanten beschneiden: überschüssiges Wasser oben und rechts entfernen und die Ansicht vergrössern. Alle aufbereiteten Inselbilder lokal zwischenspeichern und bei geänderten Spieldaten erneuern. Überlappende Geländeränder in Aegyptus bei erhaltenen Küstenlinien glätten.
 - Position und Massstab der Anno-1800-Karten anhand gespeicherter Inselursprünge und Geländedaten korrigieren, einschliesslich Crown Falls und Manola in der oberen rechten Ecke.
 - Anleitung-Button im Save Manager ergänzen: öffnet die mitgelieferte Offline-Anleitung in der gewählten DE/EN-Sprache, mit derselben Online-Ausweichlösung wie beim Organizer.
 

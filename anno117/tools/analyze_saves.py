@@ -155,9 +155,78 @@ def maps_for(file):
             yield region
 
 
+MAP_RENDER_VERSION = '6'
+TERRAIN_TONES = {
+    'roman': (155, 165, 0.8),
+    'celtic': (145, 155, 0.8),
+    'egypt': (165, 175, 0.9),
+}
+
+
+def harmonize_terrain(image, province='roman'):
+    """Bring terrain midtones towards a shared palette without altering alpha."""
+    from PIL import Image, ImageChops, ImageEnhance
+    alpha = image.getchannel('A')
+    opaque = alpha.point(lambda value: 255 if value == 255 else 0)
+    terrain = image.convert('L').point(lambda value: 255 if value > 40 else 0)
+    mask = ImageChops.multiply(opaque, terrain)
+    histogram = image.convert('L').histogram(mask)
+    count = sum(histogram)
+    if not count:
+        return image.copy()
+    minimum, maximum, saturation = TERRAIN_TONES[province]
+    original_mean = sum(value * n for value, n in enumerate(histogram)) / count
+    target = max(minimum, min(maximum, original_mean))
+    # Share one exposure curve across RGB to keep neutral rocks neutral.
+    low, high = 0.45, 2.8
+    for _ in range(16):
+        gamma = (low + high) / 2
+        mean = sum(n * 255 * (value / 255) ** gamma for value, n in enumerate(histogram)) / count
+        if mean > target:
+            low = gamma
+        else:
+            high = gamma
+    gamma = (low + high) / 2
+    curve = [round(255 * (value / 255) ** gamma) for value in range(256)]
+    rgb = image.convert('RGB').point(curve * 3)
+    rgb = ImageEnhance.Color(rgb).enhance(saturation)
+    return Image.merge('RGBA', (*rgb.split(), alpha))
+
+
+def map_view_size(region):
+    """Frame Aegyptus at the outer edges of its four 960-tile quadrants."""
+    width, height = region['size']
+    if region['guid'] == 149679:
+        return min(width, 1920), min(height, 1920)
+    return width, height
+
+
+def composite_terrain(layer, tile, position):
+    """Soften overlapping terrain edges while preserving coastlines and holes."""
+    from PIL import Image, ImageChops, ImageFilter
+    alpha = tile.getchannel('A')
+    padding = 8
+    padded = Image.new('L', (tile.width + padding * 2, tile.height + padding * 2))
+    padded.paste(alpha, (padding, padding))
+    soft = padded.filter(ImageFilter.MinFilter(9)).filter(ImageFilter.GaussianBlur(2))
+    soft = soft.crop((padding, padding, padding + tile.width, padding + tile.height))
+    x, y = position
+    existing = layer.crop((x, y, x + tile.width, y + tile.height))
+    # Quadrants contain opaque black placeholders beneath settlement areas.
+    terrain = existing.convert('L').point(lambda value: 255 if value > 40 else 0)
+    opaque = existing.getchannel('A').point(lambda value: 255 if value == 255 else 0)
+    underneath = ImageChops.multiply(opaque, terrain)
+    # Only feather where existing terrain fills the exposed pixels.
+    mask = ImageChops.lighter(soft, ImageChops.subtract(alpha, underneath))
+    blended = tile.copy()
+    blended.putalpha(ImageChops.darker(alpha, mask))
+    layer.alpha_composite(blended, position)
+
+
 class Maps:
-    def __init__(self, game, directory):
+    def __init__(self, game, directory, cache_directory=None):
         self.directory = directory
+        self.cache_directory = cache_directory
         self.assets = {}
         for archive in sorted(game.glob('*.rda')):
             if 'provinces' not in archive.name and not archive.name.startswith('zz_patch'):
@@ -174,11 +243,34 @@ class Maps:
         from PIL import Image
         parent, _, name = island.rpartition('/')
         name = Path(name).stem
-        key = f'{parent}/_gamedata/{name}/gamemapimage'
-        for suffix in ('.png','_0.dds'):
-            if key+suffix in self.assets:
-                return Image.open(BytesIO(read_asset(self.assets[key+suffix]))).convert('RGBA')
-        return None
+        key = f'{parent}/_gamedata/{name}/gamemapimage_0.dds'
+        # Use runtime DDS consistently; never mix in PNG preview graphics.
+        record = self.assets.get(key)
+        if record is None:
+            return None
+        cached = None
+        if self.cache_directory is not None:
+            stat = Path(record[0]).stat()
+            signature = (MAP_RENDER_VERSION, key, record, stat.st_size, stat.st_mtime_ns)
+            filename = sha256(repr(signature).encode('utf-8')).hexdigest() + '.png'
+            cached = self.cache_directory / filename
+            try:
+                with Image.open(cached) as image:
+                    return image.convert('RGBA')
+            except (OSError, ValueError):
+                pass
+        image = Image.open(BytesIO(read_asset(record))).convert('RGBA')
+        province = island.split('/provinces/', 1)[-1].split('/', 1)[0]
+        if province in TERRAIN_TONES:
+            image = harmonize_terrain(image, province)
+        if cached is not None:
+            self.cache_directory.mkdir(parents=True, exist_ok=True)
+            with temporary_directory(prefix='.anno117-terrain-') as temp:
+                stage = Path(temp)
+                source = stage / cached.name
+                image.save(source)
+                publish_files([(source, cached)], stage / 'backup')
+        return image
 
     @lru_cache(maxsize=200)
     def bounds(self, island):
@@ -196,15 +288,16 @@ class Maps:
         guid = region['guid']
         label = REGIONS.get(guid, f'Provinz {guid}')
         image_data = {key:value for key,value in region.items() if key != 'generation'}
-        name = f'{guid}-{sha256(("2"+json.dumps(image_data,sort_keys=True)).encode()).hexdigest()[:14]}.png'
+        name = f'{guid}-{sha256((MAP_RENDER_VERSION+json.dumps(image_data,sort_keys=True)).encode()).hexdigest()[:14]}.png'
         path = self.directory/name
         if path.exists():
             return {'path':'map-images/'+name,'label':label}
         size_x,size_y = region['size']
         if not (0 < size_x <= 15000 and 0 < size_y <= 15000):
             raise ValueError(f'Ungültige Kartengrösse für {label}: {region["size"]}')
-        scale = 820/max(size_x,size_y)
-        width,height = round(size_x*scale),round(size_y*scale)
+        view_x, view_y = map_view_size(region)
+        scale = 820/max(view_x,view_y)
+        width,height = round(view_x*scale),round(view_y*scale)
         image = Image.new('RGBA',(width+48,height+104),'#14232a')
         draw = ImageDraw.Draw(image)
         draw.rectangle((24,56,width+23,height+55), fill='#214655')
@@ -242,15 +335,21 @@ class Maps:
             tile = tile.rotate(90*rotation,expand=True)
             tile = tile.resize((max(1,round((right-left)*scale)),max(1,round((top-bottom)*scale))),
                                Image.Resampling.LANCZOS)
-            layer.alpha_composite(tile,(round((x+shift_x+left)*scale),
-                                        height-round((y+shift_y+top)*scale)))
+            position = (round((x+shift_x+left)*scale), height-round((y+shift_y+top)*scale))
+            if guid == 149679:
+                composite_terrain(layer, tile, position)
+            else:
+                layer.alpha_composite(tile, position)
         image.alpha_composite(layer,(24,56))
         detail = f'{len(region["islands"])} Kartenelemente'
         if missing:
             detail += f' · {missing} ohne Grafik'
         fonts = Path(os.environ.get('WINDIR',r'C:\Windows'))/'Fonts'
         draw.text((24,12),label,font=ImageFont.truetype(str(fonts/'segoeuib.ttf'),28),fill='#f5eddb')
-        draw.text((24,height+70),f'{detail} · {size_x} × {size_y}',
+        dimensions = f'{view_x} × {view_y}'
+        if (view_x, view_y) != (size_x, size_y):
+            dimensions = f'Ausschnitt: {dimensions}'
+        draw.text((24,height+70),f'{detail} · {dimensions}',
                   font=ImageFont.truetype(str(fonts/'segoeui.ttf'),15),fill='#d5e1e2')
         image.convert('RGB').save(path)
         return {'path':'map-images/'+name,'label':label}
@@ -461,7 +560,7 @@ def main(argv=None, *, settings=None):
                           source=name, profile=profile_name('Spielkonto', name), seed=row['seed'], stamp=row['stamp'], play_ms=row['play'])
                      for name, row in saves.items()], FileDBStatistics('anno117', args.game_data),
                     output/'anno117-statistics.json', zone, args.rescan)
-                rows,new_maps=prepare(saves,account,Maps(args.game_data,cards),zone,maps,statistics)
+                rows,new_maps=prepare(saves,account,Maps(args.game_data,cards,output/'terrain-cache'),zone,maps,statistics)
                 (stage/'anno117-statistics.json').write_text(json.dumps(statistics_cache,ensure_ascii=False),encoding='utf-8')
                 updated_at = datetime.now(zone)
                 profiles = profile_playtime(

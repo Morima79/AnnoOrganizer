@@ -48,6 +48,10 @@ Maintain both canonical JSON files, then synchronise the templates and refresh t
 
 [English gallery preview with the DE/EN switch](../anno117/docs/images/stamp-gallery-en.jpg). All five galleries have matching German (`*-gallery.jpg`) and English (`*-gallery-en.jpg`) screenshots. Each README uses its own language, with clickable 360-pixel previews and a source image width of 1264 pixels. The verified Edge DevTools capture workflow is documented in `AGENTS.md`.
 
+## Island graphics
+
+Anno 117 uses runtime DDS graphics for every island, without falling back to PNG previews. Latium, Albion and Aegyptus use region-specific midtone brightness ranges and gently reduced saturation. Dark Roman islands receive less brightening, while Albion greens and Egyptian sand retain their regional character. Alpha, coastlines and neutral rock colours remain intact. Aegyptus is framed at the outer edges of its four terrain quadrants (1920 × 1920 tiles), removing the empty water above and to the right and enlarging the terrain by one third within the same image width. Saved map dimensions are preserved; the image footer identifies the cropped view. All decoded and colour-adjusted island graphics are reused across exports from `terrain-cache/` in the configured report output. The cache key includes the renderer version, archive entry, archive size and modification time; damaged entries are regenerated. Aegyptus terrain overlaps are feathered only over existing terrain, preserving coastlines and covering the quadrants' black placeholder areas. Differences in the source textures can still remain visible.
+
 ## Changing templates
 
 1. Edit HTML, CSS or `THEMES` in the canonical `templates/` folder only.

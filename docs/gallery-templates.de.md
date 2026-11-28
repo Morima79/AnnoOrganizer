@@ -18,6 +18,10 @@ Logo und DE/EN-Schalter stehen in einer gemeinsamen, oben bündigen Zeile. Der R
 
 Beide Stempel-Header zeigen die ungefilterte Gesamtzahl der exportierten Stempel und die Anzahl Regionen, aus denen diese Stempel stammen. Der gemeinsame Renderer ermittelt die Zahlen aus den Karten; gemeinsame `stamp-totals`-Stile geben jeder Anzeige genau einen Rahmen. Übersetzungsfelder erhalten keine eigenen Rahmen.
 
+## Inselgrafiken
+
+Anno 117 verwendet für alle Inseln die Laufzeit-DDS ohne Rückgriff auf PNG-Vorschauen. Latium, Albion und Aegyptus erhalten regional abgestimmte Helligkeitsbereiche der Mitteltöne und eine leicht verringerte Sättigung. Dunkle römische Inseln werden weniger aufgehellt; Albions Grüntöne und der ägyptische Sand behalten ihren regionalen Charakter. Alphakanal, Küstenlinien und neutrale Felsfarben bleiben erhalten. Aegyptus wird bis zu den Aussenkanten seiner vier Geländeteile beschnitten (1920 × 1920 Felder). Der leere Wasserbereich oben und rechts entfällt, das Gelände erscheint bei gleicher Bildbreite um ein Drittel grösser. Die gespeicherte Kartengrösse bleibt erhalten; die Bildfusszeile kennzeichnet den Ausschnitt. Alle dekodierten und farblich angeglichenen Inselgrafiken werden über mehrere Exporte aus `terrain-cache/` im konfigurierten Berichtsausgabeordner wiederverwendet. Der Cache-Schlüssel berücksichtigt Renderer-Version, Archiveintrag, Archivgrösse und Änderungszeit; beschädigte Einträge werden neu erzeugt. Überlappungen des Aegyptus-Geländes werden nur über vorhandenem Gelände weich überblendet. Küstenlinien bleiben erhalten und schwarze Platzhalterflächen der Quadranten abgedeckt. Unterschiede der Originaltexturen können weiterhin sichtbar bleiben.
+
 ## Farben
 
 Die Farben orientieren sich an der jeweiligen Spieloberfläche. Die transparenten Logos fügen sich in diese Flächen ein. `THEMES` im gemeinsamen Renderer legt Hintergrund sowie lesbare Text-, Rahmen- und Linkfarben fest:
