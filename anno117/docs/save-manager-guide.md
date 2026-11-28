@@ -10,6 +10,8 @@ On the [download page](https://github.com/Morima79/AnnoOrganizer/releases/latest
 
 Close the selected game and wait for any cloud synchronisation to finish before making changes. If the Save Manager detects a running game process, it displays a message and blocks editing. It does not detect cloud synchronisation, which may restore old files or folders.
 
+The **Guide** button at the top opens the bundled manual in the selected language, including offline. If the local file is missing, it opens the online guide, matching the Organizer.
+
 ## 2. Select the game and source
 
 At the top right, choose **Anno 117: Pax Romana** or **Anno 1800**. Click **Select individual saves …**: select one save, or hold **Ctrl** to select several saves from the same profile folder. Anno 117 uses **.a8s**; Anno 1800 uses **.a7s**. To select a complete folder, use **Complete profile folder …** instead.

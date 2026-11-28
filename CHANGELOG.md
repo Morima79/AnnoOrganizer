@@ -7,7 +7,11 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Add a Save Manager Guide button that opens the bundled offline manual in the selected DE/EN language, with the same online fallback as the Organizer.
+
 ### Deutsch
+
+- Anleitung-Button im Save Manager ergänzen: öffnet die mitgelieferte Offline-Anleitung in der gewählten DE/EN-Sprache, mit derselben Online-Ausweichlösung wie beim Organizer.
 
 ## [v0.1.22] - 2026-11-28
 

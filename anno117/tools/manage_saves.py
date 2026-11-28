@@ -4,9 +4,11 @@ import json
 import os
 from pathlib import Path
 import queue
+import sys
 import tempfile
 import threading
 import tkinter as tk
+import webbrowser
 from tkinter import filedialog, messagebox, ttk
 
 from anno_save_editor import (GAME_FORMATS, ensure_game_closed, game_format, profile_saves, read_summary, account_directory, inspect_save, player_name, transfer,
@@ -19,6 +21,13 @@ GAME_LABELS = {
     'anno117': 'Anno 117: Pax Romana',
     'anno1800': 'Anno 1800',
 }
+
+
+def guide_path():
+    """Locate the offline manual beside the EXE or in the standalone game's docs."""
+    if getattr(sys, 'frozen', False):
+        return Path(sys.executable).resolve().parent / 'save-manager-guide.html'
+    return Path(__file__).resolve().parents[1] / 'docs/save-manager-guide.html'
 
 
 def read_preferences(path):
@@ -136,6 +145,9 @@ class SaveManager(tk.Tk):
         header = ttk.Frame(body)
         header.pack(fill='x')
         self.label(header, 'title', style='Title.TLabel').pack(side='left')
+        self.guide_button = ttk.Button(header, text=self.t('guide'), command=self.open_guide)
+        self.guide_button.pack(side='left', padx=16)
+        self.text_controls.append((self.guide_button, 'guide'))
         chooser = ttk.Frame(header)
         chooser.pack(side='right')
         self.language_buttons = {}
@@ -226,6 +238,16 @@ class SaveManager(tk.Tk):
 
     def t(self, key, **values):
         return text(self.language, key, **values)
+
+    def open_guide(self):
+        page = guide_path()
+        url = page.resolve().as_uri() if page.is_file() else 'https://morima79.github.io/AnnoOrganizer/save-manager-guide/'
+        url += '?lang=' + self.language
+        try:
+            if not webbrowser.open(url):
+                raise OSError(self.t('guide_open_failed', url=url))
+        except Exception as exc:
+            messagebox.showerror(self.t('guide_error'), str(exc), parent=self)
 
     def label(self, parent, key, **options):
         label = ttk.Label(parent, text=self.t(key), **options)

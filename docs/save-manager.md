@@ -6,6 +6,8 @@ Standalone Windows application for Anno 117 and Anno 1800 save transfers, comple
 
 ## Language
 
+The **Guide** button at the top opens the bundled manual in the selected language, including offline. If the local file is missing, it opens the online guide, matching the Organizer.
+
 Versions from v0.1.22 provide **DE / EN** at the top right, matching the Organizer. On first launch, the Windows display language selects German for German Windows and English otherwise. A saved choice takes precedence afterwards. Labels, selection-dialog titles, confirmations and application messages switch together; personal names, paths and values read from saves remain unchanged. Switching preserves the selection and inputs and is blocked during editing. Native Windows file-dialog buttons and operating-system errors continue to follow the Windows language. Published packages through v0.1.21 still have the German interface.
 
 ## Game selector

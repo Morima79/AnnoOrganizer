@@ -46,6 +46,44 @@ class SaveManagerUITests(unittest.TestCase):
             time.sleep(.01)
         self.assertFalse(self.app.busy)
 
+    def test_guide_button_opens_local_manual_in_selected_language_without_changing_inputs(self):
+        self.app.load([self.source])
+        self.app.target_name.set('Mein Profil')
+        page = TOOLS.parent / 'docs/save-manager-guide.html'
+        self.assertTrue(page.is_file())
+        for language, label in (('de', 'Anleitung'), ('en', 'Guide')):
+            self.app.change_language(language)
+            self.assertEqual(self.app.guide_button.cget('text'), label)
+            with patch.object(ui.webbrowser, 'open', return_value=True) as browser:
+                self.app.guide_button.invoke()
+            browser.assert_called_once_with(page.resolve().as_uri() + '?lang=' + language)
+            self.assertEqual(self.app.sources, [self.source])
+            self.assertEqual(self.app.target_name.get(), 'Mein Profil')
+        self.app.busy = True
+        self.app.refresh_controls()
+        self.assertEqual(str(self.app.guide_button.cget('state')), 'normal')
+        self.app.busy = False
+
+    def test_frozen_guide_uses_executable_folder_and_reports_browser_failure(self):
+        folder = Path(self.temp.name) / 'Portable App ü'
+        folder.mkdir()
+        page = folder / 'save-manager-guide.html'
+        page.write_text('<title>Offline manual</title>', encoding='utf-8')
+        self.app.change_language('en')
+        with patch.object(ui.sys, 'frozen', True, create=True), \
+                patch.object(ui.sys, 'executable', str(folder / 'AnnoSaveManager.exe')), \
+                patch.object(ui.webbrowser, 'open', return_value=False) as browser, \
+                patch.object(ui.messagebox, 'showerror') as error:
+            self.assertEqual(ui.guide_path(), page)
+            self.app.open_guide()
+        browser.assert_called_once_with(page.as_uri() + '?lang=en')
+        self.assertEqual(error.call_args.args[0], 'Open guide')
+        self.assertIn(page.as_uri(), error.call_args.args[1])
+        with patch.object(ui, 'guide_path', return_value=folder / 'missing.html'), \
+                patch.object(ui.webbrowser, 'open', return_value=True) as browser:
+            self.app.open_guide()
+        browser.assert_called_once_with('https://morima79.github.io/AnnoOrganizer/save-manager-guide/?lang=en')
+
     def test_language_switch_preserves_selection_inputs_and_window_then_survives_restart(self):
         self.app.load([self.source], self.source.parent)
         self.app.target_name.set('Mein Profil - Neu')

@@ -31,6 +31,9 @@ def choose_language(saved=None, display_language=None):
 
 
 MESSAGES = {
+    'guide': ('Anleitung', 'Guide'),
+    'guide_error': ('Anleitung öffnen', 'Open guide'),
+    'guide_open_failed': ('Die Anleitung konnte nicht geöffnet werden: {url}', 'Could not open the guide: {url}'),
     'title': ('Spielstände verwalten', 'Manage saved games'),
     'game': ('Spiel:', 'Game:'),
     'warning': ('Spiel vor Änderungen schliessen. Cloud-Synchronisierung kann alte Profile wiederherstellen.',

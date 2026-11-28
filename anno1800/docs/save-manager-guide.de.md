@@ -10,6 +10,8 @@ Auf der [Downloadseite](https://github.com/Morima79/AnnoOrganizer/releases/lates
 
 Vor Änderungen das gewählte Spiel schliessen und eine laufende Cloud-Synchronisierung abwarten. Erkennt der Save Manager einen laufenden Spielprozess, zeigt er eine Meldung und lässt keine Bearbeitung zu. Die Cloud-Synchronisierung erkennt er nicht; sie kann alte Dateien oder Ordner wiederherstellen.
 
+Über **Anleitung** oben im Fenster öffnest du die mitgelieferte Anleitung in der gewählten Sprache, auch ohne Internet. Fehlt die lokale Datei, wird wie beim Organizer die Online-Anleitung verwendet.
+
 ## 2. Spiel und Quelle auswählen
 
 Oben rechts **Anno 117: Pax Romana** oder **Anno 1800** wählen. **Einzelne Saves auswählen …** öffnet die Dateiauswahl: einen Save oder mit gedrückter **Strg**-Taste mehrere Saves desselben Profilordners markieren. Anno 117 verwendet **.a8s**, Anno 1800 **.a7s**. Für einen ganzen Ordner stattdessen **Ganzer Profilordner …** wählen.
