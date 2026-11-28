@@ -2,11 +2,11 @@
 
 **[Illustrated beginner guide](save-manager-guide.html?lang=en)** · [Open online](https://morima79.github.io/AnnoOrganizer/save-manager-guide/?lang=en)
 
-Standalone Windows application for Anno 117 and Anno 1800 save transfers, complete profile-folder renaming and optional praetor/player-name changes. Anno 117 uses `.a8s`; Anno 1800 uses `.a7s`. Running the EXE does not require Python or an installed game. Keep the complete application folder, including `_internal/`. Part of [AnnoOrganizer by Morima79](https://github.com/Morima79/AnnoOrganizer), MIT licensed; use at your own risk. The application currently uses German UI text.
+Standalone Windows application for Anno 117 and Anno 1800 save transfers, complete profile-folder renaming and optional praetor/player-name changes. Anno 117 uses `.a8s`; Anno 1800 uses `.a7s`. Running the EXE does not require Python or an installed game. Keep the complete application folder, including `_internal/`. Part of [AnnoOrganizer by Morima79](https://github.com/Morima79/AnnoOrganizer), MIT licensed; use at your own risk. The interface offers a saved DE/EN language choice.
 
 ## Language
 
-The development version provides **DE / EN** at the top right, matching the Organizer. On first launch, the Windows display language selects German for German Windows and English otherwise. A saved choice takes precedence afterwards. Labels, selection-dialog titles, confirmations and application messages switch together; personal names, paths and values read from saves remain unchanged. Switching preserves the selection and inputs and is blocked during editing. Native Windows file-dialog buttons and operating-system errors continue to follow the Windows language. Published packages through v0.1.21 still have the German interface.
+Versions from v0.1.22 provide **DE / EN** at the top right, matching the Organizer. On first launch, the Windows display language selects German for German Windows and English otherwise. A saved choice takes precedence afterwards. Labels, selection-dialog titles, confirmations and application messages switch together; personal names, paths and values read from saves remain unchanged. Switching preserves the selection and inputs and is blocked during editing. Native Windows file-dialog buttons and operating-system errors continue to follow the Windows language. Published packages through v0.1.21 still have the German interface.
 
 ## Game selector
 

@@ -6,7 +6,7 @@ Eigenständige Windows-Anwendung für Anno 117 und Anno 1800 zum Kopieren und Ve
 
 ## Sprache
 
-Der Entwicklungsstand bietet oben rechts **DE / EN** wie der Organizer. Beim ersten Start bestimmt die Windows-Anzeigesprache die Auswahl (Deutsch bei deutscher Anzeigesprache, sonst Englisch). Die gespeicherte Sprachwahl hat danach Vorrang. Beschriftungen, Auswahldialoge, Bestätigungen und Anwendungsmeldungen wechseln gemeinsam; eigene Namen, Pfade und gelesene Save-Werte bleiben erhalten. Die Umschaltung erhält Auswahl und Eingaben und ist während einer Bearbeitung gesperrt. Windows-eigene Dateidialog-Schaltflächen und Systemfehler folgen weiterhin der Windows-Sprache. Die veröffentlichten Pakete bis v0.1.21 haben noch die deutsche Oberfläche.
+Versionen ab v0.1.22 bieten oben rechts **DE / EN** wie der Organizer. Beim ersten Start bestimmt die Windows-Anzeigesprache die Auswahl (Deutsch bei deutscher Anzeigesprache, sonst Englisch). Die gespeicherte Sprachwahl hat danach Vorrang. Beschriftungen, Auswahldialoge, Bestätigungen und Anwendungsmeldungen wechseln gemeinsam; eigene Namen, Pfade und gelesene Save-Werte bleiben erhalten. Die Umschaltung erhält Auswahl und Eingaben und ist während einer Bearbeitung gesperrt. Windows-eigene Dateidialog-Schaltflächen und Systemfehler folgen weiterhin der Windows-Sprache. Die veröffentlichten Pakete bis v0.1.21 haben noch die deutsche Oberfläche.
 
 ## Spielauswahl
 
