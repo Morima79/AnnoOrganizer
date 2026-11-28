@@ -17,7 +17,7 @@ Local Windows tools for **Anno 117: Pax Romana**, **Anno 1800** and **Anno 1404*
 | Stamp gallery and blueprint PNGs | Yes | Yes | Not implemented |
 | Additional stamp filters | Ceres field sizes, cosmetic DLCs | DLCs, tractors, silos, electricity, town halls, trade unions | — |
 
-**Source files are read only.** Console output defaults to `<game>/local-data/`; new desktop configurations use `Documents/AnnoOrganizer/Anno <number>/`. The output directory is configurable. Each game folder is independently usable and includes its own launcher, configuration, dependencies, documentation and license. The root launcher provides an optional shared menu.
+**Analysis and gallery tools read source files only.** Console output defaults to `<game>/local-data/`; new desktop configurations use `Documents/AnnoOrganizer/Anno <number>/`. The output directory is configurable. Each game folder is independently usable and includes its own launcher, configuration, dependencies, documentation and license. The root launcher provides an optional shared menu. The separate experimental [Save Manager](docs/save-manager.md) edits selected saves only when an action is explicitly confirmed.
 
 ## Online demos and releases
 
@@ -147,6 +147,8 @@ This is an unofficial project with no affiliation to Ubisoft. Maps and blueprint
 ## Current save statistics
 
 The map gallery shows each campaign’s latest save with population, wealth, balance, residences and ships. Statistic groups start collapsed; tiers, blueprints and other details appear only when opened. Previous save and playtime information is grouped under **Save details**. Values that cannot be read reliably show **not available**. Excel adds an **Aktuelle Spielstände** worksheet. [Data sources and limitations](docs/save-statistics.md).
+
+For Anno 117, a separate development [Save Manager](docs/save-manager.md) can copy or move saves, rename profile folders with verified backups, optionally change the praetor name in all three confirmed fields, and reject nested profile folders.
 
 ## Use and redistribution
 

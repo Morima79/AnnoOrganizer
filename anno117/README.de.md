@@ -6,7 +6,9 @@
 
 [English](README.md) · [Deutsch](README.de.md)
 
-Dieser Ordner ist unabhängig nutzbar und enthält seinen eigenen Starter, Einstellungen, Abhängigkeiten und Lizenz. Die anderen Anno-Ordner und der Hauptstarter werden nicht benötigt. Quelldateien werden ausschliesslich gelesen. Die technische Benennung ist Englisch; Menüs und Protokollmeldungen bleiben Deutsch. Die HTML-Galerien bieten einen DE/EN-Schalter.
+Dieser Ordner ist unabhängig nutzbar und enthält seinen eigenen Starter, Einstellungen, Abhängigkeiten und Lizenz. Die anderen Anno-Ordner und der Hauptstarter werden nicht benötigt. Analyse- und Galeriewerkzeuge lesen Quelldateien ausschliesslich. Die technische Benennung ist Englisch; Menüs und Protokollmeldungen bleiben Deutsch. Die HTML-Galerien bieten einen DE/EN-Schalter.
+
+Der separate experimentelle Spielstand-Editor startet mit `python tools/manage_saves.py`. Er kopiert oder verschiebt Saves und benennt Profilordner mit geprüfter Sicherung um; Prätornamen können beim Übertragen oder am bisherigen Ort mit **Nur Prätor ändern** angepasst werden. Verschachtelte Profilordner werden abgelehnt. Vor Übertragungen das Spiel schliessen und Sicherungen behalten. Die vollständige Testanleitung steht im Repository unter `docs/save-manager.de.md` und im gebauten Paket als `README.de.md`.
 
 ## Vorschau
 

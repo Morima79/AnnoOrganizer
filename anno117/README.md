@@ -6,7 +6,9 @@
 
 [English](README.md) · [Deutsch](README.de.md)
 
-This folder is independently usable. It includes its own launcher, settings, dependencies and license and does not require the repository's main launcher or the other games. Source game files are read only. Menus and log messages remain German; HTML galleries provide a DE/EN switch.
+This folder is independently usable. It includes its own launcher, settings, dependencies and license and does not require the repository's main launcher or the other games. Analysis and gallery tools read source game files only. Menus and log messages remain German; HTML galleries provide a DE/EN switch.
+
+The separate experimental save editor can be started with `python tools/manage_saves.py`. It copies or moves saves and renames profile folders with verified backups; praetor names can be changed during a transfer or at the existing location with **Nur Prätor ändern**. Nested profile folders are rejected. Close the game before transfers and retain the backups. The repository's `docs/save-manager.md` provides the full test procedure; built packages include it as `README.md`.
 
 ## Preview
 

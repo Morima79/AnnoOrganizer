@@ -17,7 +17,7 @@ Lokale Windows-Werkzeuge für **Anno 117: Pax Romana**, **Anno 1800** und **Anno
 | Stempelgalerie mit Bauplan-PNGs | Ja | Ja | Noch nicht implementiert |
 | Zusätzliche Stempelfilter | Ceres-Feldgrössen, kosmetische DLCs | DLCs, Traktoren, Silos, Strom, Rathaus, Handelskammer | — |
 
-**Quelldateien werden ausschliesslich gelesen.** Konsolenausgaben liegen standardmässig in `<spiel>/local-data/`; neue Desktop-Konfigurationen verwenden `Dokumente/AnnoOrganizer/Anno <Nummer>/`. Der Ausgabeordner ist konfigurierbar. Jeder Anno-Ordner ist unabhängig nutzbar und enthält seinen eigenen Starter, Einstellungen, Abhängigkeiten, Anleitungen und Lizenz. Der Hauptstarter bietet zusätzlich ein gemeinsames Auswahlmenü.
+**Analyse- und Galeriewerkzeuge lesen Quelldateien ausschliesslich.** Konsolenausgaben liegen standardmässig in `<spiel>/local-data/`; neue Desktop-Konfigurationen verwenden `Dokumente/AnnoOrganizer/Anno <Nummer>/`. Der Ausgabeordner ist konfigurierbar. Jeder Anno-Ordner ist unabhängig nutzbar und enthält seinen eigenen Starter, Einstellungen, Abhängigkeiten, Anleitungen und Lizenz. Der Hauptstarter bietet zusätzlich ein gemeinsames Auswahlmenü. Der separate experimentelle [Spielstand-Manager](docs/save-manager.de.md) bearbeitet ausgewählte Saves nur bei ausdrücklich bestätigter Aktion.
 
 ## Online-Demos und Releases
 
@@ -147,6 +147,8 @@ Inoffizielles Projekt ohne Verbindung zu Ubisoft. Die Ausgaben sind Rekonstrukti
 ## Aktuelle Spielstand-Kennzahlen
 
 Die Kartengalerie zeigt pro Partie den neuesten Save mit Bevölkerung, Vermögen, Bilanz, Wohnhäusern und Schiffen. Jede Kennzahlengruppe bleibt zunächst geschlossen; Stufen, Baupläne und weitere Details erscheinen erst beim Anklicken. Frühere Save- und Spielzeitangaben stehen unter **Save-Details**. Nicht zuverlässig auslesbare Werte werden als **nicht verfügbar** angezeigt. Excel erhält das zusätzliche Blatt **Aktuelle Spielstände**. [Datenquellen und Grenzen](docs/save-statistics.de.md).
+
+Für Anno 117 gibt es einen separaten [Spielstand-Manager als Testversion](docs/save-manager.de.md): Saves kopieren oder verschieben, Profilordner mit geprüfter Sicherung umbenennen, bei Bedarf den Prätornamen an allen drei bestätigten Stellen ändern und verschachtelte Profilordner verhindern.
 
 ## Nutzung und Weiterveröffentlichung
 
