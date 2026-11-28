@@ -53,6 +53,54 @@ class SaveManagerUITests(unittest.TestCase):
         confirm.assert_not_called()
         self.assertFalse((self.root / 'Other').exists())
 
+    def test_game_selector_clears_inputs_and_blocks_unimplemented_game_operations(self):
+        self.assertEqual(tuple(self.app.game_combo.cget('values')), tuple(ui.GAME_LABELS.values()))
+        for game in ('anno1800', 'anno1404'):
+            with self.subTest(game=game):
+                self.app.load([self.source])
+                self.app.change_praetor.set(True)
+                self.app.new_praetor.set('Pending edit')
+                self.app.game_choice.set(ui.GAME_LABELS[game])
+                self.app.on_game_changed()
+                self.assertEqual(self.app.game, game)
+                self.assertEqual(self.app.sources, [])
+                self.assertEqual(self.app.target_name.get(), '')
+                self.assertEqual(self.app.new_praetor.get(), '')
+                self.assertFalse(self.app.change_praetor.get())
+                self.assertIn('noch nicht freigeschaltet', self.app.status.get())
+                self.assertEqual(str(self.app.game_combo.cget('state')), 'readonly')
+                self.assertTrue(all(str(control.cget('state')) == 'disabled' for control in self.app.controls))
+                with patch.object(ui, 'transfer') as transfer, patch.object(ui, 'inspect_save') as read, patch.object(ui.filedialog, 'askopenfilenames') as files:
+                    self.app.start(True)
+                    self.app.load([self.source])
+                    self.app.select_files()
+                transfer.assert_not_called()
+                read.assert_not_called()
+                files.assert_not_called()
+                self.app.game_choice.set(ui.GAME_LABELS['anno117'])
+                self.app.on_game_changed()
+                self.assertEqual(self.app.save_root, self.root)
+                self.assertEqual(str(self.app.target_entry.cget('state')), 'normal')
+
+    def test_selected_game_is_remembered_and_switching_is_blocked_while_busy(self):
+        self.app.game_choice.set(ui.GAME_LABELS['anno1800'])
+        self.app.on_game_changed()
+        self.app.busy = True
+        self.app.refresh_controls()
+        self.assertEqual(str(self.app.game_combo.cget('state')), 'disabled')
+        self.app.game_choice.set(ui.GAME_LABELS['anno1404'])
+        self.app.on_game_changed()
+        self.assertEqual(self.app.game, 'anno1800')
+        self.assertEqual(self.app.game_choice.get(), ui.GAME_LABELS['anno1800'])
+        self.app.busy = False
+        preferences_path = self.app.preferences_path
+        self.app.destroy()
+        self.app = ui.SaveManager(preferences_path=preferences_path)
+        self.app.withdraw()
+        self.assertEqual(self.app.game, 'anno1800')
+        self.assertEqual(str(self.app.game_combo.cget('state')), 'readonly')
+        self.assertEqual(str(self.app.target_entry.cget('state')), 'disabled')
+
     def test_organizer_theme_and_icon_are_used(self):
         style = ui.ttk.Style(self.app)
         self.assertEqual(style.theme_use(), 'clam')

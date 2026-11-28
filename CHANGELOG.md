@@ -7,9 +7,13 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Prepare a persistent game-selection ComboBox for Anno 117, 1800 and 1404. Clear pending selections on switching and keep unimplemented game operations disabled.
+
 - Add a separate experimental Anno 117 Save Manager for backed-up save transfers, profile-folder renaming, optional praetor changes in all three confirmed fields, and enforced direct account/profile paths that reject nested saves and destinations. Preserve all other game-state fields and reject ambiguous player mappings. Rename profile directories directly to preserve Windows/OneDrive read-only folder attributes; use the prefilled destination name without a second input dialog. Explain nested-profile rejection in plain language, reset praetor controls after success, and open file/folder dialogs at the remembered account root discovered through Windows Documents. Match the Organizer dark/gold appearance and icon, and retain reachable window bounds and maximised state without losing the remembered account root. Include a standalone Windows development builder and bilingual test instructions.
 
 ### Deutsch
+
+- Dauerhaft gespeicherte Spielauswahl per ComboBox für Anno 117, 1800 und 1404 vorbereiten. Beim Wechsel ausstehende Auswahlen leeren und noch nicht umgesetzte Spielaktionen sperren.
 
 - Separaten experimentellen Anno-117-Spielstand-Manager zum Übertragen mit Sicherung und Umbenennen von Profilordnern ergänzen, mit optionaler Prätoränderung an allen drei bestätigten Stellen und verbindlicher Konto-/Profilstruktur. Verschachtelte Quellen und Ziele ablehnen, übrige Spielzustandsfelder erhalten und mehrdeutige Spielerzuordnungen zurückweisen. Profilordner direkt umbenennen und damit Windows-/OneDrive-Ordnerattribute erhalten; den vorausgefüllten Zielnamen ohne zweiten Eingabedialog verwenden. Unterordner-Sperre verständlich erklären, Prätorfelder nach Erfolg zurücksetzen und Datei-/Ordnerdialoge im erkannten bzw. gespeicherten Kontoordner öffnen. Dunkel-goldene Organizer-Gestaltung und Anwendungssymbol übernehmen sowie erreichbare Fensterposition, Grösse und Maximiertzustand zusammen mit dem gemerkten Kontoordner speichern. Eigenständigen Windows-Testbuild und zweisprachige Testanleitung bereitstellen.
 

@@ -2,6 +2,10 @@
 
 Standalone Windows application for Anno 117 save transfers, complete profile-folder renaming and optional praetor-name changes. Anno 1800 saves are not edited. Running the EXE does not require Python or an installed game. Keep the complete application folder, including `_internal/`. Part of [AnnoOrganizer by Morima79](https://github.com/Morima79/AnnoOrganizer), MIT licensed; use at your own risk. The application currently uses German UI text.
 
+## Game selector (prepared)
+
+The top ComboBox offers Anno 117, Anno 1800 and Anno 1404. Only Anno 117 reading and editing are currently enabled. Choosing 1800 or 1404 clears the selection and inputs, disables actions and displays the preparation status. The selection persists across restarts. Switching is disabled during processing. The remembered Anno 117 account root is retained; other games' saves are not opened using the 117 editor.
+
 ## Usage
 
 1. Close Anno 117 and let any cloud synchronisation finish.

@@ -2,6 +2,10 @@
 
 Eigenständige Windows-Anwendung für Anno 117 zum Kopieren und Verschieben einzelner `.a8s`-Spielstände, Umbenennen vollständiger Profilordner und optionalen Ändern des Prätornamens. Anno-1800-Saves werden nicht bearbeitet. Python und eine Spielinstallation sind zum Starten der EXE nicht erforderlich. Den vollständigen Programmordner einschliesslich `_internal/` behalten. Dieses Werkzeug gehört zu [AnnoOrganizer von Morima79](https://github.com/Morima79/AnnoOrganizer), MIT-Lizenz; Verwendung auf eigene Gefahr.
 
+## Spielauswahl (vorbereitet)
+
+Die ComboBox oben bietet Anno 117, Anno 1800 und Anno 1404. Aktuell sind nur für Anno 117 das Lesen und Bearbeiten freigeschaltet. Bei 1800 und 1404 werden Auswahl und Eingaben geleert, die Aktionen gesperrt und der Vorbereitungsstatus angezeigt. Die Auswahl bleibt nach einem Neustart erhalten. Während einer laufenden Bearbeitung ist der Spielwechsel gesperrt. Der gemerkte Anno-117-Kontoordner bleibt beim Wechsel erhalten; Spielstände anderer Spiele werden nicht mit dem 117-Editor geöffnet.
+
 ## Verwendung
 
 1. Anno 117 schliessen und laufende Cloud-Synchronisierung abwarten.

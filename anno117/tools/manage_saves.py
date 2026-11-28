@@ -14,6 +14,12 @@ from anno_save_editor import (account_directory, inspect_save, praetor_name, tra
 from anno_settings import documents_folder
 from anno_save_ui import WindowState, apply_theme
 
+GAME_LABELS = {
+    'anno117': 'Anno 117: Pax Romana',
+    'anno1800': 'Anno 1800',
+    'anno1404': 'Anno 1404',
+}
+
 
 def read_preferences(path):
     try:
@@ -97,6 +103,10 @@ class SaveManager(tk.Tk):
         local = Path(os.environ.get('LOCALAPPDATA', Path.home())) / 'AnnoOrganizer'
         self.preferences_path = Path(preferences_path) if preferences_path is not None else local / 'save-manager.json'
         self.preferences = read_preferences(self.preferences_path)
+        saved_game = self.preferences.get('selected_game')
+        self.game = saved_game if isinstance(saved_game, str) and saved_game in GAME_LABELS else 'anno117'
+        self.preferences['selected_game'] = self.game
+        self.game_choice = tk.StringVar(value=GAME_LABELS[self.game])
         self.save_root = initial_save_root(self.preferences_path)
         self.events = queue.Queue()
         self.busy = False
@@ -110,7 +120,16 @@ class SaveManager(tk.Tk):
         self.status = tk.StringVar(value='Saves oder einen Profilordner auswählen.')
         body = ttk.Frame(self, padding=16)
         body.pack(fill='both', expand=True)
-        ttk.Label(body, text='Anno 117 · Spielstände verwalten', style='Title.TLabel').pack(anchor='w')
+        header = ttk.Frame(body)
+        header.pack(fill='x')
+        ttk.Label(header, text='Spielstände verwalten', style='Title.TLabel').pack(side='left')
+        chooser = ttk.Frame(header)
+        chooser.pack(side='right')
+        ttk.Label(chooser, text='Spiel:').pack(side='left', padx=(12, 6))
+        self.game_combo = ttk.Combobox(chooser, textvariable=self.game_choice,
+                                       values=tuple(GAME_LABELS.values()), state='readonly', width=27)
+        self.game_combo.pack(side='left')
+        self.game_combo.bind('<<ComboboxSelected>>', self.on_game_changed)
         ttk.Label(body, text='Spiel vor Änderungen schliessen. Cloud-Synchronisierung kann alte Profile wiederherstellen.',
                   wraplength=920, style='Muted.TLabel').pack(anchor='w', pady=(6, 12))
         buttons = ttk.Frame(body)
@@ -172,6 +191,8 @@ class SaveManager(tk.Tk):
         self.protocol('WM_DELETE_WINDOW', self.close)
         self.window_state = WindowState(self, self)
         self.window_state.watch(self, 'main')
+        self.refresh_controls()
+        self.update_game_view()
         self.poll_after = self.after(150, self.poll)
 
     def button(self, parent, text, command, **options):
@@ -183,7 +204,38 @@ class SaveManager(tk.Tk):
         self.destination.set('Ziel: ' + str(self.account / self.target_name.get()) if self.account else '')
 
     def update_praetor_state(self):
-        self.praetor_entry.configure(state='normal' if self.change_praetor.get() and not self.busy else 'disabled')
+        self.praetor_entry.configure(state='normal' if self.change_praetor.get() and not self.busy
+                                     and self.game == 'anno117' else 'disabled')
+
+    def refresh_controls(self):
+        state = 'normal' if self.game == 'anno117' and not self.busy else 'disabled'
+        for control in self.controls:
+            control.configure(state=state)
+        self.game_combo.configure(state='disabled' if self.busy else 'readonly')
+        self.update_praetor_state()
+
+    def update_game_view(self):
+        self.title(GAME_LABELS[self.game] + ' – Spielstände verwalten')
+        if self.game == 'anno117':
+            self.account_label.set('Startordner: ' + str(self.save_root))
+            self.status.set('Saves oder einen Profilordner auswählen.')
+        else:
+            self.account_label.set('Spielauswahl vorbereitet: ' + GAME_LABELS[self.game])
+            self.status.set('Für ' + GAME_LABELS[self.game] + ' sind Lesen und Bearbeiten von Spielständen noch nicht freigeschaltet.')
+
+    def on_game_changed(self, _event=None):
+        selected = next((key for key, label in GAME_LABELS.items() if label == self.game_choice.get()), self.game)
+        if self.busy:
+            self.game_choice.set(GAME_LABELS[self.game])
+            return
+        if selected == self.game:
+            return
+        self.game = selected
+        self.preferences['selected_game'] = selected
+        self.clear_selection()
+        self.refresh_controls()
+        self.update_game_view()
+        self.save_preferences()
 
     def dialog_root(self):
         if not self.save_root.is_dir():
@@ -216,12 +268,16 @@ class SaveManager(tk.Tk):
         self.update_praetor_state()
 
     def select_files(self):
+        if self.game != 'anno117' or self.busy:
+            return
         selected = filedialog.askopenfilenames(title='Anno-117-Saves auswählen', initialdir=self.dialog_root(),
                                              filetypes=[('Anno 117', '*.a8s')])
         if selected:
             self.load([Path(p) for p in selected])
 
     def select_folder(self):
+        if self.game != 'anno117' or self.busy:
+            return
         folder = filedialog.askdirectory(title='Einen Profilordner auswählen (nicht den Kontoordner)',
                                          initialdir=self.dialog_root())
         if folder:
@@ -229,6 +285,8 @@ class SaveManager(tk.Tk):
             self.load(sorted(p for p in path.iterdir() if p.suffix.casefold() == '.a8s'), path)
 
     def load(self, sources, folder=None):
+        if self.game != 'anno117' or self.busy:
+            return
         self.clear_selection()
         try:
             if not sources:
@@ -266,6 +324,8 @@ class SaveManager(tk.Tk):
             messagebox.showerror('Spielstand nicht unterstützt', str(exc), parent=self)
 
     def choose_destination(self):
+        if self.game != 'anno117' or self.busy:
+            return
         if not self.account:
             messagebox.showinfo('Quelle wählen', 'Zuerst Saves oder einen Profilordner auswählen.', parent=self)
             return
@@ -279,19 +339,23 @@ class SaveManager(tk.Tk):
                 messagebox.showerror('Ungültiges Ziel', str(exc), parent=self)
 
     def choose_backup(self):
+        if self.game != 'anno117' or self.busy:
+            return
         selected = filedialog.askdirectory(title='Dauerhaften Sicherungsordner ausserhalb des Spielkontos wählen',
                                           initialdir=self.dialog_root())
         if selected:
             self.backup.set(selected)
 
     def rename_folder(self):
+        if self.game != 'anno117' or self.busy:
+            return
         if not self.folder:
             messagebox.showinfo('Profilordner wählen', 'Zuerst «Ganzer Profilordner» auswählen.', parent=self)
             return
         self.start(True, rename=True)
 
     def start(self, move, rename=False, edit_in_place=False):
-        if self.busy or not self.sources:
+        if self.busy or not self.sources or self.game != 'anno117':
             return
         try:
             praetor = validate_praetor(self.new_praetor.get()) if self.change_praetor.get() else None
@@ -319,8 +383,7 @@ class SaveManager(tk.Tk):
         if not messagebox.askokcancel(action, details, parent=self):
             return
         self.busy = True
-        for control in self.controls:
-            control.configure(state='disabled')
+        self.refresh_controls()
         self.status.set('Saves prüfen, sichern und bearbeiten …')
         sources = self.sources.copy()
         def work():
@@ -339,9 +402,7 @@ class SaveManager(tk.Tk):
             pass
         else:
             self.busy = False
-            for control in self.controls:
-                control.configure(state='normal')
-            self.update_praetor_state()
+            self.refresh_controls()
             self.status.set(('Fertig. Sicherung: ' if success else 'Abgebrochen: ') + result)
             if success:
                 self.clear_selection()

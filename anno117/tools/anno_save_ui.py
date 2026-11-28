@@ -132,6 +132,14 @@ def apply_theme(root):
                     insertcolor='#ffffff', insertwidth=2, padding=5)
     style.map('TEntry', fieldbackground=[('disabled', '#20252d')],
               foreground=[('disabled', '#89919d')])
+    style.configure('TCombobox', fieldbackground='#181c22', background='#3c424c',
+                    foreground='#e5e7eb', arrowcolor='#e5e7eb', padding=5)
+    style.map('TCombobox', fieldbackground=[('disabled', '#20252d'), ('readonly', '#181c22')],
+              foreground=[('disabled', '#89919d'), ('readonly', '#e5e7eb')])
+    root.option_add('*TCombobox*Listbox.background', '#181c22')
+    root.option_add('*TCombobox*Listbox.foreground', '#e5e7eb')
+    root.option_add('*TCombobox*Listbox.selectBackground', '#cba56a')
+    root.option_add('*TCombobox*Listbox.selectForeground', '#171b22')
     style.configure('TCheckbutton', background='#20252d', foreground='#e5e7eb')
     style.map('TCheckbutton', background=[('active', '#20252d'), ('disabled', '#20252d')],
               foreground=[('disabled', '#89919d')])
