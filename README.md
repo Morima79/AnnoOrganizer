@@ -78,7 +78,7 @@ The Windows app provides game selection, editable paths, existing configuration 
 
 Download and fully extract the separate [Windows package (ZIP)](https://github.com/Morima79/AnnoOrganizer/releases/download/v0.1.21/AnnoSaveManager-v0.1.21-windows-x64.zip), then start **AnnoSaveManager.exe**. Python is not required; the application currently uses German UI text.
 
-For **Anno 117 and Anno 1800**: copy or move individual saves, rename complete profile folders, and change praetor/player names in selected saves or every save of a folder. Changes create verified ZIP backups; editing is blocked while the selected game is running. [Guide and verified save fields](docs/save-manager.md).
+For **Anno 117 and Anno 1800**: copy or move individual saves, rename complete profile folders, and change praetor/player names in selected saves or every save of a folder. Changes create verified ZIP backups; editing is blocked while the selected game is running. [Illustrated beginner guide](https://morima79.github.io/AnnoOrganizer/save-manager-guide/?lang=en) · [Technical documentation and verified save fields](docs/save-manager.md).
 
 ## Run from source
 

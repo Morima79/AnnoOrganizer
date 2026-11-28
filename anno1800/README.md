@@ -8,7 +8,7 @@
 
 This folder is independently usable. It includes its own launcher, settings, dependencies and license and does not require the repository's main launcher or the other games. Analysis and gallery tools read source game files only. Menus and log messages remain German; HTML galleries provide a DE/EN switch.
 
-The separate **ANNO - Save Manager** is available as a [standalone Windows package (ZIP)](https://github.com/Morima79/AnnoOrganizer/releases/download/v0.1.21/AnnoSaveManager-v0.1.21-windows-x64.zip): extract the complete ZIP and start `AnnoSaveManager.exe`; Python is not required. It supports Anno 117 and 1800 save copying/moving, complete profile-folder renaming, and praetor/player-name edits in selected saves or every save of a folder. Changes create verified ZIP backups; editing is blocked while the selected game is running. [Guide](docs/save-manager.md). From source: `python tools/manage_saves.py --game anno1800`.
+The separate **ANNO - Save Manager** is available as a [standalone Windows package (ZIP)](https://github.com/Morima79/AnnoOrganizer/releases/download/v0.1.21/AnnoSaveManager-v0.1.21-windows-x64.zip): extract the complete ZIP and start `AnnoSaveManager.exe`; Python is not required. It supports Anno 117 and 1800 save copying/moving, complete profile-folder renaming, and praetor/player-name edits in selected saves or every save of a folder. Changes create verified ZIP backups; editing is blocked while the selected game is running. [Illustrated beginner guide](https://morima79.github.io/AnnoOrganizer/save-manager-guide/?lang=en) · [Technical documentation](docs/save-manager.md). From source: `python tools/manage_saves.py --game anno1800`.
 
 ## Preview
 

@@ -11,7 +11,7 @@ from validate_site import validate_site
 
 class SiteValidationTests(unittest.TestCase):
     def fixture(self, root, extra):
-        pages = ['index.html', 'guide/index.html', 'anno117/maps/index.html', 'anno117/stamps/index.html',
+        pages = ['index.html', 'guide/index.html', 'save-manager-guide/index.html', 'anno117/maps/index.html', 'anno117/stamps/index.html',
                  'anno1800/maps/index.html', 'anno1800/stamps/index.html', 'anno1404/maps/index.html']
         for name in pages:
             path = root / name

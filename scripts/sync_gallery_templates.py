@@ -10,6 +10,8 @@ guide_spec = importlib.util.spec_from_file_location('guide_renderer', ROOT / 'sc
 guide_renderer = importlib.util.module_from_spec(guide_spec)
 guide_spec.loader.exec_module(guide_renderer)
 render_user_guide = guide_renderer.render_user_guide
+GUIDES = ((False, 'guide', 'user-guide', 'user-guide-117-*.jpg'),
+          (True, 'save-manager-guide', 'save-manager-guide', 'save-manager-*.jpg'))
 
 
 def render_page(name, extra=None):
@@ -45,13 +47,15 @@ def sync(check=False):
     if check and (ROOT / 'site/index.html').read_text(encoding='utf-8') != render_landing_page():
         mismatches.append('site/index.html')
     if check:
-        for target, online in ((ROOT / 'site/guide/index.html', True), (ROOT / 'docs/user-guide.html', False)):
-            if not target.is_file() or target.read_text(encoding='utf-8') != render_user_guide(render_page, online=online):
-                mismatches.append(str(target.relative_to(ROOT)))
-        for source in (ROOT / 'docs/images').glob('user-guide-117-*.jpg'):
-            target = ROOT / 'site/guide/images' / source.name
-            if not target.is_file() or target.read_bytes() != source.read_bytes():
-                mismatches.append(str(target.relative_to(ROOT)))
+        for save_manager, online_folder, offline_stem, pattern in GUIDES:
+            for target, online in ((ROOT / 'site' / online_folder / 'index.html', True),
+                                   (ROOT / 'docs' / (offline_stem + '.html'), False)):
+                if not target.is_file() or target.read_text(encoding='utf-8') != render_user_guide(render_page, online=online, save_manager=save_manager):
+                    mismatches.append(str(target.relative_to(ROOT)))
+            for source in (ROOT / 'docs/images').glob(pattern):
+                target = ROOT / 'site' / online_folder / 'images' / source.name
+                if not target.is_file() or target.read_bytes() != source.read_bytes():
+                    mismatches.append(str(target.relative_to(ROOT)))
     if check and mismatches:
         raise ValueError('Gallery template copies differ: ' + ', '.join(mismatches))
     print('Gallery template copies verified.' if check else f'Synchronised {len(mismatches)} gallery files.')
@@ -67,13 +71,15 @@ if __name__ == '__main__':
     sync(args.check)
     if args.refresh_site:
         (ROOT / 'site/index.html').write_text(render_landing_page(), encoding='utf-8', newline='\n')
-        for target, online in ((ROOT / 'site/guide/index.html', True), (ROOT / 'docs/user-guide.html', False)):
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_text(render_user_guide(render_page, online=online), encoding='utf-8', newline='\n')
-        images = ROOT / 'site/guide/images'
-        images.mkdir(parents=True, exist_ok=True)
-        for source in (ROOT / 'docs/images').glob('user-guide-117-*.jpg'):
-            shutil.copyfile(source, images / source.name)
+        for save_manager, online_folder, offline_stem, pattern in GUIDES:
+            for target, online in ((ROOT / 'site' / online_folder / 'index.html', True),
+                                   (ROOT / 'docs' / (offline_stem + '.html'), False)):
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text(render_user_guide(render_page, online=online, save_manager=save_manager), encoding='utf-8', newline='\n')
+            images = ROOT / 'site' / online_folder / 'images'
+            images.mkdir(parents=True, exist_ok=True)
+            for source in (ROOT / 'docs/images').glob(pattern):
+                shutil.copyfile(source, images / source.name)
         for game in ('anno117', 'anno1800', 'anno1404'):
             spec = importlib.util.spec_from_file_location('gallery_' + game,
                                                           ROOT / game / 'tools/anno_gallery.py')

@@ -23,6 +23,18 @@ def archive_name(version=None):
     return f'AnnoSaveManager-{version}-windows-x64.zip' if version else 'AnnoSaveManager-dev-windows-x64.zip'
 
 
+def copy_user_guide(application):
+    """Include the bilingual offline guide and its local linked documentation."""
+    shutil.copy2(ROOT / 'docs/save-manager-guide.html', application / 'save-manager-guide.html')
+    images = application / 'images'
+    images.mkdir(exist_ok=True)
+    for source in (ROOT / 'docs/images').glob('save-manager-*.jpg'):
+        shutil.copy2(source, images / source.name)
+    for suffix in ('', '.de'):
+        name = 'save-manager' + suffix + '.md'
+        shutil.copy2(ROOT / 'docs' / name, application / name)
+
+
 def build(output, version=None):
     if os.name != 'nt':
         raise ValueError('Build the Windows application on Windows.')
@@ -51,6 +63,7 @@ def build(output, version=None):
         shutil.copy2(ROOT / 'LICENSE', built / 'LICENSE')
         for suffix in ('', '.de'):
             shutil.copy2(ROOT / ('docs/save-manager' + suffix + '.md'), built / ('README' + suffix + '.md'))
+        copy_user_guide(built)
         notices(built / 'licenses')
         inputs = ['anno117/tools/' + name for name in ('manage_saves.py', 'anno_save_editor.py',
                   'anno_file_formats.py', 'anno_settings.py', 'anno_installation.py', 'anno_save_ui.py')]

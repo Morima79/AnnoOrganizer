@@ -16,6 +16,10 @@ def sync(check=False):
                       ROOT / game / 'tools/assets/annoorganizer.ico'))
         pairs += [(ROOT / 'docs' / ('save-manager' + suffix + '.md'),
                    ROOT / game / 'docs' / ('save-manager' + suffix + '.md')) for suffix in ('', '.de')]
+        for name in ('save-manager-guide.html', 'save-manager-guide.md', 'save-manager-guide.de.md'):
+            pairs.append((ROOT / 'docs' / name, ROOT / game / 'docs' / name))
+        pairs += [(source, ROOT / game / 'docs/images' / source.name)
+                  for source in (ROOT / 'docs/images').glob('save-manager-*.jpg')]
         for source, target in pairs:
             if not target.is_file() or target.read_bytes() != source.read_bytes():
                 changed.append(str(target.relative_to(ROOT)))

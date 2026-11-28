@@ -4,12 +4,14 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
+import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 from sync_gallery_templates import render_page, render_user_guide
 from build_desktop import payload_files
+from build_save_manager import copy_user_guide
 
 
 class GuideImages(HTMLParser):
@@ -23,6 +25,35 @@ class GuideImages(HTMLParser):
 
 
 class UserGuideTests(unittest.TestCase):
+    def test_save_manager_guides_and_packaged_offline_links_are_complete(self):
+        for name, online in [('site/save-manager-guide/index.html', True),
+                             ('docs/save-manager-guide.html', False)]:
+            text = (ROOT / name).read_text(encoding='utf-8')
+            self.assertEqual(text, render_user_guide(render_page, online=online, save_manager=True))
+            self.assertIn('data-i18n="saveGuide.heading"', text)
+            self.assertIn('data-guide-language="en" hidden', text)
+            self.assertIn('Alle Namen im Ordner', text)
+            self.assertNotIn('@@', text)
+            images = GuideImages()
+            images.feed(text)
+            self.assertEqual(len(images.images), 4)
+            for image in images.images:
+                self.assertTrue(image.get('alt'))
+                self.assertTrue((ROOT / name).parent.joinpath(image['src']).is_file())
+        with tempfile.TemporaryDirectory() as directory:
+            application = Path(directory)
+            copy_user_guide(application)
+            text = (application / 'save-manager-guide.html').read_text(encoding='utf-8')
+            self.assertEqual(text, (ROOT / 'docs/save-manager-guide.html').read_text(encoding='utf-8'))
+            images = GuideImages()
+            images.feed(text)
+            for image in images.images:
+                self.assertEqual((application / image['src']).read_bytes(),
+                                 (ROOT / 'docs' / image['src']).read_bytes())
+            for suffix in ('', '.de'):
+                self.assertTrue((application / ('save-manager' + suffix + '.md')).is_file())
+        self.assertIn('href="save-manager-guide/"', (ROOT / 'site/index.html').read_text(encoding='utf-8'))
+
     def test_online_and_offline_guides_are_generated_from_the_same_markdown(self):
         for name, online in [('site/guide/index.html', True), ('docs/user-guide.html', False)]:
             with self.subTest(name=name):

@@ -14,7 +14,7 @@ New settings are created under `%LOCALAPPDATA%/AnnoOrganizer/<game>/settings.jso
 
 The interface uses German for a German Windows display language, English otherwise. A saved DE/EN choice takes precedence. Open galleries after a successful run; inspect **Logs** if processing fails. Cancellation waits for the next safe boundary.
 
-**ANNO - Save Manager** is a separate download in the [current release](https://github.com/Morima79/AnnoOrganizer/releases/latest). It copies/moves Anno 117 and 1800 saves, renames profile folders and edits praetor/player names, with verified backups. Extract its complete ZIP and start `AnnoSaveManager.exe`; its UI currently uses German text.
+**ANNO - Save Manager** is a separate download in the [current release](https://github.com/Morima79/AnnoOrganizer/releases/latest). It copies/moves Anno 117 and 1800 saves, renames profile folders and edits praetor/player names, with verified backups. Extract its complete ZIP and start `AnnoSaveManager.exe`; its UI currently uses German text. [Illustrated beginner guide](https://morima79.github.io/AnnoOrganizer/save-manager-guide/?lang=en).
 
 This package is unsigned. Windows may show a SmartScreen reputation warning. Check the source and published SHA-256 checksum; signing is evaluated separately. No automatic updates are installed.
 

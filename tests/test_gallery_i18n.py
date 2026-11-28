@@ -94,7 +94,7 @@ class GalleryLanguageTests(unittest.TestCase):
 
     def test_all_public_demo_pages_embed_complete_resources_and_valid_bindings(self):
         pages = list((ROOT / 'site').rglob('index.html'))
-        self.assertEqual(len(pages), 7)
+        self.assertEqual(len(pages), 8)
         for page in pages:
             with self.subTest(page=page):
                 text = page.read_text(encoding='utf-8')
@@ -109,7 +109,7 @@ class GalleryLanguageTests(unittest.TestCase):
                 self.assertIn('gallerylanguagechange', text)
                 parser = Bindings()
                 parser.feed(text)
-                minimum = 4 if page.parent.name == 'guide' else 15 if page.parent == ROOT / 'site' else 30
+                minimum = 4 if page.parent.name in ('guide', 'save-manager-guide') else 15 if page.parent == ROOT / 'site' else 30
                 self.assertGreater(len(parser.messages), minimum)
                 for key, params in parser.messages:
                     self.assertIn(key, self.resources['de'])

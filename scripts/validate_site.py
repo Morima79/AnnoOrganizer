@@ -18,14 +18,14 @@ class References(HTMLParser):
 
 def validate_site(folder):
     folder = Path(folder).resolve()
-    expected = ['index.html', 'guide/index.html', 'anno117/maps/index.html', 'anno117/stamps/index.html',
+    expected = ['index.html', 'guide/index.html', 'save-manager-guide/index.html', 'anno117/maps/index.html', 'anno117/stamps/index.html',
                 'anno1800/maps/index.html', 'anno1800/stamps/index.html', 'anno1404/maps/index.html']
     for name in expected:
         if not (folder / name).is_file():
             raise ValueError('Missing demo page: ' + name)
     pages = list(folder.rglob('*.html'))
     if len(pages) != len(expected):
-        raise ValueError('Expected one landing page, one user guide and five galleries')
+        raise ValueError('Expected one landing page, two user guides and five galleries')
     for page in pages:
         text = page.read_text(encoding='utf-8')
         if re.search(r'(?:(?<![A-Za-z])[A-Za-z]:[\\/]|file:/{2,}|OneDrive|LokaleDaten)', text):
