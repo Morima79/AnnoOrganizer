@@ -327,6 +327,22 @@ Am 24. November 2026 mit Edge und dem Computer-Use-Skill geprüft:
 
 ### Fester lokaler Release-Ordner
 
+- Der eigenständige Save Manager liegt unter
+  `D:/Workspace/Releases/AnnoSaveManager/`. Die Desktop-Verknüpfung
+  **ANNO - Save Manager** zeigt ohne Zusatzargumente auf die dortige
+  `AnnoSaveManager.exe`; Arbeitsverzeichnis und Symbol bleiben in diesem Ordner.
+  Bei Releases mit beiden EXE-Paketen beide lokalen Programme mit den nachfolgenden
+  Paket-, Versions- und Verknüpfungsprüfungen aktualisieren.
+- **Pro Programm genau eine Rückfallkopie behalten:** den unmittelbar zuvor
+  verwendeten, nachweislich funktionierenden Stand. Das kann auch ein erfolgreich
+  geprüfter lokaler Entwicklungsstand sein. Ältere Programm-Rückfallkopien erst
+  nach erfolgreichem Austausch und Prüfung des neuen Programmpakets über den
+  Papierkorb entfernen. Die verbleibende Rückfallkopie anhand von `BUILD.json`,
+  Paketvergleich und nötigenfalls isoliertem Smoke-Test bestimmen, nicht allein
+  anhand des Ordnerdatums. Bei fehlgeschlagenem Austausch oder gesperrten Dateien
+  keine Rückfallkopien bereinigen. Diese Aufbewahrungsregel gilt nur für die lokalen
+  Programmstände von AnnoOrganizer und AnnoSaveManager, nicht für Save-Sicherungen,
+  persönliche Einstellungen oder andere Benutzerdaten.
 - Auf dem Windows-Rechner des Projektinhabers liegt die jeweils aktuelle
   veröffentlichte Windows-Version unter `D:/Workspace/Releases/AnnoOrganizer/`.
   Die Desktop-Verknüpfung **ANNO - Organizer** zeigt ohne Zusatzargumente auf
