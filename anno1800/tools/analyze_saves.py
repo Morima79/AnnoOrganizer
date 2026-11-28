@@ -427,6 +427,20 @@ def time_values(saves, seed_times, zone):
     }
 
 
+def island_image_bounds(position, rotation, map_size, active_rect, image_size):
+    """Place a padded, two-pixels-per-tile graphic relative to the map origin."""
+    x, y = position
+    map_width, map_height = map_size
+    left, bottom, right, top = active_rect
+    center_x, center_y = (left + right) / 2, (bottom + top) / 2
+    width, height = (value / 2 for value in image_size)
+    for _ in range(rotation % 4):
+        center_x, center_y = map_height - center_y, center_x
+        map_width, map_height = map_height, map_width
+        width, height = height, width
+    return x + center_x - width / 2, y + center_y - height / 2, width, height
+
+
 def render_catalog(rows, groups, maps, stage, updated_at, total_playtime, profile_totals, statistics=None):
     from functools import lru_cache
     from PIL import Image, ImageDraw, ImageFont
@@ -450,8 +464,19 @@ def render_catalog(rows, groups, maps, stage, updated_at, total_playtime, profil
         if n not in idx:
             if len(by_image[stem])!=1: return None
             n=by_image[stem][0]
+        folder, generated = n.split('/_gamedata/')
+        info = f"{folder}/{generated.split('/')[0]}.a7minfo"
+        if info not in idx: return None
+        raw = read_asset(idx[info])
+        if not raw: return None
+        metadata = dict(fields(raw))
+        if ('MapSize',) not in metadata or ('ActiveMapRect',) not in metadata: return None
+        map_size = st.unpack('<ii', metadata[('MapSize',)])
+        active_rect = st.unpack('<4i', metadata[('ActiveMapRect',)])
         img=Image.open(BytesIO(read_asset(idx[n]))).convert('RGBA')
-        return img.resize((max(1,round(img.width*.225)),max(1,round(img.height*.225))),Image.Resampling.LANCZOS)
+        image_size = img.size
+        img = img.resize((max(1,round(img.width*.225)),max(1,round(img.height*.225))),Image.Resampling.LANCZOS)
+        return img, map_size, active_rect, image_size
 
     @lru_cache(maxsize=None)
     def font(name,size):
@@ -477,16 +502,19 @@ def render_catalog(rows, groups, maps, stage, updated_at, total_playtime, profil
         for e in ils:
             x,y=e['pos']
             cx,cy=30+round(x*scale),62+round(h-y*scale)
-            im=tile(e['file'])
-            if im is None:
+            graphic=tile(e['file'])
+            if graphic is None:
                 missing.append(Path(e['file']).stem)
                 draw.ellipse((cx-5,cy-5,cx+5,cy+5),outline='#ffcb84',width=2)
                 continue
+            im, map_size, active_rect, image_size = graphic
             angle=e.get('rotation',0)%4
             if angle: im=im.rotate(90*angle,expand=True)
-            width,height=(max(1,round(a*scale*2)) for a in im.size)
+            left, bottom, world_width, world_height = island_image_bounds(
+                e['pos'], angle, map_size, active_rect, image_size)
+            width,height=(max(1,round(a*scale)) for a in (world_width,world_height))
             im=im.resize((width,height),Image.Resampling.LANCZOS)
-            canvas.alpha_composite(im,(cx-width//2,cy-height//2))
+            canvas.alpha_composite(im,(30+round(left*scale),62+round(h-(bottom+world_height)*scale)))
         region=REGIONS.get(s['guid'],f"Szenario / Region {s['guid']}")
         draw.text((30,15),region,font=font('segoeuib',28),fill='#ecf5f8')
         subtitle=f"{len(ils)} Inseln  ·  {s['size'][0]} × {s['size'][1]}"

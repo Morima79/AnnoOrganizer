@@ -7,10 +7,12 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Fix Anno 1800 map placement and scale using saved island origins and terrain metadata, including Crown Falls and Manola in the upper right corner.
 - Add a Save Manager Guide button that opens the bundled offline manual in the selected DE/EN language, with the same online fallback as the Organizer.
 
 ### Deutsch
 
+- Position und Massstab der Anno-1800-Karten anhand gespeicherter Inselursprünge und Geländedaten korrigieren, einschliesslich Crown Falls und Manola in der oberen rechten Ecke.
 - Anleitung-Button im Save Manager ergänzen: öffnet die mitgelieferte Offline-Anleitung in der gewählten DE/EN-Sprache, mit derselben Online-Ausweichlösung wie beim Organizer.
 
 ## [v0.1.22] - 2026-11-28
