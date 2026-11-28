@@ -1,12 +1,12 @@
 # Anno – Spielstände verwalten (Testversion)
 
-Eigenständige Windows-Anwendung für Anno 117 und Anno 1800 zum Kopieren und Verschieben einzelner Spielstände, Umbenennen vollständiger Profilordner und optionalen Ändern des Prätor- oder Spielernamens. Anno-117-Saves verwenden `.a8s`, Anno-1800-Saves `.a7s`. Anno 1404 bleibt vorbereitet und gesperrt. Python und eine Spielinstallation sind zum Starten der EXE nicht erforderlich. Den vollständigen Programmordner einschliesslich `_internal/` behalten. Dieses Werkzeug gehört zu [AnnoOrganizer von Morima79](https://github.com/Morima79/AnnoOrganizer), MIT-Lizenz; Verwendung auf eigene Gefahr.
+Eigenständige Windows-Anwendung für Anno 117 und Anno 1800 zum Kopieren und Verschieben einzelner Spielstände, Umbenennen vollständiger Profilordner und optionalen Ändern des Prätor- oder Spielernamens. Anno-117-Saves verwenden `.a8s`, Anno-1800-Saves `.a7s`. Python und eine Spielinstallation sind zum Starten der EXE nicht erforderlich. Den vollständigen Programmordner einschliesslich `_internal/` behalten. Dieses Werkzeug gehört zu [AnnoOrganizer von Morima79](https://github.com/Morima79/AnnoOrganizer), MIT-Lizenz; Verwendung auf eigene Gefahr.
 
 ## Spielauswahl
 
 Vollständiges Windows-Paket herunterladen: [AnnoSaveManager.zip](https://github.com/Morima79/AnnoOrganizer/releases/latest/download/AnnoSaveManager.zip) · [SHA-256](https://github.com/Morima79/AnnoOrganizer/releases/latest/download/AnnoSaveManager.sha256). Das ZIP vor dem Start von `AnnoSaveManager.exe` entpacken.
 
-Die ComboBox oben schaltet zwischen Anno 117 und Anno 1800. Die Oberfläche verwendet entsprechend «Prätor» oder «Spielername». Der Kontoordner wird für jedes Spiel getrennt gespeichert. Beim Wechsel werden Save-Auswahl und Eingaben geleert. Während einer laufenden Bearbeitung ist der Spielwechsel gesperrt. Anno 1404 bleibt als Vorbereitung sichtbar, seine Aktionen sind noch nicht freigeschaltet.
+Die ComboBox oben schaltet zwischen Anno 117 und Anno 1800. Die Oberfläche verwendet entsprechend «Prätor» oder «Spielername». Der Kontoordner wird für jedes Spiel getrennt gespeichert. Beim Wechsel werden Save-Auswahl und Eingaben geleert. Während einer laufenden Bearbeitung ist der Spielwechsel gesperrt.
 
 ## Verwendung
 

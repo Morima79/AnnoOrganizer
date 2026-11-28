@@ -70,9 +70,10 @@ class SaveManagerUITests(unittest.TestCase):
         confirm.assert_not_called()
         self.assertFalse((self.root / 'Other').exists())
 
-    def test_game_selector_clears_inputs_and_blocks_unimplemented_game_operations(self):
+    def test_game_selector_offers_supported_games_and_clears_inputs(self):
+        self.assertEqual(set(ui.GAME_LABELS), {'anno117', 'anno1800'})
         self.assertEqual(tuple(self.app.game_combo.cget('values')), tuple(ui.GAME_LABELS.values()))
-        for game in ('anno1404',):
+        for game in ('anno1800',):
             with self.subTest(game=game):
                 self.app.load([self.source])
                 self.app.change_player.set(True)
@@ -84,39 +85,44 @@ class SaveManagerUITests(unittest.TestCase):
                 self.assertEqual(self.app.target_name.get(), '')
                 self.assertEqual(self.app.new_player.get(), '')
                 self.assertFalse(self.app.change_player.get())
-                self.assertIn('noch nicht freigeschaltet', self.app.status.get())
                 self.assertEqual(str(self.app.game_combo.cget('state')), 'readonly')
-                self.assertTrue(all(str(control.cget('state')) == 'disabled' for control in self.app.controls))
-                with patch.object(ui, 'transfer') as transfer, patch.object(ui, 'read_summary') as read, patch.object(ui.filedialog, 'askopenfilenames') as files:
-                    self.app.start(True)
-                    self.app.load([self.source])
-                    self.app.select_files()
-                transfer.assert_not_called()
-                read.assert_not_called()
-                files.assert_not_called()
+                self.assertEqual(str(self.app.target_entry.cget('state')), 'normal')
                 self.app.game_choice.set(ui.GAME_LABELS['anno117'])
                 self.app.on_game_changed()
                 self.assertEqual(self.app.save_root, self.root)
                 self.assertEqual(str(self.app.target_entry.cget('state')), 'normal')
 
     def test_selected_game_is_remembered_and_switching_is_blocked_while_busy(self):
-        self.app.game_choice.set(ui.GAME_LABELS['anno1404'])
+        self.app.game_choice.set(ui.GAME_LABELS['anno1800'])
         self.app.on_game_changed()
         self.app.busy = True
         self.app.refresh_controls()
         self.assertEqual(str(self.app.game_combo.cget('state')), 'disabled')
         self.app.game_choice.set(ui.GAME_LABELS['anno117'])
         self.app.on_game_changed()
-        self.assertEqual(self.app.game, 'anno1404')
-        self.assertEqual(self.app.game_choice.get(), ui.GAME_LABELS['anno1404'])
+        self.assertEqual(self.app.game, 'anno1800')
+        self.assertEqual(self.app.game_choice.get(), ui.GAME_LABELS['anno1800'])
         self.app.busy = False
         preferences_path = self.app.preferences_path
         self.app.destroy()
         self.app = ui.SaveManager(preferences_path=preferences_path)
         self.app.withdraw()
-        self.assertEqual(self.app.game, 'anno1404')
+        self.assertEqual(self.app.game, 'anno1800')
         self.assertEqual(str(self.app.game_combo.cget('state')), 'readonly')
-        self.assertEqual(str(self.app.target_entry.cget('state')), 'disabled')
+        self.assertEqual(str(self.app.target_entry.cget('state')), 'normal')
+
+    def test_removed_saved_game_falls_back_without_losing_account_preferences(self):
+        self.app.load([self.source])
+        preferences_path = self.app.preferences_path
+        self.app.destroy()
+        saved = json.loads(preferences_path.read_text(encoding='utf-8'))
+        saved['selected_game'] = 'anno1404'
+        preferences_path.write_text(json.dumps(saved), encoding='utf-8')
+        self.app = ui.SaveManager(preferences_path=preferences_path)
+        self.app.withdraw()
+        self.assertEqual(self.app.game, 'anno117')
+        self.assertEqual(self.app.save_root, self.root)
+        self.assertEqual(self.app.preferences['account_roots'], saved['account_roots'])
 
     def test_organizer_theme_and_icon_are_used(self):
         style = ui.ttk.Style(self.app)

@@ -7,8 +7,11 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Remove the deferred Anno 1404 entry from the Save Manager game selector; an older saved selection falls back to a supported game while retaining account preferences.
+
 ### Deutsch
 
+- Den zurückgestellten Anno-1404-Eintrag aus der Spielauswahl des Save Managers entfernen; eine früher gespeicherte Auswahl fällt unter Erhalt der Konto-Einstellungen auf ein unterstütztes Spiel zurück.
 ## [v0.1.20] - 2026-11-28
 
 ### English

@@ -17,7 +17,6 @@ from anno_save_ui import WindowState, apply_theme
 GAME_LABELS = {
     'anno117': 'Anno 117: Pax Romana',
     'anno1800': 'Anno 1800',
-    'anno1404': 'Anno 1404',
 }
 
 
