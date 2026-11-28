@@ -725,5 +725,6 @@
   "demo.saveManagerGuide": "Bebilderte Anleitung für den Save Manager",
   "saveGuide.title": "ANNO - Save Manager · Erste Schritte",
   "saveGuide.description": "Die bebilderte Einsteigeranleitung für ANNO - Save Manager: Saves verschieben, Profilordner umbenennen und Spielernamen ändern.",
-  "saveGuide.heading": "Deine Spielstände verwalten."
+  "saveGuide.heading": "Deine Spielstände verwalten.",
+  "demo.organizerProtection": "Spielstände und Stempel werden ausschliesslich gelesen. Deine Originaldateien bleiben erhalten."
 }

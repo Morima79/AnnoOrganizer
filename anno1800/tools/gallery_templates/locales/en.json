@@ -725,5 +725,6 @@
   "demo.saveManagerGuide": "Illustrated Save Manager guide",
   "saveGuide.title": "ANNO - Save Manager · Getting started",
   "saveGuide.description": "The illustrated beginner guide to ANNO - Save Manager: move saves, rename profile folders and change player names.",
-  "saveGuide.heading": "Manage your saved games."
+  "saveGuide.heading": "Manage your saved games.",
+  "demo.organizerProtection": "Saves and stamps are read only. Your original files are preserved."
 }

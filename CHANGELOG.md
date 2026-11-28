@@ -7,12 +7,14 @@ Wichtige Änderungen an AnnoOrganizer. Jede Version enthält englische und deuts
 
 ### English
 
+- Match the Organizer and Save Manager download-card structure and refresh Save Manager guide screenshots in both interface languages.
 - Add a persistent DE/EN switch to the Save Manager, preserving selected saves and edits and translating dialogs and application diagnostics.
 - Add a separate illustrated Save Manager beginner guide in English and German, with online/offline HTML and inclusion in future Windows packages.
 - Add clear Windows downloads and guides for ANNO - Save Manager to the main/game READMEs and bilingual demo landing page; refresh outdated Organizer download links.
 
 ### Deutsch
 
+- Downloadboxen von Organizer und Save Manager gleich aufbauen und Save-Manager-Anleitungsbilder in beiden Oberflächensprachen aktualisieren.
 - Gespeicherten DE/EN-Schalter im Save Manager ergänzen; Save-Auswahl und Eingaben erhalten sowie Dialoge und Anwendungsmeldungen übersetzen.
 - Eigene bebilderte Save-Manager-Einsteigeranleitung auf Deutsch und Englisch ergänzen, mit Online-/Offline-HTML und Aufnahme in künftige Windows-Pakete.
 - Windows-Downloads und Anleitungen für ANNO - Save Manager in Haupt-/Spiel-READMEs und zweisprachiger Demo-Startseite hervorheben; veraltete Organizer-Downloadlinks aktualisieren.
